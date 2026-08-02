@@ -1,6 +1,6 @@
 /* Review-level filter extension */
-.toolbar{grid-template-columns:2fr 1.2fr 1.12fr .95fr .95fr 1.08fr auto auto}
-.review-filter{font-weight:850;transition:.18s}
+.toolbar{grid-template-columns:2fr 1.2fr 1.12fr .95fr .95fr minmax(182px,1.18fr) auto auto}
+.review-filter{font-weight:850;transition:.18s;min-width:182px}
 .review-filter[data-level="unrated"]{background:#f8fafc;border-color:#cbd5e1;color:#475467}
 .review-filter[data-level="mastered"]{background:#ecfdf3;border-color:#75e0a7;color:#05603a}
 .review-filter[data-level="review"]{background:#fffaeb;border-color:#fec84b;color:#93370d}
@@ -9,5 +9,11 @@
 .dark .review-filter[data-level="mastered"]{background:#073b2a;border-color:#16875f;color:#a6f4c5}
 .dark .review-filter[data-level="review"]{background:#3b2c0b;border-color:#b54708;color:#fedf89}
 .dark .review-filter[data-level="weak"]{background:#461c1a;border-color:#b42318;color:#fecdca}
-@media(max-width:1320px){.toolbar{grid-template-columns:2fr 1.15fr 1.05fr 1fr}}
-@media(max-width:700px){.toolbar{grid-template-columns:1fr}}
+.status[aria-pressed="true"]{outline:2px solid currentColor;outline-offset:2px}
+@media(max-width:1320px){.toolbar{grid-template-columns:2fr 1.15fr 1.05fr 1fr}.review-filter{min-width:0}}
+@media(max-width:700px){
+  .toolbar{grid-template-columns:1fr 1fr}
+  .toolbar #search,.toolbar .review-filter{grid-column:1/-1}
+  .review-filter{min-width:0}
+}
+@media(max-width:380px){.toolbar{grid-template-columns:1fr}}
