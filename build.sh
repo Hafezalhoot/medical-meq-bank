@@ -20,8 +20,6 @@ rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT"
 unzip -q "$PACKAGE" -d "$OUTPUT"
 
-# Inject the review-level filter as an inline extension so the main site and
-# the standalone offline copy stay self-contained.
 python3 - "$OUTPUT" <<'PY'
 from pathlib import Path
 import json
@@ -35,13 +33,31 @@ js = Path("review-filter.js").read_text(encoding="utf-8")
 version = json.loads(Path("version.json").read_text(encoding="utf-8"))["version"]
 text = html.read_text(encoding="utf-8")
 
-# Keep exported progress metadata aligned with the deployed PWA version.
-text = re.sub(
+text, count = re.subn(
     r"const APP_VERSION = '[^']+';",
     f"const APP_VERSION = '{version}';",
     text,
     count=1,
 )
+if count != 1:
+    raise SystemExit("Could not update APP_VERSION")
+
+old_state = "const state=JSON.parse(storage.get('medicalBankStatusV2')||'{}');"
+new_state = "const state=(()=>{try{const value=JSON.parse(storage.get('medicalBankStatusV2')||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch(e){return {}}})();"
+if old_state in text:
+    text = text.replace(old_state, new_state, 1)
+elif new_state not in text:
+    raise SystemExit("Could not apply safe progress-state parser")
+
+old_restore = "Object.entries(data.storage).forEach(([k,v]) => { if(k.startsWith('medicalBank') && typeof v === 'string') localStorage.setItem(k,v); });"
+new_restore = "[...Array(localStorage.length)].map((_,i)=>localStorage.key(i)).filter(k=>k&&k.startsWith('medicalBank')).forEach(k=>localStorage.removeItem(k)); Object.entries(data.storage).forEach(([k,v]) => { if(k.startsWith('medicalBank') && typeof v === 'string') localStorage.setItem(k,v); });"
+if old_restore in text:
+    text = text.replace(old_restore, new_restore, 1)
+elif new_restore not in text:
+    raise SystemExit("Could not apply clean progress restore")
+
+text = text.replace('<div class="empty-message" id="emptyMessage">', '<div class="empty-message" id="emptyMessage" aria-live="polite">', 1)
+text = text.replace('<div class="toast" id="appToast">', '<div class="toast" id="appToast" role="status" aria-live="polite">', 1)
 
 if 'id="review-filter-extension"' not in text:
     text = text.replace(
@@ -54,6 +70,21 @@ if 'id="review-filter-extension"' not in text:
         f'<script id="review-filter-extension">\n{js}\n</script>\n</body>',
         1,
     )
+else:
+    text = re.sub(
+        r'<style id="review-filter-styles">.*?</style>',
+        lambda _: f'<style id="review-filter-styles">\n{css}\n</style>',
+        text,
+        count=1,
+        flags=re.S,
+    )
+    text = re.sub(
+        r'<script id="review-filter-extension">.*?</script>',
+        lambda _: f'<script id="review-filter-extension">\n{js}\n</script>',
+        text,
+        count=1,
+        flags=re.S,
+    )
 
 html.write_text(text, encoding="utf-8")
 offline = output / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
@@ -61,14 +92,8 @@ offline.parent.mkdir(parents=True, exist_ok=True)
 offline.write_text(text, encoding="utf-8")
 PY
 
-# Use the latest PWA metadata and service worker from the repository root.
 install -m 0644 manifest.webmanifest service-worker.js version.json "$OUTPUT/"
-
-# The source package contains a GitHub Pages workflow that is not needed
-# inside the deployed website.
 rm -rf "$OUTPUT/.github"
-
-# Avoid exposing repository documentation as a site page.
 rm -f "$OUTPUT/README.md"
 
 echo "Medical MEQ Bank prepared in $OUTPUT"
