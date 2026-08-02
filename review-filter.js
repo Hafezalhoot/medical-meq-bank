@@ -35,24 +35,26 @@
   const optionExists = (control, value) => [...control.options].some(option => option.value === value);
 
   const setControlApplicability = rapidMode => {
-    if (rapidMode && !rapidModeActive) {
-      rapidInapplicableControls.forEach(control => {
-        control.dataset.rapidPreviousValue = control.value;
-        control.value = 'all';
-        control.disabled = true;
-        control.classList.add('rapid-inapplicable');
-        control.dataset.rapidPreviousTitle = control.title || '';
-        control.title = 'This filter is not used for Rapid Recall cards.';
-      });
+    if (rapidMode) {
       if (activeSubtopic !== 'all') {
         activeSubtopic = 'all';
         renderSubtopicNav();
       }
-      rapidModeActive = true;
+      if (!rapidModeActive) {
+        rapidInapplicableControls.forEach(control => {
+          control.dataset.rapidPreviousValue = control.value;
+          control.value = 'all';
+          control.disabled = true;
+          control.classList.add('rapid-inapplicable');
+          control.dataset.rapidPreviousTitle = control.title || '';
+          control.title = 'This filter is not used for Rapid Recall cards.';
+        });
+        rapidModeActive = true;
+      }
       return;
     }
 
-    if (!rapidMode && rapidModeActive) {
+    if (rapidModeActive) {
       rapidInapplicableControls.forEach(control => {
         control.disabled = false;
         control.classList.remove('rapid-inapplicable');
