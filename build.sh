@@ -145,7 +145,7 @@ else:
 html.write_text(text, encoding="utf-8")
 offline = output / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
 offline.parent.mkdir(parents=True, exist_ok=True)
-offline_text = text.replace('./assets/urological-emergencies/', '../assets/urological-emergencies/')
+offline_text = text.replace('<head>', '<head>\n<base href="../">', 1)
 offline.write_text(offline_text, encoding="utf-8")
 PY
 
