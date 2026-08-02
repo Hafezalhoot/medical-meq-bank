@@ -1,4 +1,4 @@
-const CACHE_NAME = 'medical-meq-bank-2026.08.02.5';
+const CACHE_NAME = 'medical-meq-bank-2026.08.02.6';
 const CORE_ASSETS = [
   './', './index.html', './manifest.webmanifest', './version.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'
