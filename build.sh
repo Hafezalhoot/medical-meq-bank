@@ -39,22 +39,27 @@ output = Path(sys.argv[1])
 html = output / "index.html"
 css = Path("review-filter.css").read_text(encoding="utf-8")
 js = Path("review-filter.js").read_text(encoding="utf-8")
-
 def decode_gzip_b64(path):
     encoded = Path(path).read_text(encoding="ascii").strip()
     return gzip.decompress(base64.b64decode(encoded)).decode("utf-8")
 
+print_css = decode_gzip_b64("print-manager.v8.css.gz.b64")
+print_js = decode_gzip_b64("print-manager.v8.js.gz.b64")
+back_to_top_css = Path("back-to-top.css").read_text(encoding="utf-8")
+back_to_top_js = Path("back-to-top.js").read_text(encoding="utf-8")
+version = json.loads(Path("version.json").read_text(encoding="utf-8"))["version"]
 def build_lecture_extensions():
     lecture_dir = Path("lectures")
     if not lecture_dir.is_dir():
         return ""
 
     lecture_files = sorted(lecture_dir.glob("*.js"))
-    tbi_chunks = [
+    tbi_data_files = sorted(lecture_dir.glob("neuro-tbi-data-*.b64"))
+    legacy_tbi_chunks = [
         path for path in lecture_files
         if re.fullmatch(r"neuro-tbi-(?!99)[0-9]{2}\.js", path.name)
     ]
-    excluded = {path.name for path in tbi_chunks}
+    excluded = {path.name for path in legacy_tbi_chunks}
     excluded.add("neuro-tbi-99.js")
 
     parts = [
@@ -63,29 +68,42 @@ def build_lecture_extensions():
         if path.name not in excluded
     ]
 
-    if tbi_chunks:
+    if tbi_data_files:
+        encoded_parts = []
+        for path in tbi_data_files:
+            chunk = "".join(path.read_text(encoding="ascii").split())
+            if not chunk or re.fullmatch(r"[A-Za-z0-9+/=]+", chunk) is None:
+                raise SystemExit(f"Invalid compressed TBI data chunk: {path}")
+            encoded_parts.append(chunk)
+        encoded = "".join(encoded_parts)
+    elif legacy_tbi_chunks:
         encoded_parts = []
         chunk_pattern = re.compile(r"\+\s*'([^']+)'\s*;?\s*$", re.S)
-        for path in tbi_chunks:
+        for path in legacy_tbi_chunks:
             source = path.read_text(encoding="utf-8").strip()
             match = chunk_pattern.search(source)
             if not match:
                 raise SystemExit(f"Could not parse compressed TBI chunk: {path}")
             encoded_parts.append(match.group(1))
-
         encoded = "".join(encoded_parts)
+    else:
+        encoded = ""
+
+    if encoded:
         try:
-            payload = gzip.decompress(base64.b64decode(encoded)).decode("utf-8")
+            compressed = base64.b64decode(encoded, validate=True)
+            payload = gzip.decompress(compressed).decode("utf-8")
             lecture = json.loads(payload)
         except Exception as error:
-            raise SystemExit(f"Could not decode compressed TBI lecture during build: {error}") from error
+            raise SystemExit(
+                f"Could not decode compressed TBI lecture during build: {error}; "
+                f"chunks={len(tbi_data_files) or len(legacy_tbi_chunks)}, "
+                f"base64_chars={len(encoded)}, mod4={len(encoded) % 4}"
+            ) from error
 
         if lecture.get("id") != "neurosurgery-traumatic-brain-injury":
             raise SystemExit("Decoded TBI lecture has an unexpected lecture id")
 
-        # Decode on the build server and inject normal JavaScript. This avoids
-        # browser-specific DecompressionStream failures while preserving the
-        # same lecture data, images, filters and fully offline behavior.
         lecture_json = json.dumps(
             lecture,
             ensure_ascii=False,
@@ -107,11 +125,6 @@ def build_lecture_extensions():
 
     return "\n\n".join(part for part in parts if part.strip())
 
-print_css = decode_gzip_b64("print-manager.v8.css.gz.b64")
-print_js = decode_gzip_b64("print-manager.v8.js.gz.b64")
-back_to_top_css = Path("back-to-top.css").read_text(encoding="utf-8")
-back_to_top_js = Path("back-to-top.js").read_text(encoding="utf-8")
-version = json.loads(Path("version.json").read_text(encoding="utf-8"))["version"]
 lecture_js = build_lecture_extensions()
 text = html.read_text(encoding="utf-8")
 
