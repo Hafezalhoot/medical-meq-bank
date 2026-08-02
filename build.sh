@@ -9,7 +9,7 @@ if [ ! -f "$PACKAGE" ]; then
   exit 1
 fi
 
-for required in review-filter.css review-filter.js print-manager.css print-manager.js manifest.webmanifest service-worker.js version.json; do
+for required in review-filter.css review-filter.js print-manager.css print-manager.js back-to-top.css back-to-top.js manifest.webmanifest service-worker.js version.json; do
   if [ ! -f "$required" ]; then
     echo "Missing $required in repository root."
     exit 1
@@ -39,6 +39,8 @@ css = Path("review-filter.css").read_text(encoding="utf-8")
 js = Path("review-filter.js").read_text(encoding="utf-8")
 print_css = Path("print-manager.css").read_text(encoding="utf-8")
 print_js = Path("print-manager.js").read_text(encoding="utf-8")
+back_to_top_css = Path("back-to-top.css").read_text(encoding="utf-8")
+back_to_top_js = Path("back-to-top.js").read_text(encoding="utf-8")
 version = json.loads(Path("version.json").read_text(encoding="utf-8"))["version"]
 lecture_files = sorted(Path("lectures").glob("*.js")) if Path("lectures").is_dir() else []
 lecture_js = "\n\n".join(path.read_text(encoding="utf-8") for path in lecture_files)
@@ -141,6 +143,33 @@ if 'id="print-manager-extension"' in text:
     )
 else:
     text = text.replace('</body>', print_script_tag + '\n</body>', 1)
+
+back_to_top_style_tag = f'<style id="back-to-top-styles">\n{back_to_top_css}\n</style>'
+if 'id="back-to-top-styles"' in text:
+    text = re.sub(
+        r'<style id="back-to-top-styles">.*?</style>',
+        lambda _: back_to_top_style_tag,
+        text,
+        count=1,
+        flags=re.S,
+    )
+else:
+    text = text.replace('</head>', back_to_top_style_tag + '\n</head>', 1)
+
+back_to_top_script_tag = f'<script id="back-to-top-extension">\n{back_to_top_js}\n</script>'
+if 'id="back-to-top-extension"' in text:
+    text = re.sub(
+        r'<script id="back-to-top-extension">.*?</script>',
+        lambda _: back_to_top_script_tag,
+        text,
+        count=1,
+        flags=re.S,
+    )
+else:
+    if '</body>' not in text:
+        raise SystemExit("Could not inject back-to-top script")
+    before_body_close, after_body_close = text.rsplit('</body>', 1)
+    text = before_body_close + back_to_top_script_tag + '\n</body>' + after_body_close
 
 html.write_text(text, encoding="utf-8")
 offline = output / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
