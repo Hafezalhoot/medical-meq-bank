@@ -20,6 +20,11 @@ rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT"
 unzip -q "$PACKAGE" -d "$OUTPUT"
 
+if [ -d assets ]; then
+  rm -rf "$OUTPUT/assets"
+  cp -R assets "$OUTPUT/assets"
+fi
+
 python3 - "$OUTPUT" <<'PY'
 from pathlib import Path
 import json
@@ -31,6 +36,8 @@ html = output / "index.html"
 css = Path("review-filter.css").read_text(encoding="utf-8")
 js = Path("review-filter.js").read_text(encoding="utf-8")
 version = json.loads(Path("version.json").read_text(encoding="utf-8"))["version"]
+lecture_files = sorted(Path("lectures").glob("*.js")) if Path("lectures").is_dir() else []
+lecture_js = "\n\n".join(path.read_text(encoding="utf-8") for path in lecture_files)
 text = html.read_text(encoding="utf-8")
 
 text, count = re.subn(
@@ -86,10 +93,26 @@ else:
         flags=re.S,
     )
 
+if lecture_js:
+    lecture_tag = f'<script id="lecture-extensions">\n{lecture_js}\n</script>'
+    if 'id="lecture-extensions"' in text:
+        text = re.sub(
+            r'<script id="lecture-extensions">.*?</script>',
+            lambda _: lecture_tag,
+            text,
+            count=1,
+            flags=re.S,
+        )
+    elif '<script id="review-filter-extension">' in text:
+        text = text.replace('<script id="review-filter-extension">', lecture_tag + '\n<script id="review-filter-extension">', 1)
+    else:
+        text = text.replace('</body>', lecture_tag + '\n</body>', 1)
+
 html.write_text(text, encoding="utf-8")
 offline = output / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
 offline.parent.mkdir(parents=True, exist_ok=True)
-offline.write_text(text, encoding="utf-8")
+offline_text = text.replace('./assets/urological-emergencies/', '../assets/urological-emergencies/')
+offline.write_text(offline_text, encoding="utf-8")
 PY
 
 install -m 0644 manifest.webmanifest service-worker.js version.json "$OUTPUT/"
