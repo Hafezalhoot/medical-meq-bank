@@ -1,4 +1,4 @@
-/* Review-level filter extension */
+/* Review-level and Rapid Recall filter extension */
 .toolbar{grid-template-columns:2fr 1.2fr 1.12fr .95fr .95fr minmax(182px,1.18fr) auto auto}
 .review-filter{font-weight:850;transition:.18s;min-width:182px}
 .review-filter[data-level="unrated"]{background:#f8fafc;border-color:#cbd5e1;color:#475467}
@@ -10,6 +10,10 @@
 .dark .review-filter[data-level="review"]{background:#3b2c0b;border-color:#b54708;color:#fedf89}
 .dark .review-filter[data-level="weak"]{background:#461c1a;border-color:#b42318;color:#fecdca}
 .status[aria-pressed="true"]{outline:2px solid currentColor;outline-offset:2px}
+.rapid-item.hidden{display:none!important}
+.rapid-item[role="button"]:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+.control.rapid-inapplicable:disabled{cursor:not-allowed;opacity:.62;background:#f2f4f7;color:#667085;border-style:dashed}
+.dark .control.rapid-inapplicable:disabled{background:#0d1728;color:#98a2b3;border-color:#475467}
 @media(max-width:1320px){.toolbar{grid-template-columns:2fr 1.15fr 1.05fr 1fr}.review-filter{min-width:0}}
 @media(max-width:700px){
   .toolbar{grid-template-columns:1fr 1fr}
