@@ -44,13 +44,75 @@ def decode_gzip_b64(path):
     encoded = Path(path).read_text(encoding="ascii").strip()
     return gzip.decompress(base64.b64decode(encoded)).decode("utf-8")
 
+def build_lecture_extensions():
+    lecture_dir = Path("lectures")
+    if not lecture_dir.is_dir():
+        return ""
+
+    lecture_files = sorted(lecture_dir.glob("*.js"))
+    tbi_chunks = [
+        path for path in lecture_files
+        if re.fullmatch(r"neuro-tbi-(?!99)[0-9]{2}\.js", path.name)
+    ]
+    excluded = {path.name for path in tbi_chunks}
+    excluded.add("neuro-tbi-99.js")
+
+    parts = [
+        path.read_text(encoding="utf-8")
+        for path in lecture_files
+        if path.name not in excluded
+    ]
+
+    if tbi_chunks:
+        encoded_parts = []
+        chunk_pattern = re.compile(r"\+\s*'([^']+)'\s*;?\s*$", re.S)
+        for path in tbi_chunks:
+            source = path.read_text(encoding="utf-8").strip()
+            match = chunk_pattern.search(source)
+            if not match:
+                raise SystemExit(f"Could not parse compressed TBI chunk: {path}")
+            encoded_parts.append(match.group(1))
+
+        encoded = "".join(encoded_parts)
+        try:
+            payload = gzip.decompress(base64.b64decode(encoded)).decode("utf-8")
+            lecture = json.loads(payload)
+        except Exception as error:
+            raise SystemExit(f"Could not decode compressed TBI lecture during build: {error}") from error
+
+        if lecture.get("id") != "neurosurgery-traumatic-brain-injury":
+            raise SystemExit("Decoded TBI lecture has an unexpected lecture id")
+
+        # Decode on the build server and inject normal JavaScript. This avoids
+        # browser-specific DecompressionStream failures while preserving the
+        # same lecture data, images, filters and fully offline behavior.
+        lecture_json = json.dumps(
+            lecture,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).replace("</", "<\\/")
+        parts.append(
+            "(() => {\n"
+            f"  const lecture = {lecture_json};\n"
+            "  if (lectures.some(item => item.id === lecture.id)) return;\n"
+            "  lectures.push(lecture);\n"
+            "  lectures.sort((a,b) => a.subjectKey.localeCompare(b.subjectKey) || a.order - b.order);\n"
+            "  populateLectureFilter();\n"
+            "  updateTopicOptions();\n"
+            "  render();\n"
+            "  validateBank();\n"
+            "  setSidebarState();\n"
+            "})();"
+        )
+
+    return "\n\n".join(part for part in parts if part.strip())
+
 print_css = decode_gzip_b64("print-manager.v8.css.gz.b64")
 print_js = decode_gzip_b64("print-manager.v8.js.gz.b64")
 back_to_top_css = Path("back-to-top.css").read_text(encoding="utf-8")
 back_to_top_js = Path("back-to-top.js").read_text(encoding="utf-8")
 version = json.loads(Path("version.json").read_text(encoding="utf-8"))["version"]
-lecture_files = sorted(Path("lectures").glob("*.js")) if Path("lectures").is_dir() else []
-lecture_js = "\n\n".join(path.read_text(encoding="utf-8") for path in lecture_files)
+lecture_js = build_lecture_extensions()
 text = html.read_text(encoding="utf-8")
 
 # Keep exported progress metadata aligned with the deployed PWA version.
