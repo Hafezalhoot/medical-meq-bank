@@ -24,13 +24,24 @@ unzip -q "$PACKAGE" -d "$OUTPUT"
 # the standalone offline copy stay self-contained.
 python3 - "$OUTPUT" <<'PY'
 from pathlib import Path
+import json
+import re
 import sys
 
 output = Path(sys.argv[1])
 html = output / "index.html"
 css = Path("review-filter.css").read_text(encoding="utf-8")
 js = Path("review-filter.js").read_text(encoding="utf-8")
+version = json.loads(Path("version.json").read_text(encoding="utf-8"))["version"]
 text = html.read_text(encoding="utf-8")
+
+# Keep exported progress metadata aligned with the deployed PWA version.
+text = re.sub(
+    r"const APP_VERSION = '[^']+';",
+    f"const APP_VERSION = '{version}';",
+    text,
+    count=1,
+)
 
 if 'id="review-filter-extension"' not in text:
     text = text.replace(
