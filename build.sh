@@ -9,7 +9,7 @@ if [ ! -f "$PACKAGE" ]; then
   exit 1
 fi
 
-for required in review-filter.css review-filter.js print-manager.css print-manager.js back-to-top.css back-to-top.js manifest.webmanifest service-worker.js version.json; do
+for required in review-filter.css review-filter.js print-manager.v8.css.gz.b64 print-manager.v8.js.gz.b64 back-to-top.css back-to-top.js manifest.webmanifest service-worker.js version.json; do
   if [ ! -f "$required" ]; then
     echo "Missing $required in repository root."
     exit 1
@@ -29,6 +29,8 @@ fi
 # persistence patches while keeping the deployed and standalone copies intact.
 python3 - "$OUTPUT" <<'PY'
 from pathlib import Path
+import base64
+import gzip
 import json
 import re
 import sys
@@ -37,8 +39,13 @@ output = Path(sys.argv[1])
 html = output / "index.html"
 css = Path("review-filter.css").read_text(encoding="utf-8")
 js = Path("review-filter.js").read_text(encoding="utf-8")
-print_css = Path("print-manager.css").read_text(encoding="utf-8")
-print_js = Path("print-manager.js").read_text(encoding="utf-8")
+
+def decode_gzip_b64(path):
+    encoded = Path(path).read_text(encoding="ascii").strip()
+    return gzip.decompress(base64.b64decode(encoded)).decode("utf-8")
+
+print_css = decode_gzip_b64("print-manager.v8.css.gz.b64")
+print_js = decode_gzip_b64("print-manager.v8.js.gz.b64")
 back_to_top_css = Path("back-to-top.css").read_text(encoding="utf-8")
 back_to_top_js = Path("back-to-top.js").read_text(encoding="utf-8")
 version = json.loads(Path("version.json").read_text(encoding="utf-8"))["version"]
