@@ -5,6 +5,9 @@ OUTPUT="dist"
 
 required_files=(
   src/index.html
+  src/app.css
+  src/app.js
+  src/pwa-client.js
   icons/icon-192.png
   icons/icon-512.png
   icons/apple-touch-icon.png
@@ -52,9 +55,17 @@ python3 -m py_compile \
   scripts/validate_mobile_filters.py \
   scripts/validate_runtime_extensions.py
 
+node --check src/app.js
+node --check src/pwa-client.js
+
 rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT"
-install -m 0644 src/index.html "$OUTPUT/index.html"
+install -m 0644 \
+  src/index.html \
+  src/app.css \
+  src/app.js \
+  src/pwa-client.js \
+  "$OUTPUT/"
 install -m 0644 404.html _headers "$OUTPUT/"
 cp -R icons "$OUTPUT/icons"
 
@@ -67,4 +78,4 @@ python3 tools/build_app.py "$OUTPUT"
 # Publish current PWA metadata and the hardened service worker.
 install -m 0644 manifest.webmanifest service-worker.js version.json "$OUTPUT/"
 
-echo "Medical MEQ Bank prepared in $OUTPUT from reviewable source files"
+echo "Medical MEQ Bank prepared in $OUTPUT from split reviewable source files"
