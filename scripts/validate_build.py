@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate reviewable source files and the generated Medical MEQ Bank."""
+"""Validate reviewable sources and generated Medical MEQ Bank output."""
 
 from __future__ import annotations
 
@@ -50,6 +50,10 @@ def validate_metadata() -> str:
         fail("version.json has an invalid version")
     if not isinstance(updated_at, str) or "T" not in updated_at:
         fail("version.json has an invalid updatedAt value")
+
+    generated = read_json(DIST / "version.json")
+    if not isinstance(generated, dict) or generated.get("version") != version:
+        fail("generated version.json differs from repository metadata")
     return version
 
 
@@ -63,15 +67,16 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
     if not isinstance(entries, list) or not entries:
         fail("lecture catalog has no lectures")
 
-    lecture_root = LECTURE_DIR.resolve()
-    data_root = (LECTURE_DIR / "data").resolve()
     by_id: dict[str, dict] = {}
     referenced: set[Path] = set()
     subject_orders: set[tuple[str, float]] = set()
+    lecture_root = LECTURE_DIR.resolve()
+    data_root = (LECTURE_DIR / "data").resolve()
 
     for index, entry in enumerate(entries, start=1):
         if not isinstance(entry, dict):
             fail(f"catalog entry {index} is not an object")
+
         lecture_id = entry.get("id")
         title = entry.get("title")
         subject_key = entry.get("subjectKey")
@@ -93,6 +98,7 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
         if order_key in subject_orders:
             fail(f"duplicate lecture order {order} in subject {subject_key}")
         subject_orders.add(order_key)
+
         if not isinstance(relative_file, str) or not relative_file:
             fail(f"catalog entry {lecture_id} has no source file")
         if not isinstance(counts, dict) or set(counts) != set(COUNT_KEYS):
@@ -126,6 +132,10 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
             if len(value) != counts[key]:
                 fail(f"{lecture_id} has {len(value)} {key}; expected {counts[key]}")
 
+        published = read_json(DIST / "lectures" / relative_file)
+        if published != lecture:
+            fail(f"published lecture differs from source: {lecture_id}")
+
         by_id[lecture_id] = lecture
         referenced.add(source_path)
 
@@ -139,6 +149,9 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
         if missing:
             details.append("missing=" + ",".join(missing))
         fail("catalog/data mismatch: " + "; ".join(details))
+
+    if read_json(DIST / "lectures" / "catalog.json") != catalog:
+        fail("published lecture catalog differs from source")
 
     legacy = sorted(
         path.relative_to(ROOT).as_posix()
@@ -180,20 +193,27 @@ def validate_deployment_config() -> None:
 
     headers = read_text(DIST / "_headers")
     for marker in (
-        "Content-Security-Policy:", "frame-ancestors 'none'", "object-src 'none'",
-        "Permissions-Policy:", "Referrer-Policy: no-referrer",
-        "X-Content-Type-Options: nosniff", "X-Frame-Options: DENY",
-        "/version.json", "Cache-Control: no-store", "/service-worker.js",
+        "Content-Security-Policy:",
+        "frame-ancestors 'none'",
+        "object-src 'none'",
+        "Permissions-Policy:",
+        "Referrer-Policy: no-referrer",
+        "X-Content-Type-Options: nosniff",
+        "X-Frame-Options: DENY",
+        "/version.json",
+        "Cache-Control: no-store",
+        "/service-worker.js",
         "Service-Worker-Allowed: /",
     ):
         if marker not in headers:
             fail(f"security headers are missing: {marker}")
+
     page_404 = read_text(DIST / "404.html")
     if "Page not found" not in page_404 or 'href="./"' not in page_404:
         fail("404 page is incomplete")
 
 
-def validate_service_worker(version: str) -> None:
+def validate_service_worker(version: str, entries: list[dict]) -> None:
     worker = read_text(DIST / "service-worker.js")
     if f"const APP_VERSION = '{version}';" not in worker:
         fail("service-worker version differs from version.json")
@@ -201,19 +221,31 @@ def validate_service_worker(version: str) -> None:
         fail("service worker does not perform a network-only version check")
     if "Promise.allSettled" not in worker:
         fail("optional PWA assets can still abort installation")
-    for asset in ("./app.css", "./app.js", "./pwa-client.js"):
+    for asset in (
+        "./index.html",
+        "./app.css",
+        "./app.js",
+        "./lecture-loader.js",
+        "./pwa-client.js",
+        "./offline/Medical_MEQ_Review_Bank_Offline.html",
+        "./lectures/catalog.json",
+    ):
         if asset not in worker:
             fail(f"service worker does not pre-cache {asset}")
-    if "Medical_MEQ_Review_Bank_Offline.html" not in worker:
-        fail("service worker has no standalone fallback")
+    for entry in entries:
+        asset = f"./lectures/{entry['file']}"
+        if asset not in worker:
+            fail(f"service worker does not pre-cache {asset}")
 
 
 def validate_split_sources(version: str) -> None:
     source_index = read_text(ROOT / "src" / "index.html")
     source_css = read_text(ROOT / "src" / "app.css")
     source_app = read_text(ROOT / "src" / "app.js")
+    source_loader = read_text(ROOT / "src" / "lecture-loader.js")
     source_pwa = read_text(ROOT / "src" / "pwa-client.js")
-    if len(source_css) < 10_000 or len(source_app) < 10_000 or len(source_pwa) < 1_000:
+
+    if len(source_css) < 10_000 or len(source_app) < 10_000 or len(source_loader) < 1_000 or len(source_pwa) < 1_000:
         fail("split application source is unexpectedly small")
     for marker in (
         '<link rel="stylesheet" href="./app.css">',
@@ -227,9 +259,12 @@ def validate_split_sources(version: str) -> None:
 
     generated_css = read_text(DIST / "app.css")
     generated_app = read_text(DIST / "app.js")
+    generated_loader = read_text(DIST / "lecture-loader.js")
     generated_pwa = read_text(DIST / "pwa-client.js")
     if generated_css != source_css:
         fail("generated app.css differs from source")
+    if generated_loader != source_loader:
+        fail("generated lecture-loader.js differs from source")
     if "const state=(()=>{try{" not in generated_app:
         fail("generated app.js has no safe progress parser")
     if "const state=JSON.parse(storage.get('medicalBankStatusV2')||'{}');" in generated_app:
@@ -241,28 +276,30 @@ def validate_split_sources(version: str) -> None:
     if "localStorage.removeItem(k)" not in generated_pwa:
         fail("backup restore does not remove stale progress keys")
 
+    for marker in ("loadCatalog", "loadSubject", "MEQLectureLoader", "meq:lectures-loaded", "aria-busy"):
+        if marker not in generated_loader:
+            fail(f"lecture loader is missing marker: {marker}")
 
-def extract_generated_lectures(html: str) -> dict[str, dict]:
-    match = re.search(
-        r"const incomingLectures = (\[.*?\]);\n\s*const existingIds",
-        html,
-        flags=re.S,
-    )
+
+def extract_offline_lectures(html: str) -> dict[str, dict]:
+    match = re.search(r"const incomingLectures = (\[.*?\]);\s*const existingIds", html, flags=re.S)
     if not match:
-        fail("generated HTML has no lecture batch")
+        fail("standalone offline file has no lecture batch")
     try:
         lectures = json.loads(match.group(1))
     except json.JSONDecodeError as error:
-        fail(f"generated lecture batch is invalid JSON: {error}")
+        fail(f"offline lecture batch is invalid JSON: {error}")
     if not isinstance(lectures, list):
-        fail("generated lecture batch is not a list")
+        fail("offline lecture batch is not a list")
+
     result: dict[str, dict] = {}
     for lecture in lectures:
         if not isinstance(lecture, dict) or not isinstance(lecture.get("id"), str):
-            fail("generated lecture item is invalid")
-        if lecture["id"] in result:
-            fail(f"duplicate generated lecture id: {lecture['id']}")
-        result[lecture["id"]] = lecture
+            fail("offline lecture item is invalid")
+        lecture_id = lecture["id"]
+        if lecture_id in result:
+            fail(f"duplicate offline lecture id: {lecture_id}")
+        result[lecture_id] = lecture
     return result
 
 
@@ -275,33 +312,51 @@ def validate_html(source_lectures: dict[str, dict]) -> None:
     offline = read_text(offline_path)
 
     for marker in (
-        "Medical MEQ", 'id="lectureFilter"', 'id="typeFilter"', 'id="search"',
-        '<link rel="stylesheet" href="./app.css">', '<script src="./app.js"></script>',
-        '<script src="./pwa-client.js"></script>', 'id="review-filter-extension"',
-        'id="mobile-filter-extension"', 'id="print-manager-extension"',
+        "Medical MEQ",
+        'id="lectureFilter"',
+        'id="typeFilter"',
+        'id="search"',
+        '<link rel="stylesheet" href="./app.css">',
+        '<script src="./app.js"></script>',
+        '<script src="./lecture-loader.js"></script>',
+        '<script src="./pwa-client.js"></script>',
+        'id="review-filter-extension"',
+        'id="mobile-filter-extension"',
+        'id="print-manager-extension"',
         'id="back-to-top-extension"',
     ):
         if marker not in html:
             fail(f"generated index is missing: {marker}")
+
+    if "const incomingLectures" in html:
+        fail("online index still embeds the complete lecture bank")
     for marker in (
-        "globalThis.__urolScrotalCompactGzip", "globalThis.__neuroTbiGzip",
-        "globalThis.__urolUtiGzip", "globalThis.__urolEmergGzip", "DecompressionStream",
+        "globalThis.__urolScrotalCompactGzip",
+        "globalThis.__neuroTbiGzip",
+        "globalThis.__urolUtiGzip",
+        "globalThis.__urolEmergGzip",
+        "DecompressionStream",
     ):
         if marker in html:
             fail(f"compressed runtime loader leaked into HTML: {marker}")
 
-    generated = extract_generated_lectures(html)
-    if generated != source_lectures:
-        fail("generated lecture content differs from cataloged JSON sources")
+    if extract_offline_lectures(offline) != source_lectures:
+        fail("offline lecture content differs from cataloged JSON sources")
 
     for marker in (
-        'id="app-source-styles"', 'id="app-source-runtime"',
-        'id="pwa-client-runtime"', "medicalBankStatusV2", "APP_VERSION",
+        'id="app-source-styles"',
+        'id="app-source-runtime"',
+        'id="lecture-extensions"',
+        'id="pwa-client-runtime"',
+        "medicalBankStatusV2",
+        "APP_VERSION",
     ):
         if marker not in offline:
             fail(f"standalone offline file is missing: {marker}")
     for marker in (
-        '<link rel="stylesheet" href="./app.css">', '<script src="./app.js"></script>',
+        '<link rel="stylesheet" href="./app.css">',
+        '<script src="./app.js"></script>',
+        '<script src="./lecture-loader.js"></script>',
         '<script src="./pwa-client.js"></script>',
     ):
         if marker in offline:
@@ -311,6 +366,7 @@ def validate_html(source_lectures: dict[str, dict]) -> None:
     duplicates = sorted({value for value in script_ids if script_ids.count(value) > 1})
     if duplicates:
         fail("duplicate generated script ids: " + ", ".join(duplicates))
+
     element_ids = re.findall(r'\sid="([^"]+)"', html)
     for critical in ("search", "lectureFilter", "typeFilter", "emptyMessage", "appToast"):
         if element_ids.count(critical) != 1:
@@ -330,20 +386,13 @@ def validate_feature_sources() -> None:
 def main() -> int:
     version = validate_metadata()
     source_lectures, entries = validate_lecture_sources()
-    generated_metadata = read_json(DIST / "version.json")
-    if not isinstance(generated_metadata, dict) or generated_metadata.get("version") != version:
-        fail("generated version metadata differs from source")
     validate_manifest()
     validate_deployment_config()
-    validate_service_worker(version)
+    validate_service_worker(version, entries)
     validate_split_sources(version)
-    validate_feature_sources()
     validate_html(source_lectures)
-    subjects = sorted({entry["subjectKey"] for entry in entries})
-    print(
-        f"Validated Medical MEQ Bank {version}: "
-        f"{len(source_lectures)} lectures across {len(subjects)} subjects"
-    )
+    validate_feature_sources()
+    print(f"Validated Medical MEQ Bank {version} with {len(source_lectures)} lazy-loaded JSON lectures")
     return 0
 
 
