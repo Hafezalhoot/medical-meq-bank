@@ -14,6 +14,7 @@ LECTURE_LIST_KEYS = (
     "detailedShorts",
     "rapid",
 )
+VALID_PRIORITIES = {"High", "Core"}
 
 
 def _non_empty_string(value: object) -> bool:
@@ -22,6 +23,18 @@ def _non_empty_string(value: object) -> bool:
 
 def _valid_number(value: object) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _string_list(value: object, *, allow_empty: bool = False) -> bool:
+    return (
+        isinstance(value, list)
+        and (allow_empty or bool(value))
+        and all(_non_empty_string(item) for item in value)
+    )
+
+
+def _validate_answer(value: object) -> bool:
+    return _non_empty_string(value) or _string_list(value)
 
 
 def validate_lecture(
@@ -34,19 +47,18 @@ def validate_lecture(
     if not isinstance(lecture, dict):
         raise SystemExit(f"{label} lecture is not an object")
 
-    lecture_id = lecture.get("id")
-    if lecture_id != expected_id:
-        raise SystemExit(f"{label} lecture has unexpected id: {lecture_id!r}")
+    if lecture.get("id") != expected_id:
+        raise SystemExit(f"{label} lecture has unexpected id: {lecture.get('id')!r}")
 
-    for key in ("title", "subjectKey", "subject"):
+    for key in ("title", "subjectKey", "subject", "subtitle", "sourceNote"):
         if not _non_empty_string(lecture.get(key)):
             raise SystemExit(f"{label} lecture is missing a valid {key}")
     if not _valid_number(lecture.get("order")):
         raise SystemExit(f"{label} lecture has an invalid order")
 
     subtopics = lecture.get("subtopics")
-    if not isinstance(subtopics, list):
-        raise SystemExit(f"{label} lecture is missing a subtopics list")
+    if not isinstance(subtopics, list) or not subtopics:
+        raise SystemExit(f"{label} lecture is missing a non-empty subtopics list")
 
     subtopic_ids: set[str] = set()
     for index, subtopic in enumerate(subtopics, start=1):
@@ -80,14 +92,8 @@ def validate_lecture(
 
         if key == "rapid":
             for index, card in enumerate(value, start=1):
-                if (
-                    not isinstance(card, list)
-                    or len(card) != 2
-                    or not all(_non_empty_string(part) for part in card)
-                ):
-                    raise SystemExit(
-                        f"{label} rapid card {index} must contain question and answer text"
-                    )
+                if not isinstance(card, list) or len(card) != 2 or not all(_non_empty_string(part) for part in card):
+                    raise SystemExit(f"{label} rapid card {index} must contain question and answer text")
             continue
 
         for index, item in enumerate(value, start=1):
@@ -106,39 +112,41 @@ def validate_lecture(
 
             if not _non_empty_string(item.get("topic")):
                 raise SystemExit(f"{label} {item_id} has an invalid topic")
-            if not _non_empty_string(item.get("priority")):
-                raise SystemExit(f"{label} {item_id} has an invalid priority")
+            if item.get("priority") not in VALID_PRIORITIES:
+                raise SystemExit(f"{label} {item_id} has unsupported priority: {item.get('priority')!r}")
             if not _valid_number(item.get("marks")) or item["marks"] < 0:
                 raise SystemExit(f"{label} {item_id} has invalid marks")
 
             item_subtopics = item.get("subtopics")
-            if (
-                not isinstance(item_subtopics, list)
-                or not all(_non_empty_string(value) for value in item_subtopics)
-            ):
+            if not _string_list(item_subtopics):
                 raise SystemExit(f"{label} {item_id} has invalid subtopics")
             unknown_subtopics = sorted(set(item_subtopics) - subtopic_ids)
             if unknown_subtopics:
                 raise SystemExit(
-                    f"{label} {item_id} references unknown subtopics: "
-                    f"{', '.join(unknown_subtopics)}"
+                    f"{label} {item_id} references unknown subtopics: {', '.join(unknown_subtopics)}"
                 )
 
             if key in {"cases", "imageQuestions"}:
                 if not _non_empty_string(item.get("title")):
                     raise SystemExit(f"{label} {item_id} has an invalid title")
-                if not isinstance(item.get("questions"), list) or not item["questions"]:
-                    raise SystemExit(f"{label} {item_id} has no questions")
-                if not isinstance(item.get("answer"), list) or not item["answer"]:
-                    raise SystemExit(f"{label} {item_id} has no answer")
+                if not _string_list(item.get("questions")):
+                    raise SystemExit(f"{label} {item_id} has invalid questions")
+                if not _string_list(item.get("answer")):
+                    raise SystemExit(f"{label} {item_id} has invalid answer")
+
+                if key == "imageQuestions":
+                    image = item.get("image")
+                    page = item.get("page")
+                    has_image = _non_empty_string(image)
+                    has_page = (_non_empty_string(page) or _valid_number(page)) and not isinstance(page, bool)
+                    if not has_image and not has_page:
+                        raise SystemExit(f"{label} {item_id} needs an image or lecture-page reference")
+                    if has_image and not image.startswith(("./assets/", "assets/", "data:image/")):
+                        raise SystemExit(f"{label} {item_id} has an unsupported image source")
             else:
                 if not _non_empty_string(item.get("q")):
                     raise SystemExit(f"{label} {item_id} has an invalid question")
-                answer = item.get("a")
-                if not (
-                    _non_empty_string(answer)
-                    or (isinstance(answer, list) and bool(answer))
-                ):
+                if not _validate_answer(item.get("a")):
                     raise SystemExit(f"{label} {item_id} has an invalid answer")
 
     return lecture
@@ -166,6 +174,7 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
     seen_ids: set[str] = set()
     seen_files: set[Path] = set()
     base = lecture_dir.resolve()
+    data_dir = (lecture_dir / "data").resolve()
 
     for index, entry in enumerate(entries, start=1):
         if not isinstance(entry, dict):
@@ -178,23 +187,14 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
             raise SystemExit(f"Lecture catalog entry {index} is incomplete")
         if lecture_id in seen_ids:
             raise SystemExit(f"Lecture catalog contains duplicate id: {lecture_id}")
-        if not isinstance(expected_counts, dict):
-            raise SystemExit(f"Lecture catalog entry {lecture_id} is missing expectedCounts")
-        if set(expected_counts) != set(LECTURE_LIST_KEYS):
-            raise SystemExit(
-                f"Lecture catalog entry {lecture_id} must define counts for "
-                f"{', '.join(LECTURE_LIST_KEYS)}"
-            )
+        if not isinstance(expected_counts, dict) or set(expected_counts) != set(LECTURE_LIST_KEYS):
+            raise SystemExit(f"Lecture catalog entry {lecture_id} must define all expected counts")
 
         source_path = (lecture_dir / relative_file).resolve()
         if not source_path.is_relative_to(base):
-            raise SystemExit(
-                f"Lecture catalog path escapes lectures directory: {relative_file}"
-            )
-        if source_path.suffix != ".json" or source_path.parent != (lecture_dir / "data").resolve():
-            raise SystemExit(
-                f"Lecture source must be a JSON file under lectures/data: {relative_file}"
-            )
+            raise SystemExit(f"Lecture catalog path escapes lectures directory: {relative_file}")
+        if source_path.suffix != ".json" or source_path.parent != data_dir:
+            raise SystemExit(f"Lecture source must be a JSON file under lectures/data: {relative_file}")
         if source_path in seen_files:
             raise SystemExit(f"Lecture catalog reuses source file: {relative_file}")
         if not source_path.is_file():
@@ -203,18 +203,14 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
         try:
             lecture = json.loads(source_path.read_text(encoding="utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
-            raise SystemExit(
-                f"Could not read lecture source {relative_file}: {error}"
-            ) from error
+            raise SystemExit(f"Could not read lecture source {relative_file}: {error}") from error
 
-        lectures.append(
-            validate_lecture(
-                lecture,
-                label=f"JSON {lecture_id}",
-                expected_id=lecture_id,
-                expected_counts=expected_counts,
-            )
-        )
+        lectures.append(validate_lecture(
+            lecture,
+            label=f"JSON {lecture_id}",
+            expected_id=lecture_id,
+            expected_counts=expected_counts,
+        ))
         seen_ids.add(lecture_id)
         seen_files.add(source_path)
 
@@ -224,26 +220,17 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
         if path.resolve() not in seen_files
     )
     if unlisted_files:
-        raise SystemExit(
-            "Lecture data files are not listed in catalog.json: "
-            + ", ".join(unlisted_files)
-        )
+        raise SystemExit("Lecture data files are not listed in catalog.json: " + ", ".join(unlisted_files))
 
     return lectures
 
 
 def _batch_extension(lectures_to_add: list[dict]) -> str:
-    serialized = json.dumps(
-        lectures_to_add,
-        ensure_ascii=False,
-        separators=(",", ":"),
-    ).replace("</", "<\\/")
-
+    serialized = json.dumps(lectures_to_add, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     return (
         "(() => {\n"
         f"  const incomingLectures = {serialized};\n"
         "  const existingIds = new Set(lectures.map(item => item.id));\n"
-        "  const placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';\n"
         "  const normalize = lecture => {\n"
         "    for (const key of ['subtopics','cases','coreShorts','imageQuestions','detailedShorts','rapid']) {\n"
         "      if (!Array.isArray(lecture[key])) lecture[key] = [];\n"
@@ -251,19 +238,18 @@ def _batch_extension(lectures_to_add: list[dict]) -> str:
         "    lecture.cases.forEach(item => {\n"
         "      if (!Array.isArray(item.questions)) item.questions = [];\n"
         "      if (!Array.isArray(item.answer)) item.answer = [];\n"
-        "      if (!Array.isArray(item.marking) || !item.marking.length) item.marking = [`Complete lecture-based model answer - ${item.marks || 0} marks`];\n"
+        "      if (!Array.isArray(item.marking)) item.marking = [];\n"
         "      if (!Array.isArray(item.subtopics)) item.subtopics = [];\n"
-        "      if (typeof item.scenario !== 'string') item.scenario = item.title || 'Clinical case';\n"
+        "      if (typeof item.scenario !== 'string') item.scenario = '';\n"
         "      if (typeof item.ar !== 'string') item.ar = '';\n"
-        "      if (typeof item.trap !== 'string') item.trap = 'Keep the answer within the lecture pathway.';\n"
-        "      if (typeof item.memory !== 'string') item.memory = item.title || 'Lecture recall';\n"
+        "      if (typeof item.trap !== 'string') item.trap = '';\n"
+        "      if (typeof item.memory !== 'string') item.memory = '';\n"
         "    });\n"
         "    lecture.imageQuestions.forEach(item => {\n"
         "      if (!Array.isArray(item.questions)) item.questions = [];\n"
         "      if (!Array.isArray(item.answer)) item.answer = [];\n"
         "      if (!Array.isArray(item.subtopics)) item.subtopics = [];\n"
-        "      if (typeof item.prompt !== 'string') item.prompt = item.title || 'Identify the illustrated finding.';\n"
-        "      if (typeof item.image !== 'string' || !item.image) item.image = placeholderImage;\n"
+        "      if (typeof item.prompt !== 'string') item.prompt = '';\n"
         "    });\n"
         "    return lecture;\n"
         "  };\n"
@@ -282,8 +268,7 @@ def _batch_extension(lectures_to_add: list[dict]) -> str:
 
 
 def build_lecture_extensions(root: Path | str = Path(".")) -> str:
-    lectures = load_json_lectures(root)
-    return _batch_extension(lectures)
+    return _batch_extension(load_json_lectures(root))
 
 
 if __name__ == "__main__":
