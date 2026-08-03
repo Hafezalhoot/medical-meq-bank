@@ -1,9 +1,10 @@
 const APP_VERSION = '2026.08.03.6';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
+const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
 
 const REQUIRED_ASSETS = [
   './index.html',
-  './offline.html'
+  OFFLINE_PAGE
 ];
 
 const OPTIONAL_ASSETS = [
@@ -84,7 +85,7 @@ const handleNavigation = async request => {
     return (
       await caches.match(request) ||
       await caches.match('./index.html') ||
-      await caches.match('./offline.html') ||
+      await caches.match(OFFLINE_PAGE) ||
       new Response('Offline', {status: 503, headers: {'Content-Type': 'text/plain; charset=utf-8'}})
     );
   }
