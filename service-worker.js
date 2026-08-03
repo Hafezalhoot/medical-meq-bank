@@ -7,6 +7,7 @@ const REQUIRED_ASSETS = [
   './index.html',
   './app.css',
   './app.js',
+  './progress-resilience.js',
   './lecture-loader.js',
   './pwa-client.js',
   OFFLINE_PAGE,
