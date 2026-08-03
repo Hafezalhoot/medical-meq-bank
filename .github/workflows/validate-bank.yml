@@ -45,9 +45,11 @@ jobs:
           node --check search-optimization.js
           node --check back-to-top.js
           node --check tests/app.spec.js
+          node --check tests/accessibility.spec.js
 
       - name: Verify required deployment files
         run: |
+          test -s package-lock.json
           test -s dist/index.html
           test -s dist/404.html
           test -s dist/_headers
@@ -78,17 +80,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Build bank
         run: bash build.sh
 
-      - name: Install pinned test dependencies
-        run: npm install --no-audit --no-fund
+      - name: Install locked test dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Run browser smoke tests
+      - name: Run browser and accessibility tests
         run: npm run test:e2e
 
       - name: Upload Playwright report
