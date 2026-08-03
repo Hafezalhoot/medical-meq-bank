@@ -1,0 +1,50 @@
+{
+  "$schema": "./catalog.schema.json",
+  "version": 1,
+  "lectures": [
+    {
+      "id": "neurosurgery-traumatic-brain-injury",
+      "file": "data/neurosurgery-traumatic-brain-injury.json",
+      "expectedCounts": {
+        "cases": 16,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40
+      }
+    },
+    {
+      "id": "urology-urological-emergencies",
+      "file": "data/urology-urological-emergencies.json",
+      "expectedCounts": {
+        "cases": 15,
+        "coreShorts": 31,
+        "imageQuestions": 10,
+        "detailedShorts": 53,
+        "rapid": 33
+      }
+    },
+    {
+      "id": "urology-scrotal-swelling",
+      "file": "data/urology-scrotal-swelling.json",
+      "expectedCounts": {
+        "cases": 15,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40
+      }
+    },
+    {
+      "id": "urology-urinary-tract-infection",
+      "file": "data/urology-urinary-tract-infection.json",
+      "expectedCounts": {
+        "cases": 15,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40
+      }
+    }
+  ]
+}

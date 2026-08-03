@@ -1,0 +1,2051 @@
+{
+  "id": "urology-urological-emergencies",
+  "order": 3,
+  "subjectKey": "urology",
+  "subject": "Urology",
+  "title": "Urological Emergencies",
+  "subtitle": "Acute retention, scrotal and penile emergencies, necrotizing infection and urotrauma",
+  "sourceNote": "Built only from the uploaded Urological emergencies7 lecture. The bank preserves the lecture definitions, timing, investigations and management statements without adding external guideline details.",
+  "cases": [
+    {
+      "id": "em-aur",
+      "title": "Acute Urinary Retention",
+      "topic": "Urinary Retention",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "acute-retention"
+      ],
+      "scenario": "A 72-year-old man develops sudden complete inability to pass urine with severe lower abdominal pain and a tense distended bladder. He has a previous history of lower urinary tract symptoms.",
+      "ar": "رجل 72 سنة حصل له sudden complete inability to urinate مع severe suprapubic pain وdistended bladder.",
+      "questions": [
+        "What is the diagnosis?",
+        "List the causes mentioned in the lecture.",
+        "What is the immediate first-line treatment?",
+        "What should be done after stabilization?"
+      ],
+      "answer": [
+        "Diagnosis: acute urinary retention.",
+        "Causes mentioned: BPH, urethral stricture, medications and neurological disorders.",
+        "Immediate bladder catheterization to decompress the bladder using an indwelling Foley catheter or a suprapubic catheter.",
+        "After stabilization, identify and treat the underlying cause to prevent recurrence."
+      ],
+      "marking": [
+        "Diagnosis — 1",
+        "Causes — 3",
+        "Immediate decompression — 3",
+        "Underlying cause — 1"
+      ],
+      "trap": "Do not delay bladder decompression while investigating the cause.",
+      "memory": "Acute retention = sudden inability + painful bladder → immediate catheterization."
+    },
+    {
+      "id": "em-torsion",
+      "title": "Adolescent with Sudden Scrotal Pain",
+      "topic": "Scrotal Emergency",
+      "priority": "High",
+      "marks": 12,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "scenario": "A 16-year-old boy presents with sudden severe unilateral scrotal pain, swelling, nausea and vomiting. The affected testis is high-riding.",
+      "ar": "ولد 16 سنة عنده sudden severe scrotal pain مع swelling وvomiting والخصية high-riding.",
+      "questions": [
+        "What is the most likely diagnosis?",
+        "State the underlying mechanism and important risk factor.",
+        "How is the diagnosis made?",
+        "Outline urgent management and the time window.",
+        "What is the role of manual detorsion?"
+      ],
+      "answer": [
+        "Diagnosis: testicular torsion.",
+        "Twisting of the spermatic cord cuts off testicular blood supply. A bell-clapper deformity is an important risk factor; it is common in adolescents during rapid growth.",
+        "Diagnosis is primarily clinical by physical examination; Doppler ultrasound may confirm reduced blood flow.",
+        "Urgent surgical detorsion and orchiopexy should be performed within 6 hours to maximize testicular salvage. After 24 hours the testis can rarely be saved.",
+        "Manual detorsion may be attempted but must not delay surgery."
+      ],
+      "marking": [
+        "Diagnosis — 1",
+        "Mechanism/risk — 3",
+        "Diagnosis — 2",
+        "Urgent surgery/timing — 4",
+        "Manual detorsion — 2"
+      ],
+      "trap": "Doppler confirmation must not delay urgent surgical intervention.",
+      "memory": "Torsion: sudden pain + high testis → surgery within 6 hours."
+    },
+    {
+      "id": "em-ischemic-priapism",
+      "title": "Painful Erection for More Than 4 Hours",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "priapism"
+      ],
+      "scenario": "A man presents with a prolonged painful erection lasting 6 hours and unrelated to sexual arousal.",
+      "ar": "مريض عنده painful erection مستمر 6 ساعات ومش مرتبط بـsexual arousal.",
+      "questions": [
+        "Define the condition.",
+        "What type is most likely?",
+        "Outline the treatment stated in the lecture.",
+        "How does the other major type differ in urgency and management?"
+      ],
+      "answer": [
+        "Priapism is a prolonged painful erection lasting more than 4 hours and unrelated to sexual arousal.",
+        "The painful emergency pattern is ischemic (low-flow) priapism.",
+        "Aspirate blood from the corpora cavernosa, then inject a sympathomimetic agent such as phenylephrine directly into the corpora.",
+        "Non-ischemic (high-flow) priapism is usually less urgent; urological consultation, observation and ice packs may be sufficient."
+      ],
+      "marking": [
+        "Definition — 2",
+        "Type — 1",
+        "Ischemic treatment — 4",
+        "Non-ischemic comparison — 2"
+      ],
+      "trap": "Do not treat ischemic and non-ischemic priapism as equally urgent.",
+      "memory": "Ischemic = painful low flow → aspirate then intracavernosal phenylephrine."
+    },
+    {
+      "id": "em-nonischemic-priapism",
+      "title": "High-Flow Priapism",
+      "topic": "Penile Emergency",
+      "priority": "Core",
+      "marks": 7,
+      "subtopics": [
+        "priapism"
+      ],
+      "scenario": "A patient has a prolonged erection after trauma but is otherwise stable, and the urologist considers a high-flow form.",
+      "ar": "مريض بعد trauma عنده prolonged erection ويُشتبه في high-flow priapism.",
+      "questions": [
+        "Classify priapism into its two main types.",
+        "Which type is usually less urgent?",
+        "State the management options mentioned for this type.",
+        "State the emergency treatment of the low-flow type."
+      ],
+      "answer": [
+        "Types: ischemic (low-flow) and non-ischemic (high-flow).",
+        "Non-ischemic high-flow priapism is usually less urgent.",
+        "Urological consultation; observation and ice packs may be sufficient.",
+        "Low-flow ischemic priapism: aspiration from the corpora cavernosa followed by intracavernosal sympathomimetic injection such as phenylephrine."
+      ],
+      "marking": [
+        "Classification — 2",
+        "Urgency — 1",
+        "High-flow management — 2",
+        "Low-flow treatment — 2"
+      ],
+      "trap": "“Less urgent” does not mean no urological assessment.",
+      "memory": "High flow: consult, observe, ice; low flow: aspirate + phenylephrine."
+    },
+    {
+      "id": "em-penile-fracture",
+      "title": "Snap, Detumescence and Eggplant Deformity",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "penile-fracture"
+      ],
+      "scenario": "During vigorous intercourse, a man hears an audible crack followed by immediate loss of erection, severe pain, swelling and dark-purple penile bruising.",
+      "ar": "أثناء intercourse سمع crack وبعدها immediate detumescence مع pain وeggplant deformity.",
+      "questions": [
+        "What is the diagnosis and injured structure?",
+        "List the characteristic symptoms and signs.",
+        "What finding suggests associated urethral injury?",
+        "What is the standard treatment?",
+        "List complications of delayed treatment."
+      ],
+      "answer": [
+        "Diagnosis: penile fracture — traumatic rupture of the tunica albuginea of the erect penis.",
+        "Audible snap/crack, rapid detumescence, marked pain and swelling, and eggplant deformity from dark-purple hematoma.",
+        "Blood at the penile tip/urethral bleeding suggests urethral injury.",
+        "Immediate surgical exploration and repair of the tunica albuginea tear.",
+        "Delayed complications: penile curvature (Peyronie disease), erectile dysfunction and painful intercourse."
+      ],
+      "marking": [
+        "Diagnosis/structure — 2",
+        "Features — 3",
+        "Urethral sign — 1",
+        "Treatment — 2",
+        "Delayed complications — 2"
+      ],
+      "trap": "The classic sequence is crack → immediate detumescence → swelling/eggplant deformity.",
+      "memory": "Penile fracture = tunica tear + snap + detumescence → immediate repair."
+    },
+    {
+      "id": "em-paraphimosis",
+      "title": "Painful Swollen Glans after Retraction",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "phimosis-paraphimosis"
+      ],
+      "scenario": "A retracted foreskin cannot be returned over the glans. The glans is swollen and very painful.",
+      "ar": "الـprepuce اتسحب للخلف ومش قادر يرجع مكانه مع swollen painful glans.",
+      "questions": [
+        "What is the diagnosis?",
+        "Differentiate it from phimosis.",
+        "Why is it a true emergency?",
+        "Outline management if manual repositioning fails."
+      ],
+      "answer": [
+        "Diagnosis: paraphimosis.",
+        "Phimosis: inability to retract the prepuce behind the glans. Paraphimosis: the prepuce is retracted and cannot return to its original position.",
+        "Delay may cause gangrene of the glans.",
+        "Attempt manual preputial repositioning; if this fails, urgent dorsal slit incision may relieve the constricting ring."
+      ],
+      "marking": [
+        "Diagnosis — 1",
+        "Difference — 3",
+        "Emergency reason — 2",
+        "Management — 2"
+      ],
+      "trap": "Do not confuse inability to retract (phimosis) with inability to return a retracted foreskin (paraphimosis).",
+      "memory": "Paraphimosis = trapped retracted foreskin → reduce; dorsal slit if failed."
+    },
+    {
+      "id": "em-fournier",
+      "title": "Rapidly Progressive Perineal Sepsis",
+      "topic": "Infection",
+      "priority": "High",
+      "marks": 11,
+      "subtopics": [
+        "fournier"
+      ],
+      "scenario": "A diabetic-looking septic patient has severe perineal and scrotal pain, swelling, erythema and crepitus with fever and hypotension.",
+      "ar": "مريض septic عنده severe perineal/scrotal pain مع swelling وerythema وcrepitus وhypotension.",
+      "questions": [
+        "What is the diagnosis and definition?",
+        "List the local and systemic features.",
+        "State the three urgent management pillars.",
+        "Why must treatment be immediate?"
+      ],
+      "answer": [
+        "Diagnosis: Fournier's gangrene — rapidly progressive necrotizing fasciitis of the perineum, scrotum and genitalia.",
+        "Local features: severe pain, swelling, erythema and crepitus. Systemic features include fever and hypotension.",
+        "Immediate aggressive surgical debridement of all necrotic tissue; broad-spectrum IV antibiotics covering gram-positive, gram-negative and anaerobic organisms; intensive supportive care with fluid resuscitation and septic-shock management.",
+        "Rapid progression can produce life-threatening sepsis; immediate treatment is critical."
+      ],
+      "marking": [
+        "Diagnosis/definition — 2",
+        "Features — 3",
+        "Debridement — 2",
+        "Antibiotics — 2",
+        "Supportive care/urgency — 2"
+      ],
+      "trap": "Antibiotics alone are not sufficient; aggressive surgical debridement is critical.",
+      "memory": "Fournier = debride now + broad IV antibiotics + resuscitate."
+    },
+    {
+      "id": "em-renal-stable",
+      "title": "Stable Blunt Renal Trauma",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "renal-trauma"
+      ],
+      "scenario": "After a road-traffic accident, a hemodynamically stable patient has flank pain, ecchymosis and haematuria.",
+      "ar": "بعد blunt trauma مريض stable عنده flank pain وecchymosis وhaematuria.",
+      "questions": [
+        "What organ injury is suspected?",
+        "State the common mechanism and clinical features.",
+        "What is the primary diagnostic investigation?",
+        "Outline management for most cases.",
+        "List early and delayed complications."
+      ],
+      "answer": [
+        "Renal trauma.",
+        "Most renal trauma follows blunt impact (about 80–90%); features include haematuria, abdominal or flank pain, ecchymosis and shock.",
+        "CT scan with angiography to define the injury and grade it on the AAST scale.",
+        "Most stable cases receive non-operative management with bed rest, hydration and monitoring.",
+        "Early: persistent bleeding, infection and urine leakage. Delayed: hypertension and urinoma."
+      ],
+      "marking": [
+        "Diagnosis — 1",
+        "Mechanism/features — 3",
+        "CT angiography/AAST — 2",
+        "Non-operative treatment — 2",
+        "Complications — 2"
+      ],
+      "trap": "Haematuria is common, but management is driven by the overall injury and hemodynamic status.",
+      "memory": "Stable renal trauma → CT angiography → usually observe."
+    },
+    {
+      "id": "em-renal-bleeding",
+      "title": "Renal Trauma with Active Bleeding",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "renal-trauma"
+      ],
+      "scenario": "CT angiography after renal trauma demonstrates active bleeding. The patient is being assessed for a minimally invasive haemostatic procedure.",
+      "ar": "CT angiography بعد renal trauma يظهر active bleeding.",
+      "questions": [
+        "Which treatment is specifically mentioned for active bleeding?",
+        "When is surgical repair/renorrhaphy reserved?",
+        "Summarize AAST grades 1–5 from the lecture chart."
+      ],
+      "answer": [
+        "Angioembolization is used for active bleeding.",
+        "Surgical repair (renorrhaphy) is reserved for severe injury; unstable patients may require operative management.",
+        "AAST chart: Grade 1 contusion or non-expanding subcapsular hematoma, no laceration. Grade 2 non-expanding perirenal hematoma or cortical laceration under 1 cm without urinary extravasation. Grade 3 cortical laceration over 1 cm without urinary extravasation. Grade 4 laceration through the corticomedullary junction into the collecting system or segmental vascular injury with contained hematoma/partial laceration/thrombosis. Grade 5 shattered kidney or renal-pedicle avulsion."
+      ],
+      "marking": [
+        "Angioembolization — 2",
+        "Surgery indication — 2",
+        "AAST outline — 4"
+      ],
+      "trap": "Active bleeding does not automatically mean nephrectomy; the lecture highlights angioembolization.",
+      "memory": "Active bleed → angioembolize; severe/unstable injury → surgery."
+    },
+    {
+      "id": "em-ureter-postop",
+      "title": "Delayed Ureteral Injury after Pelvic Surgery",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 11,
+      "subtopics": [
+        "ureteral-trauma"
+      ],
+      "scenario": "Several days after hysterectomy, a patient develops persistent flank pain, fever, ileus and urine leakage.",
+      "ar": "بعد hysterectomy ظهرت delayed flank pain وfever وileus وurine leakage.",
+      "questions": [
+        "What injury should be suspected and what is its commonest cause?",
+        "Why is the diagnosis often delayed?",
+        "List the diagnostic tests mentioned.",
+        "Outline management of minor and significant injury.",
+        "List complications of missed injury."
+      ],
+      "answer": [
+        "Suspect ureteral trauma; iatrogenic injury is the commonest cause, especially during gynecologic surgery such as hysterectomy, as well as urological and colorectal surgery.",
+        "Symptoms are often delayed and many injuries are diagnosed postoperatively (70–80% in the lecture).",
+        "CT urography with contrast and delayed images, intravenous pyelogram, or retrograde pyelogram.",
+        "Minor injury: conservative management with JJ stent. Significant injury: early repair by endoscopic stenting, ureteroureterostomy or ureteroneocystostomy. Percutaneous nephrostomy may provide urinary diversion.",
+        "Urinoma, renal failure, stricture, fistula and sepsis."
+      ],
+      "marking": [
+        "Diagnosis/cause — 2",
+        "Delay — 2",
+        "Investigations — 2",
+        "Management — 3",
+        "Complications — 2"
+      ],
+      "trap": "A normal early postoperative course does not exclude ureteral injury; presentation may be delayed.",
+      "memory": "Post-op flank pain + urine leak → think ureter; delayed CT urography."
+    },
+    {
+      "id": "em-bladder-ep",
+      "title": "Pelvic Fracture with Extraperitoneal Bladder Injury",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "bladder-trauma"
+      ],
+      "scenario": "A patient with a pelvic fracture develops gross haematuria, suprapubic pain and inability to void. Imaging shows urine leaking into pelvic tissues.",
+      "ar": "مريض pelvic fracture عنده gross haematuria وsuprapubic pain، والبول متسرب للـpelvic tissues.",
+      "questions": [
+        "What type of bladder injury is present?",
+        "List common clinical features.",
+        "What is the standard diagnostic study?",
+        "State the usual treatment and duration."
+      ],
+      "answer": [
+        "Extraperitoneal bladder injury.",
+        "Gross haematuria, suprapubic pain, inability to urinate or weak/strained stream, abdominal tenderness and distention.",
+        "CT cystogram or conventional X-ray cystography.",
+        "Usually non-operative urinary-catheter drainage for about 10–14 days to allow healing."
+      ],
+      "marking": [
+        "Type — 1",
+        "Features — 3",
+        "Diagnosis — 2",
+        "Treatment/duration — 3"
+      ],
+      "trap": "Extraperitoneal injury is strongly linked to pelvic fracture and is usually treated with catheter drainage.",
+      "memory": "EP bladder rupture → pelvic tissues → catheter 10–14 days."
+    },
+    {
+      "id": "em-bladder-ip",
+      "title": "Full Bladder Rupture into the Peritoneum",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "bladder-trauma"
+      ],
+      "scenario": "After a blow to a distended bladder, cystography shows contrast entering the abdominal cavity from a tear at the bladder dome.",
+      "ar": "ضربة على full bladder سببت dome rupture وتسرب للـperitoneal cavity.",
+      "questions": [
+        "What type of rupture is this?",
+        "How does it differ anatomically from extraperitoneal rupture?",
+        "What is the diagnostic test?",
+        "What is the treatment?",
+        "List complications if untreated."
+      ],
+      "answer": [
+        "Intraperitoneal bladder rupture.",
+        "Intraperitoneal: urine leaks into the abdominal cavity, usually from the dome of a full bladder. Extraperitoneal: urine leaks into pelvic tissues and is often associated with pelvic fractures.",
+        "CT cystogram or conventional cystography.",
+        "Almost always surgical repair, laparoscopic or open.",
+        "Infection, abscess, persistent leakage and long-term kidney dysfunction."
+      ],
+      "marking": [
+        "Type — 1",
+        "Comparison — 2",
+        "Diagnosis — 1",
+        "Treatment — 2",
+        "Complications — 2"
+      ],
+      "trap": "Intraperitoneal bladder rupture is not managed like an uncomplicated extraperitoneal tear.",
+      "memory": "IP bladder rupture = dome + peritoneal urine → surgical repair."
+    },
+    {
+      "id": "em-posterior-urethra",
+      "title": "Pelvic Fracture with Blood at the Meatus",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 11,
+      "subtopics": [
+        "urethral-trauma"
+      ],
+      "scenario": "After high-impact pelvic trauma, a man has blood at the urethral meatus, urinary retention, perineal ecchymosis and a floating prostate on examination.",
+      "ar": "بعد pelvic fracture ظهر blood at meatus وretention وperineal ecchymosis وfloating prostate.",
+      "questions": [
+        "What injury is most likely?",
+        "Differentiate posterior from anterior urethral injury by mechanism.",
+        "What is the standard imaging test and expected finding?",
+        "What is the preferred initial urinary diversion?",
+        "Outline definitive management and complications."
+      ],
+      "answer": [
+        "Posterior urethral injury, often associated with pelvic fracture.",
+        "Posterior injuries: pelvic fractures from high-impact accidents. Anterior injuries: straddle injury or direct penile trauma.",
+        "Retrograde urethrogram (RGU), often showing contrast extravasation.",
+        "Initial suprapubic tube (SPT) insertion is often preferred for urinary diversion.",
+        "Partial tears may be managed conservatively; complete injuries require urethroplasty, often delayed 3–6 months. Complications: urethral stricture, erectile dysfunction and urinary incontinence."
+      ],
+      "marking": [
+        "Diagnosis — 1",
+        "Mechanisms — 2",
+        "RGU — 2",
+        "SPT — 2",
+        "Definitive management — 2",
+        "Complications — 2"
+      ],
+      "trap": "Blood at the meatus after pelvic trauma should trigger urethral evaluation before routine urethral instrumentation.",
+      "memory": "Pelvic fracture + blood at meatus → RGU → SPT."
+    },
+    {
+      "id": "em-anterior-urethra",
+      "title": "Straddle Injury to the Anterior Urethra",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "urethral-trauma"
+      ],
+      "scenario": "A cyclist falls astride a hard bar and develops perineal bruising, blood at the meatus and inability to void.",
+      "ar": "وقع على bicycle bar وعنده perineal bruising وblood at meatus وretention.",
+      "questions": [
+        "Which part of the urethra is commonly injured?",
+        "State the mechanism of anterior versus posterior urethral trauma.",
+        "What is the standard investigation?",
+        "State initial and later management."
+      ],
+      "answer": [
+        "This mechanism commonly injures the anterior urethra.",
+        "Anterior: straddle injury or direct penile trauma. Posterior: pelvic fracture after high-impact trauma.",
+        "Retrograde urethrogram showing the site and possible contrast extravasation.",
+        "Initial suprapubic diversion is often preferred. Partial tears may be treated conservatively; complete injuries may need delayed urethroplasty after 3–6 months."
+      ],
+      "marking": [
+        "Part — 1",
+        "Mechanisms — 2",
+        "Investigation — 2",
+        "Management — 3"
+      ],
+      "trap": "Straddle injury points to anterior urethral trauma, not the classic posterior pelvic-fracture injury.",
+      "memory": "Straddle injury → anterior urethra → RGU."
+    },
+    {
+      "id": "em-scrotal-rupture",
+      "title": "Blunt Scrotal Trauma with Suspected Testicular Rupture",
+      "topic": "Scrotal Trauma",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "scrotal-trauma"
+      ],
+      "scenario": "After a sports injury, a man has intense scrotal pain, nausea, bruising and marked swelling that makes examination difficult. Doppler ultrasound suggests loss of tunica integrity.",
+      "ar": "بعد sports injury عنده severe scrotal pain وswelling، والـDoppler يشك في rupture.",
+      "questions": [
+        "What is the best imaging modality?",
+        "List the types of scrotal/testicular injury in the lecture.",
+        "Define testicular rupture and fracture.",
+        "When is surgical exploration required?",
+        "List long-term complications."
+      ],
+      "answer": [
+        "High-resolution scrotal ultrasound with Doppler is the gold standard to assess testicular integrity and blood flow.",
+        "Testicular rupture, testicular fracture, intratesticular or extratesticular hematoma, dislocation and torsion.",
+        "Rupture: tear of the tunica albuginea with extrusion of tubules. Fracture: disruption of testicular parenchyma without complete tunica-albuginea tear.",
+        "Explore for suspected rupture, significant hematocele, persistent severe symptoms, and penetrating injury.",
+        "Testicular atrophy, chronic pain, infertility, psychological impact; hematomas may become infected."
+      ],
+      "marking": [
+        "Imaging — 2",
+        "Types — 2",
+        "Definitions — 2",
+        "Exploration indications — 2",
+        "Complications — 2"
+      ],
+      "trap": "Severe swelling can obscure examination; Doppler imaging becomes essential.",
+      "memory": "Scrotal trauma + suspected rupture → Doppler → urgent exploration."
+    }
+  ],
+  "coreShorts": [
+    {
+      "id": "em_c01",
+      "topic": "Urological Emergencies",
+      "priority": "Core",
+      "marks": 6,
+      "q": "Enumerate the common non-traumatic urological emergencies listed in the lecture.",
+      "a": [
+        "Acute urinary retention.",
+        "Testicular torsion.",
+        "Priapism.",
+        "Penile fracture.",
+        "Paraphimosis.",
+        "Fournier's gangrene."
+      ],
+      "subtopics": [
+        "acute-retention",
+        "testicular-torsion",
+        "priapism",
+        "penile-fracture",
+        "phimosis-paraphimosis",
+        "fournier"
+      ]
+    },
+    {
+      "id": "em_c02",
+      "topic": "Urinary Retention",
+      "priority": "High",
+      "marks": 5,
+      "q": "Define acute urinary retention and list its causes in the lecture.",
+      "a": [
+        "Sudden inability to urinate with severe lower abdominal pain and discomfort.",
+        "Causes: BPH, urethral stricture, medications and neurological disorders."
+      ],
+      "subtopics": [
+        "acute-retention"
+      ]
+    },
+    {
+      "id": "em_c03",
+      "topic": "Urinary Retention",
+      "priority": "High",
+      "marks": 4,
+      "q": "Outline immediate and subsequent management of acute urinary retention.",
+      "a": [
+        "Immediate bladder catheterization to decompress the bladder: Foley or suprapubic catheter.",
+        "After stabilization, identify and treat the underlying cause to prevent recurrence."
+      ],
+      "subtopics": [
+        "acute-retention"
+      ]
+    },
+    {
+      "id": "em_c04",
+      "topic": "Scrotal Emergency",
+      "priority": "High",
+      "marks": 4,
+      "q": "Describe the clinical presentation of testicular torsion.",
+      "a": [
+        "Sudden severe scrotal pain and swelling.",
+        "Nausea and vomiting may occur.",
+        "The affected testis may be higher than usual."
+      ],
+      "subtopics": [
+        "testicular-torsion"
+      ]
+    },
+    {
+      "id": "em_c05",
+      "topic": "Scrotal Emergency",
+      "priority": "High",
+      "marks": 6,
+      "q": "State the diagnosis and management principles of testicular torsion.",
+      "a": [
+        "Diagnosis is primarily clinical; Doppler ultrasound may confirm reduced blood flow.",
+        "Urgent surgical detorsion and orchiopexy within 6 hours.",
+        "After 24 hours salvage is rare.",
+        "Manual detorsion may be attempted but must not delay surgery."
+      ],
+      "subtopics": [
+        "testicular-torsion"
+      ]
+    },
+    {
+      "id": "em_c06",
+      "topic": "Scrotal Emergency",
+      "priority": "Core",
+      "marks": 3,
+      "q": "State the important risk factors for testicular torsion.",
+      "a": [
+        "Bell-clapper deformity allows the testis to hang freely and twist.",
+        "Most common in teenagers during rapid growth, although it may occur at any age."
+      ],
+      "subtopics": [
+        "testicular-torsion"
+      ]
+    },
+    {
+      "id": "em_c07",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 4,
+      "q": "Define priapism and classify it.",
+      "a": [
+        "A prolonged painful erection lasting more than 4 hours and unrelated to sexual arousal.",
+        "Types: ischemic low-flow and non-ischemic high-flow."
+      ],
+      "subtopics": [
+        "priapism"
+      ]
+    },
+    {
+      "id": "em_c08",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 5,
+      "q": "Compare management of ischemic and non-ischemic priapism.",
+      "a": [
+        "Ischemic: aspirate blood from the corpora cavernosa, then inject intracavernosal sympathomimetic such as phenylephrine.",
+        "Non-ischemic: usually less urgent; urological consultation, observation and ice packs may be sufficient."
+      ],
+      "subtopics": [
+        "priapism"
+      ]
+    },
+    {
+      "id": "em_c09",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 7,
+      "q": "Define penile fracture and enumerate its classical features.",
+      "a": [
+        "Traumatic rupture of the tunica albuginea of an erect penis.",
+        "Audible snap/crack.",
+        "Rapid detumescence.",
+        "Pain and rapid swelling.",
+        "Eggplant deformity from dark-purple hematoma.",
+        "Urethral bleeding if the urethra is injured."
+      ],
+      "subtopics": [
+        "penile-fracture"
+      ]
+    },
+    {
+      "id": "em_c10",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 4,
+      "q": "State treatment and complications of delayed penile-fracture management.",
+      "a": [
+        "Immediate surgical exploration and repair of the tunica-albuginea tear.",
+        "Delayed complications: penile curvature/Peyronie disease, erectile dysfunction and painful intercourse."
+      ],
+      "subtopics": [
+        "penile-fracture"
+      ]
+    },
+    {
+      "id": "em_c11",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 4,
+      "q": "Differentiate phimosis and paraphimosis.",
+      "a": [
+        "Phimosis: inability to retract the prepuce behind the glans.",
+        "Paraphimosis: retracted prepuce cannot return to its original position, causing painful glans swelling."
+      ],
+      "subtopics": [
+        "phimosis-paraphimosis"
+      ]
+    },
+    {
+      "id": "em_c12",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 4,
+      "q": "Why is paraphimosis a true emergency and how is it managed?",
+      "a": [
+        "Delay may lead to gangrene of the glans.",
+        "Attempt manual preputial repositioning.",
+        "If manual reduction fails, urgent dorsal-slit incision may be required."
+      ],
+      "subtopics": [
+        "phimosis-paraphimosis"
+      ]
+    },
+    {
+      "id": "em_c13",
+      "topic": "Infection",
+      "priority": "High",
+      "marks": 5,
+      "q": "Define Fournier's gangrene and state its presentation.",
+      "a": [
+        "Rapidly progressing necrotizing fasciitis of the perineum, scrotum and genitalia.",
+        "Severe pain, swelling, erythema and crepitus.",
+        "Systemic infection may produce fever and hypotension."
+      ],
+      "subtopics": [
+        "fournier"
+      ]
+    },
+    {
+      "id": "em_c14",
+      "topic": "Infection",
+      "priority": "High",
+      "marks": 6,
+      "q": "Outline the emergency management of Fournier's gangrene.",
+      "a": [
+        "Immediate aggressive surgical debridement.",
+        "Broad-spectrum IV antibiotics covering gram-positive, gram-negative and anaerobic organisms.",
+        "ICU supportive care, fluid resuscitation and septic-shock management."
+      ],
+      "subtopics": [
+        "fournier"
+      ]
+    },
+    {
+      "id": "em_c15",
+      "topic": "Urotrauma",
+      "priority": "Core",
+      "marks": 6,
+      "q": "Classify traumatic urological emergencies and mechanisms.",
+      "a": [
+        "Organs: renal, ureteral, bladder, urethral and scrotal trauma.",
+        "Mechanism: blunt or penetrating.",
+        "Penetrating projectiles: high/medium velocity such as rifle/handgun bullets, or low velocity such as knife stab."
+      ],
+      "subtopics": [
+        "renal-trauma",
+        "ureteral-trauma",
+        "bladder-trauma",
+        "urethral-trauma",
+        "scrotal-trauma"
+      ]
+    },
+    {
+      "id": "em_c16",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 6,
+      "q": "Describe renal-trauma mechanism, symptoms and diagnosis.",
+      "a": [
+        "Most injuries are blunt, about 80–90%, from accidents or falls; penetrating injuries include gunshots.",
+        "Symptoms: haematuria, abdominal or flank pain, ecchymosis and shock.",
+        "Diagnosis: CT scan with angiography and AAST grading."
+      ],
+      "subtopics": [
+        "renal-trauma"
+      ]
+    },
+    {
+      "id": "em_c17",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 8,
+      "q": "Summarize the AAST renal injury grades shown in the lecture.",
+      "a": [
+        "Grade 1: contusion or non-expanding subcapsular hematoma, no laceration.",
+        "Grade 2: non-expanding perirenal hematoma or cortical laceration <1 cm without urinary extravasation.",
+        "Grade 3: cortical laceration >1 cm without urinary extravasation.",
+        "Grade 4: laceration into collecting system or segmental vascular injury with contained hematoma/partial laceration/thrombosis.",
+        "Grade 5: shattered kidney or renal-pedicle avulsion."
+      ],
+      "subtopics": [
+        "renal-trauma"
+      ]
+    },
+    {
+      "id": "em_c18",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 7,
+      "q": "Outline treatment and complications of renal trauma.",
+      "a": [
+        "Most cases: non-operative bed rest, hydration and monitoring.",
+        "Active bleeding: angioembolization.",
+        "Severe injury: surgical repair/renorrhaphy.",
+        "Early complications: persistent bleeding, infection and urine leakage.",
+        "Delayed: hypertension and urinoma."
+      ],
+      "subtopics": [
+        "renal-trauma"
+      ]
+    },
+    {
+      "id": "em_c19",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 4,
+      "q": "State causes of ureteral trauma.",
+      "a": [
+        "Iatrogenic is most common: gynecologic surgery especially hysterectomy, urological surgery and colorectal surgery.",
+        "External trauma: high-speed accidents, falls and penetrating wounds near L2–L3."
+      ],
+      "subtopics": [
+        "ureteral-trauma"
+      ]
+    },
+    {
+      "id": "em_c20",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 6,
+      "q": "Describe presentation and diagnosis of ureteral trauma.",
+      "a": [
+        "Presentation is often delayed: persistent abdominal/flank pain, fever, haematuria, ileus and urine leakage.",
+        "Many are diagnosed postoperatively, 70–80% in the lecture.",
+        "Tests: CT urography with contrast and delayed imaging, IVP or retrograde pyelogram."
+      ],
+      "subtopics": [
+        "ureteral-trauma"
+      ]
+    },
+    {
+      "id": "em_c21",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 7,
+      "q": "Outline management and complications of ureteral trauma.",
+      "a": [
+        "Minor injury: conservative treatment/JJ stent.",
+        "Significant injury: early repair by endoscopic stenting, ureteroureterostomy or ureteroneocystostomy.",
+        "Percutaneous nephrostomy for diversion.",
+        "Complications: urinoma, renal failure, stricture, fistula and sepsis."
+      ],
+      "subtopics": [
+        "ureteral-trauma"
+      ]
+    },
+    {
+      "id": "em_c22",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 6,
+      "q": "Classify bladder injury and describe each type.",
+      "a": [
+        "Extraperitoneal: urine into pelvic tissues; often associated with pelvic fracture.",
+        "Intraperitoneal: urine into abdominal cavity, commonly from a dome rupture of a full bladder.",
+        "Iatrogenic: during gynecologic, caesarean or endoscopic urological procedures."
+      ],
+      "subtopics": [
+        "bladder-trauma"
+      ]
+    },
+    {
+      "id": "em_c23",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 5,
+      "q": "State symptoms and diagnosis of bladder trauma.",
+      "a": [
+        "Gross haematuria, suprapubic pain, inability to urinate or weak/strained stream, abdominal tenderness and distention.",
+        "Diagnosis: CT cystogram or conventional X-ray cystography."
+      ],
+      "subtopics": [
+        "bladder-trauma"
+      ]
+    },
+    {
+      "id": "em_c24",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 4,
+      "q": "Compare treatment of extraperitoneal and intraperitoneal bladder rupture.",
+      "a": [
+        "Extraperitoneal: usually catheter drainage for 10–14 days.",
+        "Intraperitoneal: almost always surgical repair, laparoscopic or open."
+      ],
+      "subtopics": [
+        "bladder-trauma"
+      ]
+    },
+    {
+      "id": "em_c25",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 4,
+      "q": "Differentiate posterior and anterior urethral injuries.",
+      "a": [
+        "Posterior: primarily associated with pelvic fractures after high-impact accidents.",
+        "Anterior: usually straddle injury or direct penile trauma."
+      ],
+      "subtopics": [
+        "urethral-trauma"
+      ]
+    },
+    {
+      "id": "em_c26",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 6,
+      "q": "Enumerate the classic signs and diagnosis of urethral trauma.",
+      "a": [
+        "Blood at the meatus.",
+        "Inability to void.",
+        "Perineal ecchymosis.",
+        "Floating prostate on examination.",
+        "Diagnosis: retrograde urethrogram showing possible contrast extravasation."
+      ],
+      "subtopics": [
+        "urethral-trauma"
+      ]
+    },
+    {
+      "id": "em_c27",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 6,
+      "q": "Outline management and complications of urethral trauma.",
+      "a": [
+        "Initial urinary diversion: suprapubic tube.",
+        "Partial tears: conservative management.",
+        "Complete injuries: urethroplasty, often delayed 3–6 months.",
+        "Complications: urethral stricture, erectile dysfunction and urinary incontinence."
+      ],
+      "subtopics": [
+        "urethral-trauma"
+      ]
+    },
+    {
+      "id": "em_c28",
+      "topic": "Scrotal Trauma",
+      "priority": "High",
+      "marks": 5,
+      "q": "Describe clinical assessment and imaging of scrotal trauma.",
+      "a": [
+        "Intense pain, nausea/vomiting, bruising, edema and possible haematuria.",
+        "High-resolution scrotal ultrasound with Doppler is the gold standard.",
+        "The cremasteric reflex may be lost; swelling may obscure examination."
+      ],
+      "subtopics": [
+        "scrotal-trauma"
+      ]
+    },
+    {
+      "id": "em_c29",
+      "topic": "Scrotal Trauma",
+      "priority": "Core",
+      "marks": 5,
+      "q": "Enumerate types of scrotal/testicular injury.",
+      "a": [
+        "Testicular rupture.",
+        "Testicular fracture.",
+        "Intratesticular or extratesticular hematoma.",
+        "Testicular dislocation.",
+        "Traumatic torsion."
+      ],
+      "subtopics": [
+        "scrotal-trauma"
+      ]
+    },
+    {
+      "id": "em_c30",
+      "topic": "Scrotal Trauma",
+      "priority": "High",
+      "marks": 4,
+      "q": "Differentiate testicular rupture and testicular fracture.",
+      "a": [
+        "Rupture: tunica-albuginea tear with extrusion of tubules.",
+        "Fracture: parenchymal disruption without a complete tunica-albuginea tear."
+      ],
+      "subtopics": [
+        "scrotal-trauma"
+      ]
+    },
+    {
+      "id": "em_c31",
+      "topic": "Scrotal Trauma",
+      "priority": "High",
+      "marks": 6,
+      "q": "Outline management and complications of scrotal trauma.",
+      "a": [
+        "Mild contusions: bed rest, scrotal elevation/support, ice packs and NSAID analgesia.",
+        "Explore suspected rupture, significant hematocele, persistent severe symptoms and penetrating injury.",
+        "Complications: atrophy, chronic pain, infertility, psychological impact and infection of hematoma."
+      ],
+      "subtopics": [
+        "scrotal-trauma"
+      ]
+    }
+  ],
+  "detailedShorts": [
+    {
+      "id": "em_d01",
+      "topic": "Urological Emergencies",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What makes a urological emergency an emergency?",
+      "a": "It requires immediate intervention to prevent permanent organ damage or life-threatening complications.",
+      "subtopics": [
+        "acute-retention"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d02",
+      "topic": "Urological Emergencies",
+      "priority": "Core",
+      "marks": 6,
+      "q": "Name the six common emergencies listed before the trauma section.",
+      "a": "Acute urinary retention, testicular torsion, priapism, penile fracture, paraphimosis and Fournier gangrene.",
+      "subtopics": [
+        "acute-retention",
+        "testicular-torsion",
+        "priapism",
+        "penile-fracture",
+        "phimosis-paraphimosis",
+        "fournier"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d03",
+      "topic": "Urinary Retention",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is the first-line treatment of acute urinary retention?",
+      "a": "Immediate bladder catheterization and decompression.",
+      "subtopics": [
+        "acute-retention"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d04",
+      "topic": "Urinary Retention",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Name the catheter routes mentioned for acute retention.",
+      "a": "Indwelling Foley urethral catheter or suprapubic catheter.",
+      "subtopics": [
+        "acute-retention"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d05",
+      "topic": "Urinary Retention",
+      "priority": "Core",
+      "marks": 4,
+      "q": "State four causes of acute urinary retention.",
+      "a": "BPH, urethral stricture, medications and neurological disorders.",
+      "subtopics": [
+        "acute-retention"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d06",
+      "topic": "Scrotal Emergency",
+      "priority": "High",
+      "marks": 2,
+      "q": "What happens anatomically in testicular torsion?",
+      "a": "The spermatic cord twists and cuts off testicular blood supply.",
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d07",
+      "topic": "Scrotal Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What Doppler finding supports testicular torsion?",
+      "a": "Reduced blood flow to the affected testis.",
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d08",
+      "topic": "Scrotal Emergency",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is the ideal salvage time for testicular torsion?",
+      "a": "Detorsion and orchiopexy within 6 hours.",
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d09",
+      "topic": "Scrotal Emergency",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is the prognosis after 24 hours of torsion?",
+      "a": "The testis can rarely be saved.",
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d10",
+      "topic": "Scrotal Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What is the role of manual detorsion?",
+      "a": "It may be attempted but must not delay surgery.",
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d11",
+      "topic": "Scrotal Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define bell-clapper deformity.",
+      "a": "The testis hangs freely in the scrotum, allowing it to twist.",
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d12",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 1,
+      "q": "What duration defines priapism in the lecture?",
+      "a": "More than 4 hours.",
+      "subtopics": [
+        "priapism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d13",
+      "topic": "Penile Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Name the two types of priapism.",
+      "a": "Ischemic low-flow and non-ischemic high-flow.",
+      "subtopics": [
+        "priapism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d14",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 3,
+      "q": "What is the sequence of treatment for ischemic priapism?",
+      "a": "Cavernosal aspiration followed by intracavernosal sympathomimetic injection such as phenylephrine.",
+      "subtopics": [
+        "priapism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d15",
+      "topic": "Penile Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What simple measures are mentioned for non-ischemic priapism?",
+      "a": "Observation and ice packs with urological consultation.",
+      "subtopics": [
+        "priapism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d16",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 1,
+      "q": "Which penile layer ruptures in penile fracture?",
+      "a": "Tunica albuginea.",
+      "subtopics": [
+        "penile-fracture"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d17",
+      "topic": "Penile Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What is rapid detumescence?",
+      "a": "Immediate loss of erection after the fracture event.",
+      "subtopics": [
+        "penile-fracture"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d18",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is eggplant deformity?",
+      "a": "Dark-purple bruising/hematoma with rapid penile swelling.",
+      "subtopics": [
+        "penile-fracture"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d19",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 2,
+      "q": "Which sign suggests urethral involvement in penile fracture?",
+      "a": "Urethral bleeding/blood at the tip of the penis.",
+      "subtopics": [
+        "penile-fracture"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d20",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 3,
+      "q": "Name three late complications of delayed penile-fracture treatment.",
+      "a": "Penile curvature, erectile dysfunction and painful intercourse.",
+      "subtopics": [
+        "penile-fracture"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d21",
+      "topic": "Penile Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define phimosis.",
+      "a": "Inability to retract the prepuce behind the glans.",
+      "subtopics": [
+        "phimosis-paraphimosis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d22",
+      "topic": "Penile Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define paraphimosis.",
+      "a": "A retracted prepuce cannot return to its original position.",
+      "subtopics": [
+        "phimosis-paraphimosis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d23",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 2,
+      "q": "What operative release is used after failed manual reduction of paraphimosis?",
+      "a": "Dorsal slit incision.",
+      "subtopics": [
+        "phimosis-paraphimosis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d24",
+      "topic": "Infection",
+      "priority": "Core",
+      "marks": 3,
+      "q": "Which tissues are involved in Fournier gangrene?",
+      "a": "Perineum, scrotum and genitalia.",
+      "subtopics": [
+        "fournier"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d25",
+      "topic": "Infection",
+      "priority": "High",
+      "marks": 3,
+      "q": "Which organisms must empiric antibiotics cover in Fournier gangrene?",
+      "a": "Gram-positive, gram-negative and anaerobic organisms.",
+      "subtopics": [
+        "fournier"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d26",
+      "topic": "Infection",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is the essential surgical step in Fournier gangrene?",
+      "a": "Immediate aggressive debridement of necrotic tissue.",
+      "subtopics": [
+        "fournier"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d27",
+      "topic": "Urotrauma",
+      "priority": "Core",
+      "marks": 5,
+      "q": "List the five traumatic urological emergency groups.",
+      "a": "Renal, ureteral, bladder, urethral and scrotal trauma.",
+      "subtopics": [
+        "renal-trauma",
+        "ureteral-trauma",
+        "bladder-trauma",
+        "urethral-trauma",
+        "scrotal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d28",
+      "topic": "Urotrauma",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Classify trauma by basic mechanism.",
+      "a": "Blunt and penetrating injury.",
+      "subtopics": [
+        "renal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d29",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 1,
+      "q": "What is the most common symptom of renal trauma?",
+      "a": "Haematuria.",
+      "subtopics": [
+        "renal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d30",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "What imaging assesses renal injury grade?",
+      "a": "CT scan with angiography using the AAST scale.",
+      "subtopics": [
+        "renal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d31",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 1,
+      "q": "What treatment is used for active renal bleeding?",
+      "a": "Angioembolization.",
+      "subtopics": [
+        "renal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d32",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Name two delayed renal-trauma complications.",
+      "a": "Hypertension and urinoma.",
+      "subtopics": [
+        "renal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d33",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is the commonest cause of ureteral trauma?",
+      "a": "Iatrogenic injury, especially gynecologic surgery such as hysterectomy.",
+      "subtopics": [
+        "ureteral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d34",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "Core",
+      "marks": 1,
+      "q": "What percentage of ureteral injuries are often diagnosed postoperatively in the lecture?",
+      "a": "70–80%.",
+      "subtopics": [
+        "ureteral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d35",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "Which CT protocol is important in suspected ureteral injury?",
+      "a": "CT urography with contrast and delayed imaging.",
+      "subtopics": [
+        "ureteral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d36",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "Core",
+      "marks": 1,
+      "q": "What stent is used for minor ureteral injury?",
+      "a": "JJ stent.",
+      "subtopics": [
+        "ureteral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d37",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "Name two reconstructive operations for significant ureteral injury.",
+      "a": "Ureteroureterostomy and ureteroneocystostomy.",
+      "subtopics": [
+        "ureteral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d38",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "Core",
+      "marks": 1,
+      "q": "What diversion may be used for ureteral trauma?",
+      "a": "Percutaneous nephrostomy.",
+      "subtopics": [
+        "ureteral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d39",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "Core",
+      "marks": 1,
+      "q": "Where does urine leak in extraperitoneal bladder rupture?",
+      "a": "Into pelvic tissues.",
+      "subtopics": [
+        "bladder-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d40",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "Core",
+      "marks": 1,
+      "q": "Where does urine leak in intraperitoneal bladder rupture?",
+      "a": "Into the abdominal cavity.",
+      "subtopics": [
+        "bladder-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d41",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "Which bladder site commonly ruptures intraperitoneally?",
+      "a": "The bladder dome when the bladder is full.",
+      "subtopics": [
+        "bladder-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d42",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is the standard diagnostic test for bladder trauma?",
+      "a": "CT cystogram or conventional X-ray cystography.",
+      "subtopics": [
+        "bladder-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d43",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "How long is catheter drainage commonly used for extraperitoneal rupture?",
+      "a": "10–14 days.",
+      "subtopics": [
+        "bladder-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d44",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "What trauma is classically linked to posterior urethral injury?",
+      "a": "Pelvic fracture from high-impact trauma.",
+      "subtopics": [
+        "urethral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d45",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "What trauma is classically linked to anterior urethral injury?",
+      "a": "Straddle injury or direct penile trauma.",
+      "subtopics": [
+        "urethral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d46",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 1,
+      "q": "What is the standard imaging for suspected urethral injury?",
+      "a": "Retrograde urethrogram.",
+      "subtopics": [
+        "urethral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d47",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is the preferred initial diversion in urethral trauma?",
+      "a": "Suprapubic tube insertion.",
+      "subtopics": [
+        "urethral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d48",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "When is urethroplasty often performed for complete injury?",
+      "a": "After a delay of 3–6 months.",
+      "subtopics": [
+        "urethral-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d49",
+      "topic": "Scrotal Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "What is the gold-standard imaging for scrotal trauma?",
+      "a": "High-resolution scrotal ultrasound with Doppler.",
+      "subtopics": [
+        "scrotal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d50",
+      "topic": "Scrotal Trauma",
+      "priority": "High",
+      "marks": 2,
+      "q": "Define testicular rupture.",
+      "a": "Tunica-albuginea tear with extrusion of testicular tubules.",
+      "subtopics": [
+        "scrotal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d51",
+      "topic": "Scrotal Trauma",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define testicular fracture.",
+      "a": "Disruption of testicular parenchyma without a full tunica-albuginea tear.",
+      "subtopics": [
+        "scrotal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d52",
+      "topic": "Scrotal Trauma",
+      "priority": "Core",
+      "marks": 4,
+      "q": "How are mild scrotal contusions managed?",
+      "a": "Bed rest, scrotal support/elevation, ice packs and NSAID analgesia.",
+      "subtopics": [
+        "scrotal-trauma"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "em_d53",
+      "topic": "Scrotal Trauma",
+      "priority": "High",
+      "marks": 4,
+      "q": "State indications for scrotal exploration from the lecture.",
+      "a": "Suspected rupture, significant hematocele, persistent severe symptoms and penetrating injury.",
+      "subtopics": [
+        "scrotal-trauma"
+      ],
+      "section": "Detailed Practice"
+    }
+  ],
+  "rapid": [
+    [
+      "Immediate step in acute retention?",
+      "Bladder catheterization and decompression."
+    ],
+    [
+      "Four lecture causes of acute retention?",
+      "BPH, stricture, medications, neurological disorders."
+    ],
+    [
+      "Torsion salvage window?",
+      "Within 6 hours."
+    ],
+    [
+      "After 24 hours of torsion?",
+      "The testis is rarely salvageable."
+    ],
+    [
+      "Torsion predisposing deformity?",
+      "Bell-clapper deformity."
+    ],
+    [
+      "Torsion confirmatory imaging?",
+      "Doppler ultrasound showing reduced flow."
+    ],
+    [
+      "Priapism duration threshold?",
+      "More than 4 hours."
+    ],
+    [
+      "Ischemic priapism first procedural step?",
+      "Cavernosal aspiration."
+    ],
+    [
+      "Drug example after aspiration?",
+      "Intracavernosal phenylephrine."
+    ],
+    [
+      "Less urgent priapism type?",
+      "Non-ischemic high-flow."
+    ],
+    [
+      "Penile-fracture layer?",
+      "Tunica albuginea."
+    ],
+    [
+      "Classic penile-fracture deformity?",
+      "Eggplant deformity."
+    ],
+    [
+      "Penile-fracture treatment?",
+      "Immediate surgical exploration and repair."
+    ],
+    [
+      "Phimosis?",
+      "Cannot retract foreskin."
+    ],
+    [
+      "Paraphimosis?",
+      "Retracted foreskin cannot return."
+    ],
+    [
+      "Failed manual paraphimosis reduction?",
+      "Dorsal slit."
+    ],
+    [
+      "Fournier essential treatment?",
+      "Immediate aggressive debridement."
+    ],
+    [
+      "Fournier antibiotic spectrum?",
+      "Gram-positive, gram-negative and anaerobic."
+    ],
+    [
+      "Most renal trauma mechanism?",
+      "Blunt trauma."
+    ],
+    [
+      "Renal-trauma imaging?",
+      "CT angiography."
+    ],
+    [
+      "Active renal bleeding?",
+      "Angioembolization."
+    ],
+    [
+      "Grade 5 renal injury?",
+      "Shattered kidney or pedicle avulsion."
+    ],
+    [
+      "Commonest ureteral-trauma cause?",
+      "Iatrogenic surgery."
+    ],
+    [
+      "Best ureteric delayed-phase test?",
+      "CT urography with delayed imaging."
+    ],
+    [
+      "Minor ureteric injury treatment?",
+      "JJ stent."
+    ],
+    [
+      "EP bladder treatment?",
+      "Catheter drainage 10–14 days."
+    ],
+    [
+      "IP bladder treatment?",
+      "Surgical repair."
+    ],
+    [
+      "Posterior urethral mechanism?",
+      "Pelvic fracture."
+    ],
+    [
+      "Anterior urethral mechanism?",
+      "Straddle injury."
+    ],
+    [
+      "Urethral-trauma imaging?",
+      "Retrograde urethrogram."
+    ],
+    [
+      "Initial urethral-trauma diversion?",
+      "Suprapubic tube."
+    ],
+    [
+      "Scrotal-trauma gold standard?",
+      "High-resolution Doppler ultrasound."
+    ],
+    [
+      "Suspected testicular rupture?",
+      "Urgent surgical exploration."
+    ]
+  ],
+  "subtopics": [
+    {
+      "id": "acute-retention",
+      "label": "Acute Urinary Retention"
+    },
+    {
+      "id": "testicular-torsion",
+      "label": "Testicular Torsion"
+    },
+    {
+      "id": "priapism",
+      "label": "Priapism"
+    },
+    {
+      "id": "penile-fracture",
+      "label": "Penile Fracture"
+    },
+    {
+      "id": "phimosis-paraphimosis",
+      "label": "Phimosis & Paraphimosis"
+    },
+    {
+      "id": "fournier",
+      "label": "Fournier's Gangrene"
+    },
+    {
+      "id": "renal-trauma",
+      "label": "Renal Trauma & AAST"
+    },
+    {
+      "id": "ureteral-trauma",
+      "label": "Ureteral Trauma"
+    },
+    {
+      "id": "bladder-trauma",
+      "label": "Bladder Trauma"
+    },
+    {
+      "id": "urethral-trauma",
+      "label": "Urethral Trauma"
+    },
+    {
+      "id": "scrotal-trauma",
+      "label": "Scrotal & Testicular Trauma"
+    }
+  ],
+  "imageQuestions": [
+    {
+      "id": "em_i01",
+      "title": "Bell-Clapper Deformity and Torsion",
+      "topic": "Scrotal Emergency",
+      "priority": "High",
+      "marks": 6,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 7",
+      "prompt": "The figure compares a normal testis, a freely mobile testis and a twisted testis.",
+      "questions": [
+        "Identify the emergency shown.",
+        "Name the predisposing deformity.",
+        "State the typical age group and urgent management."
+      ],
+      "answer": [
+        "Testicular torsion.",
+        "Bell-clapper deformity, where the testis hangs freely and can twist.",
+        "Most common in adolescents during rapid growth. Urgent surgical detorsion and orchiopexy within 6 hours; manual detorsion must not delay surgery."
+      ],
+      "subtopics": [
+        "testicular-torsion"
+      ]
+    },
+    {
+      "id": "em_i02",
+      "title": "Eggplant Deformity",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 6,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 10",
+      "prompt": "The image shows the classic dark swollen penile appearance illustrated in the lecture.",
+      "questions": [
+        "Identify the diagnosis and descriptive sign.",
+        "Which structure is torn?",
+        "State definitive management."
+      ],
+      "answer": [
+        "Penile fracture with eggplant deformity.",
+        "Rupture of tunica albuginea in an erect penis.",
+        "Immediate surgical exploration and repair."
+      ],
+      "subtopics": [
+        "penile-fracture"
+      ]
+    },
+    {
+      "id": "em_i03",
+      "title": "Paraphimosis and Dorsal Slit",
+      "topic": "Penile Emergency",
+      "priority": "High",
+      "marks": 7,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 12",
+      "prompt": "The slide shows a constricting ring, manual compression/reduction and a dorsal-slit incision.",
+      "questions": [
+        "Identify the condition.",
+        "Why is it urgent?",
+        "Describe the illustrated rescue procedure."
+      ],
+      "answer": [
+        "Paraphimosis.",
+        "Delay can cause glans gangrene.",
+        "If manual repositioning fails, a dorsal-slit incision releases the constricting ring."
+      ],
+      "subtopics": [
+        "phimosis-paraphimosis"
+      ]
+    },
+    {
+      "id": "em_i04",
+      "title": "Fournier's Gangrene",
+      "topic": "Infection",
+      "priority": "High",
+      "marks": 7,
+      "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABwUFRkVEhwZFxkgHhwiK0cuKycnK1c+QjRHZ1tta2VbZGJygKSLcnmbe2JkjsKQm6mut7m3bonJ18ey1qS0t7D/2wBDAR4gICslK1QuLlSwdWR1sLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLD/wgARCACqAJIDASIAAhEBAxEB/8QAGQABAAMBAQAAAAAAAAAAAAAAAAECAwUE/8QAFwEBAQEBAAAAAAAAAAAAAAAAAAEDAv/aAAwDAQACEAMQAAAB86VzjbLU6gmgAAAoXRIABxkrnGueh1BNBBWlseevRGFiIlOptjQ9zzW659Cq88nai510z0OmJoiYK464892RMsxFSlFF1rGdbvMk0jWveGWkWTpBoiRlh7Il8cbc3nr0MptmkLL0tVIQNR1i0z0jpBoAB5+b7vBLdSVXprZFdsjJKNR1k0z0jpBoABzPPfOWU1LaZ6VrjtmYros2i5ZaUudINAETU40ESiVnbHStsdMwgaIMovnodINAFLwcNapIidMrVrWIiED1xiudr5aHTDQADl+brc0oIi1Zq1YRINB1nOmWp0xNAAFbDz+HrUjjx68DNv6TwuqOWOs2uWp1BNAAAAESIkAP/8QAJRAAAQMDBAICAwAAAAAAAAAAAQADIAIRMhASMDMhMSJBBBNA/9oACAEBAAEFAtW+z+Jvs4b8LfZC632VwjUAjVfS6FU2+zjGV0KlfTwvab7IGRX2VdbltK2kaN5wMSdL+aldXW5X0bzgQirq63Kpbl91L7W0K3irJvOTvij3odB7KMW85PdcBoYt5y/IPxiUYt5yfN65GLecqz8pGLecjAIaHQEK6PtvONWPDZbUfBbzjVjEQ3Lcj5Tecjw2CFkfbecnhavjbzk5RvBpIPE3nMgFfppVdG2qFoN9nDVSKgWiFtQoJQZWymDfZx2vNvs5/wD/xAAbEQADAAIDAAAAAAAAAAAAAAAAAREQMBIgYP/aAAgBAwEBPwHckccQnZakyl8V/8QAGhEAAgIDAAAAAAAAAAAAAAAAABEBMBAgYP/aAAgBAgEBPwG95e01IQuK/8QAHxAAAgEEAgMAAAAAAAAAAAAAAUAwABAgIRExYYGR/9oACAEBAAY/ArhMJhMI7sEwmEeqNBMJjPiQJjMyBDuvVhkZRkZQj8sExn5kEG4xFvDddYBMIf/EACQQAAIBBAICAwEBAQAAAAAAAAABESAhMaEQQVFhMHGBQJHh/9oACAEBAAE/Ied3+Pd+LMn4N2llyXQnYaOwHYWQpXCRk0Q10NRk3aGRYd2JcQRDGOLS8uSbWa0Jjcm32bNOHC5Y1xdxroVx9j6P9HkcbdD4NiJJ4ssQ2Cg+DZqIG7nqeNulhJMwHAz8jQsnkJ3j45KxK8EHJStiTeNuvMSvJfJitgaUY4r2JFO3Xm++JOjoUeam3XCnk+JJsjo8CWqbddg8HXCEdjThVNuuZ3s6OuELpjxd1Nut5bETxYyDGXcIO6PyJdC5oNupoZ6GI7GIXom2Rkj8fR+ELKvBt1JKPVKGEO33wmXSJdwxpNvs26ngWHQhH6N98en/AJYgasrDIbdc57vSnxJFG3XjMCJNEC+Hb+DCpG3yOi66HzFLd+KNB9ZShsnexi02ef8AiPXo3fkaZKSIxVu/wf/aAAwDAQACAAMAAAAQwhAAAABAAA09AA3xq+8N5lAUJVJxwP2zAQ1HogmNADAAAKuAQ/MHAAAuGQY/H/AAQDqwUAP/AAAFKA7f/wBMcAABgbh/PBkAAADJNP7D0AAAAACAD//EABsRAAIDAQEBAAAAAAAAAAAAAAABEBExIDAh/9oACAEDAQE/EBbylfK2UMoJJfENGhmnC3mkPBNUfCmLZpFeDZcreEXFyt8aFvj8FvjYt7suFvVcLfH/xAAdEQEAAgICAwAAAAAAAAAAAAABABEQICEwMUBQ/9oACAECAQE/ENr6FTBWD1B5jOdW2BFYr036n//EACgQAQACAQMEAQUBAAMAAAAAAAEAESExUWEgQXHwEDCBkaHBQLHR8f/aAAgBAQABPxD597h/wVK+Pe4fouJVoFm8C/Q9Lh6FqAYC2bJ8TUV94BnLYmOG692LJdkKlwkGASDfykFQOikRUEdmelw9GmNEytlQV0lYqpUGU8keEi4QSMzDLqykdWpTkr98GT7kfVStntcPQ6TWPhFLByXHOIMzKj8WkoyasxUdHEvune0Uq0rGv/MIUDTTTdbTSe5w9GBHhlFylQAfGk1hbVp3ZpOYsLl4MUrHegiZVco/yYRkhsdKKiq2qr3Z7nD0JZG6EOggylRRdh5lMbp3TtFsLLkYWNyZiKG8W7bEv8pcUXDNkXNi6/8AUDGJLVbov6gqndPc4epB1BhEEUFkXNZmaVKqAJtOwmSiS4loZnbo9Th69Rwg1fm4ZyzO8sfyuV5d4bTpMi5b0epw9fkY/E7DF5J+DAF73Ao5GkGkNWG8TPR6nD13vaQjCYWK6OJ2nMuyQmK6NYM3vFzp0epw9fm7LhLtHCTNa1GDPeSBTkvaa/Eo6PU4epaFli3ZojTEsuoLOZ3rVTIKMaQK85mJeMwaKsrxmVQsKAdKe+ajF0pcVpPU4ergBP6itxpMJZkxDp3isJ2qovWFssNjvBbHLQldLwmp7sUFqBdq41T+QQ9FU9Th6ubmfqJR4g7wL4mjBYwA/kVuKlUt2pXMCC2gMm2ktEAPZOb/ALF1UranqcPULRuR1HUUhAi3P/UW8EO6WfoSzeCqgclg6KO+M3NkJW97q5iSBnQ0nqcPWjwxghtApj3/ADBqA4jUy8HS9zh66GwaF9+IyUJ2ZZg1uPx934+70e5w/QOofKWGBfMRO3UtyDLiuZWJXEEvS9Lh+lQbwmpHnBJKsFbJFDzlYner9NYEBodC9Wz9Qqi8iAFAA7HV6XD/AIP/2Q==",
+      "page": "Lecture p. 14",
+      "prompt": "The clinical photograph shows extensive dark necrotic genital tissue.",
+      "questions": [
+        "Identify the diagnosis.",
+        "Define it.",
+        "State immediate management."
+      ],
+      "answer": [
+        "Fournier's gangrene.",
+        "Rapidly progressing necrotizing fasciitis of the perineum, scrotum and genitalia.",
+        "Immediate aggressive debridement, broad-spectrum IV antibiotics, fluid resuscitation and septic-shock/ICU support."
+      ],
+      "subtopics": [
+        "fournier"
+      ]
+    },
+    {
+      "id": "em_i05",
+      "title": "AAST Renal Trauma Chart",
+      "topic": "Renal & Ureteral Trauma",
+      "priority": "High",
+      "marks": 10,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 18",
+      "prompt": "The chart grades renal injury from contusion to shattered kidney/pedicle avulsion.",
+      "questions": [
+        "Name the grading system.",
+        "Differentiate grades 1–3.",
+        "State the key grade 4 and grade 5 patterns."
+      ],
+      "answer": [
+        "AAST (American Association for the Surgery of Trauma) renal injury grading.",
+        "Grade 1: contusion/non-expanding subcapsular hematoma, no laceration. Grade 2: non-expanding perirenal hematoma or cortical laceration <1 cm without extravasation. Grade 3: cortical laceration >1 cm without extravasation.",
+        "Grade 4: collecting-system laceration or segmental vascular injury with contained hematoma/partial laceration/thrombosis. Grade 5: shattered kidney or renal-pedicle avulsion."
+      ],
+      "subtopics": [
+        "renal-trauma"
+      ]
+    },
+    {
+      "id": "em_i06",
+      "title": "Traumatic Bladder Injury Mechanisms",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "Core",
+      "marks": 6,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 26",
+      "prompt": "The diagram illustrates blunt, penetrating and iatrogenic bladder injuries.",
+      "questions": [
+        "Enumerate the mechanisms shown.",
+        "Classify bladder rupture by urine-leak location.",
+        "State the standard diagnostic study."
+      ],
+      "answer": [
+        "Blunt, penetrating and iatrogenic injuries.",
+        "Extraperitoneal leakage into pelvic tissues; intraperitoneal leakage into the abdominal cavity.",
+        "CT cystogram or conventional cystography."
+      ],
+      "subtopics": [
+        "bladder-trauma"
+      ]
+    },
+    {
+      "id": "em_i07",
+      "title": "Anterior and Posterior Urethra",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "Core",
+      "marks": 6,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 27",
+      "prompt": "The schematic labels penile/bulbar and membranous/prostatic urethral segments.",
+      "questions": [
+        "Which segments form the anterior and posterior urethra in the diagram?",
+        "Which trauma mechanism is typical for each injury group?"
+      ],
+      "answer": [
+        "Anterior urethra: penile and bulbar segments. Posterior urethra: membranous and prostatic segments.",
+        "Anterior injury: straddle/direct penile trauma. Posterior injury: pelvic fracture after high-impact trauma."
+      ],
+      "subtopics": [
+        "urethral-trauma"
+      ]
+    },
+    {
+      "id": "em_i08",
+      "title": "Straddle Injury Mechanism",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 5,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 28",
+      "prompt": "The illustration shows a cyclist falling onto a hard bar.",
+      "questions": [
+        "Which urethral injury is suggested?",
+        "List the classic signs.",
+        "State the diagnostic test."
+      ],
+      "answer": [
+        "Anterior urethral injury.",
+        "Blood at meatus, inability to void and perineal ecchymosis.",
+        "Retrograde urethrogram."
+      ],
+      "subtopics": [
+        "urethral-trauma"
+      ]
+    },
+    {
+      "id": "em_i09",
+      "title": "Pelvic-Fracture Urethral Injury",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 6,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 29",
+      "prompt": "The diagram shows disruption around the posterior urethra and upward displacement of the prostate.",
+      "questions": [
+        "Identify the injury group.",
+        "Name the classic examination sign suggested.",
+        "State initial urinary diversion."
+      ],
+      "answer": [
+        "Posterior urethral injury associated with pelvic fracture.",
+        "Floating prostate.",
+        "Suprapubic tube insertion."
+      ],
+      "subtopics": [
+        "urethral-trauma"
+      ]
+    },
+    {
+      "id": "em_i10",
+      "title": "Retrograde Urethrogram",
+      "topic": "Bladder & Urethral Trauma",
+      "priority": "High",
+      "marks": 7,
+      "image": "data:image/jpeg;base64,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",
+      "page": "Lecture p. 30",
+      "prompt": "The radiographs show contrast outlining the urethra with abnormal extravasation/stricture patterns.",
+      "questions": [
+        "Name the investigation.",
+        "When is it indicated in this lecture?",
+        "What abnormality may it show?",
+        "State key complications of urethral injury."
+      ],
+      "answer": [
+        "Retrograde urethrogram (RGU).",
+        "Suspected urethral injury, especially blood at the meatus or inability to void after pelvic/straddle trauma.",
+        "Contrast extravasation; later images may demonstrate urethral stricture.",
+        "Stricture, erectile dysfunction and urinary incontinence."
+      ],
+      "subtopics": [
+        "urethral-trauma"
+      ]
+    }
+  ]
+}
