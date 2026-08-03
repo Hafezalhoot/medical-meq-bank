@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   fix:
+    if: github.ref == 'refs/heads/agent/add-bladder-cancer'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -58,7 +59,7 @@ jobs:
           python3 scripts/validate_runtime_extensions.py
           python3 scripts/validate_progress_resilience.py
 
-      - name: Commit fixes and remove temporary workflow
+      - name: Commit fixes and remove temporary workflow from feature branch
         shell: bash
         run: |
           set -euo pipefail
@@ -69,4 +70,4 @@ jobs:
           git commit -m "Harden Bladder Cancer integration"
           git push origin HEAD:agent/add-bladder-cancer
 
-# Triggered after the workflow became available on the branch.
+# Registered on main before this trigger commit.
