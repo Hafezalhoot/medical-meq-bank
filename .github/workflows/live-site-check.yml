@@ -1,0 +1,74 @@
+name: Check live deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  live-site-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out expected release
+        uses: actions/checkout@v4
+
+      - name: Compare live deployment with main
+        env:
+          LIVE_BASE: https://medical-meq-bank.hafztamr.workers.dev
+        run: |
+          set -euo pipefail
+          cache_bust="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+
+          curl --fail --silent --show-error --location \
+            --retry 5 --retry-all-errors --connect-timeout 15 --max-time 60 \
+            -D /tmp/version-headers.txt \
+            "${LIVE_BASE}/version.json?check=${cache_bust}" \
+            -o /tmp/live-version.json
+
+          echo '--- live version headers ---'
+          cat /tmp/version-headers.txt
+          echo '--- live version body ---'
+          cat /tmp/live-version.json
+          echo
+          echo '--- expected version body ---'
+          cat version.json
+          echo
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = json.loads(Path('version.json').read_text(encoding='utf-8'))
+          live = json.loads(Path('/tmp/live-version.json').read_text(encoding='utf-8'))
+          print(f"expected_version={expected.get('version')}")
+          print(f"live_version={live.get('version')}")
+          print(f"expected_updatedAt={expected.get('updatedAt')}")
+          print(f"live_updatedAt={live.get('updatedAt')}")
+          if live != expected:
+              raise SystemExit('Live version.json does not match main')
+          PY
+
+          curl --fail --silent --show-error --location \
+            --retry 5 --retry-all-errors --connect-timeout 15 --max-time 60 \
+            "${LIVE_BASE}/?check=${cache_bust}" \
+            -o /tmp/live-index.html
+
+          for required in app.js lecture-loader.js progress-resilience.js pwa-client.js print-manager.js service-worker.js; do
+            curl --fail --silent --show-error --location \
+              --retry 5 --retry-all-errors --connect-timeout 15 --max-time 60 \
+              "${LIVE_BASE}/${required}?check=${cache_bust}" \
+              -o "/tmp/${required}"
+            test -s "/tmp/${required}"
+            echo "live_asset_ok=${required} bytes=$(wc -c < "/tmp/${required}")"
+          done
+
+          grep -q 'lecture-loader.js' /tmp/live-index.html
+          grep -q 'progress-resilience.js' /tmp/live-index.html
+          grep -q 'pwa-client.js' /tmp/live-index.html
+          grep -q 'print-manager.js' /tmp/live-index.html
+
+          echo 'LIVE_DEPLOYMENT_MATCHES_MAIN=true'
