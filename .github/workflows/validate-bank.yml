@@ -31,18 +31,23 @@ jobs:
         run: bash build.sh
 
       - name: Validate generated application
-        run: python3 scripts/validate_build.py
+        run: |
+          python3 scripts/validate_build.py
+          python3 scripts/validate_mobile_filters.py
 
       - name: Validate JavaScript syntax
         run: |
           node --check service-worker.js
           node --check review-filter.js
+          node --check mobile-filters.js
           node --check back-to-top.js
           find lectures -maxdepth 1 -type f -name '*.js' -print0 | xargs -0 -r -n1 node --check
 
       - name: Verify required deployment files
         run: |
           test -s dist/index.html
+          test -s dist/404.html
+          test -s dist/_headers
           test -s dist/offline/Medical_MEQ_Review_Bank_Offline.html
           test -s dist/manifest.webmanifest
           test -s dist/service-worker.js
