@@ -17,40 +17,74 @@
     "rapid"
   ],
   "properties": {
-    "id": {"type": "string", "minLength": 1},
-    "order": {"type": "number"},
-    "subjectKey": {"type": "string", "minLength": 1},
-    "subject": {"type": "string", "minLength": 1},
-    "title": {"type": "string", "minLength": 1},
-    "subtitle": {"type": "string"},
-    "sourceNote": {"type": "string"},
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "order": {
+      "type": "number"
+    },
+    "subjectKey": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "sourceNote": {
+      "type": "string"
+    },
     "subtopics": {
       "type": "array",
-      "items": {"$ref": "#/$defs/subtopic"}
+      "items": {
+        "$ref": "#/$defs/subtopic"
+      }
     },
     "cases": {
       "type": "array",
-      "items": {"$ref": "#/$defs/case"}
+      "items": {
+        "$ref": "#/$defs/case"
+      }
     },
     "coreShorts": {
       "type": "array",
-      "items": {"$ref": "#/$defs/shortQuestion"}
+      "items": {
+        "$ref": "#/$defs/shortQuestion"
+      }
     },
     "imageQuestions": {
       "type": "array",
-      "items": {"$ref": "#/$defs/imageQuestion"}
+      "items": {
+        "$ref": "#/$defs/imageQuestion"
+      }
     },
     "detailedShorts": {
       "type": "array",
-      "items": {"$ref": "#/$defs/shortQuestion"}
+      "items": {
+        "$ref": "#/$defs/shortQuestion"
+      }
     },
     "rapid": {
       "type": "array",
       "items": {
         "type": "array",
         "prefixItems": [
-          {"type": "string", "minLength": 1},
-          {"type": "string", "minLength": 1}
+          {
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "type": "string",
+            "minLength": 1
+          }
         ],
         "minItems": 2,
         "maxItems": 2
@@ -60,51 +94,106 @@
   "$defs": {
     "subtopic": {
       "type": "object",
-      "required": ["id", "label"],
+      "required": [
+        "id",
+        "label"
+      ],
       "properties": {
-        "id": {"type": "string", "minLength": 1},
-        "label": {"type": "string", "minLength": 1}
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        }
       },
       "additionalProperties": true
     },
     "sharedStudyFields": {
       "type": "object",
-      "required": ["id", "topic", "priority", "marks", "subtopics"],
+      "required": [
+        "id",
+        "topic",
+        "priority",
+        "marks",
+        "subtopics"
+      ],
       "properties": {
-        "id": {"type": "string", "minLength": 1},
-        "topic": {"type": "string", "minLength": 1},
-        "priority": {"type": "string", "minLength": 1},
-        "marks": {"type": "number", "minimum": 0},
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "topic": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "marks": {
+          "type": "number",
+          "minimum": 0
+        },
         "subtopics": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1}
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     },
     "answer": {
       "oneOf": [
-        {"type": "string", "minLength": 1},
+        {
+          "type": "string",
+          "minLength": 1
+        },
         {
           "type": "array",
           "minItems": 1,
-          "items": {"type": ["string", "number", "object", "array"]}
+          "items": {
+            "type": [
+              "string",
+              "number",
+              "object",
+              "array"
+            ]
+          }
         }
       ]
     },
     "case": {
       "allOf": [
-        {"$ref": "#/$defs/sharedStudyFields"},
+        {
+          "$ref": "#/$defs/sharedStudyFields"
+        },
         {
           "type": "object",
-          "required": ["title", "questions", "answer"],
+          "required": [
+            "title",
+            "questions",
+            "answer"
+          ],
           "properties": {
-            "title": {"type": "string", "minLength": 1},
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
             "questions": {
               "type": "array",
               "minItems": 1,
-              "items": {"type": "string", "minLength": 1}
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
             },
-            "answer": {"type": "array", "minItems": 1}
+            "answer": {
+              "type": "array",
+              "minItems": 1
+            }
           }
         }
       ],
@@ -112,13 +201,23 @@
     },
     "shortQuestion": {
       "allOf": [
-        {"$ref": "#/$defs/sharedStudyFields"},
+        {
+          "$ref": "#/$defs/sharedStudyFields"
+        },
         {
           "type": "object",
-          "required": ["q", "a"],
+          "required": [
+            "q",
+            "a"
+          ],
           "properties": {
-            "q": {"type": "string", "minLength": 1},
-            "a": {"$ref": "#/$defs/answer"}
+            "q": {
+              "type": "string",
+              "minLength": 1
+            },
+            "a": {
+              "$ref": "#/$defs/answer"
+            }
           }
         }
       ],
@@ -126,21 +225,61 @@
     },
     "imageQuestion": {
       "allOf": [
-        {"$ref": "#/$defs/sharedStudyFields"},
+        {
+          "$ref": "#/$defs/sharedStudyFields"
+        },
         {
           "type": "object",
-          "required": ["title", "questions", "answer"],
+          "required": [
+            "title",
+            "questions",
+            "answer"
+          ],
           "properties": {
-            "title": {"type": "string", "minLength": 1},
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
             "questions": {
               "type": "array",
               "minItems": 1,
-              "items": {"type": "string", "minLength": 1}
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
             },
-            "answer": {"type": "array", "minItems": 1},
-            "image": {"type": "string"},
-            "page": {"type": ["string", "number"]}
-          }
+            "answer": {
+              "type": "array",
+              "minItems": 1
+            },
+            "image": {
+              "type": "string",
+              "minLength": 1
+            },
+            "page": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "anyOf": [
+            {
+              "required": [
+                "image"
+              ]
+            },
+            {
+              "required": [
+                "page"
+              ]
+            }
+          ]
         }
       ],
       "additionalProperties": true

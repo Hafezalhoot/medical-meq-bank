@@ -220,30 +220,6 @@ def build(output: Path) -> None:
         "PWA APP_VERSION update",
     )
 
-    old_state = "const state=JSON.parse(storage.get('medicalBankStatusV2')||'{}');"
-    new_state = (
-        "const state=(()=>{try{const value=JSON.parse(storage.get('medicalBankStatusV2')||'{}');"
-        "return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch(e){return {}}})();"
-    )
-    app_js = replace_required(app_js, old_state, new_state, "safe progress-state parser")
-
-    old_restore = (
-        "Object.entries(data.storage).forEach(([k,v]) => { "
-        "if(k.startsWith('medicalBank') && typeof v === 'string') localStorage.setItem(k,v); });"
-    )
-    new_restore = (
-        "[...Array(localStorage.length)].map((_,i)=>localStorage.key(i))"
-        ".filter(k=>k&&k.startsWith('medicalBank')).forEach(k=>localStorage.removeItem(k)); "
-        "Object.entries(data.storage).forEach(([k,v]) => { "
-        "if(k.startsWith('medicalBank') && typeof v === 'string') localStorage.setItem(k,v); });"
-    )
-    pwa_client_js = replace_required(
-        pwa_client_js,
-        old_restore,
-        new_restore,
-        "clean progress restore",
-    )
-
     text = ensure_external_script_after(text, "./app.js", "./progress-resilience.js")
     text = ensure_external_script_after(text, "./progress-resilience.js", "./lecture-loader.js")
     text = ensure_accessibility_attributes(text)

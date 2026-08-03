@@ -81,30 +81,75 @@ test('full-bank text search waits for the debounce interval', async ({page}) => 
   await expect(page.locator('#empty')).toHaveClass(/show/);
 });
 
-test('mobile filters expand, show active chips, and reset cleanly', async ({page}) => {
+test('mobile filter bar stays compact and opens an accessible bottom sheet', async ({page}) => {
   await page.setViewportSize({width: 390, height: 844});
   await openBank(page);
 
+  const toolbar = page.locator('#studyToolbar');
   const toggle = page.locator('#mobileFiltersToggle');
-  const topicFilter = page.locator('#topicFilter');
+  const backdrop = page.locator('#mobileFilterBackdrop');
   const chips = page.locator('#activeFilterChips');
 
   await expect(toggle).toBeVisible();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(topicFilter).toBeHidden();
+  await expect(page.locator('#lectureFilter')).toBeHidden();
+  await expect(page.locator('#typeFilter')).toBeHidden();
+
+  const collapsed = await toolbar.evaluate(element => {
+    const box = element.getBoundingClientRect();
+    return {height: box.height, position: getComputedStyle(element).position};
+  });
+  expect(collapsed.height).toBeLessThanOrEqual(94);
+  expect(collapsed.position).toBe('static');
 
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  await expect(topicFilter).toBeVisible();
+  await expect(toolbar).toHaveAttribute('role', 'dialog');
+  await expect(toolbar).toHaveAttribute('aria-modal', 'true');
+  await expect(backdrop).toBeVisible();
+  await expect(page.locator('body')).toHaveClass(/mobile-filters-open/);
+  await expect(page.locator('#lectureFilter')).toBeVisible();
+  await expect(page.locator('#closeMobileFiltersBtn')).toBeFocused();
 
+  const sheet = await toolbar.boundingBox();
+  expect(sheet).toBeTruthy();
+  expect(sheet.height).toBeLessThanOrEqual(844 * 0.82);
+  expect(sheet.y + sheet.height).toBeLessThanOrEqual(845);
+
+  await page.locator('#typeFilter').selectOption('case');
+  await expect(chips).toContainText('Type: MEQ cases');
+  await page.locator('#applyMobileFiltersBtn').click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(backdrop).toBeHidden();
+  await expect(page.locator('body')).not.toHaveClass(/mobile-filters-open/);
+  await expect(toggle).toBeFocused();
+
+  await toggle.click();
   await page.locator('#search').fill('testicular');
-  await expect(chips).toBeVisible();
   await expect(chips).toContainText('Search: testicular');
-
   await page.locator('#resetFiltersBtn').click();
   await expect(page.locator('#search')).toHaveValue('');
   await expect(chips).toBeHidden();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#search')).toBeFocused();
+
+  await toggle.click();
+  await page.keyboard.press('Escape');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('image cards never request undefined resources', async ({page}) => {
+  const invalidRequests = [];
+  page.on('request', request => {
+    const pathname = new URL(request.url()).pathname;
+    if (pathname.endsWith('/undefined')) invalidRequests.push(request.url());
+  });
+
+  await openBank(page);
+  await expect(page.locator('.visual-placeholder').first()).toBeAttached();
+  await expect(page.locator('img[src="undefined"]')).toHaveCount(0);
+  await expect(page.locator('.visual-placeholder').first()).toContainText(/Lecture page/);
+  expect(invalidRequests).toEqual([]);
 });
 
 test('mobile sidebar defaults stay responsive until the user chooses', async ({page}) => {
