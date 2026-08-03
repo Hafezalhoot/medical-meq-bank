@@ -37,6 +37,7 @@
       try {
         const data = JSON.parse(await file.text());
         if(!data || data.schema !== 'medical-meq-progress' || !data.storage || typeof data.storage !== 'object') throw new Error('Invalid backup file');
+        [...Array(localStorage.length)].map((_,i)=>localStorage.key(i)).filter(k=>k&&k.startsWith('medicalBank')).forEach(k=>localStorage.removeItem(k));
         Object.entries(data.storage).forEach(([k,v]) => { if(k.startsWith('medicalBank') && typeof v === 'string') localStorage.setItem(k,v); });
         toast('Progress restored. Reloading…'); setTimeout(() => location.reload(), 700);
       } catch(e){ toast('This is not a valid MEQ Bank backup file.'); }

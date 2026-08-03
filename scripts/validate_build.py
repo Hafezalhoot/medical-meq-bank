@@ -132,6 +132,24 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
             if len(value) != counts[key]:
                 fail(f"{lecture_id} has {len(value)} {key}; expected {counts[key]}")
 
+        visual_ids: set[str] = set()
+        for visual_index, visual in enumerate(lecture["imageQuestions"], start=1):
+            if not isinstance(visual, dict):
+                fail(f"{lecture_id} image question {visual_index} is not an object")
+            visual_id = visual.get("id")
+            if not isinstance(visual_id, str) or not visual_id.strip():
+                fail(f"{lecture_id} image question {visual_index} has no valid id")
+            if visual_id in visual_ids:
+                fail(f"{lecture_id} has duplicate image question id: {visual_id}")
+            visual_ids.add(visual_id)
+            image = visual.get("image")
+            page = visual.get("page")
+            if image is not None and (not isinstance(image, str) or not image.strip()):
+                fail(f"{lecture_id}/{visual_id} has an invalid image source")
+            has_page = isinstance(page, (str, int, float)) and not isinstance(page, bool) and bool(str(page).strip())
+            if not (isinstance(image, str) and image.strip()) and not has_page:
+                fail(f"{lecture_id}/{visual_id} needs an embedded image or lecture-page reference")
+
         published = read_json(DIST / "lectures" / relative_file)
         if published != lecture:
             fail(f"published lecture differs from source: {lecture_id}")
@@ -253,6 +271,10 @@ def validate_split_sources(version: str) -> None:
 
     if len(source_css) < 10_000 or len(source_app) < 10_000 or len(source_loader) < 1_000 or len(source_pwa) < 1_000:
         fail("split application source is unexpectedly small")
+    if "const state=(()=>{try{" not in source_app:
+        fail("source app.js has no safe progress parser")
+    if "localStorage.removeItem(k)" not in source_pwa:
+        fail("source PWA restore does not remove stale progress keys")
     for marker in (
         '<link rel="stylesheet" href="./app.css">',
         '<script src="./app.js"></script>',
@@ -269,6 +291,8 @@ def validate_split_sources(version: str) -> None:
     generated_pwa = read_text(DIST / "pwa-client.js")
     if generated_css != source_css:
         fail("generated app.css differs from source")
+    if generated_app != source_app:
+        fail("generated app.js differs from reviewable source")
     if generated_loader != source_loader:
         fail("generated lecture-loader.js differs from source")
     if "const state=(()=>{try{" not in generated_app:
