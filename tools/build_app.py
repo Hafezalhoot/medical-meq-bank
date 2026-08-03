@@ -121,6 +121,7 @@ def create_offline_copy(
     *,
     app_css: str,
     app_js: str,
+    progress_js: str,
     lecture_batch_js: str,
     pwa_client_js: str,
 ) -> str:
@@ -136,6 +137,12 @@ def create_offline_copy(
         '<script src="./app.js"></script>',
         f'<script id="app-source-runtime">\n{safe_inline_script(app_js)}\n</script>',
         "offline application runtime",
+    )
+    offline = replace_required(
+        offline,
+        '<script src="./progress-resilience.js"></script>',
+        f'<script id="progress-resilience-runtime">\n{safe_inline_script(progress_js)}\n</script>',
+        "offline progress resilience",
     )
     offline = replace_required(
         offline,
@@ -172,6 +179,7 @@ def build(output: Path) -> None:
     html_path = output / "index.html"
     app_css_path = output / "app.css"
     app_js_path = output / "app.js"
+    progress_path = output / "progress-resilience.js"
     lecture_loader_path = output / "lecture-loader.js"
     pwa_client_path = output / "pwa-client.js"
     service_worker_path = output / "service-worker.js"
@@ -179,6 +187,7 @@ def build(output: Path) -> None:
         html_path,
         app_css_path,
         app_js_path,
+        progress_path,
         lecture_loader_path,
         pwa_client_path,
         service_worker_path,
@@ -211,6 +220,7 @@ def build(output: Path) -> None:
     text = html_path.read_text(encoding="utf-8")
     app_css = app_css_path.read_text(encoding="utf-8")
     app_js = app_js_path.read_text(encoding="utf-8")
+    progress_js = progress_path.read_text(encoding="utf-8")
     pwa_client_js = pwa_client_path.read_text(encoding="utf-8")
 
     pwa_client_js = replace_regex_required(
@@ -244,7 +254,8 @@ def build(output: Path) -> None:
         "clean progress restore",
     )
 
-    text = ensure_external_script_after(text, "./app.js", "./lecture-loader.js")
+    text = ensure_external_script_after(text, "./app.js", "./progress-resilience.js")
+    text = ensure_external_script_after(text, "./progress-resilience.js", "./lecture-loader.js")
     text = ensure_accessibility_attributes(text)
     text = upsert_style(text, "review-filter-styles", review_css)
     text = upsert_style(text, "mobile-filter-styles", mobile_filter_css)
@@ -273,6 +284,7 @@ def build(output: Path) -> None:
         text,
         app_css=app_css,
         app_js=app_js,
+        progress_js=progress_js,
         lecture_batch_js=lecture_batch_js,
         pwa_client_js=pwa_client_js,
     )
