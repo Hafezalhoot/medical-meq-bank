@@ -110,8 +110,10 @@ def build(output: Path) -> None:
 
     review_css = (ROOT / "review-filter.css").read_text(encoding="utf-8")
     review_js = (ROOT / "review-filter.js").read_text(encoding="utf-8")
+    responsive_sidebar_js = (ROOT / "responsive-sidebars.js").read_text(encoding="utf-8")
     mobile_filter_css = (ROOT / "mobile-filters.css").read_text(encoding="utf-8")
     mobile_filter_js = (ROOT / "mobile-filters.js").read_text(encoding="utf-8")
+    search_optimization_js = (ROOT / "search-optimization.js").read_text(encoding="utf-8")
     print_css = decode_gzip_b64(ROOT / "print-manager.v8.css.gz.b64")
     print_js = decode_gzip_b64(ROOT / "print-manager.v8.js.gz.b64")
     back_to_top_css = (ROOT / "back-to-top.css").read_text(encoding="utf-8")
@@ -157,10 +159,17 @@ def build(output: Path) -> None:
             text,
             "lecture-extensions",
             lecture_js,
-            before_id="review-filter-extension",
+            before_id="responsive-sidebar-extension",
         )
+    text = upsert_script(
+        text,
+        "responsive-sidebar-extension",
+        responsive_sidebar_js,
+        before_id="review-filter-extension",
+    )
     text = upsert_script(text, "review-filter-extension", review_js)
     text = upsert_script(text, "mobile-filter-extension", mobile_filter_js)
+    text = upsert_script(text, "search-optimization-extension", search_optimization_js)
     text = upsert_script(text, "print-manager-extension", print_js)
     text = upsert_script(text, "back-to-top-extension", back_to_top_js)
 
