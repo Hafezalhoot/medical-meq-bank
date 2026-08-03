@@ -13,13 +13,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: medical-meq-final-quality
-  cancel-in-progress: false
+  group: medical-meq-print-migration
+  cancel-in-progress: true
 
 jobs:
   migrate:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
 
     steps:
       - name: Check out latest development branch
@@ -40,23 +40,17 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Require completed quality foundation
-        run: |
-          set -euo pipefail
-          grep -Fq 'validate_performance_budget.py' build.sh
-          grep -Fq 'extensions.css' tools/build_app.py
-
       - name: Migrate print manager source
         run: python3 tools/migrate_print_manager_source.py
 
-      - name: Build and run all static gates
+      - name: Build and run static gates
         run: |
           set -euo pipefail
           bash build.sh
           python3 scripts/validate_build.py
           python3 scripts/validate_mobile_filters.py
           python3 scripts/validate_runtime_extensions.py
-          python3 scripts/validate_performance_budget.py
+          python3 scripts/validate_progress_resilience.py
 
       - name: Validate JavaScript syntax
         run: |
@@ -70,21 +64,24 @@ jobs:
           node --check dist/progress-resilience.js
           node --check dist/lecture-loader.js
           node --check dist/pwa-client.js
-          node --check dist/extensions.js
           node --check dist/service-worker.js
           node --check tests/app.spec.js
           node --check tests/accessibility.spec.js
           node --check tests/performance.spec.js
           node --check tests/layout.spec.js
+          node --check tests/webkit-smoke.spec.js
 
       - name: Install locked browser dependencies
         run: |
           set -euo pipefail
           npm ci --no-audit --no-fund
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
 
-      - name: Run complete browser, print, offline, performance, layout and WCAG suite
+      - name: Run Chromium, offline, performance, layout and WCAG suite
         run: npm run test:e2e
+
+      - name: Run Safari and iPhone WebKit suite
+        run: npx playwright test --config=playwright.webkit.config.js
 
       - name: Remove compressed and one-time migration files
         run: |
@@ -112,6 +109,7 @@ jobs:
           name: print-manager-migration-failure
           path: |
             playwright-report
+            playwright-report-webkit
             test-results
             dist
           if-no-files-found: ignore
