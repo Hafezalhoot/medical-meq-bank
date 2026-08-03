@@ -159,6 +159,58 @@ test('malformed saved progress cannot prevent startup', async ({page}) => {
   expect(pageErrors).toEqual([]);
 });
 
+test('corrupted progress is restored from the IndexedDB mirror', async ({page}) => {
+  const expected = {
+    'urology-congenital-anomalies::core::recovery-check': 'done'
+  };
+
+  await openBank(page);
+  await expect.poll(
+    () => page.evaluate(() => Boolean(globalThis.MEQProgressResilience))
+  ).toBe(true);
+
+  await page.evaluate(async value => {
+    localStorage.setItem('medicalBankStatusV2', JSON.stringify(value));
+    await globalThis.MEQProgressResilience.snapshotNow();
+    localStorage.setItem('medicalBankStatusV2', '{corrupted-json');
+  }, expected);
+
+  await page.reload({waitUntil: 'domcontentloaded'});
+  await expect.poll(async () => {
+    try {
+      return await page.evaluate(() => {
+        const raw = localStorage.getItem('medicalBankStatusV2');
+        if (!raw) return null;
+        try { return JSON.parse(raw); } catch (error) { return null; }
+      });
+    } catch (error) {
+      return null;
+    }
+  }, {timeout: 15_000}).toEqual(expected);
+});
+
+test('IndexedDB mirror does not undo a deliberate progress reset', async ({page}) => {
+  const snapshot = {
+    'urology-congenital-anomalies::core::reset-check': 'done'
+  };
+
+  await openBank(page);
+  await expect.poll(
+    () => page.evaluate(() => Boolean(globalThis.MEQProgressResilience))
+  ).toBe(true);
+
+  await page.evaluate(async value => {
+    localStorage.setItem('medicalBankStatusV2', JSON.stringify(value));
+    await globalThis.MEQProgressResilience.snapshotNow();
+    localStorage.removeItem('medicalBankStatusV2');
+  }, snapshot);
+
+  await page.reload({waitUntil: 'domcontentloaded'});
+  await expect.poll(
+    () => page.evaluate(() => localStorage.getItem('medicalBankStatusV2'))
+  ).toBeNull();
+});
+
 test('installed service worker restores the bank while offline', async ({page, context}) => {
   await openBank(page);
   await expect.poll(
@@ -196,6 +248,7 @@ test('standalone offline HTML opens directly without a server', async ({page}) =
   await expect(page.locator('.study-item').first()).toBeAttached();
   await expect(page.locator('link[href="./app.css"]')).toHaveCount(0);
   await expect(page.locator('script[src="./app.js"]')).toHaveCount(0);
+  await expect(page.locator('script[src="./progress-resilience.js"]')).toHaveCount(0);
   await expect(page.locator('script[src="./pwa-client.js"]')).toHaveCount(0);
   expect(pageErrors).toEqual([]);
 });
