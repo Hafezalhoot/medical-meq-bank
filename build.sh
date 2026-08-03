@@ -33,10 +33,12 @@ required_files=(
   lectures/lecture.schema.json
   tools/build_app.py
   tools/lecture_builder.py
+  tools/materialize_verified_lectures.py
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
   scripts/validate_runtime_extensions.py
   scripts/validate_progress_resilience.py
+  scripts/validate_lecture_images.py
 )
 
 for required in "${required_files[@]}"; do
@@ -54,10 +56,15 @@ fi
 python3 -m py_compile \
   tools/build_app.py \
   tools/lecture_builder.py \
+  tools/materialize_verified_lectures.py \
   scripts/validate_build.py \
   scripts/validate_mobile_filters.py \
   scripts/validate_runtime_extensions.py \
-  scripts/validate_progress_resilience.py
+  scripts/validate_progress_resilience.py \
+  scripts/validate_lecture_images.py
+
+python3 tools/materialize_verified_lectures.py
+python3 scripts/validate_lecture_images.py
 
 node --check src/app.js
 node --check src/progress-resilience.js
