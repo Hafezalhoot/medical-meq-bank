@@ -55,7 +55,7 @@ test('switching to an unloaded subject completes within the navigation budget', 
 
   const started = Date.now();
   await page.locator('#subjectSelector').selectOption('neurosurgery');
-  await expect(page.locator('[data-lecture="neurosurgery-traumatic-brain-injury"]')).toBeVisible();
+  await expect(page.locator('#lecture-neurosurgery-traumatic-brain-injury')).toBeVisible();
   const duration = Date.now() - started;
 
   expect(duration).toBeLessThan(3_000);
