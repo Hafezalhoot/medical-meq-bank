@@ -1,0 +1,64 @@
+name: Extract Embedded Lectures
+
+on:
+  push:
+    branches:
+      - agent/harden-pwa-ci-foundation
+    paths:
+      - .github/workflows/extract-embedded-lectures.yml
+      - tools/extract_embedded_lectures.mjs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out development branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/harden-pwa-ci-foundation
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Extract embedded lectures
+        run: node tools/extract_embedded_lectures.mjs
+
+      - name: Validate extracted source and build
+        run: |
+          set -euo pipefail
+          test -s lectures/data/urology-congenital-anomalies.json
+          test -s lectures/data/urology-bph-prostate-carcinoma.json
+          test "$(find lectures/data -maxdepth 1 -type f -name '*.json' | wc -l)" -eq 6
+          grep -Fq '"urology-congenital-anomalies"' lectures/catalog.json
+          grep -Fq '"urology-bph-prostate-carcinoma"' lectures/catalog.json
+          if grep -Fq 'const congenitalCases = [' src/app.js; then
+            echo "Congenital data remains embedded."
+            exit 1
+          fi
+          if grep -Fq 'const bphCases = [' src/app.js; then
+            echo "BPH data remains embedded."
+            exit 1
+          fi
+          node --check src/app.js
+          bash build.sh
+
+      - name: Commit extracted lecture sources
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/app.js lectures/catalog.json lectures/data
+          if git diff --cached --quiet; then
+            echo "Embedded lectures are already extracted."
+            exit 0
+          fi
+          git commit -m "Extract embedded lectures into reviewable JSON"
+          git push origin HEAD:agent/harden-pwa-ci-foundation
