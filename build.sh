@@ -60,8 +60,12 @@ def build_lecture_extensions():
         path for path in lecture_files
         if re.fullmatch(r"neuro-tbi-(?!99)[0-9]{2}\.js", path.name)
     ]
-    excluded = {path.name for path in legacy_tbi_chunks}
-    excluded.add("neuro-tbi-99.js")
+    legacy_scrotal_chunks = [
+        path for path in lecture_files
+        if re.fullmatch(r"urology-scrotal-(?!99).+\.js", path.name)
+    ]
+    excluded = {path.name for path in legacy_tbi_chunks + legacy_scrotal_chunks}
+    excluded.update({"neuro-tbi-99.js", "urology-scrotal-99.js"})
 
     parts = [
         path.read_text(encoding="utf-8")
@@ -150,14 +154,27 @@ def build_lecture_extensions():
     if tbi:
         parts.append(lecture_extension(tbi))
 
-    scrotal_encoded = read_b64_chunks(scrotal_data_files, "Scrotal Swelling") if scrotal_data_files else ""
+    if scrotal_data_files:
+        scrotal_encoded = read_b64_chunks(scrotal_data_files, "Scrotal Swelling")
+    elif legacy_scrotal_chunks:
+        encoded_parts = []
+        chunk_pattern = re.compile(r"\+\s*'([^']+)'\s*;?\s*$", re.S)
+        for path in legacy_scrotal_chunks:
+            source = path.read_text(encoding="utf-8").strip()
+            match = chunk_pattern.search(source)
+            if not match:
+                raise SystemExit(f"Could not parse compressed Scrotal Swelling chunk: {path}")
+            encoded_parts.append(match.group(1))
+        scrotal_encoded = "".join(encoded_parts)
+    else:
+        scrotal_encoded = ""
     scrotal = decode_lecture(
         scrotal_encoded,
         "Scrotal Swelling",
         "urology-scrotal-swelling",
         {"cases": 15, "coreShorts": 35, "imageQuestions": 10,
          "detailedShorts": 58, "rapid": 40},
-        len(scrotal_data_files),
+        len(scrotal_data_files) or len(legacy_scrotal_chunks),
     )
     if scrotal:
         parts.append(lecture_extension(scrotal))
