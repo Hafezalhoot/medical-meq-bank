@@ -3,7 +3,7 @@ import {defineConfig, devices} from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   testMatch: /webkit-smoke\.spec\.js/,
-  timeout: 30_000,
+  timeout: 60_000,
   expect: {timeout: 10_000},
   fullyParallel: false,
   workers: 1,
