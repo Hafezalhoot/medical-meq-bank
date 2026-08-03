@@ -87,6 +87,33 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  prepare-readable-print-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Decode print manager into readable files
+        run: python3 tools/migrate_print_manager_source.py
+
+      - name: Verify decoded source
+        run: |
+          test -s src/print-manager.css
+          test -s src/print-manager.js
+          node --check src/print-manager.js
+
+      - name: Upload readable print source
+        uses: actions/upload-artifact@v4
+        with:
+          name: readable-print-manager-source
+          path: |
+            src/print-manager.css
+            src/print-manager.js
+          if-no-files-found: error
+          retention-days: 7
+
   browser-smoke:
     needs: validate
     runs-on: ubuntu-latest
