@@ -7,6 +7,7 @@ required_files=(
   src/index.html
   src/app.css
   src/app.js
+  src/progress-resilience.js
   src/lecture-loader.js
   src/pwa-client.js
   icons/icon-192.png
@@ -57,6 +58,7 @@ python3 -m py_compile \
   scripts/validate_runtime_extensions.py
 
 node --check src/app.js
+node --check src/progress-resilience.js
 node --check src/lecture-loader.js
 node --check src/pwa-client.js
 
@@ -67,6 +69,7 @@ install -m 0644 \
   src/index.html \
   src/app.css \
   src/app.js \
+  src/progress-resilience.js \
   src/lecture-loader.js \
   src/pwa-client.js \
   "$OUTPUT/"
