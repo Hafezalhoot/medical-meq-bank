@@ -34,10 +34,12 @@ const OPTIONAL_ASSETS = [
 ];
 
 self.addEventListener('install', event => {
+  const isFirstInstall = !self.registration.active;
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(REQUIRED_ASSETS);
     await Promise.allSettled(OPTIONAL_ASSETS.map(asset => cache.add(asset)));
+    if (isFirstInstall) await self.skipWaiting();
   })());
 });
 
