@@ -1,3 +1,5 @@
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {test, expect} from '@playwright/test';
 
 const headingName = 'Medical MEQ & Short Question Review Bank';
@@ -71,8 +73,6 @@ test('full-bank text search waits for the debounce interval', async ({page}) => 
     return document.getElementById('empty').classList.contains('show');
   });
 
-  // This value is captured synchronously in the same task that dispatched the
-  // input event, before any 160 ms timer can run.
   expect(immediatelyEmpty).toBe(false);
 
   await expect.poll(
@@ -180,4 +180,22 @@ test('installed service worker restores the bank while offline', async ({page, c
   } finally {
     await context.setOffline(false);
   }
+});
+
+test('standalone offline HTML opens directly without a server', async ({page}) => {
+  const pageErrors = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+
+  const offlineFile = pathToFileURL(
+    resolve('dist/offline/Medical_MEQ_Review_Bank_Offline.html')
+  ).href;
+  await page.goto(offlineFile, {waitUntil: 'domcontentloaded'});
+
+  await expect(page.getByRole('heading', {name: headingName})).toBeVisible();
+  await expect(page.locator('#reviewFilter')).toBeAttached();
+  await expect(page.locator('.study-item').first()).toBeAttached();
+  await expect(page.locator('link[href="./app.css"]')).toHaveCount(0);
+  await expect(page.locator('script[src="./app.js"]')).toHaveCount(0);
+  await expect(page.locator('script[src="./pwa-client.js"]')).toHaveCount(0);
+  expect(pageErrors).toEqual([]);
 });
