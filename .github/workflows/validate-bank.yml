@@ -39,8 +39,10 @@ jobs:
       - name: Validate JavaScript syntax
         run: |
           node --check src/app.js
+          node --check src/lecture-loader.js
           node --check src/pwa-client.js
           node --check dist/app.js
+          node --check dist/lecture-loader.js
           node --check dist/pwa-client.js
           node --check service-worker.js
           node --check review-filter.js
@@ -50,6 +52,11 @@ jobs:
           node --check back-to-top.js
           node --check tests/app.spec.js
           node --check tests/accessibility.spec.js
+          node --check tests/layout.spec.js
+          node --check tests/performance.spec.js
+          node --check tests/webkit-smoke.spec.js
+          node --check playwright.config.js
+          node --check playwright.webkit.config.js
 
       - name: Verify required deployment files
         run: |
@@ -57,7 +64,9 @@ jobs:
           test -s dist/index.html
           test -s dist/app.css
           test -s dist/app.js
+          test -s dist/lecture-loader.js
           test -s dist/pwa-client.js
+          test -s dist/lectures/catalog.json
           test -s dist/404.html
           test -s dist/_headers
           test -s dist/offline/Medical_MEQ_Review_Bank_Offline.html
@@ -98,16 +107,54 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Run browser and accessibility tests
+      - name: Run Chromium and accessibility tests
         run: npm run test:e2e
 
-      - name: Upload Playwright report
+      - name: Upload Chromium report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-chromium
           path: |
             playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 7
+
+  webkit-smoke:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build bank
+        run: bash build.sh
+
+      - name: Install locked test dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install WebKit
+        run: npx playwright install --with-deps webkit
+
+      - name: Run Safari and iPhone WebKit smoke tests
+        run: npx playwright test --config=playwright.webkit.config.js
+
+      - name: Upload WebKit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-webkit
+          path: |
+            playwright-report-webkit
             test-results
           if-no-files-found: ignore
           retention-days: 7
