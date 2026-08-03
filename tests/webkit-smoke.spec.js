@@ -22,7 +22,7 @@ test('WebKit opens the active subject and loads another subject on demand', asyn
   ).toBe(5);
 
   await page.locator('#subjectSelector').selectOption('neurosurgery');
-  await expect(page.locator('[data-lecture="neurosurgery-traumatic-brain-injury"]')).toBeVisible();
+  await expect(page.locator('#lecture-neurosurgery-traumatic-brain-injury')).toBeVisible();
   await expect.poll(
     () => page.evaluate(() => globalThis.MEQLectureLoader?.loadedLectureIds.size)
   ).toBe(6);
