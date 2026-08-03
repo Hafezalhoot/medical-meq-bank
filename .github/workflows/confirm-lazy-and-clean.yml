@@ -1,0 +1,65 @@
+name: Confirm Lazy Loading and Clean
+
+on:
+  push:
+    branches:
+      - agent/harden-pwa-ci-foundation
+    paths:
+      - .github/workflows/confirm-lazy-and-clean.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  confirm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out development branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/harden-pwa-ci-foundation
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build and validate source
+        run: |
+          set -euo pipefail
+          bash build.sh
+          python3 scripts/validate_build.py
+          python3 scripts/validate_mobile_filters.py
+          python3 scripts/validate_runtime_extensions.py
+
+      - name: Install locked browser dependencies
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Run complete browser and accessibility suite
+        run: npm run test:e2e
+
+      - name: Clean temporary validation files
+        run: |
+          set -euo pipefail
+          rm -f \
+            .github/workflows/validate-lazy-migration.yml \
+            .github/workflows/validate-lazy-migration-2.yml \
+            lazy-migration-diagnostic.txt \
+            lazy-migration-diagnostic-2.txt
+          git rm .github/workflows/confirm-lazy-and-clean.yml
+
+      - name: Record validated lazy-loading foundation
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Validate lazy loading and clean migration workflows"
+          git push origin HEAD:agent/harden-pwa-ci-foundation
