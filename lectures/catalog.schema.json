@@ -12,9 +12,19 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "file", "expectedCounts"],
+        "required": [
+          "id",
+          "title",
+          "subjectKey",
+          "order",
+          "file",
+          "expectedCounts"
+        ],
         "properties": {
           "id": {"type": "string", "minLength": 1},
+          "title": {"type": "string", "minLength": 1},
+          "subjectKey": {"type": "string", "minLength": 1},
+          "order": {"type": "number"},
           "file": {
             "type": "string",
             "pattern": "^data/[A-Za-z0-9._-]+\\.json$"
