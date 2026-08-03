@@ -12,7 +12,9 @@ async function waitForBank(page) {
   await expect(page.locator('.study-item').first()).toBeAttached();
 }
 
-test('WebKit opens the active subject and loads another subject on demand', async ({page}) => {
+test('WebKit opens the active subject and loads another subject on demand', async ({page}, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-webkit', 'Desktop Safari scenario');
+
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
 
@@ -30,7 +32,9 @@ test('WebKit opens the active subject and loads another subject on demand', asyn
   expect(pageErrors).toEqual([]);
 });
 
-test('iPhone WebKit can expand, search and reset mobile filters', async ({page}) => {
+test('iPhone WebKit can expand, search and reset mobile filters', async ({page}, testInfo) => {
+  test.skip(testInfo.project.name !== 'iphone-webkit', 'iPhone WebKit scenario');
+
   await waitForBank(page);
 
   const toggle = page.locator('#mobileFiltersToggle');
