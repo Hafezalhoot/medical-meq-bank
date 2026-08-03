@@ -28,9 +28,13 @@ test('initial active-subject load stays within a practical request budget', asyn
     rapidItems: document.querySelectorAll('.rapid-item').length,
     nodes: document.getElementsByTagName('*').length
   }));
+  const shellNodeBudget = 2_000;
+  const perLectureNodeBudget = 2_600;
+  const nodeBudget = shellNodeBudget + Math.max(activeLectureCount, 1) * perLectureNodeBudget;
+
   expect(metrics.studyItems).toBeLessThan(2_500);
   expect(metrics.rapidItems).toBeLessThan(1_000);
-  expect(metrics.nodes).toBeLessThan(18_000);
+  expect(metrics.nodes).toBeLessThan(nodeBudget);
 });
 
 test('debounced search filtering completes within the interaction budget', async ({page}) => {
