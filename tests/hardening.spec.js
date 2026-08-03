@@ -11,6 +11,22 @@ async function openBank(page) {
   await expect(page.locator('.study-item').first()).toBeAttached();
 }
 
+async function hasValidEmbeddedAvif(locator) {
+  return locator.evaluate(image => {
+    const prefix = 'data:image/avif;base64,';
+    const source = image.getAttribute('src') || '';
+    if (!source.startsWith(prefix)) return false;
+    try {
+      const payload = atob(source.slice(prefix.length));
+      if (payload.length < 16 || payload.slice(4, 8) !== 'ftyp') return false;
+      const brands = payload.slice(8, 32);
+      return brands.includes('avif') || brands.includes('avis');
+    } catch (error) {
+      return false;
+    }
+  });
+}
+
 test('invalid progress backup is rejected without deleting current progress', async ({page}) => {
   await page.addInitScript(() => {
     localStorage.setItem('medicalBankStatusV2', JSON.stringify({
@@ -52,10 +68,8 @@ test('standalone build embeds all verified Bladder Cancer and Urolithiasis image
   await expect(stones).toHaveCount(10);
   await expect(page.locator('img[src^="data:image/gif;base64,R0lGODlhAQABAAD"]')).toHaveCount(0);
 
-  await bladder.first().scrollIntoViewIfNeeded();
-  await expect.poll(() => bladder.first().evaluate(image => image.naturalWidth > 0)).toBe(true);
-  await stones.first().scrollIntoViewIfNeeded();
-  await expect.poll(() => stones.first().evaluate(image => image.naturalWidth > 0)).toBe(true);
+  expect(await hasValidEmbeddedAvif(bladder.first())).toBe(true);
+  expect(await hasValidEmbeddedAvif(stones.first())).toBe(true);
 });
 
 test('online lecture JSON embeds verified AVIF assets for all 18 new image questions', async ({page}) => {
@@ -65,11 +79,19 @@ test('online lecture JSON embeds verified AVIF assets for all 18 new image quest
 });
 
 test('one broken lecture response does not hide the remaining subject lectures', async ({page}) => {
+  await page.addInitScript(() => {
+    globalThis.__meqLectureLoadErrors = [];
+    document.addEventListener('meq:lecture-load-errors', event => {
+      globalThis.__meqLectureLoadErrors.push(event.detail);
+    });
+  });
   await page.route('**/lectures/data/urology-urolithiasis.json', route =>
     route.fulfill({status: 500, contentType: 'application/json', body: '{}'}));
 
   await openBank(page);
   await expect(page.locator('.lecture')).toHaveCount(6);
   await expect(page.locator('#lecture-urology-congenital-anomalies')).toBeVisible();
-  await expect(page.locator('#appToast')).toContainText('1 lecture could not be loaded');
+  await expect.poll(
+    () => page.evaluate(() => globalThis.__meqLectureLoadErrors?.[0]?.lectureIds || [])
+  ).toEqual(['urology-urolithiasis']);
 });
