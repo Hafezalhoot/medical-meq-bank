@@ -29,6 +29,8 @@ src/app.js                         Core study-bank runtime
 src/progress-resilience.js         IndexedDB mirror for corrupted progress recovery
 src/lecture-loader.js              Subject-level lazy lecture loading
 src/pwa-client.js                  Updates, backup import/export and PWA client
+src/print-manager.css               Reviewable print and PDF styles
+src/print-manager.js                Reviewable print and PDF runtime
 lectures/catalog.json              Published lecture registry and expected counts
 lectures/data/*.json               Reviewable medical lecture content
 lectures/lecture.schema.json       Lecture data contract

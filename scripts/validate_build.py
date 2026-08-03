@@ -244,6 +244,12 @@ def validate_split_sources(version: str) -> None:
     source_app = read_text(ROOT / "src" / "app.js")
     source_loader = read_text(ROOT / "src" / "lecture-loader.js")
     source_pwa = read_text(ROOT / "src" / "pwa-client.js")
+    source_print_css = read_text(ROOT / "src" / "print-manager.css")
+    source_print_js = read_text(ROOT / "src" / "print-manager.js")
+    if len(source_print_css) < 1_000 or len(source_print_js) < 5_000:
+        fail("readable print-manager source is unexpectedly small")
+    if "MEQLectureLoader.loadAll" not in source_print_js:
+        fail("print manager does not load the complete lecture bank")
 
     if len(source_css) < 10_000 or len(source_app) < 10_000 or len(source_loader) < 1_000 or len(source_pwa) < 1_000:
         fail("split application source is unexpectedly small")

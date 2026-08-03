@@ -1,5 +1,0 @@
-Commit: 870552e2953ed7e0ee54d59c0f78987476377eff
-Missing generated application source: dist/lecture-loader.js
-build=1
-
-Final status: 

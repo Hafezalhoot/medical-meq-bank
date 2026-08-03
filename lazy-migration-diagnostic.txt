@@ -1,8 +1,0 @@
-Lazy lecture migration validation
-Commit: 5534c1893640c853eb2bbcf752e32a442a79f3e9
-
-== Build ==
-Missing generated application source: dist/lecture-loader.js
-Build status: 1
-
-Final status: 

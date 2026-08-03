@@ -21,8 +21,8 @@ required_files=(
   mobile-filters.css
   mobile-filters.js
   search-optimization.js
-  print-manager.v8.css.gz.b64
-  print-manager.v8.js.gz.b64
+  src/print-manager.css
+  src/print-manager.js
   back-to-top.css
   back-to-top.js
   manifest.webmanifest
@@ -63,6 +63,7 @@ node --check src/app.js
 node --check src/progress-resilience.js
 node --check src/lecture-loader.js
 node --check src/pwa-client.js
+node --check src/print-manager.js
 
 rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT/lectures/data"

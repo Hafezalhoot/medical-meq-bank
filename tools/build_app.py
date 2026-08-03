@@ -9,8 +9,6 @@ all core source assets so it remains directly openable as one HTML file.
 from __future__ import annotations
 
 from pathlib import Path
-import base64
-import gzip
 import json
 import re
 import sys
@@ -19,14 +17,6 @@ from lecture_builder import build_lecture_extensions
 
 
 ROOT = Path(__file__).resolve().parent.parent
-
-
-def decode_gzip_b64(path: Path) -> str:
-    encoded = path.read_text(encoding="ascii").strip()
-    try:
-        return gzip.decompress(base64.b64decode(encoded, validate=True)).decode("utf-8")
-    except Exception as error:
-        raise SystemExit(f"Could not decode {path}: {error}") from error
 
 
 def replace_required(text: str, old: str, new: str, label: str) -> str:
@@ -211,8 +201,8 @@ def build(output: Path) -> None:
     mobile_filter_css = (ROOT / "mobile-filters.css").read_text(encoding="utf-8")
     mobile_filter_js = (ROOT / "mobile-filters.js").read_text(encoding="utf-8")
     search_optimization_js = (ROOT / "search-optimization.js").read_text(encoding="utf-8")
-    print_css = decode_gzip_b64(ROOT / "print-manager.v8.css.gz.b64")
-    print_js = decode_gzip_b64(ROOT / "print-manager.v8.js.gz.b64")
+    print_css = (ROOT / "src" / "print-manager.css").read_text(encoding="utf-8")
+    print_js = (ROOT / "src" / "print-manager.js").read_text(encoding="utf-8")
     back_to_top_css = (ROOT / "back-to-top.css").read_text(encoding="utf-8")
     back_to_top_js = (ROOT / "back-to-top.js").read_text(encoding="utf-8")
     lecture_batch_js = build_lecture_extensions(ROOT)
