@@ -36,6 +36,7 @@ required_files=(
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
   scripts/validate_runtime_extensions.py
+  scripts/validate_progress_resilience.py
 )
 
 for required in "${required_files[@]}"; do
@@ -55,7 +56,8 @@ python3 -m py_compile \
   tools/lecture_builder.py \
   scripts/validate_build.py \
   scripts/validate_mobile_filters.py \
-  scripts/validate_runtime_extensions.py
+  scripts/validate_runtime_extensions.py \
+  scripts/validate_progress_resilience.py
 
 node --check src/app.js
 node --check src/progress-resilience.js
