@@ -6,7 +6,6 @@
   const topicFilter = document.getElementById('topicFilter');
   const priorityFilter = document.getElementById('priorityFilter');
   const reviewFilter = document.getElementById('reviewFilter');
-  const randomButton = document.getElementById('randomBtn');
 
   if (!toolbar || !searchInput || !lectureFilter || !typeFilter ||
       !topicFilter || !priorityFilter || !reviewFilter ||
@@ -98,25 +97,37 @@
   };
 
   let refreshQueued = false;
+  let lastFilterSignature = '';
+
   const refresh = () => {
     refreshQueued = false;
     const activeFilters = getActiveFilters();
+    const signature = activeFilters.map(filter => `${filter.key}:${filter.label}`).join('\u001f');
     const countBadge = toggle.querySelector('.mobile-filter-count');
     if (countBadge) {
       countBadge.textContent = String(activeFilters.length);
       countBadge.hidden = activeFilters.length === 0;
     }
 
-    chips.replaceChildren();
     if (!activeFilters.length) {
+      if (lastFilterSignature || chips.childElementCount) chips.replaceChildren();
+      lastFilterSignature = '';
       chips.hidden = true;
+      return;
+    }
+
+    // Avoid replacing interactive controls when filters did not change. A
+    // replacement between pointer down and pointer up would cancel the click.
+    if (signature === lastFilterSignature && chips.contains(resetButton)) {
+      chips.hidden = false;
       return;
     }
 
     const label = document.createElement('span');
     label.className = 'active-filter-label';
     label.textContent = 'Active:';
-    chips.append(label, ...activeFilters.map(createChip), resetButton);
+    chips.replaceChildren(label, ...activeFilters.map(createChip), resetButton);
+    lastFilterSignature = signature;
     chips.hidden = false;
   };
 
@@ -202,7 +213,11 @@
 
     setExpanded(false);
     scheduleRefresh();
-    searchInput.focus({preventScroll: true});
+    try {
+      searchInput.focus({preventScroll: true});
+    } catch (error) {
+      searchInput.focus();
+    }
     if (typeof showToast === 'function') showToast('Filters reset.');
   };
 
@@ -210,12 +225,13 @@
     setExpanded(!toolbar.classList.contains('mobile-filters-expanded'));
   });
 
+  resetButton.addEventListener('click', event => {
+    event.stopPropagation();
+    resetFilters();
+  });
+
   chips.addEventListener('click', event => {
     if (!(event.target instanceof Element)) return;
-    if (event.target.closest('#resetFiltersBtn')) {
-      resetFilters();
-      return;
-    }
     const chip = event.target.closest('.filter-chip');
     if (chip?.dataset.filter) clearFilter(chip.dataset.filter);
   });
