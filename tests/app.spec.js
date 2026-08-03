@@ -60,7 +60,7 @@ test('full-bank text search waits for the debounce interval', async ({page}) => 
 
   const search = page.locator('#search');
   await expect(search).toHaveAttribute('data-optimized-search', '1');
-  await expect(search).toHaveAttribute('data-filter-delay', '160');
+  await expect(search).toHaveAttribute('data-filter-delay', '300');
 
   const immediatelyEmpty = await page.evaluate(() => {
     window.__meqSearchApplied = 0;

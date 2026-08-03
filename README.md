@@ -13,6 +13,7 @@ The project is an offline-first Progressive Web App containing lecture-based MEQ
 3. Urological Emergencies
 4. Urinary Tract Infection
 5. Scrotal Swelling
+6. Bladder Cancer
 
 ### Neurosurgery
 
