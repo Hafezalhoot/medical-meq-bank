@@ -41,6 +41,7 @@ jobs:
           node --check review-filter.js
           node --check mobile-filters.js
           node --check back-to-top.js
+          node --check tests/app.spec.js
           find lectures -maxdepth 1 -type f -name '*.js' -print0 | xargs -0 -r -n1 node --check
 
       - name: Verify required deployment files
@@ -60,4 +61,41 @@ jobs:
           name: medical-meq-bank-dist
           path: dist
           if-no-files-found: error
+          retention-days: 7
+
+  browser-smoke:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build bank
+        run: bash build.sh
+
+      - name: Install pinned test dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser smoke tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
           retention-days: 7
