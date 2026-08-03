@@ -1,28 +1,37 @@
-const APP_VERSION = '2026.08.04.1';
+const APP_VERSION = '2026.08.04.2';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
 const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
 const LECTURE_ASSETS = /*__LECTURE_ASSETS__*/ [];
-
 const REQUIRED_ASSETS = [
+  './',
   './index.html',
+  './404.html',
   './app.css',
   './app.js',
   './progress-resilience.js',
   './lecture-loader.js',
   './pwa-client.js',
+  './manifest.webmanifest',
+  './version.json',
+  './lectures/catalog.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/apple-touch-icon.png',
   OFFLINE_PAGE,
   ...LECTURE_ASSETS
 ];
-
 const OPTIONAL_ASSETS = [
-  './',
-  './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/apple-touch-icon.png'
+  './review-filter.css',
+  './review-filter.js',
+  './responsive-sidebars.js',
+  './mobile-filters.css',
+  './mobile-filters.js',
+  './search-optimization.js',
+  './print-manager.css',
+  './print-manager.js',
+  './back-to-top.css',
+  './back-to-top.js'
 ];
-
-const APP_SHELL_PATHS = new Set(['/', '/index.html']);
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
@@ -35,11 +44,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(
-      keys
-        .filter(key => key.startsWith('medical-meq-bank-') && key !== CACHE_NAME)
-        .map(key => caches.delete(key))
-    );
+    await Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
@@ -49,49 +54,39 @@ self.addEventListener('message', event => {
 });
 
 const isSafeAppResponse = response => {
-  if (!response || !response.ok || response.redirected) return false;
-  try {
-    return new URL(response.url).origin === self.location.origin;
-  } catch (error) {
-    return false;
-  }
-};
-
-const isAppShellNavigation = url => {
-  const normalized = url.pathname.endsWith('/') && url.pathname !== '/'
-    ? url.pathname.slice(0, -1)
-    : url.pathname;
-  return APP_SHELL_PATHS.has(normalized || '/');
+  if (!response || !response.ok || response.type === 'opaque') return false;
+  const contentType = response.headers.get('content-type') || '';
+  return !contentType.includes('text/html') || response.url.endsWith('.html');
 };
 
 const networkOnlyVersion = async request => {
   try {
-    return await fetch(new Request(request, {cache: 'no-store'}));
+    return await fetch(request, {cache: 'no-store'});
   } catch (error) {
-    return new Response(
-      JSON.stringify({error: 'VERSION_UNAVAILABLE'}),
-      {status: 503, headers: {'Content-Type': 'application/json', 'Cache-Control': 'no-store'}}
-    );
+    return new Response(JSON.stringify({version: APP_VERSION, offline: true}), {
+      status: 503,
+      headers: {'Content-Type': 'application/json', 'Cache-Control': 'no-store'}
+    });
   }
 };
 
 const handleNavigation = async request => {
-  const url = new URL(request.url);
   try {
     const response = await fetch(request);
-    if (isSafeAppResponse(response) && isAppShellNavigation(url)) {
+    if (response?.ok) {
       const cache = await caches.open(CACHE_NAME);
       await cache.put('./index.html', response.clone());
+      return response;
     }
-    return response;
   } catch (error) {
-    return (
-      await caches.match(request) ||
-      await caches.match('./index.html') ||
-      await caches.match(OFFLINE_PAGE) ||
-      new Response('Offline', {status: 503, headers: {'Content-Type': 'text/plain; charset=utf-8'}})
-    );
+    // Fall through to the shell or standalone offline page.
   }
+  return (await caches.match('./index.html')) ||
+    (await caches.match(OFFLINE_PAGE)) ||
+    new Response('Medical MEQ Bank is unavailable offline.', {
+      status: 503,
+      headers: {'Content-Type': 'text/plain; charset=utf-8'}
+    });
 };
 
 const handleAsset = async request => {
