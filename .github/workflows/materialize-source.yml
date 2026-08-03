@@ -1,0 +1,46 @@
+name: Materialize Application Source
+
+on:
+  push:
+    branches:
+      - agent/harden-pwa-ci-foundation
+    paths:
+      - .github/workflows/materialize-source.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out development branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/harden-pwa-ci-foundation
+
+      - name: Extract reviewable application shell
+        run: |
+          set -euo pipefail
+          test -s Medical_MEQ_Bank_PWA_GitHub_Pages.zip
+          rm -rf /tmp/medical-meq-source
+          mkdir -p /tmp/medical-meq-source src
+          unzip -q Medical_MEQ_Bank_PWA_GitHub_Pages.zip -d /tmp/medical-meq-source
+          test -s /tmp/medical-meq-source/index.html
+          cp /tmp/medical-meq-source/index.html src/index.html
+
+      - name: Commit materialized source
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- src/index.html && git ls-files --error-unmatch src/index.html >/dev/null 2>&1; then
+            echo "src/index.html is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/index.html
+          git commit -m "Materialize reviewable application source"
+          git push origin HEAD:agent/harden-pwa-ci-foundation
