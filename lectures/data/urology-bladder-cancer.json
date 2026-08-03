@@ -1,0 +1,1772 @@
+{
+  "id": "urology-bladder-cancer",
+  "order": 6,
+  "subjectKey": "urology",
+  "subject": "Urology",
+  "title": "Bladder Cancer",
+  "subtitle": "Epidemiology, pathology, staging, clinical picture, investigations, treatment and urinary diversion",
+  "sourceNote": "Built only from the uploaded Bladder Cancer lecture by Dr Amr Hassan Alkhalily. The bank preserves the lecture terminology, figures, percentages, staging statements and treatment pathways without adding external guideline updates.",
+  "subtopics": [
+    {
+      "id": "epidemiology",
+      "label": "Epidemiology"
+    },
+    {
+      "id": "pathology",
+      "label": "Pathology & Classification"
+    },
+    {
+      "id": "bladder-wall",
+      "label": "Bladder Wall"
+    },
+    {
+      "id": "risk-factors",
+      "label": "Risk Factors"
+    },
+    {
+      "id": "staging",
+      "label": "Staging"
+    },
+    {
+      "id": "clinical-picture",
+      "label": "Clinical Picture & Differential Diagnosis"
+    },
+    {
+      "id": "investigations",
+      "label": "Investigations"
+    },
+    {
+      "id": "imaging",
+      "label": "Imaging & Cystoscopy"
+    },
+    {
+      "id": "nmibc-treatment",
+      "label": "Non-Muscle-Invasive Bladder Cancer"
+    },
+    {
+      "id": "mibc-treatment",
+      "label": "Muscle-Invasive Bladder Cancer"
+    },
+    {
+      "id": "urinary-diversion",
+      "label": "Urinary Diversion"
+    }
+  ],
+  "cases": [
+    {
+      "id": "bc-c01",
+      "title": "Older Smoker with Painless Visible Haematuria",
+      "topic": "Clinical Picture",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "risk-factors",
+        "clinical-picture",
+        "investigations"
+      ],
+      "scenario": "An older smoker presents with visible painless haematuria. Examination is unremarkable.",
+      "ar": "مريض كبير ومدخن عنده painless visible haematuria والفحص طبيعي.",
+      "questions": [
+        "What is the most important suspected diagnosis?",
+        "State the two most important risk factors in the lecture.",
+        "List the initial investigations.",
+        "What is the primary diagnostic modality?"
+      ],
+      "answer": [
+        "Bladder cancer.",
+        "Smoking and increasing age.",
+        "Urine analysis, urine cytology, imaging with ultrasound/CT/MRI, and cystoscopy with biopsy.",
+        "Cystoscopy and biopsy."
+      ],
+      "trap": "Early bladder cancer may have an unremarkable examination.",
+      "memory": "Painless haematuria in an older smoker = bladder cancer until proven otherwise."
+    },
+    {
+      "id": "bc-c02",
+      "title": "Bilharzial Patient with Bladder Tumour",
+      "topic": "Pathology",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "risk-factors",
+        "pathology"
+      ],
+      "scenario": "A patient with a history of schistosomiasis develops a bladder malignancy.",
+      "ar": "مريض عنده bilharziasis وظهر له bladder tumour.",
+      "questions": [
+        "Which histological subtype is specifically associated with schistosomiasis?",
+        "List the major bladder cancer histological subtypes.",
+        "Which subtype is the commonest overall and what percentage does it represent?"
+      ],
+      "answer": [
+        "Squamous cell carcinoma.",
+        "Transitional cell carcinoma, squamous cell carcinoma, adenocarcinoma and sarcoma.",
+        "Transitional cell carcinoma, about 80–90% of cases."
+      ],
+      "trap": "Schistosomiasis is linked to SCC, while TCC remains the commonest overall.",
+      "memory": "Bilharzia → SCC; overall commonest → TCC."
+    },
+    {
+      "id": "bc-c03",
+      "title": "Papillary Tumour Confined to Urothelium",
+      "topic": "Staging",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "bladder-wall",
+        "staging"
+      ],
+      "scenario": "Cystoscopy reveals a papillary bladder tumour that has not invaded beneath the urothelium.",
+      "ar": "Papillary tumour لسه ماعداش الـurothelium.",
+      "questions": [
+        "What is the T stage?",
+        "Define this stage.",
+        "How does it differ from Tis and T1?"
+      ],
+      "answer": [
+        "Ta.",
+        "A non-invasive papillary tumour.",
+        "Tis is carcinoma in situ; T1 invades the subepithelial connective tissue (lamina propria)."
+      ],
+      "trap": "Ta is papillary and non-invasive; Tis is flat carcinoma in situ.",
+      "memory": "Ta = papillary top; Tis = flat in situ; T1 = lamina propria."
+    },
+    {
+      "id": "bc-c04",
+      "title": "Flat High-Risk Non-Invasive Lesion",
+      "topic": "Staging",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "staging",
+        "nmibc-treatment"
+      ],
+      "scenario": "A flat bladder lesion is diagnosed as carcinoma in situ.",
+      "ar": "Flat lesion واتشخص carcinoma in situ.",
+      "questions": [
+        "What is its T stage?",
+        "Is it muscle invasive?",
+        "Outline the treatment options stated in the lecture."
+      ],
+      "answer": [
+        "Tis.",
+        "No; it is non-muscle-invasive.",
+        "TURBT/resection is the mainstay for non-muscle-invasive disease, with intravesical BCG or Mitomycin C for higher-risk disease; radical cystectomy may be offered for high-risk disease or limited response."
+      ],
+      "trap": "Although non-muscle-invasive, carcinoma in situ is treated as higher-risk disease in the lecture.",
+      "memory": "CIS = Tis, non-invasive but high risk."
+    },
+    {
+      "id": "bc-c05",
+      "title": "Tumour Invading Lamina Propria",
+      "topic": "Staging",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "bladder-wall",
+        "staging",
+        "nmibc-treatment"
+      ],
+      "scenario": "Histology shows invasion into subepithelial connective tissue without invasion of muscularis propria.",
+      "ar": "Tumour داخل الـlamina propria لكن مش داخل muscle.",
+      "questions": [
+        "What is the T stage?",
+        "Which bladder-wall layer is involved?",
+        "Classify it as muscle-invasive or non-muscle-invasive.",
+        "State the mainstay of management."
+      ],
+      "answer": [
+        "T1.",
+        "Lamina propria/subepithelial connective tissue.",
+        "Non-muscle-invasive bladder cancer.",
+        "TURBT."
+      ],
+      "trap": "T1 is invasive into connective tissue but still classified as non-muscle-invasive.",
+      "memory": "T1 reaches lamina propria, not muscle."
+    },
+    {
+      "id": "bc-c06",
+      "title": "Tumour Invading Detrusor Muscle",
+      "topic": "Muscle-Invasive Disease",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "staging",
+        "mibc-treatment"
+      ],
+      "scenario": "A bladder tumour invades the muscular layer of the bladder wall in a surgically fit patient.",
+      "ar": "Tumour وصل للـdetrusor muscle والمريض fit للجراحة.",
+      "questions": [
+        "What is the T stage?",
+        "What is the standard surgical treatment in the lecture?",
+        "What systemic treatment is often considered before surgery?",
+        "How is recurrence monitored?"
+      ],
+      "answer": [
+        "T2.",
+        "Radical cystectomy with complete removal of the bladder.",
+        "Neoadjuvant chemotherapy, typically a cisplatin combination regimen.",
+        "Regular follow-up with CT imaging for local and distant recurrence."
+      ],
+      "trap": "Muscle invasion changes the treatment pathway from TURBT-based management to radical cystectomy-based management.",
+      "memory": "T2 muscle → neoadjuvant cisplatin + radical cystectomy."
+    },
+    {
+      "id": "bc-c07",
+      "title": "Tumour Extending into Perivesical Fat",
+      "topic": "Locally Advanced Disease",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "staging",
+        "clinical-picture",
+        "mibc-treatment"
+      ],
+      "scenario": "A bladder malignancy extends through the muscle into perivesical fat and the patient reports pelvic pain.",
+      "ar": "Tumour طلع بره العضلة ووصل للدهون حوالين المثانة مع pelvic pain.",
+      "questions": [
+        "What is the T stage?",
+        "How is this disease category described?",
+        "What symptom is compatible with locally advanced disease?"
+      ],
+      "answer": [
+        "T3.",
+        "Locally advanced bladder cancer.",
+        "Pelvic pain."
+      ],
+      "trap": "T3 means perivesical fat, while T4 means adjacent organs.",
+      "memory": "T3 = fat; T4 = adjacent organs."
+    },
+    {
+      "id": "bc-c08",
+      "title": "Ureteric Orifice Obstruction by Bladder Tumour",
+      "topic": "Clinical Picture",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "clinical-picture",
+        "investigations"
+      ],
+      "scenario": "A patient with bladder cancer develops obstruction at the ureteric orifice.",
+      "ar": "Bladder tumour قافل ureteric orifice والمريض عنده renal colic.",
+      "questions": [
+        "What clinical feature may result?",
+        "What broad work-up is required for haematuria?",
+        "List the common differential diagnoses in the lecture."
+      ],
+      "answer": [
+        "Features of ureteric obstruction, including renal colic.",
+        "A full work-up for potential bladder cancer.",
+        "Urinary tract infection, renal calculi, prostate cancer and renal cancer."
+      ],
+      "trap": "Renal colic here may be caused by tumour obstruction, not only a stone.",
+      "memory": "Tumour at ureteric orifice → obstruction → renal colic."
+    },
+    {
+      "id": "bc-c09",
+      "title": "Recurrent Non-Muscle-Invasive Tumour",
+      "topic": "NMIBC Follow-up",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "nmibc-treatment",
+        "investigations"
+      ],
+      "scenario": "A patient treated for a non-muscle-invasive bladder tumour returns for surveillance because of the high recurrence rate.",
+      "ar": "مريض اتعالج من NMIBC وراجع متابعة عشان نسبة الرجوع عالية.",
+      "questions": [
+        "What recurrence figure is stated in the lecture?",
+        "Within what period?",
+        "How should surveillance be performed?",
+        "Why is surveillance important?"
+      ],
+      "answer": [
+        "Around 70% recur.",
+        "Within three years.",
+        "Regular surveillance with urine cytology and cystoscopy.",
+        "Recurrences may be more invasive."
+      ],
+      "trap": "The lecture stresses both high recurrence and the possibility that recurrence becomes more invasive.",
+      "memory": "NMIBC: 70% in 3 years → cytology + cystoscopy."
+    },
+    {
+      "id": "bc-c10",
+      "title": "High-Risk NMIBC with Limited Response",
+      "topic": "High-Risk NMIBC",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "nmibc-treatment"
+      ],
+      "scenario": "A patient with high-risk non-muscle-invasive bladder cancer has a limited response to TURBT and intravesical treatment.",
+      "ar": "High-risk NMIBC ما استجابش كويس لـTURBT والintravesical therapy.",
+      "questions": [
+        "Which intravesical agents are listed?",
+        "Where can intravesical therapy be administered?",
+        "What definitive surgery may be offered?"
+      ],
+      "answer": [
+        "BCG or Mitomycin C.",
+        "In the outpatient setting.",
+        "Radical cystectomy."
+      ],
+      "trap": "Radical cystectomy is not restricted to muscle-invasive disease; the lecture also offers it for high-risk or poorly responding NMIBC.",
+      "memory": "High-risk/poor response NMIBC may need cystectomy."
+    },
+    {
+      "id": "bc-c11",
+      "title": "Post-Cystectomy Patient Requiring Diversion",
+      "topic": "Urinary Diversion",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "mibc-treatment",
+        "urinary-diversion"
+      ],
+      "scenario": "After radical cystectomy, a patient requires a method of urinary diversion.",
+      "ar": "بعد radical cystectomy لازم نختار urinary diversion.",
+      "questions": [
+        "Classify urinary diversion into its two main groups.",
+        "List the non-continent options.",
+        "List the continent options."
+      ],
+      "answer": [
+        "Non-continent and continent diversions.",
+        "Uretero-cutaneous diversion and ileal conduit.",
+        "Orthotopic bladder substitution, continent reservoir for CIC, and ureterosigmoidostomy."
+      ],
+      "trap": "Do not mix ileal conduit with continent reservoir; ileal conduit is non-continent.",
+      "memory": "Non-continent: skin/ileal conduit. Continent: neobladder/reservoir/ureterosigmoidostomy."
+    },
+    {
+      "id": "bc-c12",
+      "title": "Bladder Mass on Ultrasound and CT",
+      "topic": "Imaging",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "imaging",
+        "investigations"
+      ],
+      "scenario": "Ultrasound shows a soft-tissue bladder mass with internal vascularity, inseparable from the bladder wall. CT demonstrates focal wall thickening protruding into the lumen.",
+      "ar": "US فيه vascular mass ملتصقة بالجدار وCT فيه focal wall thickening داخل lumen.",
+      "questions": [
+        "What ultrasound features support bladder cancer?",
+        "What CT findings are described?",
+        "Which modality is called the primary imaging modality?",
+        "Why may MRI be more accurate?"
+      ],
+      "answer": [
+        "A soft-tissue mass with internal vascularity on colour Doppler that is inseparable from the wall.",
+        "Focal bladder-wall thickening or a lesion protruding into the lumen.",
+        "CT.",
+        "MRI more clearly differentiates the bladder-wall layers and uses no ionising radiation."
+      ],
+      "trap": "Cystoscopy remains the primary diagnostic modality even though CT is the primary imaging modality.",
+      "memory": "CT = primary imaging; cystoscopy = primary diagnosis."
+    }
+  ],
+  "coreShorts": [
+    {
+      "id": "bc-s01",
+      "q": "State the worldwide burden of bladder cancer mentioned in the lecture.",
+      "a": [
+        "It affects about 3.5 million people globally.",
+        "Around 573,000 new cases occur each year."
+      ],
+      "topic": "Epidemiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ]
+    },
+    {
+      "id": "bc-s02",
+      "q": "Which country has the highest incidence and which has the highest mortality rate?",
+      "a": [
+        "Greece has the highest incidence.",
+        "Egypt has the highest mortality rate."
+      ],
+      "topic": "Epidemiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ]
+    },
+    {
+      "id": "bc-s03",
+      "q": "State the annual incidence in Egypt given in the lecture.",
+      "a": "About 10,000 new cases per year.",
+      "topic": "Epidemiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ]
+    },
+    {
+      "id": "bc-s04",
+      "q": "Enumerate the histological subtypes of bladder cancer.",
+      "a": [
+        "Transitional cell carcinoma.",
+        "Squamous cell carcinoma.",
+        "Adenocarcinoma.",
+        "Sarcoma."
+      ],
+      "topic": "Pathology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-s05",
+      "q": "What is the commonest histological subtype and its percentage?",
+      "a": "Transitional cell carcinoma, 80–90% of cases.",
+      "topic": "Pathology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-s06",
+      "q": "Classify bladder cancer according to depth/spread.",
+      "a": [
+        "Non-muscle-invasive bladder cancer.",
+        "Muscle-invasive bladder cancer.",
+        "Locally advanced or metastatic bladder cancer."
+      ],
+      "topic": "Classification",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology",
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-s07",
+      "q": "What percentage of cases are non-muscle-invasive?",
+      "a": "Around 70–80%.",
+      "topic": "Classification",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-s08",
+      "q": "Enumerate the four layers of the bladder wall.",
+      "a": [
+        "Urothelium/transitional epithelium.",
+        "Lamina propria.",
+        "Muscularis propria.",
+        "Outer fatty connective tissue."
+      ],
+      "topic": "Bladder Wall",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "bladder-wall"
+      ]
+    },
+    {
+      "id": "bc-s09",
+      "q": "State the two most important risk factors.",
+      "a": [
+        "Smoking.",
+        "Increasing age."
+      ],
+      "topic": "Risk Factors",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "risk-factors"
+      ]
+    },
+    {
+      "id": "bc-s10",
+      "q": "Enumerate other risk factors for bladder cancer.",
+      "a": [
+        "Occupational exposure to aromatic hydrocarbons such as industrial dyes or rubbers.",
+        "Schistosomiasis.",
+        "Chronic irritation from recurrent UTIs, long-term indwelling catheters or bladder stones.",
+        "Previous pelvic radiation."
+      ],
+      "topic": "Risk Factors",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "risk-factors"
+      ]
+    },
+    {
+      "id": "bc-s11",
+      "q": "Which subtype is specifically associated with schistosomiasis?",
+      "a": "Squamous cell carcinoma.",
+      "topic": "Risk Factors",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "risk-factors",
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-s12",
+      "q": "Define Tis.",
+      "a": "Carcinoma in situ.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-s13",
+      "q": "Define Ta.",
+      "a": "Non-invasive papillary tumour.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-s14",
+      "q": "Define T1.",
+      "a": "Tumour invades subepithelial connective tissue/lamina propria.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-s15",
+      "q": "Define T2.",
+      "a": "Tumour invades muscle.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-s16",
+      "q": "Define T3.",
+      "a": "Tumour invades perivesical fat.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-s17",
+      "q": "Define T4.",
+      "a": "Tumour invades adjacent organs.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-s18",
+      "q": "What is the commonest presenting feature?",
+      "a": "Painless haematuria, either visible or non-visible.",
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-s19",
+      "q": "Enumerate other clinical presentations.",
+      "a": [
+        "Recurrent UTIs.",
+        "LUTS such as frequency, urgency or incomplete voiding.",
+        "Renal colic from ureteric-orifice obstruction.",
+        "Pelvic pain in locally advanced disease.",
+        "Weight loss or lethargy in metastatic disease."
+      ],
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-s20",
+      "q": "What is usually found on examination in early disease?",
+      "a": "Clinical examination is typically unremarkable.",
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-s21",
+      "q": "Enumerate common differential diagnoses of haematuria.",
+      "a": [
+        "Urinary tract infection.",
+        "Renal calculi.",
+        "Prostate cancer.",
+        "Renal cancer."
+      ],
+      "topic": "Differential Diagnosis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-s22",
+      "q": "Enumerate the investigations for bladder cancer.",
+      "a": [
+        "Urine analysis.",
+        "Urine cytology.",
+        "Ultrasound.",
+        "CT.",
+        "MRI.",
+        "Cystoscopy and biopsy."
+      ],
+      "topic": "Investigations",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "investigations"
+      ]
+    },
+    {
+      "id": "bc-s23",
+      "q": "Describe the ultrasound appearance given in the lecture.",
+      "a": "A soft-tissue mass with internal vascularity on colour Doppler, inseparable from the bladder wall.",
+      "topic": "Imaging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging"
+      ]
+    },
+    {
+      "id": "bc-s24",
+      "q": "What is the primary imaging modality and what may it show?",
+      "a": "CT; it may show focal wall thickening or a lesion protruding into the lumen.",
+      "topic": "Imaging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging"
+      ]
+    },
+    {
+      "id": "bc-s25",
+      "q": "State two advantages of MRI mentioned in the lecture.",
+      "a": [
+        "More accurate differentiation between bladder-wall layers.",
+        "No ionising radiation."
+      ],
+      "topic": "Imaging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging"
+      ]
+    },
+    {
+      "id": "bc-s26",
+      "q": "Why is cystoscopy and biopsy important?",
+      "a": [
+        "It is the primary modality for diagnosis.",
+        "It permits biopsy.",
+        "It may allow complete resection of a small tumour."
+      ],
+      "topic": "Cystoscopy",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging",
+        "investigations"
+      ]
+    },
+    {
+      "id": "bc-s27",
+      "q": "Outline treatment of non-muscle-invasive bladder cancer.",
+      "a": [
+        "TURBT as the mainstay.",
+        "Intravesical BCG or Mitomycin C for higher-risk disease.",
+        "Radical cystectomy for high-risk disease or limited response.",
+        "Regular surveillance with cytology and cystoscopy."
+      ],
+      "topic": "NMIBC Treatment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "nmibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-s28",
+      "q": "State the recurrence pattern of non-invasive bladder tumours.",
+      "a": "Around 70% recur within three years, and recurrences are more likely to be more invasive.",
+      "topic": "NMIBC Follow-up",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "nmibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-s29",
+      "q": "Outline treatment of muscle-invasive bladder cancer.",
+      "a": [
+        "Radical cystectomy in surgically fit patients.",
+        "Neoadjuvant chemotherapy, typically cisplatin-based.",
+        "Regular CT follow-up for recurrence.",
+        "Urinary diversion after cystectomy."
+      ],
+      "topic": "MIBC Treatment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "mibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-s30",
+      "q": "Classify urinary diversion and give examples.",
+      "a": [
+        "Non-continent: uretero-cutaneous diversion and ileal conduit.",
+        "Continent: orthotopic bladder substitution, continent reservoir for CIC and ureterosigmoidostomy."
+      ],
+      "topic": "Urinary Diversion",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "urinary-diversion"
+      ]
+    }
+  ],
+  "imageQuestions": [
+    {
+      "id": "bc-i01",
+      "title": "Bladder Wall Diagram",
+      "topic": "Bladder Wall",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "bladder-wall"
+      ],
+      "questions": [
+        "Identify the urothelium.",
+        "Identify lamina propria.",
+        "Identify muscularis propria.",
+        "Identify the outer fatty layer."
+      ],
+      "answer": [
+        "Urothelium is the inner transitional epithelium.",
+        "Lamina propria is the subepithelial connective tissue.",
+        "Muscularis propria is the detrusor muscle layer.",
+        "The outer layer is fatty connective tissue."
+      ],
+      "page": 8
+    },
+    {
+      "id": "bc-i02",
+      "title": "TNM Depth Diagram",
+      "topic": "Staging",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "staging"
+      ],
+      "questions": [
+        "Label Tis, Ta, T1, T2 and T3 according to depth."
+      ],
+      "answer": [
+        "Tis: carcinoma in situ.",
+        "Ta: non-invasive papillary tumour.",
+        "T1: lamina propria.",
+        "T2: muscle.",
+        "T3: perivesical fat."
+      ],
+      "page": 10
+    },
+    {
+      "id": "bc-i03",
+      "title": "Ultrasound Bladder Mass",
+      "topic": "Ultrasound",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "imaging"
+      ],
+      "questions": [
+        "Describe the lesion.",
+        "What Doppler feature supports tumour?"
+      ],
+      "answer": [
+        "Soft-tissue mass inseparable from the bladder wall.",
+        "Internal vascularity on colour Doppler."
+      ],
+      "page": 14
+    },
+    {
+      "id": "bc-i04",
+      "title": "CT Bladder Tumour",
+      "topic": "CT",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "imaging"
+      ],
+      "questions": [
+        "State the imaging modality.",
+        "Describe the findings given in the lecture."
+      ],
+      "answer": [
+        "CT scan.",
+        "Focal wall thickening or a mass protruding into the lumen."
+      ],
+      "page": 15
+    },
+    {
+      "id": "bc-i05",
+      "title": "MRI Bladder Tumour",
+      "topic": "MRI",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "imaging"
+      ],
+      "questions": [
+        "State one reason MRI may be more accurate than CT.",
+        "State one radiation-related advantage."
+      ],
+      "answer": [
+        "Clear differentiation between bladder-wall layers.",
+        "No ionising radiation."
+      ],
+      "page": 16
+    },
+    {
+      "id": "bc-i06",
+      "title": "Cystoscopic Papillary Tumour",
+      "topic": "Cystoscopy",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "imaging",
+        "staging"
+      ],
+      "questions": [
+        "What stage is suggested by a papillary non-invasive lesion?",
+        "State two roles of cystoscopy."
+      ],
+      "answer": [
+        "Ta.",
+        "Primary diagnostic modality; permits biopsy and complete resection of a small tumour."
+      ],
+      "page": 17
+    },
+    {
+      "id": "bc-i07",
+      "title": "Ileal Conduit Image",
+      "topic": "Urinary Diversion",
+      "priority": "Core",
+      "marks": 5,
+      "subtopics": [
+        "urinary-diversion"
+      ],
+      "questions": [
+        "Identify the diversion.",
+        "Is it continent or non-continent?"
+      ],
+      "answer": [
+        "Ileal conduit.",
+        "Non-continent urinary diversion."
+      ],
+      "page": 22
+    },
+    {
+      "id": "bc-i08",
+      "title": "Continent Reservoir with Abdominal Stoma",
+      "topic": "Urinary Diversion",
+      "priority": "Core",
+      "marks": 5,
+      "subtopics": [
+        "urinary-diversion"
+      ],
+      "questions": [
+        "Identify the diversion type.",
+        "How is it emptied according to the lecture label?"
+      ],
+      "answer": [
+        "Continent reservoir with abdominal stoma.",
+        "By clean intermittent catheterisation (CIC)."
+      ],
+      "page": 22
+    }
+  ],
+  "detailedShorts": [
+    {
+      "id": "bc-d01",
+      "q": "State the worldwide burden of bladder cancer mentioned in the lecture.",
+      "a": [
+        "It affects about 3.5 million people globally.",
+        "Around 573,000 new cases occur each year."
+      ],
+      "topic": "Epidemiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ]
+    },
+    {
+      "id": "bc-d02",
+      "q": "Which country has the highest incidence and which has the highest mortality rate?",
+      "a": [
+        "Greece has the highest incidence.",
+        "Egypt has the highest mortality rate."
+      ],
+      "topic": "Epidemiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ]
+    },
+    {
+      "id": "bc-d03",
+      "q": "State the annual incidence in Egypt given in the lecture.",
+      "a": "About 10,000 new cases per year.",
+      "topic": "Epidemiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ]
+    },
+    {
+      "id": "bc-d04",
+      "q": "Enumerate the histological subtypes of bladder cancer.",
+      "a": [
+        "Transitional cell carcinoma.",
+        "Squamous cell carcinoma.",
+        "Adenocarcinoma.",
+        "Sarcoma."
+      ],
+      "topic": "Pathology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-d05",
+      "q": "What is the commonest histological subtype and its percentage?",
+      "a": "Transitional cell carcinoma, 80–90% of cases.",
+      "topic": "Pathology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-d06",
+      "q": "Classify bladder cancer according to depth/spread.",
+      "a": [
+        "Non-muscle-invasive bladder cancer.",
+        "Muscle-invasive bladder cancer.",
+        "Locally advanced or metastatic bladder cancer."
+      ],
+      "topic": "Classification",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology",
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d07",
+      "q": "What percentage of cases are non-muscle-invasive?",
+      "a": "Around 70–80%.",
+      "topic": "Classification",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-d08",
+      "q": "Enumerate the four layers of the bladder wall.",
+      "a": [
+        "Urothelium/transitional epithelium.",
+        "Lamina propria.",
+        "Muscularis propria.",
+        "Outer fatty connective tissue."
+      ],
+      "topic": "Bladder Wall",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "bladder-wall"
+      ]
+    },
+    {
+      "id": "bc-d09",
+      "q": "State the two most important risk factors.",
+      "a": [
+        "Smoking.",
+        "Increasing age."
+      ],
+      "topic": "Risk Factors",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "risk-factors"
+      ]
+    },
+    {
+      "id": "bc-d10",
+      "q": "Enumerate other risk factors for bladder cancer.",
+      "a": [
+        "Occupational exposure to aromatic hydrocarbons such as industrial dyes or rubbers.",
+        "Schistosomiasis.",
+        "Chronic irritation from recurrent UTIs, long-term indwelling catheters or bladder stones.",
+        "Previous pelvic radiation."
+      ],
+      "topic": "Risk Factors",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "risk-factors"
+      ]
+    },
+    {
+      "id": "bc-d11",
+      "q": "Which subtype is specifically associated with schistosomiasis?",
+      "a": "Squamous cell carcinoma.",
+      "topic": "Risk Factors",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "risk-factors",
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-d12",
+      "q": "Define Tis.",
+      "a": "Carcinoma in situ.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d13",
+      "q": "Define Ta.",
+      "a": "Non-invasive papillary tumour.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d14",
+      "q": "Define T1.",
+      "a": "Tumour invades subepithelial connective tissue/lamina propria.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d15",
+      "q": "Define T2.",
+      "a": "Tumour invades muscle.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d16",
+      "q": "Define T3.",
+      "a": "Tumour invades perivesical fat.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d17",
+      "q": "Define T4.",
+      "a": "Tumour invades adjacent organs.",
+      "topic": "Staging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d18",
+      "q": "What is the commonest presenting feature?",
+      "a": "Painless haematuria, either visible or non-visible.",
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d19",
+      "q": "Enumerate other clinical presentations.",
+      "a": [
+        "Recurrent UTIs.",
+        "LUTS such as frequency, urgency or incomplete voiding.",
+        "Renal colic from ureteric-orifice obstruction.",
+        "Pelvic pain in locally advanced disease.",
+        "Weight loss or lethargy in metastatic disease."
+      ],
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d20",
+      "q": "What is usually found on examination in early disease?",
+      "a": "Clinical examination is typically unremarkable.",
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d21",
+      "q": "Enumerate common differential diagnoses of haematuria.",
+      "a": [
+        "Urinary tract infection.",
+        "Renal calculi.",
+        "Prostate cancer.",
+        "Renal cancer."
+      ],
+      "topic": "Differential Diagnosis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d22",
+      "q": "Enumerate the investigations for bladder cancer.",
+      "a": [
+        "Urine analysis.",
+        "Urine cytology.",
+        "Ultrasound.",
+        "CT.",
+        "MRI.",
+        "Cystoscopy and biopsy."
+      ],
+      "topic": "Investigations",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "investigations"
+      ]
+    },
+    {
+      "id": "bc-d23",
+      "q": "Describe the ultrasound appearance given in the lecture.",
+      "a": "A soft-tissue mass with internal vascularity on colour Doppler, inseparable from the bladder wall.",
+      "topic": "Imaging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging"
+      ]
+    },
+    {
+      "id": "bc-d24",
+      "q": "What is the primary imaging modality and what may it show?",
+      "a": "CT; it may show focal wall thickening or a lesion protruding into the lumen.",
+      "topic": "Imaging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging"
+      ]
+    },
+    {
+      "id": "bc-d25",
+      "q": "State two advantages of MRI mentioned in the lecture.",
+      "a": [
+        "More accurate differentiation between bladder-wall layers.",
+        "No ionising radiation."
+      ],
+      "topic": "Imaging",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging"
+      ]
+    },
+    {
+      "id": "bc-d26",
+      "q": "Why is cystoscopy and biopsy important?",
+      "a": [
+        "It is the primary modality for diagnosis.",
+        "It permits biopsy.",
+        "It may allow complete resection of a small tumour."
+      ],
+      "topic": "Cystoscopy",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging",
+        "investigations"
+      ]
+    },
+    {
+      "id": "bc-d27",
+      "q": "Outline treatment of non-muscle-invasive bladder cancer.",
+      "a": [
+        "TURBT as the mainstay.",
+        "Intravesical BCG or Mitomycin C for higher-risk disease.",
+        "Radical cystectomy for high-risk disease or limited response.",
+        "Regular surveillance with cytology and cystoscopy."
+      ],
+      "topic": "NMIBC Treatment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "nmibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d28",
+      "q": "State the recurrence pattern of non-invasive bladder tumours.",
+      "a": "Around 70% recur within three years, and recurrences are more likely to be more invasive.",
+      "topic": "NMIBC Follow-up",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "nmibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d29",
+      "q": "Outline treatment of muscle-invasive bladder cancer.",
+      "a": [
+        "Radical cystectomy in surgically fit patients.",
+        "Neoadjuvant chemotherapy, typically cisplatin-based.",
+        "Regular CT follow-up for recurrence.",
+        "Urinary diversion after cystectomy."
+      ],
+      "topic": "MIBC Treatment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "mibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d30",
+      "q": "Classify urinary diversion and give examples.",
+      "a": [
+        "Non-continent: uretero-cutaneous diversion and ileal conduit.",
+        "Continent: orthotopic bladder substitution, continent reservoir for CIC and ureterosigmoidostomy."
+      ],
+      "topic": "Urinary Diversion",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "urinary-diversion"
+      ]
+    },
+    {
+      "id": "bc-d31",
+      "q": "Why is the bladder wall important in classification?",
+      "a": "Because staging depends on whether tumour remains in urothelium, invades lamina propria, muscle, perivesical fat or adjacent organs.",
+      "topic": "Bladder Wall",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "bladder-wall",
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d32",
+      "q": "Differentiate non-muscle-invasive from muscle-invasive bladder cancer.",
+      "a": [
+        "Non-muscle-invasive disease does not penetrate the deeper muscular layers.",
+        "Muscle-invasive disease penetrates the deeper layers/muscularis propria."
+      ],
+      "topic": "Classification",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-d33",
+      "q": "What is locally advanced or metastatic bladder cancer?",
+      "a": "Cancer that has spread beyond the bladder locally or distantly.",
+      "topic": "Classification",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathology"
+      ]
+    },
+    {
+      "id": "bc-d34",
+      "q": "What occupational exposures are mentioned?",
+      "a": "Aromatic hydrocarbons, including industrial dyes and rubbers.",
+      "topic": "Risk Factors",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "risk-factors"
+      ]
+    },
+    {
+      "id": "bc-d35",
+      "q": "Give examples of chronic irritation associated with bladder cancer.",
+      "a": [
+        "Recurrent UTIs.",
+        "Long-term indwelling catheters.",
+        "Bladder stones."
+      ],
+      "topic": "Risk Factors",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "risk-factors"
+      ]
+    },
+    {
+      "id": "bc-d36",
+      "q": "What symptom may result from obstruction of the ureteric orifice?",
+      "a": "Renal colic/features of ureteric obstruction.",
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d37",
+      "q": "What symptoms suggest locally advanced disease?",
+      "a": "Localised symptoms such as pelvic pain.",
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d38",
+      "q": "What symptoms suggest metastatic disease?",
+      "a": "Systemic symptoms such as weight loss or lethargy.",
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d39",
+      "q": "What urinary symptoms may occur besides haematuria?",
+      "a": [
+        "Frequency.",
+        "Urgency.",
+        "Feeling of incomplete voiding.",
+        "Recurrent UTIs."
+      ],
+      "topic": "Clinical Picture",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d40",
+      "q": "Why does every haematuria case need full work-up?",
+      "a": "To evaluate for potential bladder cancer.",
+      "topic": "Differential Diagnosis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture"
+      ]
+    },
+    {
+      "id": "bc-d41",
+      "q": "What laboratory tests are listed?",
+      "a": [
+        "Urine analysis.",
+        "Urine cytology."
+      ],
+      "topic": "Investigations",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "investigations"
+      ]
+    },
+    {
+      "id": "bc-d42",
+      "q": "What imaging tests are listed?",
+      "a": [
+        "Ultrasound.",
+        "CT.",
+        "MRI."
+      ],
+      "topic": "Investigations",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "investigations"
+      ]
+    },
+    {
+      "id": "bc-d43",
+      "q": "What must a bladder tumour biopsy include according to the handwritten lecture note?",
+      "a": "The muscle layer should be included in the biopsy to assess muscle invasion.",
+      "topic": "Biopsy",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "investigations",
+        "staging"
+      ]
+    },
+    {
+      "id": "bc-d44",
+      "q": "What can cystoscopy achieve for a small tumour?",
+      "a": "Complete endoscopic resection in addition to biopsy.",
+      "topic": "Cystoscopy",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "imaging"
+      ]
+    },
+    {
+      "id": "bc-d45",
+      "q": "Where may intravesical BCG or Mitomycin C be given?",
+      "a": "In the outpatient setting.",
+      "topic": "NMIBC Treatment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "nmibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d46",
+      "q": "When may radical cystectomy be offered in NMIBC?",
+      "a": "For high-risk disease or limited response to initial treatment.",
+      "topic": "NMIBC Treatment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "nmibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d47",
+      "q": "What surveillance tests are used after NMIBC treatment?",
+      "a": [
+        "Urine cytology.",
+        "Cystoscopy."
+      ],
+      "topic": "NMIBC Follow-up",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "nmibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d48",
+      "q": "What is radical cystectomy?",
+      "a": "Complete removal of the bladder.",
+      "topic": "MIBC Treatment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "mibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d49",
+      "q": "Which chemotherapy type is stated for MIBC?",
+      "a": "Neoadjuvant chemotherapy, typically a cisplatin combination regimen.",
+      "topic": "MIBC Treatment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "mibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d50",
+      "q": "What does CT follow-up monitor after MIBC treatment?",
+      "a": [
+        "Local recurrence.",
+        "Distant recurrence."
+      ],
+      "topic": "MIBC Follow-up",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "mibc-treatment"
+      ]
+    },
+    {
+      "id": "bc-d51",
+      "q": "Define non-continent diversion in practical terms.",
+      "a": "A diversion in which urine exits continuously and is not controlled by a continent reservoir.",
+      "topic": "Urinary Diversion",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "urinary-diversion"
+      ]
+    },
+    {
+      "id": "bc-d52",
+      "q": "Name the two non-continent diversions.",
+      "a": [
+        "Uretero-cutaneous diversion.",
+        "Ileal conduit."
+      ],
+      "topic": "Urinary Diversion",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "urinary-diversion"
+      ]
+    },
+    {
+      "id": "bc-d53",
+      "q": "Name the three continent diversions.",
+      "a": [
+        "Orthotopic bladder substitution.",
+        "Continent reservoir for CIC.",
+        "Ureterosigmoidostomy."
+      ],
+      "topic": "Urinary Diversion",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "urinary-diversion"
+      ]
+    },
+    {
+      "id": "bc-d54",
+      "q": "What does CIC stand for in the urinary-diversion context?",
+      "a": "Clean intermittent catheterisation.",
+      "topic": "Urinary Diversion",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "urinary-diversion"
+      ]
+    },
+    {
+      "id": "bc-d55",
+      "q": "Summarise the key conclusions of the lecture.",
+      "a": [
+        "Bladder cancer is frequent and has high mortality.",
+        "Key risks include smoking, industrial toxins and bilharzial infestation.",
+        "TCC is commonest.",
+        "Gross painless haematuria is common.",
+        "Cystoscopy is the primary diagnostic modality.",
+        "TURBT plus BCG is suitable for non-muscle-invasive disease."
+      ],
+      "topic": "Conclusion",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "clinical-picture",
+        "investigations",
+        "nmibc-treatment"
+      ]
+    }
+  ],
+  "rapid": [
+    [
+      "Commonest bladder cancer subtype?",
+      "Transitional cell carcinoma (80–90%)."
+    ],
+    [
+      "Schistosomiasis-associated subtype?",
+      "Squamous cell carcinoma."
+    ],
+    [
+      "Most important risk factors?",
+      "Smoking and increasing age."
+    ],
+    [
+      "Commonest presentation?",
+      "Painless haematuria."
+    ],
+    [
+      "Early examination?",
+      "Usually unremarkable."
+    ],
+    [
+      "Tis?",
+      "Carcinoma in situ."
+    ],
+    [
+      "Ta?",
+      "Non-invasive papillary tumour."
+    ],
+    [
+      "T1?",
+      "Lamina propria/subepithelial connective tissue invasion."
+    ],
+    [
+      "T2?",
+      "Muscle invasion."
+    ],
+    [
+      "T3?",
+      "Perivesical fat invasion."
+    ],
+    [
+      "T4?",
+      "Adjacent-organ invasion."
+    ],
+    [
+      "Primary imaging modality?",
+      "CT."
+    ],
+    [
+      "Primary diagnostic modality?",
+      "Cystoscopy and biopsy."
+    ],
+    [
+      "Ultrasound tumour sign?",
+      "Vascular soft-tissue mass inseparable from wall."
+    ],
+    [
+      "CT tumour sign?",
+      "Focal wall thickening or luminal protrusion."
+    ],
+    [
+      "MRI advantage?",
+      "Clear wall-layer differentiation and no ionising radiation."
+    ],
+    [
+      "NMIBC mainstay?",
+      "TURBT."
+    ],
+    [
+      "High-risk NMIBC intravesical therapy?",
+      "BCG or Mitomycin C."
+    ],
+    [
+      "When cystectomy in NMIBC?",
+      "High-risk disease or limited response."
+    ],
+    [
+      "NMIBC recurrence?",
+      "About 70% within 3 years."
+    ],
+    [
+      "NMIBC surveillance?",
+      "Cytology and cystoscopy."
+    ],
+    [
+      "MIBC main surgery?",
+      "Radical cystectomy."
+    ],
+    [
+      "MIBC neoadjuvant therapy?",
+      "Cisplatin-combination chemotherapy."
+    ],
+    [
+      "MIBC follow-up imaging?",
+      "CT."
+    ],
+    [
+      "Non-continent diversions?",
+      "Uretero-cutaneous diversion and ileal conduit."
+    ],
+    [
+      "Continent diversions?",
+      "Orthotopic substitution, continent CIC reservoir, ureterosigmoidostomy."
+    ],
+    [
+      "Bladder wall layer 1?",
+      "Urothelium."
+    ],
+    [
+      "Bladder wall layer 2?",
+      "Lamina propria."
+    ],
+    [
+      "Bladder wall layer 3?",
+      "Muscularis propria."
+    ],
+    [
+      "Bladder wall layer 4?",
+      "Outer fatty connective tissue."
+    ]
+  ]
+}

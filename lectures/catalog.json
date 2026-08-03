@@ -85,6 +85,20 @@
         "detailedShorts": 58,
         "rapid": 40
       }
+    },
+    {
+      "id": "urology-bladder-cancer",
+      "title": "Bladder Cancer",
+      "subjectKey": "urology",
+      "order": 6,
+      "file": "data/urology-bladder-cancer.json",
+      "expectedCounts": {
+        "cases": 12,
+        "coreShorts": 30,
+        "imageQuestions": 8,
+        "detailedShorts": 55,
+        "rapid": 30
+      }
     }
   ]
 }
