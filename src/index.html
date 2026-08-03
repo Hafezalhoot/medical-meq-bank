@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#174ea6">
+<meta name="application-name" content="Medical MEQ Bank">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MEQ Bank">
+<meta name="description" content="Offline-first medical MEQ and short-question review bank organized by subject, lecture and subtopic.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+
+<title>Medical MEQ Review Bank</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div class="app">
+<section class="hero">
+  <button class="theme-toggle" id="darkBtn" type="button" aria-label="Toggle dark mode">◐ Dark mode</button>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Lecture-based • Expandable • Offline HTML</div>
+      <h1>Medical MEQ & Short Question Review Bank</h1>
+      <p>MEQ cases, high-yield short questions, image spots and saved self-assessment—organized by subject, lecture and subtopic.</p>
+      <div class="hero-tags" id="heroTags"></div>
+      <div class="pwa-tools" aria-label="App and backup tools">
+        <button class="pwa-btn" id="installAppBtn" type="button" hidden>⬇ Install App</button>
+        <button class="pwa-btn" id="exportProgressBtn" type="button">⇩ Backup Progress</button>
+        <button class="pwa-btn" id="importProgressBtn" type="button">⇧ Restore Progress</button>
+        <input id="importProgressFile" type="file" accept="application/json,.json" hidden>
+        <span class="connection-pill" id="connectionPill"><span class="connection-dot"></span><span id="connectionText">Online</span></span>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <label class="hero-panel-label" for="subjectSelector">Main surgical subject</label>
+      <select id="subjectSelector" class="subject-select"></select>
+      <span class="subject-hint">Choose a subject to display its lectures and study content.</span>
+    </div>
+  </div>
+</section>
+
+<section class="toolbar" aria-label="Study filters">
+  <input id="search" class="control" placeholder="Search lectures, cases, signs, questions..." aria-label="Search">
+  <select id="lectureFilter" class="control" aria-label="Lecture filter"></select>
+  <select id="typeFilter" class="control" aria-label="Question type filter"><option value="all">All study items</option><option value="case">MEQ cases</option><option value="core">High-yield shorts</option><option value="image">Image/spot questions</option><option value="extra">Detailed practice</option></select>
+  <select id="topicFilter" class="control" aria-label="Topic filter"><option value="all">All topics</option></select>
+  <select id="priorityFilter" class="control" aria-label="Priority filter"><option value="all">All priorities</option><option value="High">High priority</option><option value="Core">Core</option></select>
+  <button class="btn btn-primary" id="randomBtn" type="button">Random item</button>
+  <button class="btn btn-soft" id="revealBtn" type="button">Reveal all</button>
+</section>
+<div id="dataAlert" class="data-alert" hidden></div>
+<div id="updateBanner" class="update-banner" role="status" aria-live="polite">
+  <div><b>New bank version available.</b> Reload to use the latest lectures and fixes.</div>
+  <button id="applyUpdateBtn" type="button">Update now</button>
+</div>
+
+
+<section class="stats">
+  <div class="stat"><strong id="lectureCount">0</strong><span>Lectures</span></div>
+  <div class="stat"><strong id="caseCount">0</strong><span>MEQ cases</span></div>
+  <div class="stat"><strong id="coreCount">0</strong><span>High-yield shorts</span></div>
+  <div class="stat"><strong id="imageCount">0</strong><span>Image questions</span></div>
+  <div class="stat"><strong id="masteredCount">0</strong><span>Mastered core items</span></div>
+  <div class="stat"><strong id="coreProgressText">0%</strong><span>Core rated progress</span><div class="progress-track"><div class="progress-fill" id="coreProgressFill"></div></div></div>
+  <div class="stat"><strong id="overallProgressText">0%</strong><span>Overall practice</span><div class="progress-track"><div class="progress-fill overall-fill" id="overallProgressFill"></div></div></div>
+</section>
+
+<div class="nav-controls" aria-label="Navigation panels">
+  <button class="nav-toggle active" id="toggleLectures" type="button">☰ Lectures panel</button>
+  <button class="nav-toggle active" id="toggleSubtopics" type="button">☷ Subtopics panel</button>
+</div>
+
+<div class="layout" id="mainLayout">
+  <aside class="sidebar lecture-sidebar">
+    <h3>Main topics</h3>
+    <div class="sidebar-caption">Lectures inside the selected subject</div>
+    <nav id="lectureNav"></nav>
+    <div class="side-note"><b>Best method:</b><br>Attempt first → reveal the answer → mark Mastered, Review, or Weak. Progress is saved locally.</div>
+    <button class="btn btn-soft" style="width:100%;margin-top:12px" onclick="window.print()">Print / Save as PDF</button>
+  </aside>
+
+  <aside class="sidebar subtopic-sidebar">
+    <h3>Subtopics</h3>
+    <div class="sidebar-caption">Diseases and headings inside the selected lecture</div>
+    <nav id="subtopicNav"></nav>
+  </aside>
+
+  <main>
+    <div id="lectureContainer"></div>
+    <div class="empty" id="empty"><h2>No content found</h2><div id="emptyMessage">No study items match the current selection.</div></div>
+  </main>
+</div>
+<div class="footer">Lecture-first bank • Four main surgical subjects • Two-level navigation • Separate core and overall progress</div>
+</div>
+<div id="appToast" class="toast" role="status" aria-live="polite"></div>
+<script src="./app.js"></script>
+
+<script src="./pwa-client.js"></script>
+
+</body>
+</html>

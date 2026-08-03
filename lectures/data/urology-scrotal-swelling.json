@@ -1,0 +1,2132 @@
+{
+  "id": "urology-scrotal-swelling",
+  "order": 4,
+  "subjectKey": "urology",
+  "subject": "Urology",
+  "title": "Scrotal Swelling",
+  "subtitle": "Epididymo-orchitis, varicocele, hydrocele, spermatocele, testicular tumors, torsion and cryptorchidism",
+  "sourceNote": "Built only from the uploaded SCROTAL SWELLING 3 lecture. The bank preserves the lecture definitions, figures, percentages, classifications, timings and treatment statements without adding external guideline details.",
+  "cases": [
+    {
+      "id": "ss-c01",
+      "title": "Painful Febrile Scrotal Swelling",
+      "topic": "Epididymo-Orchitis",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "scenario": "A patient presents with scrotal pain and swelling associated with fever and malaise. The clinician is considering an inflammatory condition involving both the epididymis and testis.",
+      "ar": "مريض عنده scrotal pain وswelling مع fever وmalaise، والطبيب شاكك في التهاب الـepididymis والtestis.",
+      "questions": [
+        "What is the most likely diagnosis?",
+        "State the bacterial and viral causes listed in the lecture.",
+        "Outline treatment.",
+        "How long should antibiotics continue in bacterial disease?"
+      ],
+      "answer": [
+        "Epididymo-orchitis.",
+        "Bacterial causes include E. coli, Neisseria gonorrhea and Chlamydia trachomatis; the listed viral cause is mumps.",
+        "Rest and scrotal support, anti-inflammatory drugs, analgesics, antipyretics, and antibiotics for bacterial epididymo-orchitis.",
+        "The antibiotic course should continue for two weeks."
+      ],
+      "marking": [
+        "Diagnosis - 1",
+        "Etiology - 3",
+        "Supportive treatment - 2",
+        "Antibiotic use and duration - 2"
+      ],
+      "trap": "The lecture emphasizes that epididymo-orchitis must be differentiated from testicular torsion, a true urologic emergency.",
+      "memory": "Pain + swelling + fever = think epididymo-orchitis, but exclude torsion."
+    },
+    {
+      "id": "ss-c02",
+      "title": "Parotiditis Followed by Orchitis",
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 6,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "scenario": "A young patient develops scrotal pain and swelling about one week after parotid swelling.",
+      "ar": "مريض ظهر عنده scrotal pain وswelling بعد parotiditis بحوالي أسبوع.",
+      "questions": [
+        "What is the likely cause?",
+        "What temporal relationship is stated in the lecture?",
+        "State the supportive treatment."
+      ],
+      "answer": [
+        "Mumps orchitis.",
+        "Parotiditis may precede the onset of mumps orchitis by about one week.",
+        "Rest, scrotal support, anti-inflammatory drugs, analgesics and antipyretics."
+      ],
+      "marking": [
+        "Cause - 2",
+        "Timing - 2",
+        "Treatment - 2"
+      ],
+      "trap": "Do not add antibiotics automatically to a viral cause unless bacterial epididymo-orchitis is present.",
+      "memory": "Mumps: parotiditis first, orchitis about one week later."
+    },
+    {
+      "id": "ss-c03",
+      "title": "Infertile Man with Dilated Scrotal Veins",
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "varicocele"
+      ],
+      "scenario": "An infertile man has dilated tortuous scrotal veins that become more prominent with straining. Doppler shows venous diameters above 2-3 mm and reversed flow during Valsalva.",
+      "ar": "رجل بيعاني من infertility وعنده dilated tortuous scrotal veins بتزيد مع straining، والDoppler فيه veins أكبر من 2-3 mm وreversed flow مع Valsalva.",
+      "questions": [
+        "What is the diagnosis?",
+        "Define the condition.",
+        "State the Doppler findings.",
+        "List the indications for varicocelectomy in the lecture."
+      ],
+      "answer": [
+        "Varicocele.",
+        "Dilatation, elongation and tortuosity of the pampiniform plexus.",
+        "Dilated veins greater than 2-3 mm in diameter with reversed flow during Valsalva.",
+        "Infertility, testicular pain and testicular atrophy."
+      ],
+      "marking": [
+        "Diagnosis - 1",
+        "Definition - 2",
+        "Doppler - 3",
+        "Indications - 3"
+      ],
+      "trap": "The lecture uses both clinical examination and Doppler; do not base grading on Doppler measurements.",
+      "memory": "Varicocele: tortuous pampiniform veins + Valsalva reflux."
+    },
+    {
+      "id": "ss-c04",
+      "title": "Visible Varicocele at Rest",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 7,
+      "subtopics": [
+        "varicocele"
+      ],
+      "scenario": "A patient has scrotal veins that are both visible and palpable while resting.",
+      "ar": "مريض عنده scrotal veins ظاهرة ومتحسسة وهو مرتاح.",
+      "questions": [
+        "What clinical grade is this?",
+        "State all three clinical grades.",
+        "Why is varicocele more common on the left according to the lecture?"
+      ],
+      "answer": [
+        "Grade III varicocele.",
+        "Grade I: palpable only during straining. Grade II: not visible but palpable at rest. Grade III: visible and palpable at rest.",
+        "The left testicular vein joins the left renal vein at a right angle."
+      ],
+      "marking": [
+        "Grade - 1",
+        "Full grading - 3",
+        "Left-sided explanation - 3"
+      ],
+      "trap": "Grade II is palpable at rest but not visible; Grade III is both visible and palpable.",
+      "memory": "I strain, II feel at rest, III see and feel at rest."
+    },
+    {
+      "id": "ss-c05",
+      "title": "New Varicocele with Venous Obstruction",
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "varicocele"
+      ],
+      "scenario": "A patient develops varicocele in association with obstruction of venous drainage from renal cell carcinoma with an IVC tumor thrombus.",
+      "ar": "مريض ظهر عنده varicocele بسبب obstruction للvenous drainage مع RCC وIVC tumor thrombus.",
+      "questions": [
+        "What mechanism of varicocele is illustrated?",
+        "State the other etiological mechanism in the lecture.",
+        "What investigations are listed for varicocele assessment?"
+      ],
+      "answer": [
+        "Obstruction of venous drainage.",
+        "Retrograde reflux of venous blood into the pampiniform plexus due to incompetent valves.",
+        "Doppler ultrasound, semen analysis showing a stress pattern, and testosterone, LH, FSH and prolactin in severe oligospermia."
+      ],
+      "marking": [
+        "Obstruction mechanism - 2",
+        "Valve mechanism - 2",
+        "Investigations - 3"
+      ],
+      "trap": "Do not assume every varicocele is due only to valve incompetence; the lecture includes venous obstruction.",
+      "memory": "Varicocele causes: reflux or obstruction."
+    },
+    {
+      "id": "ss-c06",
+      "title": "Infant with a Scrotal Fluid Swelling",
+      "topic": "Hydrocele",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "scenario": "An infant has a painless scrotal fluid collection. Ultrasound shows a simple fluid-filled sac, and the swelling is considered infantile or congenital.",
+      "ar": "طفل عنده painless scrotal fluid swelling والUS موضح simple fluid collection sac، والاحتمال infantile أو congenital hydrocele.",
+      "questions": [
+        "Define hydrocele using the processus vaginalis.",
+        "List the four clinical types.",
+        "How are infantile and congenital hydroceles treated during the first year?",
+        "What is done if the swelling persists?"
+      ],
+      "answer": [
+        "Hydrocele is accumulation of fluid in any part of the processus vaginalis.",
+        "Vaginal, infantile, congenital and hydrocele of the cord.",
+        "Observation, because many resolve during the first year.",
+        "Surgery is required if it persists."
+      ],
+      "marking": [
+        "Definition - 2",
+        "Types - 2",
+        "Observation - 2",
+        "Persistent lesion - 2"
+      ],
+      "trap": "The lecture separates childhood observation from adult vaginal hydrocele surgery.",
+      "memory": "Child hydrocele: observe in year one; persistent = surgery."
+    },
+    {
+      "id": "ss-c07",
+      "title": "Adult Vaginal Hydrocele",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 6,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "scenario": "An adult has a clinically diagnosed hydrocele, and ultrasound demonstrates a simple fluid collection sac around the testis.",
+      "ar": "شخص بالغ عنده hydrocele والUS موضح simple fluid collection حوالين الخصية.",
+      "questions": [
+        "What type is most likely in this adult scenario?",
+        "What investigation finding supports the diagnosis?",
+        "State the treatment given in the lecture."
+      ],
+      "answer": [
+        "Vaginal hydrocele.",
+        "Ultrasound shows a simple fluid collection sac.",
+        "Surgical eversion of the tunica vaginalis."
+      ],
+      "marking": [
+        "Type - 2",
+        "Ultrasound - 2",
+        "Treatment - 2"
+      ],
+      "trap": "Do not apply the first-year observation rule to the lecture treatment of vaginal hydrocele.",
+      "memory": "Vaginal hydrocele = eversion of tunica vaginalis."
+    },
+    {
+      "id": "ss-c08",
+      "title": "Small Swelling Above the Testis",
+      "topic": "Spermatocele",
+      "priority": "Core",
+      "marks": 7,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "scenario": "A small painless swelling is discovered incidentally superior to the testicle. Ultrasound confirms a cystic lesion arising from the epididymal head.",
+      "ar": "في small painless swelling اتلاقت بالصدفة فوق الخصية، والUS أكد cystic lesion من head of epididymis.",
+      "questions": [
+        "What is the diagnosis?",
+        "Define it and state its origin.",
+        "What is the role of ultrasound?",
+        "When is surgery indicated?"
+      ],
+      "answer": [
+        "Spermatocele.",
+        "A cystic accumulation of sperms arising from the head of the epididymis; it may be due to aneurysmal dilatation of an epididymal ductule.",
+        "Ultrasound confirms the diagnosis and rules out additional testicular pathology.",
+        "Spermatocelectomy is indicated for pain or progressive enlargement that bothers the patient."
+      ],
+      "marking": [
+        "Diagnosis - 1",
+        "Definition/origin - 3",
+        "Ultrasound - 1",
+        "Surgery indication - 2"
+      ],
+      "trap": "A spermatocele is superior to the testicle and arises from the epididymal head.",
+      "memory": "Spermatocele = sperm-filled cyst above testis."
+    },
+    {
+      "id": "ss-c09",
+      "title": "Painful Progressive Spermatocele",
+      "topic": "Spermatocele",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "scenario": "A previously small spermatocele becomes painful and progressively enlarged, causing discomfort. The patient asks for needle aspiration.",
+      "ar": "مريض عنده spermatocele كبرت تدريجيًا وبقت مؤلمة، وبيسأل عن needle aspiration.",
+      "questions": [
+        "What treatment is indicated?",
+        "Why should needle aspiration be avoided?",
+        "What two problems may follow aspiration according to the lecture?"
+      ],
+      "answer": [
+        "Spermatocelectomy.",
+        "Needle aspiration should be avoided.",
+        "It may cause infection or spillage of irritating sperms."
+      ],
+      "marking": [
+        "Treatment - 2",
+        "Avoid aspiration - 1",
+        "Complications - 3"
+      ],
+      "trap": "Needle aspiration is specifically discouraged in the lecture.",
+      "memory": "Pain/enlargement = spermatocelectomy; no aspiration."
+    },
+    {
+      "id": "ss-c10",
+      "title": "Painless Firm Intratesticular Mass",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "scenario": "A 28-year-old man presents with painless scrotal swelling. Examination reveals a firm non-tender mass within the testis.",
+      "ar": "رجل 28 سنة عنده painless scrotal swelling وfirm non-tender mass جوه الخصية.",
+      "questions": [
+        "What should this mass be considered until proven otherwise?",
+        "List the tumor markers.",
+        "State the ultrasound and CT investigations.",
+        "Outline treatment stated in the lecture."
+      ],
+      "answer": [
+        "Testicular cancer.",
+        "AFP, beta-hCG and LDH.",
+        "Ultrasound: a homogeneous hypoechoic mass. CT scan of abdomen, pelvis and chest.",
+        "Radical orchiectomy; radiotherapy for radiosensitive seminoma; chemotherapy is recommended for non-seminoma tumors."
+      ],
+      "marking": [
+        "Working diagnosis - 2",
+        "Markers - 2",
+        "Imaging - 3",
+        "Treatment - 3"
+      ],
+      "trap": "Any solid firm intratesticular mass should be treated as cancer until proven otherwise.",
+      "memory": "Firm painless intratesticular mass = cancer until proved otherwise."
+    },
+    {
+      "id": "ss-c11",
+      "title": "Small Tumor with Early Blood Spread",
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 8,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "scenario": "A patient has a small testicular tumor but already has hematogenous metastases to distant organs.",
+      "ar": "مريض عنده small testicular tumor لكن حصل early hematogenous metastasis.",
+      "questions": [
+        "Which pathological type is described?",
+        "List the blood-spread sites stated in the lecture.",
+        "State the usual lymphatic drainage pathway of the testis."
+      ],
+      "answer": [
+        "Choriocarcinoma.",
+        "Lung, liver, brain, bone, kidney and adrenal.",
+        "Para-aortic lymph nodes, then cisterna chyli, thoracic duct and left supraclavicular lymph node (Virchow gland)."
+      ],
+      "marking": [
+        "Type - 2",
+        "Blood sites - 3",
+        "Lymphatic pathway - 3"
+      ],
+      "trap": "The lecture says blood spread is rare except in choriocarcinoma.",
+      "memory": "Choriocarcinoma = small tumor, early hematogenous spread."
+    },
+    {
+      "id": "ss-c12",
+      "title": "Sudden Severe Scrotal Pain with High Testis",
+      "topic": "Testicular Torsion",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "scenario": "An adolescent presents with sudden severe scrotal pain, swelling, nausea and vomiting. The affected testis is higher than usual.",
+      "ar": "مراهق عنده sudden severe scrotal pain وswelling مع nausea وvomiting، والخصية high-riding.",
+      "questions": [
+        "What is the diagnosis and mechanism?",
+        "How is it diagnosed?",
+        "What is the urgent treatment?",
+        "State the 6-hour and 24-hour timing statements."
+      ],
+      "answer": [
+        "Testicular torsion; twisting of the spermatic cord cuts off blood supply to the testis.",
+        "Primarily by physical examination; Doppler ultrasound may confirm reduced blood flow.",
+        "Urgent surgical detorsion and orchiopexy.",
+        "It should be performed within 6 hours to save the testis; after 24 hours the testis can rarely be saved."
+      ],
+      "marking": [
+        "Diagnosis/mechanism - 2",
+        "Diagnosis - 2",
+        "Treatment - 3",
+        "Timing - 3"
+      ],
+      "trap": "Torsion is a surgical emergency; investigation must not replace urgent intervention.",
+      "memory": "Sudden pain + high testis = detorsion and orchiopexy within 6 h."
+    },
+    {
+      "id": "ss-c13",
+      "title": "Manual Detorsion Before Theatre",
+      "topic": "Testicular Torsion",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "scenario": "A clinician considers manual detorsion while arranging surgery for confirmed testicular torsion.",
+      "ar": "الطبيب بيفكر يعمل manual detorsion أثناء تجهيز المريض للجراحة.",
+      "questions": [
+        "What is the role of manual detorsion?",
+        "Can it replace surgery?",
+        "What definitive operation remains required?"
+      ],
+      "answer": [
+        "Manual detorsion may be attempted in some cases.",
+        "No; it should not delay or replace surgical intervention.",
+        "Surgical detorsion and orchiopexy."
+      ],
+      "marking": [
+        "Role - 2",
+        "Limitation - 2",
+        "Definitive operation - 2"
+      ],
+      "trap": "A successful manual maneuver does not cancel definitive surgery in the lecture pathway.",
+      "memory": "Manual detorsion: attempt only, never delay surgery."
+    },
+    {
+      "id": "ss-c14",
+      "title": "Child with an Empty Hemiscrotum",
+      "topic": "Cryptorchidism",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "scenario": "A child has an empty hemiscrotum. The testis is not palpable on initial examination. The clinician examines the scrotum and inguinal canal in different positions and considers laparoscopy.",
+      "ar": "طفل عنده empty hemiscrotum والخصية impalpable، والطبيب بيفحص scrotum وinguinal canal في أوضاع مختلفة وبيفكر في laparoscopy.",
+      "questions": [
+        "Define cryptorchidism and state its incidence.",
+        "Classify the impalpable testis.",
+        "State the examination principles in the lecture.",
+        "List the complications.",
+        "Outline treatment for an impalpable testis."
+      ],
+      "answer": [
+        "Cryptorchidism is failure of one or both testes to descend into the scrotum; incidence is 3%.",
+        "Intra-abdominal testis, inguinal but atrophic testis, or absent/vanishing testis.",
+        "Warm the hands; examine the scrotum and inguinal canal; examine in supine, frog-leg or squatting positions.",
+        "Infertility, trauma, tumor and torsion.",
+        "Early surgical treatment before one year; laparoscopy can diagnose and may allow treatment in the same session."
+      ],
+      "marking": [
+        "Definition/incidence - 2",
+        "Classification - 2",
+        "Examination - 2",
+        "Complications - 2",
+        "Treatment - 2"
+      ],
+      "trap": "Impalpable does not mean absent; the lecture includes intra-abdominal and atrophic inguinal testes.",
+      "memory": "Impalpable testis = laparoscopy for diagnosis and possible treatment."
+    },
+    {
+      "id": "ss-c15",
+      "title": "Palpable Mal-Descended Testis",
+      "topic": "Cryptorchidism",
+      "priority": "Core",
+      "marks": 9,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "scenario": "A child has a palpable testis outside the normal scrotal position. It can be manipulated from the groin into the scrotum in one examination.",
+      "ar": "طفل عنده testis palpable خارج مكانها الطبيعي، وفي الفحص ممكن تتحرك باليد من groin للscrotum.",
+      "questions": [
+        "What diagnosis is suggested by the ability to move it into the scrotum?",
+        "List the palpable categories.",
+        "List the ectopic sites in the lecture.",
+        "State the operative treatment for a true undescended testis."
+      ],
+      "answer": [
+        "Retractile testis.",
+        "Retractile testis, undescended testis and ectopic testis.",
+        "Superficial inguinal pouch, base of penis, perineum and femoral canal.",
+        "Orchiopexy with fixation in a scrotal sub-dartos pouch and herniotomy for an associated hernia sac."
+      ],
+      "marking": [
+        "Retractile diagnosis - 2",
+        "Palpable classification - 2",
+        "Ectopic sites - 2",
+        "Operation - 3"
+      ],
+      "trap": "Retractile testis can be moved into the scrotum; ectopic testis lies outside the normal descent pathway.",
+      "memory": "Retractile moves down; ectopic sits off-route."
+    }
+  ],
+  "coreShorts": [
+    {
+      "id": "ss-s01",
+      "q": "Define scrotal swelling and state the urgent warning given in the lecture.",
+      "a": [
+        "Scrotal swelling is abnormal enlargement of the scrotum indicating an underlying condition.",
+        "Immediate medical attention is needed when swelling is accompanied by sudden severe pain."
+      ],
+      "topic": "Scrotal Swelling",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s02",
+      "q": "Define epididymo-orchitis and name the emergency from which it must be differentiated.",
+      "a": [
+        "Inflammation of the epididymis and testicle.",
+        "It must be differentiated from testicular torsion, a true urologic emergency."
+      ],
+      "topic": "Epididymo-Orchitis",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "epididymo-orchitis",
+        "testicular-torsion"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s03",
+      "q": "Enumerate the causes of epididymo-orchitis listed in the lecture.",
+      "a": [
+        "Bacterial: E. coli, Neisseria gonorrhea and Chlamydia trachomatis.",
+        "Viral: mumps."
+      ],
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s04",
+      "q": "State the clinical picture of epididymo-orchitis.",
+      "a": [
+        "Scrotal pain and swelling.",
+        "Fever and malaise."
+      ],
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 3,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s05",
+      "q": "What is the relation between parotiditis and mumps orchitis?",
+      "a": "Parotiditis may precede the onset of mumps orchitis by about one week.",
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s06",
+      "q": "Outline treatment of epididymo-orchitis and state antibiotic duration.",
+      "a": [
+        "Rest and scrotal support.",
+        "Anti-inflammatory drugs, analgesics and antipyretics.",
+        "Antibiotics for bacterial epididymo-orchitis for two weeks."
+      ],
+      "topic": "Epididymo-Orchitis",
+      "priority": "High",
+      "marks": 5,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s07",
+      "q": "Define varicocele and give its lecture prevalence figures.",
+      "a": [
+        "Dilatation, elongation and tortuosity of the pampiniform plexus.",
+        "20% of the general population and 40% of infertile men."
+      ],
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s08",
+      "q": "Enumerate the etiological mechanisms of varicocele.",
+      "a": [
+        "Retrograde venous reflux due to incompetent valves.",
+        "Obstruction of venous drainage, such as renal cell carcinoma with IVC tumor thrombus."
+      ],
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s09",
+      "q": "Why is varicocele more common on the left side?",
+      "a": "The left testicular vein joins the left renal vein at a right angle.",
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s10",
+      "q": "Describe the clinical examination finding in varicocele.",
+      "a": "Dilated tortuous veins may be visible or palpable and show an impulse on straining.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 3,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s11",
+      "q": "State the clinical grading of varicocele.",
+      "a": [
+        "Grade I: palpable only during straining.",
+        "Grade II: not visible but palpable at rest.",
+        "Grade III: visible and palpable at rest."
+      ],
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 5,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s12",
+      "q": "List the investigations for varicocele and the key Doppler findings.",
+      "a": [
+        "Doppler ultrasound: veins greater than 2-3 mm and reversed flow with Valsalva.",
+        "Semen analysis: stress pattern.",
+        "Testosterone, LH, FSH and prolactin in severe oligospermia."
+      ],
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s13",
+      "q": "What are the indications for varicocelectomy?",
+      "a": [
+        "Infertility.",
+        "Testicular pain.",
+        "Testicular atrophy."
+      ],
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s14",
+      "q": "Explain the embryological basis and definition of hydrocele.",
+      "a": [
+        "The peritoneal bulge into the inguinal canal is the processus vaginalis.",
+        "It normally obliterates, while the part adjacent to the testis becomes tunica vaginalis.",
+        "Hydrocele is fluid accumulation in any part of the processus vaginalis."
+      ],
+      "topic": "Hydrocele",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s15",
+      "q": "Enumerate the clinical types of hydrocele.",
+      "a": [
+        "Vaginal hydrocele.",
+        "Infantile hydrocele.",
+        "Congenital hydrocele.",
+        "Hydrocele of the cord."
+      ],
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s16",
+      "q": "How is hydrocele diagnosed?",
+      "a": [
+        "Clinical examination.",
+        "Ultrasound shows a simple fluid collection sac."
+      ],
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 3,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s17",
+      "q": "State treatment of infantile and congenital hydrocele.",
+      "a": [
+        "Observe during the first year because many resolve.",
+        "If it persists, surgery is required."
+      ],
+      "topic": "Hydrocele",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s18",
+      "q": "State treatment of vaginal hydrocele.",
+      "a": "Surgical eversion of the tunica vaginalis.",
+      "topic": "Hydrocele",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s19",
+      "q": "Define spermatocele and state its origin.",
+      "a": [
+        "Cystic accumulation of sperms.",
+        "It arises from the head of the epididymis and may result from aneurysmal dilatation of an epididymal ductule."
+      ],
+      "topic": "Spermatocele",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s20",
+      "q": "Describe the presentation and diagnosis of spermatocele.",
+      "a": [
+        "Usually an incidentally discovered small swelling superior to the testicle.",
+        "Ultrasound confirms the diagnosis and rules out additional testicular pathology."
+      ],
+      "topic": "Spermatocele",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s21",
+      "q": "State the indication for spermatocelectomy and explain why aspiration is avoided.",
+      "a": [
+        "Surgery is indicated for pain or progressive enlargement that bothers the patient.",
+        "Aspiration may cause infection or spillage of irritating sperms."
+      ],
+      "topic": "Spermatocele",
+      "priority": "High",
+      "marks": 5,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s22",
+      "q": "State the age association and cryptorchidism risk for primary testicular tumors.",
+      "a": [
+        "They are the most common solid malignant tumor in men aged 20-35 years.",
+        "Undescended testis carries five times the risk stated in the lecture."
+      ],
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "testicular-tumors",
+        "cryptorchidism"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s23",
+      "q": "Enumerate the pathological types and one key feature of each.",
+      "a": [
+        "Seminoma: commonest testicular neoplasm.",
+        "Teratoma: arises from totipotent cells differentiating into ectoderm, mesoderm and endoderm.",
+        "Choriocarcinoma: small tumor with early hematogenous spread.",
+        "Leydig cell tumor: produces excess androgens.",
+        "Sertoli cell tumor: rare and occurs after puberty."
+      ],
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s24",
+      "q": "Describe the routes of spread of testicular tumors.",
+      "a": [
+        "Lymphatic spread to para-aortic nodes, cisterna chyli, thoracic duct and left supraclavicular node.",
+        "Blood spread is rare except in choriocarcinoma, which spreads to lung, liver, brain, bone, kidney and adrenal.",
+        "Local spread occurs late."
+      ],
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s25",
+      "q": "What rule applies to a solid firm intratesticular mass?",
+      "a": "It should be considered testicular cancer until proven otherwise.",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s26",
+      "q": "State the clinical presentation and tumor markers of testicular cancer.",
+      "a": [
+        "Painless scrotal swelling.",
+        "Firm non-tender testicular mass.",
+        "AFP, beta-hCG and LDH."
+      ],
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 5,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s27",
+      "q": "State the imaging studies for testicular cancer.",
+      "a": [
+        "Ultrasound: homogeneous hypoechoic mass.",
+        "CT of the abdomen, pelvis and chest."
+      ],
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s28",
+      "q": "Outline treatment of testicular tumors in the lecture.",
+      "a": [
+        "Radical orchiectomy.",
+        "Radiotherapy because seminoma is radiosensitive.",
+        "Chemotherapy for non-seminoma tumors."
+      ],
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 5,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s29",
+      "q": "Define testicular torsion and state its presentation.",
+      "a": [
+        "Twisting of the spermatic cord cuts off blood supply.",
+        "Sudden severe scrotal pain and swelling, sometimes nausea and vomiting, with a high-riding testis."
+      ],
+      "topic": "Testicular Torsion",
+      "priority": "High",
+      "marks": 5,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s30",
+      "q": "How is testicular torsion diagnosed?",
+      "a": [
+        "Primarily by physical examination.",
+        "Doppler ultrasound may confirm reduced testicular blood flow."
+      ],
+      "topic": "Testicular Torsion",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s31",
+      "q": "State urgent management and timing in testicular torsion.",
+      "a": [
+        "Urgent surgical detorsion and orchiopexy within six hours.",
+        "After 24 hours, the testis can rarely be saved.",
+        "Manual detorsion may be attempted but must not delay surgery."
+      ],
+      "topic": "Testicular Torsion",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s32",
+      "q": "Define cryptorchidism and state its incidence and prematurity figures.",
+      "a": [
+        "Failure of one or both testes to descend into the scrotum.",
+        "Incidence: 3%.",
+        "Premature infants: 30% versus 3% in full-term babies."
+      ],
+      "topic": "Cryptorchidism",
+      "priority": "High",
+      "marks": 5,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s33",
+      "q": "Enumerate the risk factors for cryptorchidism listed in the lecture.",
+      "a": [
+        "Premature birth.",
+        "Low birth weight.",
+        "Family history.",
+        "Developmental conditions such as Down syndrome or abdominal wall defects."
+      ],
+      "topic": "Cryptorchidism",
+      "priority": "Core",
+      "marks": 5,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s34",
+      "q": "Classify palpable mal-descended testes and list ectopic sites.",
+      "a": [
+        "Palpable testes represent 80% and include retractile, undescended and ectopic testes.",
+        "Ectopic sites: superficial inguinal pouch, base of penis, perineum and femoral canal."
+      ],
+      "topic": "Cryptorchidism",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "High-Yield Short"
+    },
+    {
+      "id": "ss-s35",
+      "q": "Classify the impalpable testis and summarize examination, complications and treatment.",
+      "a": [
+        "Impalpable testes represent 20%: intra-abdominal, inguinal but atrophic, or absent/vanishing.",
+        "Warm hands; examine scrotum and inguinal canal in supine, frog-leg or squatting positions.",
+        "Complications: infertility, trauma, tumor and torsion.",
+        "Early surgery before one year; orchiopexy in a sub-dartos pouch with herniotomy; laparoscopy for impalpable testis."
+      ],
+      "topic": "Cryptorchidism",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "High-Yield Short"
+    }
+  ],
+  "imageQuestions": [
+    {
+      "id": "ss-i01",
+      "title": "Normal Testicular Anatomy",
+      "topic": "Scrotal Anatomy",
+      "priority": "Core",
+      "marks": 6,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 2",
+      "prompt": "The diagram labels the main structures within the scrotum.",
+      "questions": [
+        "Identify the testis and epididymis.",
+        "Name the cord structures labelled in the diagram.",
+        "Which structure forms the external sac?"
+      ],
+      "answer": [
+        "Testis and epididymis.",
+        "Blood vessels and vas deferens.",
+        "The scrotum."
+      ],
+      "subtopics": [
+        "epididymo-orchitis",
+        "testicular-torsion"
+      ]
+    },
+    {
+      "id": "ss-i02",
+      "title": "Varicocele Venous Anatomy",
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 7,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 7",
+      "prompt": "The diagram shows dilated pampiniform veins and normal versus incompetent venous valves.",
+      "questions": [
+        "Identify the condition.",
+        "State its two etiological mechanisms.",
+        "Why is it more common on the left according to the lecture?"
+      ],
+      "answer": [
+        "Varicocele.",
+        "Retrograde reflux from incompetent valves, or obstruction of venous drainage.",
+        "The left testicular vein joins the left renal vein at a right angle."
+      ],
+      "subtopics": [
+        "varicocele"
+      ]
+    },
+    {
+      "id": "ss-i03",
+      "title": "Clinical Varicocele",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 6,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 7",
+      "prompt": "The clinical photograph shows prominent tortuous scrotal veins.",
+      "questions": [
+        "Identify the condition.",
+        "Describe the examination finding.",
+        "How is Grade III defined?"
+      ],
+      "answer": [
+        "Varicocele.",
+        "Dilated tortuous veins may be visible or palpable and have an impulse on straining.",
+        "Visible and palpable at rest."
+      ],
+      "subtopics": [
+        "varicocele"
+      ]
+    },
+    {
+      "id": "ss-i04",
+      "title": "Four Clinical Types of Hydrocele",
+      "topic": "Hydrocele",
+      "priority": "High",
+      "marks": 8,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 11",
+      "prompt": "The diagram presents four patterns labelled A-D.",
+      "questions": [
+        "Identify A, B, C and D.",
+        "Define hydrocele.",
+        "Which childhood types are initially observed during the first year?"
+      ],
+      "answer": [
+        "A vaginal hydrocele; B infantile hydrocele; C congenital hydrocele; D hydrocele of the cord.",
+        "Fluid accumulation in any part of the processus vaginalis.",
+        "Infantile and congenital hydroceles."
+      ],
+      "subtopics": [
+        "hydrocele"
+      ]
+    },
+    {
+      "id": "ss-i05",
+      "title": "Simple Fluid Collection on Ultrasound",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 6,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 12",
+      "prompt": "The ultrasound shows a simple anechoic fluid collection around the testis.",
+      "questions": [
+        "What diagnosis does the lecture associate with this appearance?",
+        "How are infantile/congenital cases managed initially?",
+        "What operation is stated for vaginal hydrocele?"
+      ],
+      "answer": [
+        "Hydrocele.",
+        "Observation during the first year; surgery if persistent.",
+        "Surgical eversion of tunica vaginalis."
+      ],
+      "subtopics": [
+        "hydrocele"
+      ]
+    },
+    {
+      "id": "ss-i06",
+      "title": "Spermatocele Ultrasound",
+      "topic": "Spermatocele",
+      "priority": "High",
+      "marks": 7,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 14",
+      "prompt": "The ultrasound demonstrates a cystic lesion superior to the testis.",
+      "questions": [
+        "Identify the diagnosis.",
+        "Where does it arise?",
+        "When is spermatocelectomy indicated?",
+        "Why should aspiration be avoided?"
+      ],
+      "answer": [
+        "Spermatocele.",
+        "Head of the epididymis.",
+        "Pain or progressive enlargement that bothers the patient.",
+        "Risk of infection or spillage of irritating sperms."
+      ],
+      "subtopics": [
+        "spermatocele"
+      ]
+    },
+    {
+      "id": "ss-i07",
+      "title": "Testicular Tumor Diagram",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 7,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 16",
+      "prompt": "The diagram shows a focal mass inside the testis.",
+      "questions": [
+        "How should a solid firm intratesticular mass be regarded?",
+        "State the age group emphasized in the lecture.",
+        "Name the three tumor markers."
+      ],
+      "answer": [
+        "As testicular cancer until proven otherwise.",
+        "Men aged 20-35 years.",
+        "AFP, beta-hCG and LDH."
+      ],
+      "subtopics": [
+        "testicular-tumors"
+      ]
+    },
+    {
+      "id": "ss-i08",
+      "title": "Testicular Tumor on Ultrasound",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 7,
+      "image": "data:image/webp;base64,UklGRhYWAABXRUJQVlA4IAoWAAAwhACdASrgAQ4BPxmGulgsqLMlIvC7KmAjCWduc//YP/y/s3vVJuedBpbHwuNDYrMnf/7KUJcjdF1Huh/lZQD/TwPc83mHV69sPvXLEeDR5p7BP559HjUR9h+wj/cCHUDUUAIohxbYV/A0DtbnE0t2GYZn0PcCtUCbR7F8ipzeU+cnbHEU5VkqdqzIWztEsvmCFMaDeBlyo8LQF1q6ENWVXrAKg7GZwg5VcW6msaDQtG0/UoiH3kxDO5O/x+2zyx9tLTEK8g3GdyznzxrtEMEWpdtQu/osCQL6n+wYyZpJjfBK2RJcraHnR5N/GPBSKtSjj/YR9LHgniTFkV4yffwrdNC5UTt2LX3qrpjQdMvidCRj15xMCfECi5alzmAC1sFpZXb6Ld3/VhQo/mJl19vhS1toDyIb/3gmOUtjfQUlCm8Nb9JnPwtjfkMQxODswJebSV/my5DEcVqBefCfmRgqExJ8tHZ9KMnk3XH7g0Ips9LfG83mZFT5qCdw9tkMqTzrIdO2TQpakOuokZTyeGsYnCtzQi4q8pCHOSGMqCllX+NJl2PbYGLYLQYMzE8JcJ8vM8Y8bFyrAYq7B39QJJJkCU74Wv902X0Si1PPd0E1bwlg8Y/EyzivG+SdP+wXnwJ00TOeHxi47wF43+xWsNST8+ynqTbfvQxyLGilYuiEgk/jrz0srGOX8q59nULom3/XMZzFuNAjSGO94jvLh8JBZH0WiHqtvMwrLNcJw3LiFoouecOLSv4VvKsf5hWENZpda4JePpmJtd90bBbxB/PAcmbP/R8uLZqZesEPvPoFh1nPIQZ4TV1vhd3ZCFRmtxPoih8GX5DS95m/X/UqXJnKS1rWIDtYmYeV46XAXTNyL+A4fcgEIbWoPFa+OdQk/rjdR63aGUckRADh97ql1/t/y7fCGcd6FFyVbVwC3gVZSDdRxdxdbyt2jbfGEUKtTDmAm6qHHInZGIeuqcBtdZCgNAcSzCqwo+ZjpmLwjUiBECd1zyRmMmr4WHsXr5JNX58kRsuH33Vzw8vOU73hxWBtLdc6pIPLOPCAWLxUY5CJQD0hPao9FIcW9il08KiJ+8bkLoHQLUsyQ90aM7JcdEeKf6Ienfu5jiysnAn03cjnJwhRKQCw5td/YrtaONFNnnNyL72w2LQYG2LGMphP8PNgQSAoWlEpTDdYIiX0EmXHVadWWwxdF8hk3YFewsYf/K3Bl4hSV24TbCVCiXAm2gJQu0wKLrU/7VYT/DF2JOu+XFLZPZVC5WX2rfwv7xnLkFQ4yT0h7HLmSbqxR7ti8ruhuu6YVh1TXmjwcnaz3lUC/48TSwGOklFg2LcsIQvPrqZZu/gCoS75C7Ird3O38b8bjJTrSuIYGZdwGTiNE43kshuyXjTJQI3cJ0GdONShBsEXV/3A/ZHJso2AAP7XFktogN0+93TQoksN0DZRwSooeUNzCrI0uv18gczUVoZpc2CPG2LtKWnMf6L+3CCA+yRB/mQol/KXatsZUIHCb1LVjxRheU2xVJilR69pG71wcwx4Qrgux4gBJLd9LyOJhXoZUKoTCzXfs2fmj85tUeSS6/MLR8Tee5SUkRcACCZJ8th2WA4Gg5Jym6K1s63BmTcoSdClyDcp+6s+d6i3MC6esQWjNEl1j8GSL3j4YMzV2jTS2kxr6t4zmOjO5nMAIEBgD4cgn8/aRZgaVfP2JjFep8voAQuxXEPThlQXADTkSTPRrVg1ChZrkzmD3C0yqMyQGOhrjDbf8aeya1MSCKkylhWxicdRnKdpcUDMxByGBmjeKvUhwCvq2XgPM1b92dm1BW75A7FvQppz1wc9/KkfaUauoTGVwBFYtNeEf/XaM3feVvFYn+oXZW3GvoHHqmccJ4KJCh/bIY9OMg82G8gh0fEk8bZ0/MDblO5yq11/B0YXo6ergqZjl6eGFmXytxncGIjxb2iG5wnq2+h0RSc69ExSOJ5FJJkLREJEhTgmGNehLrmNW1c8zW1LygjNN7+Nfo6q3ixgtz4FIcCEO/DqgeVaOEG4puoEHNiZiohV57jFoPTMdKkZ1OS1kTlrg74VH0/uv7d+xzRHKdA2g/V1gL57GXkzqdKFdUjeYIBGmHyGrNh8OSmd/dw5/7s9Qtl1mTRirpSVvxMlTcMyXyhQ6y8m1GPtaJJPynFzMSP0IbJzOZj7LcjlmGAojNRBIqWTcy7Yb+x1bGoHuVzSVAer1VGM9k2qbi18EuLyke438xkyAqV5aTjGmlFjX9w6S966xcyKCuIZxgZyUdoii43n/d0UEZztz7k5GEeW01ssZIMBjZiR3DiLdqzeHwzw8BrQIZVsfyW5Giqv3C2dfE8tUQKiKoYMDYJSNqgKbFvJSWvCNaWYRLI26P0y2/wWhW7UqB/0Iym4JrYZl198siLt4MZ8OIFQKRDwO89ni5DyWNKPEZ74cCuvDZd+9o25Pjua5K7ysi1VqYftXwjMwRuphKwW0uRwJQU/4R+oTWNsV2IbktPReaKGH+OjRD+3o3Mt+OuIjPV/2Q8LaQzILGvKqRkIV2r3sMNQaHfUDHoktneaZHsRLfi8hkuRDSKZ/DPen+yCZXCJ2NpF6pjvyJeMhcil3tG4ejxy9rnM7gsCatL/c3xUFLYqow0urMk2EJi6jVynW7K6yS4xwvrAkTC+l2FMrhsHtYCLDOlL0+nwvNrg7SHhgcgsOkkiiTqjl5MwIFHX7Xpkwab0dpRgq7pK/FHrol+JuVBbjhphychF/PsVzBsBG68/bEf5vnK5GNAk/B+4nhkVXMKgik+4RZ1Favq315S/KRTL5Ui7jPBLH1OxTlS+f3nCeWbwtq7ByuCjvkChLr/Oh/F+VxH9fMK+jkEm3Hkm+9Ku+27zvZUA6dGv+mBHCmYt/ny0IJvHwsfNifVWtaKCCrcR3ZV7/DD1sB8uQlKS111SKdvlFSFpM+/msWNVr0gG+o0Ck8ogMJXxrMU5CUgmZ6y5xkYyBJnpW6IEcxMZGzOKZWSaFImWSYKnKYufmfk0PRqltfedQ8uqoAdV+iUIcSHOcyA1+uR269RdvorLz25UyQM8G3TT8MFDvylTObcxJco64nhGixay4fjDlLX8/VaswvFaco2ZHEaPedleaG0Kias/5L68dQnW24Fi/+urhnXHfK1wo0i74J4lkW40+d5UbLRS7+eo8hfV/uZOeuBmpiTeHlh88U4f1mXnEf8R8ai+/eFCZtkxZrHUUnScVZu3Gc1ErmDsAogio/zdfFN+7m7ThwgU2fdswbGhRqunO1VbP39IkIe55ooIeIxET7OwF9/4lKNGjT+hwdp2+Zs+QgMq7NZTOeL0gBWnthh8Fg5O1ODyVuDPxUWGKyncPIK+U2777luY2uDYlnhL0m5mtZa7UUjfUWh5rm53Z4NRCtZfH0+SfYhySYKrPOvo0ielU65i+38s1QfMzszHuPd8NeJN8wXQu1mKZk/dZy2+bZyXshSzP187K2zkGoxDRIykMibD1wSEfwSbWGkM1YmTaRYYWaOpVKOmFSRcvHnRMnZ3nSCvWOd9lsZ2KWl9MB8S5f3ieVn3ZR+u7MWbtUqpimGLUMggPavYrdkL/rlKXT7Ek/PKyYlMmwOuBxafSE5yjRw51eBFpKbwKoIbfBirDwH4pV/lTZY5OU3dd8lIpQQ3pCgPUC9fixoJUQIMa3OwLWDS3n/Z/B4k2IkRCobTuDiPpOSSZplTQwI4rN2hRpfKY0nClf1q193SbpEyWLR4NkQm+oUlP/R68kG40ldBbVdPO2TirU5RPYkmQ6AshpGG0rS0BOAEEEgWsHku53Nn3mi7F5IOtczwK+CJHLKeewvd34FfvU3m/Wdvubb8JcoKs8TAlEHaJcVV5/loWS/psgz8YAEVhn1nLbkCTpqFFkijIq+eCvBWL0aZmL+GOykenEdj7xDD58odV+jk0dpWefEhKhJUQyAoMj2A4yGU4RMMEUArfU5ivRPr4HnZz7IFDf85yOZvWzuCrX2CIPlUz4NhMm7Xt1FRUp67u+vyFfZ2nczU4FaF3+YfNSUefzeGj2O5ZtcMlxl9iYPkAAzkUH2rhbRk8hmOShJFa8UYQM9FV/ODM9XgQw2sBBhQAtZ8lgBIKQINxXYgPhztN0XZGqAtCBpPhXBqQKFhvmBE1CHSkbwx8asEyMP8xADOEwKliOb0GBLAzWoN9h8qo9bf66bAalOePSKAn0fo4pX+1XoQ11QaSOi1qow3MyOO9y++L0Fw1SIuK9P0kQ9e8MlJ74W2xH2jXV8Y2ukc10KKgXIz3o9Uuvnz9LjxprPFpoEdPDniSw8SMQh6DeeiLyCbkaoy/QJ54n6FjjOjg4ncjOSe3so/Mb/gbjlNXyJxMILuKJ6u1IzfW5qi2Oavg+sQ4MTD+YJrgAk7gplWOZWIiuPF03GnNe2af0xdboxBRqVdv6yvJ8g7h2uNhuhKjS8rka3JdJV8lgLBLK0MSX7844YE5KGyYPxylxST7KJAgaBbp6ItTpjrNyoVPqCpUsB4YYVb65CCYCBvH++NfUBQhQMlWiDpn76K6sjIQY/Z5Xu9rcGklH0JtkU7TqURxyyTVEAA10fpBFYGoHEjnoJbEreJjaOz2HjMloJ/nD67v3Mq1IHJdZTk5xqoxq0RDVEGAUQxF3XPHnAjNqZ8xmhf7vv+cKwIodZbiPhkLXWsyiCvUViMN0HrHP/asYrtmELLaZthuI3HPA+G7+t+dKFWx9N6IHTI1LLrBB7sa/ai7g6yDDfmLkCC5Gff+Y3fhSxbnMnas6mjAh+OerlFLkJ5I/TECTAueEBHCK1biLq3WCBiGoKkYKxeYiMe7mZEu5KDcCNVesanaKOZPDlZC4om6cAiUX8VMsKxYUa+ufXEkbqFaBLtj/CaQ3Tle6QVf7SY77rPbS/L23r2IelVHIkT5UtKQZOucAbdixD4SYPjlsgleDHClKspBpIg2kXsoglza7JTA6dEVygpzbdfizvbIFkufEFr7vhWPuacUCiQHEod+oz6ZVWbAjsa7pLnplTW5O3sjh4s7ICYdWQgTaDz2sP8wBQWudZJiZepZ8P1gnA5lB2+1USVPvdqsIsEpnF5cTkT7qwCpnY5rYGLlMF37yjY10Y8J6uTqGTd2Ydc3n6bm4A+oFBcIleRH4vkg32bd64t2yoi69fG2MKr+QgAK3oXsQr2/Jw0ja/FvBWE09gTRfdI471nRrP5zHrvF3gGm4BUyF4TxVeHYuguxokGdfAEyomFThaO1k/2cgCvYEnpsqptoqfRSJyoGHLJgFb/a7mPkF5MSOE2Q0bqiXPL/oMCvdJ12X43odfHNiJcYPDWFRcFiCb+JKLsp6wllfKVU8Z8GQ6kZ2uSqMkO96cGujb7LkZ0fC+BgMyQCAyk/1ZQM9ovAIdVDxA5u9LrVijyWf7/pUnapzFWiS9db0MeLi/+yazOCNOmPWMwCnlmpPYkjVRrQMpFJbMx7gzY4ZvH9D41iUiouNqG5DUsgr2i7bFhSvX1xzafYsciyluA75ONbNUDpHkzLSnoo8rY3ost+8LfpWM5OoGpFvXOwdPWwSToEuck1r6pWrRtZViOdnugnZaEABfOwf5sXauXwWkOu9Q/aOPDQZJ0QawBgqhXgnX2SEtGUN+TAPLZrxrKBiIA9iBgFovlIrynuh6MzqmJYwa9YaPClWxPTJGeUVPG3IhpFJptHbvWEi6IiLr+LkWpBTUAi+ENiWfim3WDOCdHj5yMAb3Jc7/JqLN3SwR4OksKLO/b4OFIepG61Tm7ECk51P04QKazjAtUtYc5LzBPfRTj2y4pCCe7vR2ywO7KgSveF3vAutjzX6vCvcgHeIhVQsbhWZyRjHCB8B77hXCExEvQulXWGD4tNtBaUlLs/kVBFODJjQY6Q1jodTzUEjEgICeAMUMqRcSO0j4f92nsyYwuNpJOzl3s8aqQz5TexTAq5LBae1hsQ6wy6AFonEzZNb08rPTY0F0ze+sCP+JVU6bVgKpql/5651wBw4gubcZu05wClZ3uzM3xLkdW5A/7Qnit4QOHcxlVy7NEk1LHJc11MrK5/knnfebQs1YpXcK1eUAQnDFK5o9slfjHz8zeLDc2dosv2ihKC51gl4UVH2M+0sqMgDvzRXQDq32Pajod5Hv7YGaIqBjOtQS5hJP1jzAcARo8NV2TIJOxZZhkkBRqw4bTFbsMdJa8WwJNPh4dJYnkW9DTiOtBNaZjNb4NxQA1kHa7XT0/r3Oug6DksQR0fvsL+OPsQN4DMG+8T4mPOTRuO1UgWIFRpvfGCPDbFEaxdciu6QjWfCtqd1ZXtbIeI/5xgZoBWDkctrEVwWoHx3QmSt7NFi2NIxZI5Hzqy7MFoDG9JcwLgHl+CvBKPFFOITHORO5/OlCeW5qf5o9Avpu70suBvqnazJ1multaEvFsgPZ6OVRGvqR4/X70sSfNo9JYctBrA2tzQmtVws/oaGkQuDOgRSlpdR5TzYP1hgswA44f04ZLT8LGbB1AqKwvcGlJSm3djAmVYPqI/kVJPuveFZDL3OrxZtUDwWA5tTnJfeLiad9J84G/P0XFULAqvdFLLHkfU8/dl2MJ8fhcLzphkPGXd/Uww+/QGDaDBhdXB+XfcYTuR+sesNEdr48HsNpPzNo79ekY5Z9OvGLk3oEqnJEP86Q5S2IiRulvRKINUcPA9uPySELXF5wLZBOL+JlJTvVj+JPwIbgrPt0dZvvh1D91TOFxHRYL2ZDHjIZJbngzZrsBLxgv8uC9I/Loa1lkkyM1zH2ONXh7H4/FzEEumNW8kCkQMG/Bzi9QWLTDly2snKILQ1P1g3ONQJYVYb06/GEmLy2+f7chl1zdBiYPgQ4WnWfkF2Q8HqlnqtZd/dx5XtjZk2C5hlwOcnnWk//YEUqWqikFVLoSSwamDSUbHx8NJ9lTQXUtjrEGrFnfbR2Iolr4RpBafYxju7t7z3AIAq5Fra/pcgHdzieLIZO63N0Fyp+EZ3EAQDZ7eBYoTxJFphcEM/K0brxae1DbLytO36xRQX3bqOBe4cNq4YZRJnLVX+zzO7KUd0UEiPdm1CRwNNfemgGO1DIGe0dNoTaDSa2Q9yOhLq8ji9qduh1P/Nri+C9N/fEt0K8rB86preDuGY8c/B9925fJXEy4x+Pj6Szr5DbQYGI42Gu9JIZ6y01cHBtlqBmCuqW1BE6kj7w7TQb6Kx02o3H6Yk9ocNR4++ozGBFUXoK8h5rFvDi7pIzedYmV/c2tXOlQWuLOxIqRmNj+3oRSPPHWc8g8V/jCJ/Qf3sHd2GxzewtumlaPV1L9ZcX9K2VruZBOUHicDcMHRRsDYP6lXqa7weVXNWUULBRD/QZpv0jxpywHlLEngm7RLGYjX2itAXhg1zTzEhIS1sZam6ctKK9k1jIiBQxjkFdIjSQxXgEMzni8iS61RHAKhtgBEZTWPsuCIplqi5f0m5Mv4dO9PttTsKDpKnwREHGCKutlBAK5hMHaOduZFE7A1/IWOeG/aEmHACAkCoXBoZRDfyyyktkAAA==",
+      "page": "Lecture p. 20",
+      "prompt": "The ultrasound shows a solid intratesticular lesion.",
+      "questions": [
+        "What ultrasound description is given in the lecture?",
+        "What staging CT regions are examined?",
+        "State the first treatment listed."
+      ],
+      "answer": [
+        "Homogeneous hypoechoic mass.",
+        "Abdomen, pelvis and chest.",
+        "Radical orchiectomy."
+      ],
+      "subtopics": [
+        "testicular-tumors"
+      ]
+    },
+    {
+      "id": "ss-i09",
+      "title": "Path of Testicular Descent and Ectopia",
+      "topic": "Cryptorchidism",
+      "priority": "Core",
+      "marks": 7,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 24",
+      "prompt": "The diagram contrasts locations along the descent path with an ectopic position.",
+      "questions": [
+        "Define cryptorchidism.",
+        "State its incidence.",
+        "Name the three true undescended positions shown in the lecture figure and one ectopic concept."
+      ],
+      "answer": [
+        "Failure of one or both testes to descend into the scrotum.",
+        "3%.",
+        "Abdominal, inguinal and suprascrotal positions; an ectopic testis lies outside the normal path."
+      ],
+      "subtopics": [
+        "cryptorchidism"
+      ]
+    },
+    {
+      "id": "ss-i10",
+      "title": "Classification of Mal-Descended Testis",
+      "topic": "Cryptorchidism",
+      "priority": "High",
+      "marks": 9,
+      "image": "data:image/webp;base64,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",
+      "page": "Lecture p. 25",
+      "prompt": "The figure compares true undescended and ectopic testicular positions.",
+      "questions": [
+        "List the palpable categories.",
+        "List the ectopic sites given in the lecture text.",
+        "Classify the impalpable testis."
+      ],
+      "answer": [
+        "Retractile, undescended and ectopic testes.",
+        "Superficial inguinal pouch, base of penis, perineum and femoral canal.",
+        "Intra-abdominal, inguinal but atrophic, and absent or vanishing testis."
+      ],
+      "subtopics": [
+        "cryptorchidism"
+      ]
+    }
+  ],
+  "detailedShorts": [
+    {
+      "id": "ss-d01",
+      "q": "What common causes of scrotal swelling are named on the introductory slide?",
+      "a": "Epididymitis, hydrocele and trauma.",
+      "topic": "Scrotal Swelling",
+      "priority": "Core",
+      "marks": 3,
+      "subtopics": [
+        "epididymo-orchitis",
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d02",
+      "q": "Which scrotal condition in the lecture is a true urologic emergency?",
+      "a": "Testicular torsion.",
+      "topic": "Scrotal Swelling",
+      "priority": "High",
+      "marks": 1,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d03",
+      "q": "Which tissues are inflamed in epididymo-orchitis?",
+      "a": "The epididymis and testicle.",
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d04",
+      "q": "Name the three bacterial organisms listed for epididymo-orchitis.",
+      "a": "E. coli, Neisseria gonorrhea and Chlamydia trachomatis.",
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 3,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d05",
+      "q": "What viral cause of orchitis is listed?",
+      "a": "Mumps.",
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d06",
+      "q": "What systemic symptoms accompany epididymo-orchitis?",
+      "a": "Fever and malaise.",
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d07",
+      "q": "How long should antibiotics continue in bacterial epididymo-orchitis?",
+      "a": "Two weeks.",
+      "topic": "Epididymo-Orchitis",
+      "priority": "High",
+      "marks": 1,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d08",
+      "q": "What local supportive measure is stated for epididymo-orchitis?",
+      "a": "Scrotal support with rest.",
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d09",
+      "q": "Which symptomatic drug groups are used in epididymo-orchitis?",
+      "a": "Anti-inflammatory drugs, analgesics and antipyretics.",
+      "topic": "Epididymo-Orchitis",
+      "priority": "Core",
+      "marks": 3,
+      "subtopics": [
+        "epididymo-orchitis"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d10",
+      "q": "What anatomical venous plexus is affected in varicocele?",
+      "a": "The pampiniform plexus.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d11",
+      "q": "What percentage of the general population is stated to have varicocele?",
+      "a": "20%.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d12",
+      "q": "What percentage of infertile men is stated to have varicocele?",
+      "a": "40%.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d13",
+      "q": "What valve abnormality produces primary reflux in varicocele?",
+      "a": "Incompetent venous valves.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d14",
+      "q": "Give the obstructive tumor example associated with varicocele.",
+      "a": "Renal cell carcinoma with IVC tumor thrombus.",
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d15",
+      "q": "What examination maneuver accentuates varicocele veins?",
+      "a": "Straining.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d16",
+      "q": "Define Grade I varicocele.",
+      "a": "Palpable only during straining.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d17",
+      "q": "Define Grade II varicocele.",
+      "a": "Not visible but palpable at rest.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d18",
+      "q": "Define Grade III varicocele.",
+      "a": "Visible and palpable at rest.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d19",
+      "q": "What venous diameter supports varicocele on Doppler?",
+      "a": "Greater than 2-3 mm.",
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 1,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d20",
+      "q": "What flow finding supports varicocele on Doppler?",
+      "a": "Reversed flow with Valsalva.",
+      "topic": "Varicocele",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d21",
+      "q": "What semen-analysis description is written in the lecture?",
+      "a": "Stress pattern.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d22",
+      "q": "Which hormones are checked in severe oligospermia?",
+      "a": "Testosterone, LH, FSH and prolactin.",
+      "topic": "Varicocele",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "varicocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d23",
+      "q": "What is the processus vaginalis?",
+      "a": "The peritoneal bulge into the inguinal canal during intrauterine life.",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d24",
+      "q": "What does the portion adjacent to the testis become?",
+      "a": "Tunica vaginalis.",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d25",
+      "q": "Which hydrocele type surrounds only the vaginal portion in the figure?",
+      "a": "Vaginal hydrocele.",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d26",
+      "q": "Which hydrocele type communicates upward in the figure?",
+      "a": "Congenital hydrocele.",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d27",
+      "q": "Which hydrocele appears as a separate cord cyst?",
+      "a": "Hydrocele of the cord.",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d28",
+      "q": "What is the ultrasound appearance of hydrocele?",
+      "a": "A simple fluid collection sac.",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d29",
+      "q": "When is surgery required for infantile or congenital hydrocele?",
+      "a": "If it persists after observation during the first year.",
+      "topic": "Hydrocele",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d30",
+      "q": "Which layer is everted in vaginal hydrocele surgery?",
+      "a": "Tunica vaginalis.",
+      "topic": "Hydrocele",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "hydrocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d31",
+      "q": "What does a spermatocele contain?",
+      "a": "Sperms within a cystic accumulation.",
+      "topic": "Spermatocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d32",
+      "q": "Where is a spermatocele felt clinically?",
+      "a": "Superior to the testicle.",
+      "topic": "Spermatocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d33",
+      "q": "What may cause spermatocele according to the lecture?",
+      "a": "Aneurysmal dilatation of an epididymal ductule.",
+      "topic": "Spermatocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d34",
+      "q": "What second purpose does ultrasound serve in spermatocele?",
+      "a": "It rules out additional testicular pathology.",
+      "topic": "Spermatocele",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "spermatocele"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d35",
+      "q": "Name the commonest testicular neoplasm in the lecture.",
+      "a": "Seminoma.",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d36",
+      "q": "From which cells does teratoma arise?",
+      "a": "Totipotent cells.",
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d37",
+      "q": "Which germ layers can teratoma differentiate into?",
+      "a": "Ectoderm, mesoderm and endoderm.",
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 3,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d38",
+      "q": "Which tumor produces excess androgens?",
+      "a": "Leydig cell tumor.",
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d39",
+      "q": "Which rare tumor occurs after puberty?",
+      "a": "Sertoli cell tumor.",
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d40",
+      "q": "What is the first lymph-node group for testicular lymphatic spread?",
+      "a": "Para-aortic lymph nodes.",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d41",
+      "q": "Which left supraclavicular node is named in the lecture?",
+      "a": "Virchow gland.",
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d42",
+      "q": "When does local spread of testicular tumors occur?",
+      "a": "In late stages.",
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d43",
+      "q": "What is the common symptom of testicular tumor?",
+      "a": "Painless scrotal swelling.",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d44",
+      "q": "What is the characteristic testicular sign?",
+      "a": "A firm non-tender testicular mass.",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d45",
+      "q": "Which tumor is radiosensitive?",
+      "a": "Seminoma.",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d46",
+      "q": "Which testicular tumor is described as small with early hematogenous spread?",
+      "a": "Choriocarcinoma.",
+      "topic": "Testicular Tumors",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d47",
+      "q": "For which group is chemotherapy recommended?",
+      "a": "Non-seminoma tumors.",
+      "topic": "Testicular Tumors",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "testicular-tumors"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d48",
+      "q": "What structure twists in testicular torsion?",
+      "a": "The spermatic cord.",
+      "topic": "Testicular Torsion",
+      "priority": "High",
+      "marks": 1,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d49",
+      "q": "What Doppler finding supports torsion?",
+      "a": "Reduced blood flow to the testis.",
+      "topic": "Testicular Torsion",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d50",
+      "q": "What gastrointestinal symptoms may accompany torsion?",
+      "a": "Nausea and vomiting.",
+      "topic": "Testicular Torsion",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d51",
+      "q": "What testicular position may be seen in torsion?",
+      "a": "Higher than usual in the scrotum.",
+      "topic": "Testicular Torsion",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "testicular-torsion"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d52",
+      "q": "What percentage incidence of undescended testis is stated?",
+      "a": "3%.",
+      "topic": "Cryptorchidism",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d53",
+      "q": "What percentage of mal-descended testes are palpable?",
+      "a": "80%.",
+      "topic": "Cryptorchidism",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d54",
+      "q": "What percentage are impalpable?",
+      "a": "20%.",
+      "topic": "Cryptorchidism",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d55",
+      "q": "What is the examination feature of retractile testis?",
+      "a": "It can be moved by hand from the groin into the scrotum.",
+      "topic": "Cryptorchidism",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d56",
+      "q": "What does bilateral absence do to the scrotal appearance?",
+      "a": "The scrotum may appear small, flat or underdeveloped.",
+      "topic": "Cryptorchidism",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d57",
+      "q": "What pouch is used for orchiopexy fixation?",
+      "a": "A scrotal sub-dartos pouch.",
+      "topic": "Cryptorchidism",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "Detailed Practice"
+    },
+    {
+      "id": "ss-d58",
+      "q": "What associated operation is performed for the hernia sac?",
+      "a": "Herniotomy.",
+      "topic": "Cryptorchidism",
+      "priority": "Core",
+      "marks": 1,
+      "subtopics": [
+        "cryptorchidism"
+      ],
+      "section": "Detailed Practice"
+    }
+  ],
+  "rapid": [
+    [
+      "Epididymo-orchitis definition?",
+      "Inflammation of epididymis and testicle."
+    ],
+    [
+      "Emergency differential of epididymo-orchitis?",
+      "Testicular torsion."
+    ],
+    [
+      "Listed viral cause?",
+      "Mumps."
+    ],
+    [
+      "Parotiditis-to-orchitis interval?",
+      "About one week."
+    ],
+    [
+      "Bacterial antibiotic duration?",
+      "Two weeks."
+    ],
+    [
+      "Varicocele definition?",
+      "Dilated, elongated, tortuous pampiniform plexus."
+    ],
+    [
+      "Varicocele in general population?",
+      "20%."
+    ],
+    [
+      "Varicocele in infertile men?",
+      "40%."
+    ],
+    [
+      "Why left-sided?",
+      "Left testicular vein joins left renal vein at a right angle."
+    ],
+    [
+      "Grade I varicocele?",
+      "Palpable only with straining."
+    ],
+    [
+      "Grade II varicocele?",
+      "Palpable at rest but not visible."
+    ],
+    [
+      "Grade III varicocele?",
+      "Visible and palpable at rest."
+    ],
+    [
+      "Doppler vein diameter?",
+      "Greater than 2-3 mm."
+    ],
+    [
+      "Doppler flow sign?",
+      "Reversal with Valsalva."
+    ],
+    [
+      "Varicocelectomy indications?",
+      "Infertility, pain, atrophy."
+    ],
+    [
+      "Hydrocele definition?",
+      "Fluid in any part of processus vaginalis."
+    ],
+    [
+      "Four hydrocele types?",
+      "Vaginal, infantile, congenital, cord."
+    ],
+    [
+      "Child hydrocele first-year plan?",
+      "Observation."
+    ],
+    [
+      "Persistent child hydrocele?",
+      "Surgery."
+    ],
+    [
+      "Vaginal hydrocele operation?",
+      "Eversion of tunica vaginalis."
+    ],
+    [
+      "Spermatocele origin?",
+      "Head of epididymis."
+    ],
+    [
+      "Spermatocele position?",
+      "Superior to testis."
+    ],
+    [
+      "Spermatocelectomy indication?",
+      "Pain or progressive bothersome enlargement."
+    ],
+    [
+      "Why avoid aspiration?",
+      "Infection or irritating sperm spillage."
+    ],
+    [
+      "Commonest testicular neoplasm?",
+      "Seminoma."
+    ],
+    [
+      "Testicular tumor age group?",
+      "20-35 years."
+    ],
+    [
+      "Undescended-testis tumor risk in lecture?",
+      "Five times."
+    ],
+    [
+      "Testicular tumor markers?",
+      "AFP, beta-hCG, LDH."
+    ],
+    [
+      "Tumor ultrasound?",
+      "Homogeneous hypoechoic mass."
+    ],
+    [
+      "Seminoma adjuvant sensitivity?",
+      "Radiosensitive."
+    ],
+    [
+      "Non-seminoma treatment listed?",
+      "Chemotherapy."
+    ],
+    [
+      "Torsion mechanism?",
+      "Spermatic-cord twist stops blood supply."
+    ],
+    [
+      "Torsion salvage target?",
+      "Within 6 hours."
+    ],
+    [
+      "After 24 hours?",
+      "Testis rarely salvageable."
+    ],
+    [
+      "Manual detorsion rule?",
+      "Must not delay surgery."
+    ],
+    [
+      "Cryptorchidism incidence?",
+      "3%."
+    ],
+    [
+      "Premature versus full-term figures?",
+      "30% versus 3%."
+    ],
+    [
+      "Palpable versus impalpable?",
+      "80% versus 20%."
+    ],
+    [
+      "Cryptorchid complications?",
+      "Infertility, trauma, tumor, torsion."
+    ],
+    [
+      "Impalpable-testis tool?",
+      "Laparoscopy for diagnosis and possible treatment."
+    ]
+  ],
+  "subtopics": [
+    {
+      "id": "epididymo-orchitis",
+      "label": "Epididymo-Orchitis"
+    },
+    {
+      "id": "varicocele",
+      "label": "Varicocele"
+    },
+    {
+      "id": "hydrocele",
+      "label": "Hydrocele"
+    },
+    {
+      "id": "spermatocele",
+      "label": "Spermatocele"
+    },
+    {
+      "id": "testicular-tumors",
+      "label": "Testicular Tumors"
+    },
+    {
+      "id": "testicular-torsion",
+      "label": "Testicular Torsion"
+    },
+    {
+      "id": "cryptorchidism",
+      "label": "Cryptorchidism"
+    }
+  ]
+}

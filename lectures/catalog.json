@@ -1,0 +1,90 @@
+{
+  "$schema": "./catalog.schema.json",
+  "version": 1,
+  "lectures": [
+    {
+      "id": "neurosurgery-traumatic-brain-injury",
+      "title": "Traumatic Brain Injury",
+      "subjectKey": "neurosurgery",
+      "order": 1,
+      "file": "data/neurosurgery-traumatic-brain-injury.json",
+      "expectedCounts": {
+        "cases": 16,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40
+      }
+    },
+    {
+      "id": "urology-congenital-anomalies",
+      "title": "Congenital Anomalies",
+      "subjectKey": "urology",
+      "order": 1,
+      "file": "data/urology-congenital-anomalies.json",
+      "expectedCounts": {
+        "cases": 11,
+        "coreShorts": 25,
+        "imageQuestions": 10,
+        "detailedShorts": 57,
+        "rapid": 26
+      }
+    },
+    {
+      "id": "urology-bph-prostate-carcinoma",
+      "title": "BPH & Prostate Carcinoma",
+      "subjectKey": "urology",
+      "order": 2,
+      "file": "data/urology-bph-prostate-carcinoma.json",
+      "expectedCounts": {
+        "cases": 12,
+        "coreShorts": 27,
+        "imageQuestions": 8,
+        "detailedShorts": 42,
+        "rapid": 26
+      }
+    },
+    {
+      "id": "urology-urological-emergencies",
+      "title": "Urological Emergencies",
+      "subjectKey": "urology",
+      "order": 3,
+      "file": "data/urology-urological-emergencies.json",
+      "expectedCounts": {
+        "cases": 15,
+        "coreShorts": 31,
+        "imageQuestions": 10,
+        "detailedShorts": 53,
+        "rapid": 33
+      }
+    },
+    {
+      "id": "urology-scrotal-swelling",
+      "title": "Scrotal Swelling",
+      "subjectKey": "urology",
+      "order": 4,
+      "file": "data/urology-scrotal-swelling.json",
+      "expectedCounts": {
+        "cases": 15,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40
+      }
+    },
+    {
+      "id": "urology-urinary-tract-infection",
+      "title": "Urinary Tract Infection",
+      "subjectKey": "urology",
+      "order": 5,
+      "file": "data/urology-urinary-tract-infection.json",
+      "expectedCounts": {
+        "cases": 15,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+/* Compact mobile filter controls and active-filter chips */
+.mobile-filter-toggle,.reset-filters-button{min-height:44px;border:1px solid var(--border);border-radius:12px;background:var(--surface,#fff);color:var(--text);font:inherit;font-weight:850;padding:0 14px;cursor:pointer;transition:.18s}
+.mobile-filter-toggle:hover,.reset-filters-button:hover{border-color:var(--brand);color:var(--brand)}
+.mobile-filter-toggle:focus-visible,.reset-filters-button:focus-visible,.filter-chip:focus-visible{outline:3px solid color-mix(in srgb,var(--brand) 35%,transparent);outline-offset:2px}
+.mobile-filter-toggle{display:none;align-items:center;justify-content:center;gap:8px}
+.mobile-filter-count{display:inline-grid;min-width:22px;height:22px;place-items:center;border-radius:999px;background:var(--brand);color:#fff;font-size:.76rem;line-height:1;padding:0 6px}
+.mobile-filter-count[hidden]{display:none}
+.reset-filters-button:disabled{cursor:default;opacity:.48;border-color:var(--border);color:var(--muted)}
+.active-filter-chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 18px;align-items:center}
+.active-filter-chips[hidden]{display:none}
+.active-filter-label{color:var(--muted);font-size:.84rem;font-weight:800}
+.filter-chip{display:inline-flex;align-items:center;gap:7px;min-height:34px;max-width:100%;border:1px solid color-mix(in srgb,var(--brand) 30%,var(--border));border-radius:999px;background:color-mix(in srgb,var(--brand) 8%,var(--surface,#fff));color:var(--brand);font:inherit;font-size:.84rem;font-weight:800;padding:4px 10px;cursor:pointer}
+.filter-chip-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(280px,62vw)}
+.filter-chip-remove{font-size:1.1rem;line-height:1}
+.dark .mobile-filter-toggle,.dark .reset-filters-button{background:#101c2e}
+.dark .filter-chip{background:color-mix(in srgb,var(--brand) 18%,#101c2e)}
+
+@media(max-width:700px){
+  .toolbar{align-items:stretch}
+  .mobile-filter-toggle{display:inline-flex;grid-column:1/-1}
+  .toolbar .mobile-secondary-control{grid-column:1/-1}
+  .toolbar:not(.mobile-filters-expanded) .mobile-secondary-control{display:none!important}
+  .reset-filters-button{grid-column:1/-1}
+  .active-filter-chips{margin-top:-4px;padding:0 2px}
+}
+
+@media(max-width:380px){
+  .mobile-filter-toggle,.reset-filters-button{grid-column:1}
+  .filter-chip-text{max-width:72vw}
+}
