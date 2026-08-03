@@ -1,0 +1,323 @@
+name: Final Cross-Browser Release Validation
+
+on:
+  push:
+    branches:
+      - agent/harden-pwa-ci-foundation
+    paths:
+      - .github/workflows/final-release-validation.yml
+      - playwright.webkit.config.js
+      - tests/webkit-smoke.spec.js
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: medical-meq-final-quality
+  cancel-in-progress: false
+
+jobs:
+  release-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+
+    steps:
+      - name: Check out latest development branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/harden-pwa-ci-foundation
+          fetch-depth: 0
+
+      - name: Synchronize with remote branch
+        run: |
+          set -euo pipefail
+          git fetch origin agent/harden-pwa-ci-foundation
+          git reset --hard origin/agent/harden-pwa-ci-foundation
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Require all previous migrations
+        run: |
+          set -euo pipefail
+          test -s src/progress-resilience.js
+          test -s src/print-manager.css
+          test -s src/print-manager.js
+          grep -Fq 'extensions.css' tools/build_app.py
+          grep -Fq 'validate_performance_budget.py' build.sh
+          test ! -e print-manager.v8.css.gz.b64
+          test ! -e print-manager.v8.js.gz.b64
+
+      - name: Integrate WebKit validation and release metadata
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          import re
+
+          package_path = Path('package.json')
+          package = json.loads(package_path.read_text(encoding='utf-8'))
+          package.setdefault('scripts', {})['test:webkit'] = 'playwright test --config=playwright.webkit.config.js'
+          package_path.write_text(json.dumps(package, indent=2) + '\n', encoding='utf-8')
+
+          test_path = Path('tests/webkit-smoke.spec.js')
+          text = test_path.read_text(encoding='utf-8')
+          text = text.replace(
+              "test('WebKit opens the active subject and loads another subject on demand', async ({page}) => {",
+              "test('WebKit opens the active subject and loads another subject on demand', async ({page}, testInfo) => {\n  test.skip(!testInfo.project.name.includes('desktop'), 'Desktop WebKit scenario');",
+          )
+          text = text.replace(
+              "test('iPhone WebKit can expand, search and reset mobile filters', async ({page}) => {",
+              "test('iPhone WebKit can expand, search and reset mobile filters', async ({page}, testInfo) => {\n  test.skip(!testInfo.project.name.includes('mobile'), 'Mobile WebKit scenario');",
+          )
+          test_path.write_text(text, encoding='utf-8')
+
+          workflow_path = Path('.github/workflows/validate-bank.yml')
+          workflow = workflow_path.read_text(encoding='utf-8')
+          workflow = workflow.replace(
+              '          node --check tests/layout.spec.js\n',
+              '          node --check tests/layout.spec.js\n          node --check tests/webkit-smoke.spec.js\n          node --check playwright.webkit.config.js\n',
+              1,
+          )
+          workflow = workflow.replace(
+              'run: npx playwright install --with-deps chromium',
+              'run: npx playwright install --with-deps chromium webkit',
+              1,
+          )
+          workflow = workflow.replace(
+              '      - name: Run browser and accessibility tests\n        run: npm run test:e2e\n',
+              '      - name: Run Chromium browser and accessibility tests\n        run: npm run test:e2e\n\n      - name: Run Safari and iPhone WebKit smoke tests\n        run: npm run test:webkit\n',
+              1,
+          )
+          workflow = workflow.replace(
+              '            playwright-report\n            test-results\n',
+              '            playwright-report\n            playwright-report-webkit\n            test-results\n',
+              1,
+          )
+          workflow_path.write_text(workflow, encoding='utf-8')
+
+          readme_path = Path('README.md')
+          readme = readme_path.read_text(encoding='utf-8')
+          if 'npm run test:webkit' not in readme:
+              readme = readme.replace(
+                  'npm run test:e2e\n```',
+                  'npm run test:e2e\nnpm run test:webkit\n```',
+                  1,
+              )
+          if 'Safari and iPhone WebKit smoke tests' not in readme:
+              readme = readme.replace(
+                  '- real Chromium workflows through Playwright\n',
+                  '- real Chromium workflows through Playwright\n- Safari and iPhone WebKit smoke tests\n',
+                  1,
+              )
+          readme_path.write_text(readme, encoding='utf-8')
+
+          worker_path = Path('service-worker.js')
+          worker = worker_path.read_text(encoding='utf-8')
+          worker, count = re.subn(
+              r"const APP_VERSION = '[^']+';",
+              "const APP_VERSION = '2026.08.03.16';",
+              worker,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit('Could not update final service-worker version')
+          worker_path.write_text(worker, encoding='utf-8')
+          Path('version.json').write_text(
+              json.dumps({
+                  'version': '2026.08.03.16',
+                  'updatedAt': '2026-08-03T06:35:00+03:00'
+              }, indent=2) + '\n',
+              encoding='utf-8',
+          )
+
+          validator_path = Path('scripts/validate_build.py')
+          validator = validator_path.read_text(encoding='utf-8')
+          if 'legacy root build artifacts remain' not in validator:
+              marker = 'def main() -> int:\n'
+              addition = '''def validate_repository_hygiene() -> None:
+    forbidden = (
+        ROOT / "Medical_MEQ_Bank_PWA_GitHub_Pages.zip",
+        ROOT / "print-manager.v8.css.gz.b64",
+        ROOT / "print-manager.v8.js.gz.b64",
+    )
+    remaining = [path.name for path in forbidden if path.exists()]
+    if remaining:
+        fail("legacy root build artifacts remain: " + ", ".join(remaining))
+
+
+'''
+              if marker not in validator:
+                  raise SystemExit('Could not add repository hygiene validation')
+              validator = validator.replace(marker, addition + marker, 1)
+              validator = validator.replace(
+                  '    version = validate_metadata()\n',
+                  '    validate_repository_hygiene()\n    version = validate_metadata()\n',
+                  1,
+              )
+          validator_path.write_text(validator, encoding='utf-8')
+          PY
+
+      - name: Remove obsolete repository artifacts before validation
+        run: |
+          set -euo pipefail
+          git rm --ignore-unmatch \
+            Medical_MEQ_Bank_PWA_GitHub_Pages.zip \
+            .github/workflows/validate-scrotal.yml
+
+      - name: Build and run all static gates
+        run: |
+          set -euo pipefail
+          bash build.sh
+          python3 scripts/validate_build.py
+          python3 scripts/validate_mobile_filters.py
+          python3 scripts/validate_runtime_extensions.py
+          python3 scripts/validate_performance_budget.py
+
+      - name: Validate JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check src/app.js
+          node --check src/progress-resilience.js
+          node --check src/lecture-loader.js
+          node --check src/pwa-client.js
+          node --check src/print-manager.js
+          node --check dist/app.js
+          node --check dist/progress-resilience.js
+          node --check dist/lecture-loader.js
+          node --check dist/pwa-client.js
+          node --check dist/extensions.js
+          node --check dist/service-worker.js
+          node --check tests/app.spec.js
+          node --check tests/accessibility.spec.js
+          node --check tests/performance.spec.js
+          node --check tests/layout.spec.js
+          node --check tests/webkit-smoke.spec.js
+          node --check playwright.webkit.config.js
+
+      - name: Install locked Chromium and WebKit browsers
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium webkit
+
+      - name: Run Chromium functional, offline, performance, layout and WCAG suite
+        run: npm run test:e2e
+
+      - name: Run Safari and iPhone WebKit smoke suite
+        run: npm run test:webkit
+
+      - name: Create permanent technical quality report
+        run: |
+          set -euo pipefail
+          mkdir -p docs
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          from datetime import datetime, timezone
+
+          version = json.loads(Path('version.json').read_text(encoding='utf-8'))
+          catalog = json.loads(Path('lectures/catalog.json').read_text(encoding='utf-8'))
+          lectures = catalog['lectures']
+          subjects = sorted({item['subjectKey'] for item in lectures})
+          counts = {key: 0 for key in ('cases', 'coreShorts', 'imageQuestions', 'detailedShorts', 'rapid')}
+          for lecture in lectures:
+              for key in counts:
+                  counts[key] += lecture['expectedCounts'][key]
+
+          report = f'''# Medical MEQ Bank — Technical Quality Report
+
+## Validated release
+
+- Version: `{version['version']}`
+- Source branch: `agent/harden-pwa-ci-foundation`
+- Generated: `{datetime.now(timezone.utc).isoformat()}`
+- Lectures: **{len(lectures)}** across **{len(subjects)}** subjects
+- MEQ cases: **{counts['cases']}**
+- Core short questions: **{counts['coreShorts']}**
+- Image/spot questions: **{counts['imageQuestions']}**
+- Detailed short questions: **{counts['detailedShorts']}**
+- Rapid Recall cards: **{counts['rapid']}**
+
+## Architecture validated
+
+- Reviewable split HTML, CSS and JavaScript sources
+- Every lecture stored as readable JSON with catalog metadata and expected counts
+- Subject-level lazy loading for the online application
+- Complete single-file offline edition
+- Service-worker precache generated from the lecture catalog
+- IndexedDB mirror for recovery from malformed saved progress
+- Cacheable generated feature bundles
+- Readable print/PDF source files
+- Explicit Cloudflare 404 behavior and security headers
+
+## Automated gates passed before this report was committed
+
+- Python source and generated-build validation
+- JavaScript syntax validation
+- Exact source-to-generated lecture parity
+- Duplicate ID and subtopic-reference checks
+- Production file-size budgets
+- Chromium functional and offline workflows
+- Responsive layout regression checks
+- Automated WCAG A/AA audits
+- Safari desktop WebKit smoke tests
+- iPhone WebKit mobile-filter smoke tests
+
+## Release rule
+
+`main` should only receive these changes through the reviewed pull request after the repository checks are green. Generated `dist/` output is never treated as source.
+'''
+          Path('docs/TECHNICAL_QUALITY_REPORT.md').write_text(report, encoding='utf-8')
+          PY
+
+      - name: Remove all remaining one-time migration workflows and tools
+        run: |
+          set -euo pipefail
+          git rm --ignore-unmatch \
+            .github/workflows/confirm-lazy-and-clean.yml \
+            .github/workflows/validate-lazy-migration.yml \
+            .github/workflows/validate-lazy-migration-2.yml \
+            .github/workflows/integrate-progress-resilience.yml \
+            .github/workflows/final-quality-gate.yml \
+            .github/workflows/final-quality-recovery.yml \
+            .github/workflows/externalize-extensions.yml \
+            .github/workflows/migrate-print-manager.yml \
+            .github/workflows/final-release-validation.yml \
+            tools/integrate_progress_resilience.py \
+            tools/integrate_progress_resilience_v2.py \
+            tools/integrate_final_quality.py \
+            tools/externalize_extensions.py \
+            tools/migrate_print_manager_source.py
+          rm -f \
+            lazy-migration-diagnostic.txt \
+            lazy-migration-diagnostic-2.txt \
+            source-split-diagnostic.txt
+
+      - name: Commit cross-browser validated release foundation
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Finalize cross-browser validated release foundation"
+          git pull --rebase origin agent/harden-pwa-ci-foundation
+          git push origin HEAD:agent/harden-pwa-ci-foundation
+
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-release-validation-failure
+          path: |
+            playwright-report
+            playwright-report-webkit
+            test-results
+            dist
+          if-no-files-found: ignore
+          retention-days: 7
