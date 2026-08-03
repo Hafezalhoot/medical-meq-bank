@@ -53,6 +53,29 @@ test('All study items search includes matching Rapid Recall cards', async ({page
   await expect(matchingRapid.first()).toBeVisible();
 });
 
+test('full-bank text search waits for the debounce interval', async ({page}) => {
+  await openBank(page);
+
+  const search = page.locator('#search');
+  await expect(search).toHaveAttribute('data-optimized-search', '1');
+  await expect(search).toHaveAttribute('data-filter-delay', '160');
+
+  const applied = page.evaluate(() => new Promise(resolve => {
+    document.getElementById('search').addEventListener(
+      'meq:search-applied',
+      () => resolve(true),
+      {once: true}
+    );
+  }));
+
+  await search.fill('definitely-no-such-medical-item-8374');
+  const immediatelyEmpty = await page.locator('#empty').evaluate(element => element.classList.contains('show'));
+  expect(immediatelyEmpty).toBe(false);
+
+  await expect(applied).resolves.toBe(true);
+  await expect(page.locator('#empty')).toHaveClass(/show/);
+});
+
 test('mobile filters expand, show active chips, and reset cleanly', async ({page}) => {
   await page.setViewportSize({width: 390, height: 844});
   await openBank(page);
@@ -77,6 +100,46 @@ test('mobile filters expand, show active chips, and reset cleanly', async ({page
   await expect(page.locator('#search')).toHaveValue('');
   await expect(chips).toBeHidden();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('mobile sidebar defaults stay responsive until the user chooses', async ({page}) => {
+  await page.setViewportSize({width: 390, height: 844});
+  await openBank(page);
+
+  const layout = page.locator('#mainLayout');
+  await expect(layout).toHaveClass(/hide-lectures/);
+  await expect(layout).toHaveClass(/hide-subtopics/);
+
+  const initialPreferences = await page.evaluate(() => ({
+    lectures: localStorage.getItem('medicalBankHideLecturesV4'),
+    subtopics: localStorage.getItem('medicalBankHideSubtopicsV4')
+  }));
+  expect(initialPreferences).toEqual({lectures: null, subtopics: null});
+
+  await page.locator('#toggleLectures').click();
+  await expect(layout).not.toHaveClass(/hide-lectures/);
+  await expect(page.locator('#toggleLectures')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(
+    () => page.evaluate(() => localStorage.getItem('medicalBankHideLecturesV4'))
+  ).toBe('0');
+
+  expect(
+    await page.evaluate(() => localStorage.getItem('medicalBankHideSubtopicsV4'))
+  ).toBeNull();
+});
+
+test('desktop starts with both sidebars open without saving preferences', async ({page}) => {
+  await page.setViewportSize({width: 1440, height: 900});
+  await openBank(page);
+
+  const layout = page.locator('#mainLayout');
+  await expect(layout).not.toHaveClass(/hide-lectures/);
+  await expect(layout).not.toHaveClass(/hide-subtopics/);
+
+  expect(await page.evaluate(() => ({
+    lectures: localStorage.getItem('medicalBankHideLecturesV4'),
+    subtopics: localStorage.getItem('medicalBankHideSubtopicsV4')
+  }))).toEqual({lectures: null, subtopics: null});
 });
 
 test('malformed saved progress cannot prevent startup', async ({page}) => {
