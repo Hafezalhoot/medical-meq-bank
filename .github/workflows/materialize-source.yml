@@ -22,7 +22,7 @@ jobs:
         with:
           ref: agent/harden-pwa-ci-foundation
 
-      - name: Extract reviewable application shell
+      - name: Extract reviewable source and static icons
         run: |
           set -euo pipefail
           test -s Medical_MEQ_Bank_PWA_GitHub_Pages.zip
@@ -30,17 +30,24 @@ jobs:
           mkdir -p /tmp/medical-meq-source src
           unzip -q Medical_MEQ_Bank_PWA_GitHub_Pages.zip -d /tmp/medical-meq-source
           test -s /tmp/medical-meq-source/index.html
+          test -s /tmp/medical-meq-source/icons/icon-192.png
+          test -s /tmp/medical-meq-source/icons/icon-512.png
+          test -s /tmp/medical-meq-source/icons/apple-touch-icon.png
           cp /tmp/medical-meq-source/index.html src/index.html
+          rm -rf icons
+          cp -R /tmp/medical-meq-source/icons icons
 
       - name: Commit materialized source
         run: |
           set -euo pipefail
-          if git diff --quiet -- src/index.html && git ls-files --error-unmatch src/index.html >/dev/null 2>&1; then
-            echo "src/index.html is already current."
+          if git diff --quiet -- src/index.html icons && \
+             git ls-files --error-unmatch src/index.html >/dev/null 2>&1 && \
+             git ls-files --error-unmatch icons/icon-192.png >/dev/null 2>&1; then
+            echo "Application source and icons are already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/index.html
-          git commit -m "Materialize reviewable application source"
+          git add src/index.html icons
+          git commit -m "Materialize application source and icons"
           git push origin HEAD:agent/harden-pwa-ci-foundation
