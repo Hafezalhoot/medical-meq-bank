@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Validate source markers and generated ordering for runtime extensions."""
+"""Validate generated runtime ordering and extension safeguards."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 HTML = ROOT / "dist" / "index.html"
+OFFLINE = ROOT / "dist" / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
 
 
 def fail(message: str) -> None:
@@ -29,7 +29,9 @@ def require_markers(source: str, markers: tuple[str, ...], label: str) -> None:
 def main() -> None:
     responsive = read(ROOT / "responsive-sidebars.js")
     search = read(ROOT / "search-optimization.js")
+    loader = read(ROOT / "src" / "lecture-loader.js")
     html = read(HTML)
+    offline = read(OFFLINE)
 
     require_markers(
         responsive,
@@ -57,9 +59,32 @@ def main() -> None:
         ),
         "search optimization source",
     )
+    require_markers(
+        loader,
+        (
+            "loadCatalog",
+            "loadSubject",
+            "MEQLectureLoader",
+            "meq:lectures-loaded",
+            "loadedLectureIds",
+        ),
+        "lecture loader source",
+    )
+
+    external_markers = (
+        '<script src="./app.js"></script>',
+        '<script src="./lecture-loader.js"></script>',
+        '<script src="./pwa-client.js"></script>',
+    )
+    external_positions = []
+    for marker in external_markers:
+        if html.count(marker) != 1:
+            fail(f"generated HTML must contain exactly one {marker}")
+        external_positions.append(html.index(marker))
+    if external_positions != sorted(external_positions):
+        fail("app, lecture loader and PWA client are not loaded in the required order")
 
     ordered_ids = (
-        "lecture-extensions",
         "responsive-sidebar-extension",
         "review-filter-extension",
         "mobile-filter-extension",
@@ -73,9 +98,10 @@ def main() -> None:
         if html.count(marker) != 1:
             fail(f"generated HTML must contain exactly one {marker}")
         positions.append(html.index(marker))
-
     if positions != sorted(positions):
         fail("runtime extensions are not generated in the required order")
+    if external_positions[-1] >= positions[0]:
+        fail("runtime extensions execute before the core application scripts finish loading")
 
     review_position = html.index('id="review-filter-extension"')
     responsive_position = html.index('id="responsive-sidebar-extension"')
@@ -87,7 +113,12 @@ def main() -> None:
     if search_position <= mobile_position:
         fail("search optimizer must run after filter wrappers are installed")
 
-    print("Validated runtime extension ordering and safeguards")
+    if 'id="lecture-extensions"' in html or "const incomingLectures" in html:
+        fail("online HTML still embeds the full lecture bank")
+    if offline.count('id="lecture-extensions"') != 1 or "const incomingLectures" not in offline:
+        fail("standalone offline HTML does not contain the complete lecture bank")
+
+    print("Validated lazy loader and runtime extension ordering")
 
 
 if __name__ == "__main__":
