@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Generate the deployable Medical MEQ Bank application.
 
-The reviewable shell lives in ``src/index.html``. This builder applies small,
-validated compatibility patches and injects independently maintained feature
-extensions into both the online app and the standalone offline copy.
+The online build keeps the application shell, styles, main runtime and PWA
+client as separate reviewable files. The standalone offline copy inlines those
+three source assets so it remains a single directly openable HTML file.
 """
 
 from __future__ import annotations
@@ -98,10 +98,51 @@ def ensure_accessibility_attributes(text: str) -> str:
     return text
 
 
+def safe_inline_script(source: str) -> str:
+    return re.sub(r"</script", r"<\\/script", source, flags=re.I)
+
+
+def safe_inline_style(source: str) -> str:
+    return re.sub(r"</style", r"<\\/style", source, flags=re.I)
+
+
+def create_offline_copy(
+    html: str,
+    *,
+    app_css: str,
+    app_js: str,
+    pwa_client_js: str,
+) -> str:
+    offline = html
+    offline = replace_required(
+        offline,
+        '<link rel="stylesheet" href="./app.css">',
+        f'<style id="app-source-styles">\n{safe_inline_style(app_css)}\n</style>',
+        "offline application styles",
+    )
+    offline = replace_required(
+        offline,
+        '<script src="./app.js"></script>',
+        f'<script id="app-source-runtime">\n{safe_inline_script(app_js)}\n</script>',
+        "offline application runtime",
+    )
+    offline = replace_required(
+        offline,
+        '<script src="./pwa-client.js"></script>',
+        f'<script id="pwa-client-runtime">\n{safe_inline_script(pwa_client_js)}\n</script>',
+        "offline PWA client",
+    )
+    return offline
+
+
 def build(output: Path) -> None:
-    html = output / "index.html"
-    if not html.is_file():
-        raise SystemExit(f"Missing generated application shell: {html}")
+    html_path = output / "index.html"
+    app_css_path = output / "app.css"
+    app_js_path = output / "app.js"
+    pwa_client_path = output / "pwa-client.js"
+    for path in (html_path, app_css_path, app_js_path, pwa_client_path):
+        if not path.is_file():
+            raise SystemExit(f"Missing generated application source: {path}")
 
     version_data = json.loads((ROOT / "version.json").read_text(encoding="utf-8"))
     version = version_data.get("version")
@@ -120,13 +161,16 @@ def build(output: Path) -> None:
     back_to_top_js = (ROOT / "back-to-top.js").read_text(encoding="utf-8")
     lecture_js = build_lecture_extensions(ROOT)
 
-    text = html.read_text(encoding="utf-8")
+    text = html_path.read_text(encoding="utf-8")
+    app_css = app_css_path.read_text(encoding="utf-8")
+    app_js = app_js_path.read_text(encoding="utf-8")
+    pwa_client_js = pwa_client_path.read_text(encoding="utf-8")
 
-    text = replace_regex_required(
-        text,
+    pwa_client_js = replace_regex_required(
+        pwa_client_js,
         r"const APP_VERSION = '[^']+';",
         f"const APP_VERSION = '{version}';",
-        "APP_VERSION update",
+        "PWA APP_VERSION update",
     )
 
     old_state = "const state=JSON.parse(storage.get('medicalBankStatusV2')||'{}');"
@@ -134,7 +178,7 @@ def build(output: Path) -> None:
         "const state=(()=>{try{const value=JSON.parse(storage.get('medicalBankStatusV2')||'{}');"
         "return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch(e){return {}}})();"
     )
-    text = replace_required(text, old_state, new_state, "safe progress-state parser")
+    app_js = replace_required(app_js, old_state, new_state, "safe progress-state parser")
 
     old_restore = (
         "Object.entries(data.storage).forEach(([k,v]) => { "
@@ -146,9 +190,9 @@ def build(output: Path) -> None:
         "Object.entries(data.storage).forEach(([k,v]) => { "
         "if(k.startsWith('medicalBank') && typeof v === 'string') localStorage.setItem(k,v); });"
     )
-    text = replace_required(text, old_restore, new_restore, "clean progress restore")
-    text = ensure_accessibility_attributes(text)
+    app_js = replace_required(app_js, old_restore, new_restore, "clean progress restore")
 
+    text = ensure_accessibility_attributes(text)
     text = upsert_style(text, "review-filter-styles", review_css)
     text = upsert_style(text, "mobile-filter-styles", mobile_filter_css)
     text = upsert_style(text, "print-manager-styles", print_css)
@@ -173,16 +217,19 @@ def build(output: Path) -> None:
     text = upsert_script(text, "print-manager-extension", print_js)
     text = upsert_script(text, "back-to-top-extension", back_to_top_js)
 
-    html.write_text(text, encoding="utf-8")
+    html_path.write_text(text, encoding="utf-8")
+    app_js_path.write_text(app_js, encoding="utf-8")
+    pwa_client_path.write_text(pwa_client_js, encoding="utf-8")
 
-    offline = output / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
-    offline.parent.mkdir(parents=True, exist_ok=True)
-    offline_text = text
-    if '<base href="../">' not in offline_text:
-        if "<head>" not in offline_text:
-            raise SystemExit("Could not create offline copy: missing <head>")
-        offline_text = offline_text.replace("<head>", '<head>\n<base href="../">', 1)
-    offline.write_text(offline_text, encoding="utf-8")
+    offline_path = output / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
+    offline_path.parent.mkdir(parents=True, exist_ok=True)
+    offline_text = create_offline_copy(
+        text,
+        app_css=app_css,
+        app_js=app_js,
+        pwa_client_js=pwa_client_js,
+    )
+    offline_path.write_text(offline_text, encoding="utf-8")
 
 
 if __name__ == "__main__":
