@@ -33,7 +33,7 @@ required_files=(
   lectures/lecture.schema.json
   tools/build_app.py
   tools/lecture_builder.py
-  tools/materialize_verified_lectures.py
+  tools/materialize_verified_lectures_v2.py
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
   scripts/validate_runtime_extensions.py
@@ -56,14 +56,14 @@ fi
 python3 -m py_compile \
   tools/build_app.py \
   tools/lecture_builder.py \
-  tools/materialize_verified_lectures.py \
+  tools/materialize_verified_lectures_v2.py \
   scripts/validate_build.py \
   scripts/validate_mobile_filters.py \
   scripts/validate_runtime_extensions.py \
   scripts/validate_progress_resilience.py \
   scripts/validate_lecture_images.py
 
-python3 tools/materialize_verified_lectures.py
+python3 tools/materialize_verified_lectures_v2.py
 python3 scripts/validate_lecture_images.py
 
 node --check src/app.js
