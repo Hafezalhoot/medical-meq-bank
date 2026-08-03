@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+from base64 import b64decode
 from gzip import decompress
 from hashlib import sha256
 from json import loads
@@ -14,11 +15,13 @@ TARGETS = {
             'urology-bladder-cancer.json.gz.part02',
             'urology-bladder-cancer.json.gz.part03',
         ],
+        'encoding': 'binary',
         'sha256': '9f3129600ef233a593b260c01745415fb70ade3d35891835616cd84343e52fa6',
         'count': 8,
     },
     'urology-urolithiasis.json': {
         'files': ['urology-urolithiasis.json.gz'],
+        'encoding': 'base64',
         'sha256': 'd985e2459155bbbc55044eab8ce8ef27a9caef61c8aa6f0b2fe27b029712cf40',
         'count': 10,
     },
@@ -27,6 +30,8 @@ TARGETS = {
 def main():
     for filename, cfg in TARGETS.items():
         packed = b''.join((PAYLOAD_DIR / name).read_bytes() for name in cfg['files'])
+        if cfg['encoding'] == 'base64':
+            packed = b64decode(packed, validate=True)
         raw = decompress(packed)
         digest = sha256(raw).hexdigest()
         if digest != cfg['sha256']:
