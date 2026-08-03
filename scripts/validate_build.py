@@ -102,6 +102,46 @@ def validate_manifest() -> None:
         require_file(DIST / src[2:])
 
 
+def validate_cloudflare_config() -> None:
+    config_path = ROOT / "wrangler.jsonc"
+    try:
+        config = json.loads(read_text(config_path))
+    except json.JSONDecodeError as error:
+        fail(f"invalid wrangler.jsonc: {error}")
+
+    assets = config.get("assets")
+    if not isinstance(assets, dict):
+        fail("wrangler.jsonc is missing assets configuration")
+    if assets.get("directory") != "./dist":
+        fail("Cloudflare assets directory is not ./dist")
+    if assets.get("not_found_handling") != "404-page":
+        fail("unknown paths do not use explicit 404 handling")
+
+
+def validate_security_headers() -> None:
+    headers = read_text(DIST / "_headers")
+    required = (
+        "Content-Security-Policy:",
+        "frame-ancestors 'none'",
+        "object-src 'none'",
+        "Permissions-Policy:",
+        "Referrer-Policy: no-referrer",
+        "X-Content-Type-Options: nosniff",
+        "X-Frame-Options: DENY",
+        "/version.json",
+        "Cache-Control: no-store",
+        "/service-worker.js",
+        "Service-Worker-Allowed: /",
+    )
+    for marker in required:
+        if marker not in headers:
+            fail(f"security headers are missing marker: {marker}")
+
+    page_404 = read_text(DIST / "404.html")
+    if "Page not found" not in page_404 or 'href="./"' not in page_404:
+        fail("404 page is incomplete")
+
+
 def validate_service_worker(version: str) -> None:
     worker = read_text(DIST / "service-worker.js")
     if f"const APP_VERSION = '{version}';" not in worker:
@@ -236,6 +276,8 @@ def main() -> int:
         fail("generated version.json differs from repository metadata")
 
     validate_manifest()
+    validate_cloudflare_config()
+    validate_security_headers()
     validate_service_worker(version)
     validate_filter_source()
     validate_html(version)
