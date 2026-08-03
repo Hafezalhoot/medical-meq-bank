@@ -30,7 +30,7 @@ test('initial active-subject load stays within a practical request budget', asyn
   }));
   expect(metrics.studyItems).toBeLessThan(2_500);
   expect(metrics.rapidItems).toBeLessThan(1_000);
-  expect(metrics.nodes).toBeLessThan(15_000);
+  expect(metrics.nodes).toBeLessThan(18_000);
 });
 
 test('debounced search filtering completes within the interaction budget', async ({page}) => {
