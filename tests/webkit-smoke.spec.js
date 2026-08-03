@@ -12,6 +12,18 @@ async function waitForBank(page) {
   await expect(page.locator('.study-item').first()).toBeAttached();
 }
 
+async function expectControlToBeTopmost(locator) {
+  const receivesPointer = await locator.evaluate(element => {
+    const rect = element.getBoundingClientRect();
+    const target = document.elementFromPoint(
+      rect.left + rect.width / 2,
+      rect.top + rect.height / 2
+    );
+    return target === element || element.contains(target);
+  });
+  expect(receivesPointer).toBe(true);
+}
+
 test('WebKit opens the active subject and loads another subject on demand', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'webkit-desktop', 'Desktop Safari scenario');
 
@@ -55,7 +67,11 @@ test('iPhone WebKit can expand, search and reset mobile filters', async ({page},
   await expect(page.locator('#activeFilterChips')).toContainText('Search: testicular');
   await expect(page.locator('.study-item:not(.hidden)').first()).toBeVisible();
 
-  await page.locator('#resetFiltersBtn').click();
+  const resetButton = page.locator('#resetFiltersBtn');
+  await expect(resetButton).toBeVisible();
+  await expectControlToBeTopmost(resetButton);
+  await resetButton.click();
   await expect(page.locator('#search')).toHaveValue('');
   await expect(page.locator('#activeFilterChips')).toBeHidden();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 });
