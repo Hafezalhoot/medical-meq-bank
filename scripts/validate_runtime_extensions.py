@@ -52,7 +52,8 @@ def main() -> None:
             "compositionstart",
             "compositionend",
             "meq:search-applied",
-            "data-optimized-search",
+            "dataset.optimizedSearch",
+            "dataset.filterDelay",
         ),
         "search optimization source",
     )
