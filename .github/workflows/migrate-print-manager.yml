@@ -83,27 +83,13 @@ jobs:
       - name: Run Safari and iPhone WebKit suite
         run: npx playwright test --config=playwright.webkit.config.js
 
-      - name: Remove compressed, legacy and one-time migration files
+      - name: Remove compressed and one-time non-workflow files
         run: |
           set -euo pipefail
           git rm --ignore-unmatch \
             Medical_MEQ_Bank_PWA_GitHub_Pages.zip \
             print-manager.v8.css.gz.b64 \
             print-manager.v8.js.gz.b64 \
-            .github/workflows/authoritative-finalizer-v3.yml \
-            .github/workflows/authoritative-finalizer.yml \
-            .github/workflows/certify-and-ready-pr.yml \
-            .github/workflows/confirm-lazy-and-clean.yml \
-            .github/workflows/externalize-extensions.yml \
-            .github/workflows/final-quality-gate.yml \
-            .github/workflows/final-quality-recovery.yml \
-            .github/workflows/final-release-validation.yml \
-            .github/workflows/integrate-progress-resilience.yml \
-            .github/workflows/repository-finalizer-v2.yml \
-            .github/workflows/validate-lazy-migration-2.yml \
-            .github/workflows/validate-lazy-migration.yml \
-            .github/workflows/validate-scrotal.yml \
-            .github/workflows/migrate-print-manager.yml \
             tools/externalize_extensions.py \
             tools/finalize_repository_v2.py \
             tools/integrate_final_quality.py \
@@ -111,17 +97,21 @@ jobs:
             tools/integrate_progress_resilience_v2.py \
             tools/migrate_print_manager_source.py \
             tools/patch_final_quality.py \
-            tools/patch_final_quality_v2.py
-          rm -f lazy-migration-diagnostic.txt lazy-migration-diagnostic-2.txt source-split-diagnostic.txt
+            tools/patch_final_quality_v2.py \
+            lazy-migration-diagnostic.txt \
+            lazy-migration-diagnostic-2.txt \
+            source-split-diagnostic.txt
 
-      - name: Commit validated readable and clean source
+      - name: Keep workflow changes for connector-managed cleanup
+        run: git restore --source=HEAD -- .github/workflows
+
+      - name: Commit validated readable source
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "Finalize readable production source and repository hygiene"
-          git pull --rebase origin agent/harden-pwa-ci-foundation
           git push origin HEAD:agent/harden-pwa-ci-foundation
 
       - name: Upload failure diagnostics
