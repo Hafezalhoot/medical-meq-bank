@@ -1,0 +1,86 @@
+name: Add Bladder Cancer lecture
+
+on:
+  push:
+    branches:
+      - agent/add-bladder-cancer
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/add-bladder-cancer
+          fetch-depth: 0
+
+      - name: Generate lecture and update release metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, gzip, json, re
+          from pathlib import Path
+
+          payload = '''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'''
+          lecture_path = Path('lectures/data/urology-bladder-cancer.json')
+          lecture_path.write_bytes(gzip.decompress(base64.b64decode(payload)))
+          lecture = json.loads(lecture_path.read_text(encoding='utf-8'))
+
+          catalog_path = Path('lectures/catalog.json')
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          entry = {
+              'id': lecture['id'],
+              'title': lecture['title'],
+              'subjectKey': lecture['subjectKey'],
+              'order': lecture['order'],
+              'file': 'data/urology-bladder-cancer.json',
+              'expectedCounts': {
+                  'cases': len(lecture['cases']),
+                  'coreShorts': len(lecture['coreShorts']),
+                  'imageQuestions': len(lecture['imageQuestions']),
+                  'detailedShorts': len(lecture['detailedShorts']),
+                  'rapid': len(lecture['rapid'])
+              }
+          }
+          catalog['lectures'] = [x for x in catalog['lectures'] if x['id'] != lecture['id']]
+          catalog['lectures'].append(entry)
+          catalog['lectures'].sort(key=lambda x: (x['subjectKey'], x['order']))
+          catalog_path.write_text(json.dumps(catalog, indent=2) + '\n', encoding='utf-8')
+
+          version = {'version': '2026.08.03.16', 'updatedAt': '2026-08-03T08:20:00+03:00'}
+          Path('version.json').write_text(json.dumps(version, indent=2) + '\n', encoding='utf-8')
+
+          sw = Path('service-worker.js')
+          text = sw.read_text(encoding='utf-8')
+          text = re.sub(r"const APP_VERSION = '[^']+';", "const APP_VERSION = '2026.08.03.16';", text, count=1)
+          sw.write_text(text, encoding='utf-8')
+
+          readme = Path('README.md')
+          text = readme.read_text(encoding='utf-8')
+          marker = '5. Scrotal Swelling\n'
+          if '6. Bladder Cancer' not in text:
+              text = text.replace(marker, marker + '6. Bladder Cancer\n')
+          readme.write_text(text, encoding='utf-8')
+          PY
+
+          python3 -m json.tool lectures/data/urology-bladder-cancer.json >/dev/null
+          bash build.sh
+          python3 scripts/validate_build.py
+          python3 scripts/validate_mobile_filters.py
+          python3 scripts/validate_runtime_extensions.py
+          python3 scripts/validate_progress_resilience.py
+
+      - name: Commit generated lecture
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/add-bladder-cancer.yml
+          git add lectures/data/urology-bladder-cancer.json lectures/catalog.json version.json service-worker.js README.md .github/workflows/add-bladder-cancer.yml
+          git commit -m "Add Bladder Cancer lecture bank"
+          git push origin HEAD:agent/add-bladder-cancer
