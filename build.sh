@@ -30,6 +30,7 @@ required_files=(
   tools/lecture_builder.py
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
+  scripts/validate_runtime_extensions.py
 )
 
 for required in "${required_files[@]}"; do
@@ -48,7 +49,8 @@ python3 -m py_compile \
   tools/build_app.py \
   tools/lecture_builder.py \
   scripts/validate_build.py \
-  scripts/validate_mobile_filters.py
+  scripts/validate_mobile_filters.py \
+  scripts/validate_runtime_extensions.py
 
 rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT"
