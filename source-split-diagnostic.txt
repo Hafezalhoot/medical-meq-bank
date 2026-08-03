@@ -1,1 +1,1 @@
-Expected exactly one inline application script; found 0
+Expected exactly one inline application script; found 0; inline inventory=[{'bytes': 2020291, 'attrs': '', 'has_app_version': False, 'has_progress_key': True}, {'bytes': 5278, 'attrs': '', 'has_app_version': True, 'has_progress_key': False}]
