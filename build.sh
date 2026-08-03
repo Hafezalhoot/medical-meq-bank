@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PACKAGE="Medical_MEQ_Bank_PWA_GitHub_Pages.zip"
 OUTPUT="dist"
 
 required_files=(
-  "$PACKAGE"
+  src/index.html
+  icons/icon-192.png
+  icons/icon-512.png
+  icons/apple-touch-icon.png
   review-filter.css
   review-filter.js
   print-manager.v8.css.gz.b64
@@ -30,10 +32,10 @@ python3 -m py_compile tools/build_app.py tools/lecture_builder.py
 
 rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT"
-unzip -q "$PACKAGE" -d "$OUTPUT"
+install -m 0644 src/index.html "$OUTPUT/index.html"
+cp -R icons "$OUTPUT/icons"
 
 if [ -d assets ]; then
-  rm -rf "$OUTPUT/assets"
   cp -R assets "$OUTPUT/assets"
 fi
 
@@ -42,8 +44,4 @@ python3 tools/build_app.py "$OUTPUT"
 # Publish current PWA metadata and the hardened service worker.
 install -m 0644 manifest.webmanifest service-worker.js version.json "$OUTPUT/"
 
-# Repository-only files must not be exposed by the deployed site.
-rm -rf "$OUTPUT/.github"
-rm -f "$OUTPUT/README.md"
-
-echo "Medical MEQ Bank prepared in $OUTPUT"
+echo "Medical MEQ Bank prepared in $OUTPUT from src/index.html"
