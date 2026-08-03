@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Generate the deployable Medical MEQ Bank application.
 
-The online build keeps the application shell, styles, main runtime and PWA
-client as separate reviewable files. The standalone offline copy inlines those
-three source assets so it remains a single directly openable HTML file.
+The online build keeps the shell and runtimes split, then loads lecture JSON by
+subject. The standalone offline copy embeds the full validated lecture bank and
+all core source assets so it remains directly openable as one HTML file.
 """
 
 from __future__ import annotations
@@ -84,6 +84,16 @@ def upsert_script(
     return before_body + tag + "\n</body>" + after_body
 
 
+def ensure_external_script_after(text: str, after_src: str, source: str) -> str:
+    tag = f'<script src="{source}"></script>'
+    if tag in text:
+        return text
+    marker = f'<script src="{after_src}"></script>'
+    if marker not in text:
+        raise SystemExit(f"Could not insert {source}: missing {after_src}")
+    return text.replace(marker, marker + "\n" + tag, 1)
+
+
 def ensure_accessibility_attributes(text: str) -> str:
     text = text.replace(
         '<div class="empty-message" id="emptyMessage">',
@@ -111,6 +121,7 @@ def create_offline_copy(
     *,
     app_css: str,
     app_js: str,
+    lecture_batch_js: str,
     pwa_client_js: str,
 ) -> str:
     offline = html
@@ -128,6 +139,12 @@ def create_offline_copy(
     )
     offline = replace_required(
         offline,
+        '<script src="./lecture-loader.js"></script>',
+        f'<script id="lecture-extensions">\n{safe_inline_script(lecture_batch_js)}\n</script>',
+        "offline lecture bank",
+    )
+    offline = replace_required(
+        offline,
         '<script src="./pwa-client.js"></script>',
         f'<script id="pwa-client-runtime">\n{safe_inline_script(pwa_client_js)}\n</script>',
         "offline PWA client",
@@ -135,12 +152,37 @@ def create_offline_copy(
     return offline
 
 
+def patch_service_worker(output: Path, catalog_entries: list[dict]) -> None:
+    worker_path = output / "service-worker.js"
+    worker = worker_path.read_text(encoding="utf-8")
+    assets = ["./lectures/catalog.json"] + [
+        f"./lectures/{entry['file']}" for entry in catalog_entries
+    ]
+    replacement = json.dumps(assets, ensure_ascii=False, separators=(",", ":"))
+    worker = replace_required(
+        worker,
+        "/*__LECTURE_ASSETS__*/ []",
+        replacement,
+        "lecture service-worker precache",
+    )
+    worker_path.write_text(worker, encoding="utf-8")
+
+
 def build(output: Path) -> None:
     html_path = output / "index.html"
     app_css_path = output / "app.css"
     app_js_path = output / "app.js"
+    lecture_loader_path = output / "lecture-loader.js"
     pwa_client_path = output / "pwa-client.js"
-    for path in (html_path, app_css_path, app_js_path, pwa_client_path):
+    service_worker_path = output / "service-worker.js"
+    for path in (
+        html_path,
+        app_css_path,
+        app_js_path,
+        lecture_loader_path,
+        pwa_client_path,
+        service_worker_path,
+    ):
         if not path.is_file():
             raise SystemExit(f"Missing generated application source: {path}")
 
@@ -148,6 +190,11 @@ def build(output: Path) -> None:
     version = version_data.get("version")
     if not isinstance(version, str) or not version.strip():
         raise SystemExit("version.json is missing a valid version")
+
+    catalog = json.loads((ROOT / "lectures" / "catalog.json").read_text(encoding="utf-8"))
+    catalog_entries = catalog.get("lectures")
+    if not isinstance(catalog_entries, list) or not catalog_entries:
+        raise SystemExit("Lecture catalog has no entries")
 
     review_css = (ROOT / "review-filter.css").read_text(encoding="utf-8")
     review_js = (ROOT / "review-filter.js").read_text(encoding="utf-8")
@@ -159,7 +206,7 @@ def build(output: Path) -> None:
     print_js = decode_gzip_b64(ROOT / "print-manager.v8.js.gz.b64")
     back_to_top_css = (ROOT / "back-to-top.css").read_text(encoding="utf-8")
     back_to_top_js = (ROOT / "back-to-top.js").read_text(encoding="utf-8")
-    lecture_js = build_lecture_extensions(ROOT)
+    lecture_batch_js = build_lecture_extensions(ROOT)
 
     text = html_path.read_text(encoding="utf-8")
     app_css = app_css_path.read_text(encoding="utf-8")
@@ -197,19 +244,12 @@ def build(output: Path) -> None:
         "clean progress restore",
     )
 
+    text = ensure_external_script_after(text, "./app.js", "./lecture-loader.js")
     text = ensure_accessibility_attributes(text)
     text = upsert_style(text, "review-filter-styles", review_css)
     text = upsert_style(text, "mobile-filter-styles", mobile_filter_css)
     text = upsert_style(text, "print-manager-styles", print_css)
     text = upsert_style(text, "back-to-top-styles", back_to_top_css)
-
-    if lecture_js:
-        text = upsert_script(
-            text,
-            "lecture-extensions",
-            lecture_js,
-            before_id="responsive-sidebar-extension",
-        )
     text = upsert_script(
         text,
         "responsive-sidebar-extension",
@@ -225,6 +265,7 @@ def build(output: Path) -> None:
     html_path.write_text(text, encoding="utf-8")
     app_js_path.write_text(app_js, encoding="utf-8")
     pwa_client_path.write_text(pwa_client_js, encoding="utf-8")
+    patch_service_worker(output, catalog_entries)
 
     offline_path = output / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
     offline_path.parent.mkdir(parents=True, exist_ok=True)
@@ -232,6 +273,7 @@ def build(output: Path) -> None:
         text,
         app_css=app_css,
         app_js=app_js,
+        lecture_batch_js=lecture_batch_js,
         pwa_client_js=pwa_client_js,
     )
     offline_path.write_text(offline_text, encoding="utf-8")
