@@ -60,19 +60,24 @@ test('full-bank text search waits for the debounce interval', async ({page}) => 
   await expect(search).toHaveAttribute('data-optimized-search', '1');
   await expect(search).toHaveAttribute('data-filter-delay', '160');
 
-  const applied = page.evaluate(() => new Promise(resolve => {
-    document.getElementById('search').addEventListener(
-      'meq:search-applied',
-      () => resolve(true),
-      {once: true}
-    );
-  }));
+  const immediatelyEmpty = await page.evaluate(() => {
+    window.__meqSearchApplied = 0;
+    const input = document.getElementById('search');
+    input.addEventListener('meq:search-applied', () => {
+      window.__meqSearchApplied += 1;
+    });
+    input.value = 'definitely-no-such-medical-item-8374';
+    input.dispatchEvent(new Event('input', {bubbles: true}));
+    return document.getElementById('empty').classList.contains('show');
+  });
 
-  await search.fill('definitely-no-such-medical-item-8374');
-  const immediatelyEmpty = await page.locator('#empty').evaluate(element => element.classList.contains('show'));
+  // This value is captured synchronously in the same task that dispatched the
+  // input event, before any 160 ms timer can run.
   expect(immediatelyEmpty).toBe(false);
 
-  await expect(applied).resolves.toBe(true);
+  await expect.poll(
+    () => page.evaluate(() => window.__meqSearchApplied)
+  ).toBe(1);
   await expect(page.locator('#empty')).toHaveClass(/show/);
 });
 
