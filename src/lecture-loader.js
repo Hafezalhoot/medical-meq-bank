@@ -103,35 +103,47 @@
     if (subjectLoads.has(subjectKey)) return subjectLoads.get(subjectKey);
 
     const task = (async () => {
-      setBusy(true, subjectKey);
-      const catalog = await loadCatalog();
-      const entries = catalog.lectures
-        .filter(entry => entry.subjectKey === subjectKey)
-        .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
+      const affectsActiveView = subjectKey === activeSubject;
+      if (affectsActiveView) setBusy(true, subjectKey);
 
-      const missingEntries = entries.filter(entry => !loadedLectureIds.has(entry.id));
-      const loaded = await Promise.all(missingEntries.map(async entry => {
-        const fileUrl = new URL(entry.file, new URL(CATALOG_URL, location.href));
-        return validateLecture(await readJson(fileUrl.href), entry);
-      }));
+      try {
+        const catalog = await loadCatalog();
+        const entries = catalog.lectures
+          .filter(entry => entry.subjectKey === subjectKey)
+          .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
 
-      for (const lecture of loaded) {
-        if (loadedLectureIds.has(lecture.id)) continue;
-        loadedLectureIds.add(lecture.id);
-        lectures.push(lecture);
+        const missingEntries = entries.filter(entry => !loadedLectureIds.has(entry.id));
+        const loaded = await Promise.all(missingEntries.map(async entry => {
+          const fileUrl = new URL(entry.file, new URL(CATALOG_URL, location.href));
+          return validateLecture(await readJson(fileUrl.href), entry);
+        }));
+
+        for (const lecture of loaded) {
+          if (loadedLectureIds.has(lecture.id)) continue;
+          loadedLectureIds.add(lecture.id);
+          lectures.push(lecture);
+        }
+        if (subjectKey === activeSubject) refreshApplication();
+        return entries.map(entry => entry.id);
+      } finally {
+        if (affectsActiveView && subjectKey === activeSubject) setBusy(false, subjectKey);
       }
-      if (subjectKey === activeSubject) refreshApplication();
-      return entries.map(entry => entry.id);
     })().catch(error => {
       subjectLoads.delete(subjectKey);
       showLoadError(subjectKey, error);
       throw error;
-    }).finally(() => {
-      if (subjectKey === activeSubject) setBusy(false, subjectKey);
     });
 
     subjectLoads.set(subjectKey, task);
     return task;
+  };
+
+  const loadAll = async () => {
+    const catalog = await loadCatalog();
+    const subjectKeys = [...new Set(catalog.lectures.map(entry => entry.subjectKey))];
+    await Promise.all(subjectKeys.map(loadSubject));
+    refreshApplication();
+    return [...loadedLectureIds];
   };
 
   subjectSelector?.addEventListener('change', () => {
@@ -140,6 +152,7 @@
 
   globalThis.MEQLectureLoader = Object.freeze({
     loadSubject,
+    loadAll,
     loadCatalog,
     isLoaded: lectureId => loadedLectureIds.has(lectureId),
     loadedLectureIds
