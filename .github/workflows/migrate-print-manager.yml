@@ -1,23 +1,23 @@
-name: Migrate Readable Print Manager
+name: Finalize Readable Production Source
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/harden-pwa-ci-foundation
+      - main
     paths:
       - .github/workflows/migrate-print-manager.yml
       - tools/migrate_print_manager_source.py
-  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: medical-meq-print-migration
+  group: medical-meq-readable-source-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
-  migrate:
+  finalize:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -128,7 +128,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: readable-source-migration-failure
+          name: readable-source-finalizer-failure
           path: |
             playwright-report
             playwright-report-webkit
@@ -136,5 +136,3 @@ jobs:
             dist
           if-no-files-found: ignore
           retention-days: 7
-
-# Retried after progress-resilience validation was aligned with the source database name.
