@@ -1,0 +1,224 @@
+name: Add Urolithiasis lecture
+
+on:
+  push:
+    branches:
+      - agent/add-urolithiasis
+    paths:
+      - .github/workflows/add-urolithiasis.yml
+
+permissions:
+  contents: write
+
+jobs:
+  add-lecture:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out lecture branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/add-urolithiasis
+          fetch-depth: 0
+
+      - name: Generate lecture source and metadata
+        shell: bash
+        run: |
+          python3 - <<'PYDATA'
+          import base64
+          import gzip
+          import json
+          import re
+          from pathlib import Path
+
+          payload = """
+          H4sICARDcGoCA3Vyb2xvZ3ktdXJvbGl0aGlhc2lzLm1pbi5qc29uAOVde2/cRpL/KoSAPSTIjGVLtmTLuxFk2Y518essaXMLw3/0
+          kD0zjPmYsElZk0W++9Wj3+SMRrak5LBAsGsNyWZXdXU9f9X891aebR1sdU1d1LPlGP8/b+e5ULnaGm3VTSabrYP90ZbqJr/KtP1Z
+          Lt3dW/Zn+O3c/tbmbSH1L95YcKu58mKRZ7LM6YFRotq6kklal4ta5W1eV6OkkZUo4KciT0dJXl1I1eYzgdfUKClFJWaylFU7ShZN
+          ncqsayT8PilEBtPl8VQiqgwuywu4D57DCdRdk8q3dYtTeNblRZvUVbFMpk1dJu1cJt2iqEUms8SfebINf+aVaJbJKQ9cAMHwxmSy
+          TJ43yVHZJK+EUqJKjorPc1HkxfJecgbDTUT1GWegZAME0BvMo61syrzS9C8kTKtqgSYgIi/FLK9mQIRoicaAYBgExpvXRcb0NXIq
+          mwZZ1eQwZi6SLzDvumsTYAUOIy/hZ+TlrAOWF3mFVGYwtLqnl6Re5KnaOvj4bxYE6S0N3FGIiSyiFdv6Y6RvXgh42WK+VL3734dX
+          kv9KjmQbP04LNW6XC6m8R8/w76SeRmz3H2u6CyDXe+ZU/wTvOQVGzuum6j3WNXk6Fin82z0Hr0iTI/itdzetGyyKlh1Ll/czvOwD
+          yekxyql7NMunsCoodqLwHn3u/Zw8z8WsqnFj2MdwA8A4LOXec8fB7/Z2uFw3oq0bn+2v7Y9AUJflPkWXjQhWqBB5lfzvGH5Nvvv5
+          /Nn3HqeKthGwW6qAVfxjVc8aAQvrzbsd5xedP+Ez4MzJP8/dLSLtWjl2YuzdfISXkqO2Fenn5I27wz5LqmDMe9p7jjlPqzb4GOwy
+          3BBp/8lzfWXNw06r+Fvg9JfXo+T8wylQ9/747Wt3u1Y8/Vc90xppQLi0WhqbHRzKmL6KfCxLmeWwYUHW9J1/fBptpUJJb9d2xTi9
+          /8DTvccFqCQQmiKx5LKUwi244yNRhp8XTV6DEkH1/iqfzeGXUjSf4R0P7oeKItwaMBcF2kvA07iaCaiEHBVVBjQU9UIlqgMWVImC
+          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
+          """
+          lecture = json.loads(gzip.decompress(base64.b64decode(payload)).decode('utf-8'))
+
+          lecture_path = Path('lectures/data/urology-urolithiasis.json')
+          lecture_path.write_text(
+              json.dumps(lecture, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+
+          catalog_path = Path('lectures/catalog.json')
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          entry = {
+              'id': 'urology-urolithiasis',
+              'title': 'Urolithiasis',
+              'subjectKey': 'urology',
+              'order': 7,
+              'file': 'data/urology-urolithiasis.json',
+              'expectedCounts': {
+                  'cases': 12,
+                  'coreShorts': 30,
+                  'imageQuestions': 10,
+                  'detailedShorts': 55,
+                  'rapid': 30,
+              },
+          }
+          catalog['lectures'] = [
+              item for item in catalog['lectures']
+              if item.get('id') != entry['id']
+          ]
+          catalog['lectures'].append(entry)
+          catalog['lectures'].sort(key=lambda item: (item['subjectKey'], item['order']))
+          catalog_path.write_text(
+              json.dumps(catalog, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+
+          version = '2026.08.03.18'
+          Path('version.json').write_text(
+              json.dumps(
+                  {'version': version, 'updatedAt': '2026-08-03T10:22:00+03:00'},
+                  indent=2,
+              ) + '\n',
+              encoding='utf-8',
+          )
+
+          worker_path = Path('service-worker.js')
+          worker = worker_path.read_text(encoding='utf-8')
+          worker, count = re.subn(
+              r"const APP_VERSION = '[^']+';",
+              f"const APP_VERSION = '{version}';",
+              worker,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit('Could not update service-worker version')
+          worker_path.write_text(worker, encoding='utf-8')
+
+          readme_path = Path('README.md')
+          readme = readme_path.read_text(encoding='utf-8')
+          if '7. Urolithiasis' not in readme:
+              marker = '6. Bladder Cancer'
+              if marker not in readme:
+                  raise SystemExit('Could not update README lecture list')
+              readme = readme.replace(marker, marker + '\n7. Urolithiasis', 1)
+          readme_path.write_text(readme, encoding='utf-8')
+
+          workflow_path = Path('.github/workflows/add-urolithiasis.yml')
+          workflow_path.unlink()
+          PYDATA
+
+      - name: Commit lecture bank
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md lectures/catalog.json lectures/data/urology-urolithiasis.json version.json service-worker.js .github/workflows/add-urolithiasis.yml
+          git commit -m "Add Urolithiasis lecture bank"
+          git push origin HEAD:agent/add-urolithiasis
