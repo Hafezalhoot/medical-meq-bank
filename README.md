@@ -14,6 +14,7 @@ The project is an offline-first Progressive Web App containing lecture-based MEQ
 4. Urinary Tract Infection
 5. Scrotal Swelling
 6. Bladder Cancer
+7. Urolithiasis
 
 ### Neurosurgery
 
