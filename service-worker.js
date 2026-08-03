@@ -1,4 +1,4 @@
-const APP_VERSION = '2026.08.03.19';
+const APP_VERSION = '2026.08.04.1';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
 const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
 const LECTURE_ASSETS = /*__LECTURE_ASSETS__*/ [];
@@ -28,9 +28,7 @@ self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(REQUIRED_ASSETS);
-    await Promise.allSettled(
-      OPTIONAL_ASSETS.map(asset => cache.add(asset))
-    );
+    await Promise.allSettled(OPTIONAL_ASSETS.map(asset => cache.add(asset)));
   })());
 });
 
@@ -47,9 +45,7 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 const isSafeAppResponse = response => {
@@ -101,7 +97,6 @@ const handleNavigation = async request => {
 const handleAsset = async request => {
   const cached = await caches.match(request);
   if (cached) return cached;
-
   const response = await fetch(request);
   if (isSafeAppResponse(response)) {
     const cache = await caches.open(CACHE_NAME);
@@ -113,7 +108,6 @@ const handleAsset = async request => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
-
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
@@ -121,11 +115,9 @@ self.addEventListener('fetch', event => {
     event.respondWith(networkOnlyVersion(request));
     return;
   }
-
   if (request.mode === 'navigate') {
     event.respondWith(handleNavigation(request));
     return;
   }
-
   event.respondWith(handleAsset(request));
 });
