@@ -2,6 +2,7 @@
 """Validate IndexedDB progress resilience across online, offline and PWA builds."""
 
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
@@ -32,12 +33,16 @@ def main() -> None:
         "medicalBankStatusV2",
         "indexedDB.open",
         "snapshotNow",
-        "raw === null",
         "location.reload()",
         "MEQProgressResilience",
     ):
         if marker not in source:
             fail(f"source is missing marker: {marker}")
+
+    if not re.search(r"currentStatus\s*===\s*null\s*\|\|\s*isValidStatus\(currentStatus\)", source):
+        fail("missing-status guard does not protect deliberate resets")
+    if not re.search(r"storage\.set\s*=\s*\(key, value\)", source):
+        fail("storage writes are not mirrored")
 
     ordered = (
         '<script src="./app.js"></script>',
