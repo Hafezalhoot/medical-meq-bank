@@ -11,6 +11,37 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 
+EXPECTED_DECODED_LECTURES = {
+    "neurosurgery-traumatic-brain-injury": {
+        "cases": 16,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40,
+    },
+    "urology-scrotal-swelling": {
+        "cases": 15,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40,
+    },
+    "urology-urinary-tract-infection": {
+        "cases": 15,
+        "coreShorts": 35,
+        "imageQuestions": 10,
+        "detailedShorts": 58,
+        "rapid": 40,
+    },
+    "urology-urological-emergencies": {
+        "cases": 15,
+        "coreShorts": 31,
+        "imageQuestions": 10,
+        "detailedShorts": 53,
+        "rapid": 33,
+    },
+}
+
 
 def fail(message: str) -> None:
     raise SystemExit(f"BUILD VALIDATION FAILED: {message}")
@@ -83,6 +114,61 @@ def validate_service_worker(version: str) -> None:
         fail("service worker does not reference the generated offline page")
 
 
+def extract_decoded_lectures(html: str) -> dict[str, dict]:
+    match = re.search(
+        r"const incomingLectures = (\[.*?\]);\n\s*const existingIds",
+        html,
+        flags=re.S,
+    )
+    if not match:
+        fail("generated HTML does not contain the decoded lecture batch")
+
+    try:
+        lectures = json.loads(match.group(1))
+    except json.JSONDecodeError as error:
+        fail(f"decoded lecture batch is not valid JSON: {error}")
+
+    if not isinstance(lectures, list):
+        fail("decoded lecture batch is not a list")
+
+    by_id: dict[str, dict] = {}
+    for lecture in lectures:
+        if not isinstance(lecture, dict):
+            fail("decoded lecture batch contains a non-object item")
+        lecture_id = lecture.get("id")
+        if not isinstance(lecture_id, str) or not lecture_id:
+            fail("decoded lecture is missing an id")
+        if lecture_id in by_id:
+            fail(f"decoded lecture id is duplicated: {lecture_id}")
+        by_id[lecture_id] = lecture
+    return by_id
+
+
+def validate_decoded_lectures(html: str) -> None:
+    lectures = extract_decoded_lectures(html)
+
+    for lecture_id, expected_counts in EXPECTED_DECODED_LECTURES.items():
+        lecture = lectures.get(lecture_id)
+        if lecture is None:
+            fail(f"decoded lecture batch is missing {lecture_id}")
+        for key, expected in expected_counts.items():
+            value = lecture.get(key)
+            if not isinstance(value, list):
+                fail(f"{lecture_id} is missing list {key}")
+            if len(value) != expected:
+                fail(f"{lecture_id} has {len(value)} {key}; expected {expected}")
+
+
+def validate_filter_source() -> None:
+    source = read_text(ROOT / "review-filter.js")
+    if "tf === 'all' && !q" in source:
+        fail("Rapid Recall is still excluded from All-types search")
+    if 'data-rapid-prepared="1"' not in source:
+        fail("Rapid Recall metadata is recalculated on every filter pass")
+    if "reduceMotion?.matches" not in source:
+        fail("random Rapid Recall navigation ignores reduced-motion preferences")
+
+
 def validate_html(version: str) -> None:
     index_path = DIST / "index.html"
     offline_path = DIST / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
@@ -101,6 +187,7 @@ def validate_html(version: str) -> None:
         "id=\"print-manager-extension\"",
         "id=\"back-to-top-extension\"",
         "urology-urinary-tract-infection",
+        "urology-urological-emergencies",
         "urology-scrotal-swelling",
         "neurosurgery-traumatic-brain-injury",
     )
@@ -111,10 +198,15 @@ def validate_html(version: str) -> None:
     forbidden_markers = (
         "globalThis.__urolScrotalCompactGzip",
         "globalThis.__neuroTbiGzip",
+        "globalThis.__urolUtiGzip",
+        "globalThis.__urolEmergGzip",
+        "DecompressionStream",
     )
     for marker in forbidden_markers:
         if marker in html:
-            fail(f"compressed loader leaked into generated HTML: {marker}")
+            fail(f"runtime compressed loader leaked into generated HTML: {marker}")
+
+    validate_decoded_lectures(html)
 
     if f"const APP_VERSION = '{version}';" not in html:
         fail("generated application version does not match version.json")
@@ -145,6 +237,7 @@ def main() -> int:
 
     validate_manifest()
     validate_service_worker(version)
+    validate_filter_source()
     validate_html(version)
     print(f"Validated Medical MEQ Bank {version}")
     return 0
