@@ -22,10 +22,9 @@
     try {
       for (let i = 0; i < localStorage.length; i += 1) {
         const key = localStorage.key(i);
-        if (key?.startsWith(STORAGE_PREFIX)) {
-          const value = localStorage.getItem(key);
-          if (typeof value === 'string') out[key] = value;
-        }
+        if (!key?.startsWith(STORAGE_PREFIX)) continue;
+        const value = localStorage.getItem(key);
+        if (typeof value === 'string') out[key] = value;
       }
     } catch (error) {
       console.warn('Could not read progress storage:', error);
@@ -72,7 +71,6 @@
     if (!data.storage || typeof data.storage !== 'object' || Array.isArray(data.storage)) {
       throw new Error('Backup storage is invalid');
     }
-
     const normalized = {};
     for (const [key, value] of Object.entries(data.storage)) {
       if (!key.startsWith(STORAGE_PREFIX) || typeof value !== 'string') {
@@ -84,18 +82,22 @@
     return normalized;
   };
 
+  const removeMedicalStorage = () => {
+    [...Array(localStorage.length)]
+      .map((_, index) => localStorage.key(index))
+      .filter(k => k?.startsWith(STORAGE_PREFIX))
+      .forEach(k => localStorage.removeItem(k));
+  };
+
+  const writeStorage = values => {
+    removeMedicalStorage();
+    Object.entries(values).forEach(([key, value]) => localStorage.setItem(key, value));
+  };
+
   const replaceStorageTransactionally = async incoming => {
     const previous = safeStorageKeys();
-    const restore = values => {
-      [...Array(localStorage.length)]
-        .map((_, index) => localStorage.key(index))
-        .filter(key => key?.startsWith(STORAGE_PREFIX))
-        .forEach(key => localStorage.removeItem(key));
-      Object.entries(values).forEach(([key, value]) => localStorage.setItem(key, value));
-    };
-
     try {
-      restore(incoming);
+      writeStorage(incoming);
       const written = safeStorageKeys();
       if (JSON.stringify(written) !== JSON.stringify(incoming)) {
         throw new Error('Backup verification failed after writing');
@@ -104,7 +106,7 @@
       await globalThis.MEQProgressResilience?.snapshotNow?.();
     } catch (error) {
       try {
-        restore(previous);
+        writeStorage(previous);
         await globalThis.MEQProgressResilience?.snapshotNow?.();
       } catch (rollbackError) {
         console.error('Progress rollback failed:', rollbackError);
@@ -113,16 +115,14 @@
     }
   };
 
-  const exportBtn = $p('exportProgressBtn');
-  exportBtn?.addEventListener('click', () => {
-    const payload = {
+  $p('exportProgressBtn')?.addEventListener('click', () => {
+    downloadJson(`medical-meq-progress-${new Date().toISOString().slice(0, 10)}.json`, {
       schema: BACKUP_SCHEMA,
       schemaVersion: BACKUP_SCHEMA_VERSION,
       appVersion: APP_VERSION,
       exportedAt: new Date().toISOString(),
       storage: safeStorageKeys()
-    };
-    downloadJson(`medical-meq-progress-${new Date().toISOString().slice(0, 10)}.json`, payload);
+    });
     toast('Progress backup downloaded.');
   });
 
@@ -136,8 +136,7 @@
       importBtn.disabled = true;
       try {
         const raw = await file.text();
-        const data = JSON.parse(raw);
-        const incoming = validateBackup(data, new Blob([raw]).size);
+        const incoming = validateBackup(JSON.parse(raw), new Blob([raw]).size);
         await replaceStorageTransactionally(incoming);
         toast('Progress restored. Reloading…');
         setTimeout(() => location.reload(), 700);
