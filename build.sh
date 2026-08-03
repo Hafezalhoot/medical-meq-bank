@@ -55,6 +55,7 @@ def build_lecture_extensions():
 
     lecture_files = sorted(lecture_dir.glob("*.js"))
     tbi_data_files = sorted(lecture_dir.glob("neuro-tbi-data-*.b64"))
+    scrotal_data_files = sorted(lecture_dir.glob("urology-scrotal-data-*.b64"))
     legacy_tbi_chunks = [
         path for path in lecture_files
         if re.fullmatch(r"neuro-tbi-(?!99)[0-9]{2}\.js", path.name)
@@ -68,48 +69,48 @@ def build_lecture_extensions():
         if path.name not in excluded
     ]
 
-    if tbi_data_files:
+    def read_b64_chunks(paths, label):
         encoded_parts = []
-        for path in tbi_data_files:
+        for path in paths:
             chunk = "".join(path.read_text(encoding="ascii").split())
             if not chunk or re.fullmatch(r"[A-Za-z0-9+/=]+", chunk) is None:
-                raise SystemExit(f"Invalid compressed TBI data chunk: {path}")
+                raise SystemExit(f"Invalid compressed {label} data chunk: {path}")
             encoded_parts.append(chunk)
-        encoded = "".join(encoded_parts)
-    elif legacy_tbi_chunks:
-        encoded_parts = []
-        chunk_pattern = re.compile(r"\+\s*'([^']+)'\s*;?\s*$", re.S)
-        for path in legacy_tbi_chunks:
-            source = path.read_text(encoding="utf-8").strip()
-            match = chunk_pattern.search(source)
-            if not match:
-                raise SystemExit(f"Could not parse compressed TBI chunk: {path}")
-            encoded_parts.append(match.group(1))
-        encoded = "".join(encoded_parts)
-    else:
-        encoded = ""
+        return "".join(encoded_parts)
 
-    if encoded:
+    def decode_lecture(encoded, label, expected_id, expected_counts, chunk_count):
+        if not encoded:
+            return None
         try:
             compressed = base64.b64decode(encoded, validate=True)
             payload = gzip.decompress(compressed).decode("utf-8")
             lecture = json.loads(payload)
         except Exception as error:
             raise SystemExit(
-                f"Could not decode compressed TBI lecture during build: {error}; "
-                f"chunks={len(tbi_data_files) or len(legacy_tbi_chunks)}, "
-                f"base64_chars={len(encoded)}, mod4={len(encoded) % 4}"
+                f"Could not decode compressed {label} lecture during build: {error}; "
+                f"chunks={chunk_count}, base64_chars={len(encoded)}, "
+                f"mod4={len(encoded) % 4}"
             ) from error
 
-        if lecture.get("id") != "neurosurgery-traumatic-brain-injury":
-            raise SystemExit("Decoded TBI lecture has an unexpected lecture id")
+        if lecture.get("id") != expected_id:
+            raise SystemExit(
+                f"Decoded {label} lecture has unexpected id: {lecture.get('id')!r}"
+            )
+        for key, expected in expected_counts.items():
+            actual = len(lecture.get(key, []))
+            if actual != expected:
+                raise SystemExit(
+                    f"Decoded {label} lecture has {actual} {key}; expected {expected}"
+                )
+        return lecture
 
+    def lecture_extension(lecture):
         lecture_json = json.dumps(
             lecture,
             ensure_ascii=False,
             separators=(",", ":"),
         ).replace("</", "<\\/")
-        parts.append(
+        return (
             "(() => {\n"
             f"  const lecture = {lecture_json};\n"
             "  if (lectures.some(item => item.id === lecture.id)) return;\n"
@@ -122,6 +123,44 @@ def build_lecture_extensions():
             "  setSidebarState();\n"
             "})();"
         )
+
+    if tbi_data_files:
+        tbi_encoded = read_b64_chunks(tbi_data_files, "TBI")
+    elif legacy_tbi_chunks:
+        encoded_parts = []
+        chunk_pattern = re.compile(r"\+\s*'([^']+)'\s*;?\s*$", re.S)
+        for path in legacy_tbi_chunks:
+            source = path.read_text(encoding="utf-8").strip()
+            match = chunk_pattern.search(source)
+            if not match:
+                raise SystemExit(f"Could not parse compressed TBI chunk: {path}")
+            encoded_parts.append(match.group(1))
+        tbi_encoded = "".join(encoded_parts)
+    else:
+        tbi_encoded = ""
+
+    tbi = decode_lecture(
+        tbi_encoded,
+        "TBI",
+        "neurosurgery-traumatic-brain-injury",
+        {"cases": 16, "coreShorts": 35, "imageQuestions": 10,
+         "detailedShorts": 58, "rapid": 40},
+        len(tbi_data_files) or len(legacy_tbi_chunks),
+    )
+    if tbi:
+        parts.append(lecture_extension(tbi))
+
+    scrotal_encoded = read_b64_chunks(scrotal_data_files, "Scrotal Swelling") if scrotal_data_files else ""
+    scrotal = decode_lecture(
+        scrotal_encoded,
+        "Scrotal Swelling",
+        "urology-scrotal-swelling",
+        {"cases": 15, "coreShorts": 35, "imageQuestions": 10,
+         "detailedShorts": 58, "rapid": 40},
+        len(scrotal_data_files),
+    )
+    if scrotal:
+        parts.append(lecture_extension(scrotal))
 
     return "\n\n".join(part for part in parts if part.strip())
 
