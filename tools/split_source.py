@@ -3,7 +3,7 @@
 
 This migration is deliberately strict. It refuses to modify the source unless
 there is exactly one inline style block and exactly one inline application
-script containing the known app markers.
+script containing stable application and persistence markers.
 """
 
 from __future__ import annotations
@@ -41,11 +41,24 @@ def main() -> None:
         match
         for match in SCRIPT_PATTERN.finditer(text)
         if "src=" not in match.group("attrs").lower()
-        and "const APP_VERSION" in match.group("body")
-        and "const lectures" in match.group("body")
+        and "APP_VERSION" in match.group("body")
+        and "medicalBankStatusV2" in match.group("body")
     ]
     if len(scripts) != 1:
-        raise SystemExit(f"Expected exactly one inline application script; found {len(scripts)}")
+        inventory = [
+            {
+                "bytes": len(match.group("body")),
+                "attrs": match.group("attrs").strip(),
+                "has_app_version": "APP_VERSION" in match.group("body"),
+                "has_progress_key": "medicalBankStatusV2" in match.group("body"),
+            }
+            for match in SCRIPT_PATTERN.finditer(text)
+            if "src=" not in match.group("attrs").lower()
+        ]
+        raise SystemExit(
+            f"Expected exactly one inline application script; found {len(scripts)}; "
+            f"inline inventory={inventory}"
+        )
     script_match = scripts[0]
     if script_match.group("attrs").strip():
         raise SystemExit("The original application script has unexpected attributes")
@@ -62,7 +75,7 @@ def main() -> None:
     for start, end, replacement in sorted(replacements, reverse=True):
         text = text[:start] + replacement + text[end:]
 
-    if "const APP_VERSION" in text or "const lectures" in text:
+    if "APP_VERSION" in text or "medicalBankStatusV2" in text:
         raise SystemExit("Application JavaScript remains embedded in index.html")
 
     CSS_PATH.write_text(css, encoding="utf-8")
