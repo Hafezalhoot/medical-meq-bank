@@ -34,15 +34,17 @@ jobs:
         run: |
           python3 scripts/validate_build.py
           python3 scripts/validate_mobile_filters.py
+          python3 scripts/validate_runtime_extensions.py
 
       - name: Validate JavaScript syntax
         run: |
           node --check service-worker.js
           node --check review-filter.js
+          node --check responsive-sidebars.js
           node --check mobile-filters.js
+          node --check search-optimization.js
           node --check back-to-top.js
           node --check tests/app.spec.js
-          find lectures -maxdepth 1 -type f -name '*.js' -print0 | xargs -0 -r -n1 node --check
 
       - name: Verify required deployment files
         run: |
