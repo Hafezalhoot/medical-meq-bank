@@ -1,0 +1,152 @@
+name: Finalize Bladder Cancer lecture
+
+on:
+  push:
+    branches:
+      - agent/add-bladder-cancer
+    paths:
+      - .github/workflows/finalize-bladder-cancer.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: finalize-bladder-cancer
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/add-bladder-cancer
+          fetch-depth: 0
+
+      - name: Restore and integrate lecture
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat tmp/bladder-cancer/payload-*.b64 | base64 --decode > /tmp/bladder-cancer.zlib
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import re
+          import zlib
+          from pathlib import Path
+
+          raw = zlib.decompress(Path('/tmp/bladder-cancer.zlib').read_bytes())
+          expected_sha = '5d87055c62d2e10cfa090a798d188cde5f002bea17dbf6835c35abcac4345815'
+          actual_sha = hashlib.sha256(raw).hexdigest()
+          if actual_sha != expected_sha:
+              raise SystemExit(f'Lecture payload checksum mismatch: {actual_sha}')
+
+          lecture = json.loads(raw)
+          expected_counts = {
+              'cases': 16,
+              'coreShorts': 35,
+              'imageQuestions': 10,
+              'detailedShorts': 58,
+              'rapid': 40,
+          }
+          for key, expected in expected_counts.items():
+              actual = len(lecture[key])
+              if actual != expected:
+                  raise SystemExit(f'{key}: expected {expected}, got {actual}')
+
+          ids = []
+          for key in ('cases', 'coreShorts', 'imageQuestions', 'detailedShorts'):
+              ids.extend(item['id'] for item in lecture[key])
+          if len(ids) != len(set(ids)):
+              raise SystemExit('Duplicate study item IDs in Bladder Cancer lecture')
+          if any(not q.get('image', '').startswith('data:image/webp;base64,') for q in lecture['imageQuestions']):
+              raise SystemExit('Every image question must contain an embedded lecture image')
+
+          lecture_path = Path('lectures/data/urology-bladder-cancer.json')
+          lecture_path.write_bytes(raw)
+
+          catalog_path = Path('lectures/catalog.json')
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          catalog['lectures'] = [item for item in catalog['lectures'] if item['id'] != lecture['id']]
+          catalog['lectures'].append({
+              'id': lecture['id'],
+              'order': lecture['order'],
+              'subjectKey': lecture['subjectKey'],
+              'subject': lecture['subject'],
+              'title': lecture['title'],
+              'subtitle': lecture['subtitle'],
+              'path': 'lectures/data/urology-bladder-cancer.json',
+              'counts': expected_counts,
+          })
+          catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          version = {
+              'version': '2026.08.03.16',
+              'updatedAt': '2026-08-03T08:00:00+03:00',
+          }
+          Path('version.json').write_text(json.dumps(version, indent=2) + '\n', encoding='utf-8')
+
+          sw_path = Path('service-worker.js')
+          sw = sw_path.read_text(encoding='utf-8')
+          sw, changed = re.subn(
+              r"^const APP_VERSION = '[^']+';",
+              "const APP_VERSION = '2026.08.03.16';",
+              sw,
+              count=1,
+              flags=re.MULTILINE,
+          )
+          if changed != 1:
+              raise SystemExit('Could not update service-worker APP_VERSION')
+          sw_path.write_text(sw, encoding='utf-8')
+
+          readme_path = Path('README.md')
+          readme = readme_path.read_text(encoding='utf-8')
+          if '6. Bladder Cancer' not in readme:
+              marker = '5. Scrotal Swelling\n'
+              if marker not in readme:
+                  raise SystemExit('README Urology lecture marker not found')
+              readme = readme.replace(marker, marker + '6. Bladder Cancer\n', 1)
+          readme_path.write_text(readme, encoding='utf-8')
+          PY
+
+          rm -rf tmp/bladder-cancer
+          rm -f .github/workflows/finalize-bladder-cancer.yml
+
+      - name: Validate integrated bank
+        run: |
+          set -euo pipefail
+          bash build.sh
+          python3 scripts/validate_build.py
+          python3 scripts/validate_mobile_filters.py
+          python3 scripts/validate_runtime_extensions.py
+          python3 scripts/validate_progress_resilience.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          lecture = json.loads(Path('lectures/data/urology-bladder-cancer.json').read_text(encoding='utf-8'))
+          catalog = json.loads(Path('lectures/catalog.json').read_text(encoding='utf-8'))
+          entry = next(item for item in catalog['lectures'] if item['id'] == lecture['id'])
+          assert entry['counts'] == {
+              'cases': 16,
+              'coreShorts': 35,
+              'imageQuestions': 10,
+              'detailedShorts': 58,
+              'rapid': 40,
+          }
+          assert json.loads(Path('version.json').read_text())['version'] == '2026.08.03.16'
+          assert "const APP_VERSION = '2026.08.03.16';" in Path('service-worker.js').read_text()
+          print('Bladder Cancer lecture integrated and validated')
+          PY
+
+      - name: Commit final lecture source
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Add Bladder Cancer lecture to Urology bank'
+          git push origin HEAD:agent/add-bladder-cancer
