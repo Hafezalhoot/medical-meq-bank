@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from gzip import decompress
 from hashlib import sha256
+from itertools import permutations
 from json import loads
 from pathlib import Path
 
@@ -16,23 +17,49 @@ TARGETS = {
 }
 
 
+def decode_ordered(parts: tuple[Path, ...], expected_sha256: str) -> bytes | None:
+    try:
+        raw = decompress(b"".join(part.read_bytes() for part in parts))
+    except Exception:
+        return None
+    return raw if sha256(raw).hexdigest() == expected_sha256 else None
+
+
+def decode_payload(parts: list[Path], expected_sha256: str) -> tuple[bytes, tuple[Path, ...]]:
+    ordered = tuple(parts)
+    raw = decode_ordered(ordered, expected_sha256)
+    if raw is not None:
+        return raw, ordered
+
+    # Only the first gzip chunk starts with the gzip magic bytes. Pin it first,
+    # then try the small number of remaining permutations and accept only the
+    # exact lecture SHA-256.
+    starters = [part for part in parts if part.read_bytes()[:2] == b"\x1f\x8b"]
+    if len(starters) != 1:
+        raise SystemExit(
+            f"Expected one gzip header chunk, found {len(starters)} among: "
+            + ", ".join(part.name for part in parts)
+        )
+    first = starters[0]
+    remainder = [part for part in parts if part != first]
+    for tail in permutations(remainder):
+        candidate = (first, *tail)
+        raw = decode_ordered(candidate, expected_sha256)
+        if raw is not None:
+            return raw, candidate
+
+    raise SystemExit(
+        "Could not reconstruct a checksum-valid image payload from: "
+        + ", ".join(part.name for part in parts)
+    )
+
+
 def materialize(filename: str, expected_sha256: str) -> None:
     parts = sorted(PAYLOAD_DIR.glob(f"{filename}.gz.part*"))
     if not parts:
         raise SystemExit(f"Missing image payload parts for {filename}")
 
-    try:
-        raw = decompress(b"".join(part.read_bytes() for part in parts))
-    except Exception as error:
-        raise SystemExit(f"Could not decode image payload for {filename}: {error}") from error
-
-    actual_sha256 = sha256(raw).hexdigest()
-    if actual_sha256 != expected_sha256:
-        raise SystemExit(
-            f"Image payload checksum mismatch for {filename}: "
-            f"expected {expected_sha256}, got {actual_sha256}"
-        )
-
+    raw, order = decode_payload(parts, expected_sha256)
     try:
         lecture = loads(raw.decode("utf-8"))
     except Exception as error:
@@ -41,7 +68,6 @@ def materialize(filename: str, expected_sha256: str) -> None:
     image_questions = lecture.get("imageQuestions")
     if not isinstance(image_questions, list) or not image_questions:
         raise SystemExit(f"Materialized lecture {filename} has no image questions")
-
     missing = [
         item.get("id", f"item-{index}")
         for index, item in enumerate(image_questions, start=1)
@@ -56,7 +82,10 @@ def materialize(filename: str, expected_sha256: str) -> None:
 
     target = ROOT / "lectures" / "data" / filename
     target.write_bytes(raw)
-    print(f"Materialized {filename} with {len(image_questions)} image questions")
+    print(
+        f"Materialized {filename} with {len(image_questions)} image questions "
+        f"using: {', '.join(part.name for part in order)}"
+    )
 
 
 def main() -> None:
