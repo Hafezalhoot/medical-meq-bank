@@ -190,7 +190,12 @@ def build(output: Path) -> None:
         "Object.entries(data.storage).forEach(([k,v]) => { "
         "if(k.startsWith('medicalBank') && typeof v === 'string') localStorage.setItem(k,v); });"
     )
-    app_js = replace_required(app_js, old_restore, new_restore, "clean progress restore")
+    pwa_client_js = replace_required(
+        pwa_client_js,
+        old_restore,
+        new_restore,
+        "clean progress restore",
+    )
 
     text = ensure_accessibility_attributes(text)
     text = upsert_style(text, "review-filter-styles", review_css)
