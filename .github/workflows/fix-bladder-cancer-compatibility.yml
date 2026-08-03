@@ -1,4 +1,4 @@
-name: Fix Bladder Cancer compatibility
+name: Finalize Bladder Cancer integration
 
 on:
   push:
@@ -11,14 +11,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: fix-bladder-cancer-compatibility
+  group: finalize-bladder-cancer-integration
   cancel-in-progress: false
 
 jobs:
-  fix:
+  finalize:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Check out feature branch
@@ -27,11 +27,37 @@ jobs:
           ref: agent/add-bladder-cancer-recovery
           fetch-depth: 0
 
-      - name: Complete lecture presentation fields and harden tests
+      - name: Restore lecture slide images
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/bladder-images
+          base64 --decode tmp/bladder-images/page-8.webp.b64 > /tmp/bladder-images/page-8.webp
+          base64 --decode tmp/bladder-images/page-10.webp.b64 > /tmp/bladder-images/page-10.webp
+          cat tmp/bladder-images/archive-a-*.part | base64 --decode > /tmp/bladder-images/archive-a.tar.gz
+          cat tmp/bladder-images/archive-b-*.part | base64 --decode > /tmp/bladder-images/archive-b.tar.gz
+          echo 'bc106f698252536cb2cfb5ee4ed8ba875b435a0e2cf50eecb5f4c4799a6c8dc0  /tmp/bladder-images/archive-a.tar.gz' | sha256sum --check
+          echo '119710e8176cc27d90eb44d8eb8236dcff59be8fabfa397598209e02dd7d8fb3  /tmp/bladder-images/archive-b.tar.gz' | sha256sum --check
+          tar -xzf /tmp/bladder-images/archive-a.tar.gz -C /tmp/bladder-images
+          tar -xzf /tmp/bladder-images/archive-b.tar.gz -C /tmp/bladder-images
+          cat > /tmp/bladder-images/checksums <<'EOF'
+          07d3b01991f0b33bfbf9d040407e53397e18492b790880dd3e183af9c0b128c3  /tmp/bladder-images/page-8.webp
+          b94cd16c0d7e87fd66f904b5d9287619d13520499b0b3b5ea4e6d38152a79c4d  /tmp/bladder-images/page-10.webp
+          59b8a21b2e7ea0e10f482a26ceb5d79e386496030214fc00f411da64887cc384  /tmp/bladder-images/page-14.webp
+          fa94bfdd14163de4da6eca70ff59d1fa765b822683682f916e76266298d23bf7  /tmp/bladder-images/page-15.webp
+          6f00fe9a2292f51be3df0d2487b7dd215ad990d7a24e2beaaa33e7622aa8ecd0  /tmp/bladder-images/page-16.webp
+          5869b629445408c4111611e8ad0c51d57ed817a73df1303d4456871b2f4abff4  /tmp/bladder-images/page-17.webp
+          69dd56c422fccd82c42cd413be3fb4c14d834344dc0af70b645b4deac1cdc5e8  /tmp/bladder-images/page-22.webp
+          EOF
+          sed -i 's/^          //' /tmp/bladder-images/checksums
+          sha256sum --check /tmp/bladder-images/checksums
+
+      - name: Complete lecture fields and harden validation
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
+          import base64
           import json
           from pathlib import Path
 
@@ -54,11 +80,26 @@ jobs:
           }
           for case in lecture['cases']:
               case['marking'] = marking[case['id']]
-              if sum(int(part.rsplit(' - ', 1)[1]) for part in case['marking']) != case['marks']:
-                  raise SystemExit(f"Marking total mismatch for {case['id']}")
+              total = sum(int(part.rsplit(' - ', 1)[1]) for part in case['marking'])
+              if total != case['marks']:
+                  raise SystemExit(f"Marking total mismatch for {case['id']}: {total} != {case['marks']}")
 
+          image_pages = {
+              'bc-i01': 8,
+              'bc-i02': 10,
+              'bc-i03': 14,
+              'bc-i04': 15,
+              'bc-i05': 16,
+              'bc-i06': 17,
+              'bc-i07': 22,
+              'bc-i08': 22,
+          }
           for image in lecture['imageQuestions']:
-              image['prompt'] = f"Lecture page {image['page']}: review the {image['title'].lower()} and answer the questions."
+              page = image_pages[image['id']]
+              image['page'] = str(page)
+              image['prompt'] = f"Lecture page {page}: review the {image['title'].lower()} and answer the questions."
+              raw = Path(f'/tmp/bladder-images/page-{page}.webp').read_bytes()
+              image['image'] = 'data:image/webp;base64,' + base64.b64encode(raw).decode('ascii')
 
           lecture_path.write_text(
               json.dumps(lecture, ensure_ascii=False, indent=2) + '\n',
@@ -67,16 +108,20 @@ jobs:
 
           builder_path = Path('tools/lecture_builder.py')
           builder = builder_path.read_text(encoding='utf-8')
-          builder = builder.replace(
-              '"cases": ("id", "title", "topic", "priority", "marks", "subtopics", "questions", "answer"),',
-              '"cases": ("id", "title", "topic", "priority", "marks", "subtopics", "scenario", "ar", "questions", "answer", "marking", "trap", "memory"),',
-              1,
-          )
-          builder = builder.replace(
-              '"imageQuestions": ("id", "title", "topic", "priority", "marks", "subtopics", "questions", "answer"),',
-              '"imageQuestions": ("id", "title", "topic", "priority", "marks", "subtopics", "prompt", "page", "image", "questions", "answer"),',
-              1,
-          )
+          old_cases = '"cases": ("id", "title", "topic", "priority", "marks", "subtopics", "questions", "answer"),'
+          new_cases = '"cases": ("id", "title", "topic", "priority", "marks", "subtopics", "scenario", "ar", "questions", "answer", "marking", "trap", "memory"),'
+          if old_cases in builder:
+              builder = builder.replace(old_cases, new_cases, 1)
+          elif new_cases not in builder:
+              raise SystemExit('Could not update required case fields')
+
+          old_images = '"imageQuestions": ("id", "title", "topic", "priority", "marks", "subtopics", "questions", "answer"),'
+          new_images = '"imageQuestions": ("id", "title", "topic", "priority", "marks", "subtopics", "prompt", "page", "image", "questions", "answer"),'
+          if old_images in builder:
+              builder = builder.replace(old_images, new_images, 1)
+          elif new_images not in builder:
+              raise SystemExit('Could not update required image-question fields')
+
           old_validation = '''            if key in {"cases", "imageQuestions"}:
                 if not _non_empty_string(item.get("title")):
                     raise SystemExit(f"{label} {item_id} has an invalid title")
@@ -108,9 +153,11 @@ jobs:
                         raise SystemExit(f"{label} {item_id} has an invalid lecture page")
             else:
 '''
-          if old_validation not in builder:
-              raise SystemExit('Could not locate lecture item validation block')
-          builder_path.write_text(builder.replace(old_validation, new_validation, 1), encoding='utf-8')
+          if old_validation in builder:
+              builder = builder.replace(old_validation, new_validation, 1)
+          elif new_validation not in builder:
+              raise SystemExit('Could not update lecture-item validation block')
+          builder_path.write_text(builder, encoding='utf-8')
 
           app_test_path = Path('tests/app.spec.js')
           app_test = app_test_path.read_text(encoding='utf-8')
@@ -120,9 +167,11 @@ jobs:
   ).toBe('false');
   await expect(page.locator('.study-item').first()).toBeAttached();
   await expect(page.locator('#empty')).not.toHaveClass(/show/);'''
-          if old_wait not in app_test:
-              raise SystemExit('Could not locate app test readiness wait')
-          app_test_path.write_text(app_test.replace(old_wait, new_wait, 1), encoding='utf-8')
+          if old_wait in app_test:
+              app_test = app_test.replace(old_wait, new_wait, 1)
+          elif new_wait not in app_test:
+              raise SystemExit('Could not update application readiness wait')
+          app_test_path.write_text(app_test, encoding='utf-8')
 
           performance_path = Path('tests/performance.spec.js')
           performance = performance_path.read_text(encoding='utf-8')
@@ -134,14 +183,18 @@ jobs:
     return catalog.lectures.filter(entry => entry.subjectKey === activeSubject).length;
   });
   expect(new Set(lectureRequests).size).toBeLessThanOrEqual(activeSubjectLectureCount);'''
-          if old_budget not in performance:
-              raise SystemExit('Could not locate performance lecture request budget')
-          performance_path.write_text(performance.replace(old_budget, new_budget, 1), encoding='utf-8')
+          if old_budget in performance:
+              performance = performance.replace(old_budget, new_budget, 1)
+          elif new_budget not in performance:
+              raise SystemExit('Could not update performance lecture-request budget')
+          performance_path.write_text(performance, encoding='utf-8')
           PY
 
+          rm -rf tmp/bladder-images
           rm -f .github/workflows/fix-bladder-cancer-compatibility.yml
 
       - name: Validate source and generated application
+        shell: bash
         run: |
           set -euo pipefail
           bash build.sh
@@ -151,8 +204,26 @@ jobs:
           python3 scripts/validate_progress_resilience.py
           node --check tests/app.spec.js
           node --check tests/performance.spec.js
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
 
-      - name: Commit compatibility fixes
+          lecture = json.loads(Path('lectures/data/urology-bladder-cancer.json').read_text(encoding='utf-8'))
+          assert len(lecture['cases']) == 12
+          assert len(lecture['coreShorts']) == 30
+          assert len(lecture['imageQuestions']) == 8
+          assert len(lecture['detailedShorts']) == 55
+          assert len(lecture['rapid']) == 30
+          assert all(case.get('marking') for case in lecture['cases'])
+          assert all(item.get('prompt') and item.get('image', '').startswith('data:image/webp;base64,') for item in lecture['imageQuestions'])
+          offline = Path('dist/offline/Medical_MEQ_Review_Bank_Offline.html').read_text(encoding='utf-8')
+          assert 'data:image/webp;base64,' in offline
+          assert 'bc-c12' in offline and 'bc-i08' in offline
+          print('Bladder Cancer lecture fields, images and offline build validated')
+          PY
+
+      - name: Commit completed integration
+        shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
