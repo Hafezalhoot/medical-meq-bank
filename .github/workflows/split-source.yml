@@ -24,9 +24,18 @@ jobs:
           ref: agent/harden-pwa-ci-foundation
 
       - name: Split monolithic source
-        run: python3 tools/split_source.py
+        id: split
+        continue-on-error: true
+        run: |
+          set +e
+          python3 tools/split_source.py > source-split-diagnostic.txt 2>&1
+          status=$?
+          cat source-split-diagnostic.txt
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit "$status"
 
       - name: Validate extracted source
+        if: steps.split.outputs.status == '0'
         run: |
           set -euo pipefail
           test -s src/index.html
@@ -39,6 +48,7 @@ jobs:
           node --check src/app.js
 
       - name: Commit split application source
+        if: steps.split.outputs.status == '0'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -50,3 +60,17 @@ jobs:
           fi
           git commit -m "Split application shell, styles, and runtime source"
           git push origin HEAD:agent/harden-pwa-ci-foundation
+
+      - name: Commit migration diagnostic
+        if: steps.split.outputs.status != '0'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add source-split-diagnostic.txt
+          git commit -m "Record application source split diagnostic"
+          git push origin HEAD:agent/harden-pwa-ci-foundation
+
+      - name: Fail unsuccessful migration
+        if: steps.split.outputs.status != '0'
+        run: exit 1
