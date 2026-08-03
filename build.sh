@@ -33,6 +33,7 @@ required_files=(
   lectures/lecture.schema.json
   tools/build_app.py
   tools/lecture_builder.py
+  tools/materialize_image_lectures.py
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
   scripts/validate_runtime_extensions.py
@@ -46,6 +47,8 @@ for required in "${required_files[@]}"; do
   fi
 done
 
+python3 tools/materialize_image_lectures.py
+
 if ! find lectures/data -maxdepth 1 -type f -name '*.json' -print -quit | grep -q .; then
   echo "No reviewable lecture JSON files were found in lectures/data."
   exit 1
@@ -54,6 +57,7 @@ fi
 python3 -m py_compile \
   tools/build_app.py \
   tools/lecture_builder.py \
+  tools/materialize_image_lectures.py \
   scripts/validate_build.py \
   scripts/validate_mobile_filters.py \
   scripts/validate_runtime_extensions.py \
