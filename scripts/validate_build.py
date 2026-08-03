@@ -274,14 +274,21 @@ def validate_split_sources(version: str) -> None:
         fail("generated app.css differs from reviewable source")
     if "const state=(()=>{try{" not in app_js:
         fail("generated app.js does not contain the safe progress parser")
-    if "startsWith('medicalBank')).forEach(k=>localStorage.removeItem(k))" not in app_js:
-        fail("generated app.js does not clean stale progress before restore")
     if "const state=JSON.parse(storage.get('medicalBankStatusV2')||'{}');" in app_js:
         fail("unsafe progress parser remains in generated app.js")
     if f"const APP_VERSION = '{version}';" not in pwa_client:
         fail("generated PWA client version does not match version.json")
     if "serviceWorker" not in pwa_client:
         fail("generated PWA client does not register the service worker")
+    if "startsWith('medicalBank')).forEach(k=>localStorage.removeItem(k))" not in pwa_client:
+        fail("generated PWA client does not clean stale progress before restore")
+    if (
+        "Object.entries(data.storage).forEach(([k,v]) => { "
+        "if(k.startsWith('medicalBank') && typeof v === 'string') localStorage.setItem(k,v); });"
+        in pwa_client
+        and "localStorage.removeItem(k)" not in pwa_client
+    ):
+        fail("unsafe merge-only progress restore remains in the PWA client")
 
 
 def extract_generated_lectures(html: str) -> dict[str, dict]:
