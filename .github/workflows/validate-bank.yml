@@ -35,13 +35,16 @@ jobs:
           python3 scripts/validate_build.py
           python3 scripts/validate_mobile_filters.py
           python3 scripts/validate_runtime_extensions.py
+          python3 scripts/validate_progress_resilience.py
 
       - name: Validate JavaScript syntax
         run: |
           node --check src/app.js
+          node --check src/progress-resilience.js
           node --check src/lecture-loader.js
           node --check src/pwa-client.js
           node --check dist/app.js
+          node --check dist/progress-resilience.js
           node --check dist/lecture-loader.js
           node --check dist/pwa-client.js
           node --check service-worker.js
@@ -64,6 +67,7 @@ jobs:
           test -s dist/index.html
           test -s dist/app.css
           test -s dist/app.js
+          test -s dist/progress-resilience.js
           test -s dist/lecture-loader.js
           test -s dist/pwa-client.js
           test -s dist/lectures/catalog.json
