@@ -2,7 +2,7 @@
   const search = document.getElementById('search');
   if (!search || search.dataset.optimizedSearch === '1') return;
 
-  const FILTER_DELAY_MS = 160;
+  const FILTER_DELAY_MS = 300;
   let timer = 0;
   let composing = false;
 
