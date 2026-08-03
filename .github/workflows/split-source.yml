@@ -41,11 +41,15 @@ jobs:
           test -s src/index.html
           test -s src/app.css
           test -s src/app.js
+          test -s src/pwa-client.js
           grep -Fq '<link rel="stylesheet" href="./app.css">' src/index.html
           grep -Fq '<script src="./app.js"></script>' src/index.html
-          grep -Fq "const APP_VERSION" src/app.js
-          grep -Fq "const lectures" src/app.js
+          grep -Fq '<script src="./pwa-client.js"></script>' src/index.html
+          grep -Fq "medicalBankStatusV2" src/app.js
+          grep -Fq "APP_VERSION" src/pwa-client.js
+          grep -Fq "serviceWorker" src/pwa-client.js
           node --check src/app.js
+          node --check src/pwa-client.js
 
       - name: Commit split application source
         if: steps.split.outputs.status == '0'
@@ -53,7 +57,9 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/index.html src/app.css src/app.js
+          rm -f source-split-diagnostic.txt
+          git add src/index.html src/app.css src/app.js src/pwa-client.js
+          git add -u source-split-diagnostic.txt || true
           if git diff --cached --quiet; then
             echo "Application source is already split."
             exit 0
