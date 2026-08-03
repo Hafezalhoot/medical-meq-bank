@@ -12,8 +12,10 @@ required_files=(
   _headers
   review-filter.css
   review-filter.js
+  responsive-sidebars.js
   mobile-filters.css
   mobile-filters.js
+  search-optimization.js
   print-manager.v8.css.gz.b64
   print-manager.v8.js.gz.b64
   back-to-top.css
