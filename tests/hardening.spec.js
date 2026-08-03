@@ -40,15 +40,28 @@ test('invalid progress backup is rejected without deleting current progress', as
     .toBe(JSON.stringify({'urology-congenital-anomalies::core::backup-safety': 'mastered'}));
 });
 
-test('standalone build keeps lecture-page placeholders instead of transparent fake images', async ({page}) => {
+test('standalone build embeds all verified Bladder Cancer and Urolithiasis images', async ({page}) => {
   const offlineFile = pathToFileURL(
     resolve('dist/offline/Medical_MEQ_Review_Bank_Offline.html')
   ).href;
   await page.goto(offlineFile, {waitUntil: 'domcontentloaded'});
 
-  await expect(page.locator('.visual-placeholder').first()).toBeAttached();
+  const bladder = page.locator('#lecture-urology-bladder-cancer .image-card img[src^="data:image/avif;base64,"]');
+  const stones = page.locator('#lecture-urology-urolithiasis .image-card img[src^="data:image/avif;base64,"]');
+  await expect(bladder).toHaveCount(8);
+  await expect(stones).toHaveCount(10);
   await expect(page.locator('img[src^="data:image/gif;base64,R0lGODlhAQABAAD"]')).toHaveCount(0);
-  await expect(page.locator('.visual-placeholder').first()).toContainText(/Lecture page|Lecture source/);
+
+  await bladder.first().scrollIntoViewIfNeeded();
+  await expect.poll(() => bladder.first().evaluate(image => image.naturalWidth > 0)).toBe(true);
+  await stones.first().scrollIntoViewIfNeeded();
+  await expect.poll(() => stones.first().evaluate(image => image.naturalWidth > 0)).toBe(true);
+});
+
+test('online lecture JSON embeds verified AVIF assets for all 18 new image questions', async ({page}) => {
+  await openBank(page);
+  await expect(page.locator('#lecture-urology-bladder-cancer .image-card img[src^="data:image/avif;base64,"]')).toHaveCount(8);
+  await expect(page.locator('#lecture-urology-urolithiasis .image-card img[src^="data:image/avif;base64,"]')).toHaveCount(10);
 });
 
 test('one broken lecture response does not hide the remaining subject lectures', async ({page}) => {
