@@ -22,10 +22,11 @@
     timer = window.setTimeout(runSearch, FILTER_DELAY_MS);
   };
 
-  // The original application registered an immediate bubble-phase listener.
-  // A target capture listener runs first and prevents that expensive full-bank
-  // render while preserving normal text entry and all other keyboard behavior.
-  search.addEventListener('input', event => {
+  // The original application registered an immediate listener on the search
+  // element. Capturing on document guarantees interception before the event
+  // reaches that target listener, regardless of registration order.
+  document.addEventListener('input', event => {
+    if (event.target !== search) return;
     event.stopImmediatePropagation();
     if (!composing) scheduleSearch();
   }, true);
