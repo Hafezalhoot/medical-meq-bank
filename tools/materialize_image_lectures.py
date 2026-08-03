@@ -31,7 +31,7 @@ def main():
     for filename, cfg in TARGETS.items():
         packed = b''.join((PAYLOAD_DIR / name).read_bytes() for name in cfg['files'])
         if cfg['encoding'] == 'base64':
-            packed = b64decode(packed, validate=True)
+            packed = b64decode(b''.join(packed.split()), validate=True)
         raw = decompress(packed)
         digest = sha256(raw).hexdigest()
         if digest != cfg['sha256']:
