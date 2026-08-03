@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medical-meq-bank.local/schemas/lecture.schema.json",
+  "title": "Medical MEQ Lecture",
+  "type": "object",
+  "required": [
+    "id",
+    "order",
+    "subjectKey",
+    "subject",
+    "title",
+    "subtopics",
+    "cases",
+    "coreShorts",
+    "imageQuestions",
+    "detailedShorts",
+    "rapid"
+  ],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "order": {"type": "number"},
+    "subjectKey": {"type": "string", "minLength": 1},
+    "subject": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "subtitle": {"type": "string"},
+    "sourceNote": {"type": "string"},
+    "subtopics": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/subtopic"}
+    },
+    "cases": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/case"}
+    },
+    "coreShorts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/shortQuestion"}
+    },
+    "imageQuestions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/imageQuestion"}
+    },
+    "detailedShorts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/shortQuestion"}
+    },
+    "rapid": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          {"type": "string", "minLength": 1},
+          {"type": "string", "minLength": 1}
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    }
+  },
+  "$defs": {
+    "subtopic": {
+      "type": "object",
+      "required": ["id", "label"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "sharedStudyFields": {
+      "type": "object",
+      "required": ["id", "topic", "priority", "marks", "subtopics"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "topic": {"type": "string", "minLength": 1},
+        "priority": {"type": "string", "minLength": 1},
+        "marks": {"type": "number", "minimum": 0},
+        "subtopics": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "answer": {
+      "oneOf": [
+        {"type": "string", "minLength": 1},
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": ["string", "number", "object", "array"]}
+        }
+      ]
+    },
+    "case": {
+      "allOf": [
+        {"$ref": "#/$defs/sharedStudyFields"},
+        {
+          "type": "object",
+          "required": ["title", "questions", "answer"],
+          "properties": {
+            "title": {"type": "string", "minLength": 1},
+            "questions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"type": "string", "minLength": 1}
+            },
+            "answer": {"type": "array", "minItems": 1}
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "shortQuestion": {
+      "allOf": [
+        {"$ref": "#/$defs/sharedStudyFields"},
+        {
+          "type": "object",
+          "required": ["q", "a"],
+          "properties": {
+            "q": {"type": "string", "minLength": 1},
+            "a": {"$ref": "#/$defs/answer"}
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "imageQuestion": {
+      "allOf": [
+        {"$ref": "#/$defs/sharedStudyFields"},
+        {
+          "type": "object",
+          "required": ["title", "questions", "answer"],
+          "properties": {
+            "title": {"type": "string", "minLength": 1},
+            "questions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"type": "string", "minLength": 1}
+            },
+            "answer": {"type": "array", "minItems": 1},
+            "image": {"type": "string"},
+            "page": {"type": ["string", "number"]}
+          }
+        }
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
