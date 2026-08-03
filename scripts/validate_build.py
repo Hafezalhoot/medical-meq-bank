@@ -10,8 +10,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
+LECTURE_DIR = ROOT / "lectures"
 
-EXPECTED_DECODED_LECTURES = {
+EXPECTED_LECTURES = {
     "neurosurgery-traumatic-brain-injury": {
         "cases": 16,
         "coreShorts": 35,
@@ -62,13 +63,17 @@ def read_text(path: Path) -> str:
         fail(f"file is not valid UTF-8: {path.relative_to(ROOT)} ({error})")
 
 
-def validate_metadata() -> str:
-    version_path = ROOT / "version.json"
-    require_file(version_path)
+def read_json(path: Path) -> object:
     try:
-        metadata = json.loads(version_path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, UnicodeDecodeError) as error:
-        fail(f"invalid version.json: {error}")
+        return json.loads(read_text(path))
+    except json.JSONDecodeError as error:
+        fail(f"invalid JSON in {path.relative_to(ROOT)}: {error}")
+
+
+def validate_metadata() -> str:
+    metadata = read_json(ROOT / "version.json")
+    if not isinstance(metadata, dict):
+        fail("version.json must contain an object")
 
     version = metadata.get("version")
     updated_at = metadata.get("updatedAt")
@@ -79,13 +84,101 @@ def validate_metadata() -> str:
     return version
 
 
+def validate_lecture_sources() -> dict[str, dict]:
+    require_file(LECTURE_DIR / "catalog.schema.json")
+    require_file(LECTURE_DIR / "lecture.schema.json")
+
+    catalog = read_json(LECTURE_DIR / "catalog.json")
+    if not isinstance(catalog, dict) or catalog.get("version") != 1:
+        fail("lectures/catalog.json must be an object with version 1")
+
+    entries = catalog.get("lectures")
+    if not isinstance(entries, list):
+        fail("lectures/catalog.json has no lectures array")
+
+    by_id: dict[str, dict] = {}
+    referenced_files: set[Path] = set()
+    lecture_root = LECTURE_DIR.resolve()
+    data_root = (LECTURE_DIR / "data").resolve()
+
+    for index, entry in enumerate(entries, start=1):
+        if not isinstance(entry, dict):
+            fail(f"lecture catalog entry {index} is not an object")
+
+        lecture_id = entry.get("id")
+        relative_file = entry.get("file")
+        counts = entry.get("expectedCounts")
+        if not isinstance(lecture_id, str) or not lecture_id:
+            fail(f"lecture catalog entry {index} has no valid id")
+        if lecture_id in by_id:
+            fail(f"lecture catalog contains duplicate id: {lecture_id}")
+        if lecture_id not in EXPECTED_LECTURES:
+            fail(f"lecture catalog contains unexpected lecture: {lecture_id}")
+        if counts != EXPECTED_LECTURES[lecture_id]:
+            fail(f"lecture catalog counts changed unexpectedly for {lecture_id}")
+        if not isinstance(relative_file, str) or not relative_file:
+            fail(f"lecture catalog entry {lecture_id} has no source file")
+
+        source_path = (LECTURE_DIR / relative_file).resolve()
+        if not source_path.is_relative_to(lecture_root):
+            fail(f"lecture source escapes lectures directory: {relative_file}")
+        if source_path.parent != data_root or source_path.suffix != ".json":
+            fail(f"lecture source must be under lectures/data: {relative_file}")
+        if source_path in referenced_files:
+            fail(f"lecture source file is reused: {relative_file}")
+
+        lecture = read_json(source_path)
+        if not isinstance(lecture, dict):
+            fail(f"lecture source is not an object: {relative_file}")
+        if lecture.get("id") != lecture_id:
+            fail(f"lecture source id does not match catalog: {relative_file}")
+
+        for key, expected in counts.items():
+            value = lecture.get(key)
+            if not isinstance(value, list):
+                fail(f"{lecture_id} is missing list {key}")
+            if len(value) != expected:
+                fail(f"{lecture_id} has {len(value)} {key}; expected {expected}")
+
+        by_id[lecture_id] = lecture
+        referenced_files.add(source_path)
+
+    missing_ids = sorted(set(EXPECTED_LECTURES) - set(by_id))
+    if missing_ids:
+        fail(f"lecture catalog is missing: {', '.join(missing_ids)}")
+
+    actual_data_files = {path.resolve() for path in (LECTURE_DIR / "data").glob("*.json")}
+    if actual_data_files != referenced_files:
+        unlisted = sorted(
+            path.relative_to(LECTURE_DIR).as_posix()
+            for path in actual_data_files - referenced_files
+        )
+        missing = sorted(
+            path.relative_to(LECTURE_DIR).as_posix()
+            for path in referenced_files - actual_data_files
+        )
+        details = []
+        if unlisted:
+            details.append("unlisted: " + ", ".join(unlisted))
+        if missing:
+            details.append("missing: " + ", ".join(missing))
+        fail("lecture catalog/data mismatch (" + "; ".join(details) + ")")
+
+    legacy_sources = sorted(
+        path.relative_to(ROOT).as_posix()
+        for path in LECTURE_DIR.rglob("*")
+        if path.is_file() and path.suffix.lower() in {".js", ".b64", ".gz", ".zip"}
+    )
+    if legacy_sources:
+        fail("legacy compressed lecture sources remain: " + ", ".join(legacy_sources))
+
+    return by_id
+
+
 def validate_manifest() -> None:
-    manifest_path = DIST / "manifest.webmanifest"
-    manifest_text = read_text(manifest_path)
-    try:
-        manifest = json.loads(manifest_text)
-    except json.JSONDecodeError as error:
-        fail(f"invalid generated manifest: {error}")
+    manifest = read_json(DIST / "manifest.webmanifest")
+    if not isinstance(manifest, dict):
+        fail("generated manifest must contain an object")
 
     for key in ("name", "short_name", "start_url", "scope", "display", "icons"):
         if key not in manifest:
@@ -103,11 +196,9 @@ def validate_manifest() -> None:
 
 
 def validate_cloudflare_config() -> None:
-    config_path = ROOT / "wrangler.jsonc"
-    try:
-        config = json.loads(read_text(config_path))
-    except json.JSONDecodeError as error:
-        fail(f"invalid wrangler.jsonc: {error}")
+    config = read_json(ROOT / "wrangler.jsonc")
+    if not isinstance(config, dict):
+        fail("wrangler.jsonc must contain an object")
 
     assets = config.get("assets")
     if not isinstance(assets, dict):
@@ -154,49 +245,44 @@ def validate_service_worker(version: str) -> None:
         fail("service worker does not reference the generated offline page")
 
 
-def extract_decoded_lectures(html: str) -> dict[str, dict]:
+def extract_generated_lectures(html: str) -> dict[str, dict]:
     match = re.search(
         r"const incomingLectures = (\[.*?\]);\n\s*const existingIds",
         html,
         flags=re.S,
     )
     if not match:
-        fail("generated HTML does not contain the decoded lecture batch")
+        fail("generated HTML does not contain the lecture batch")
 
     try:
         lectures = json.loads(match.group(1))
     except json.JSONDecodeError as error:
-        fail(f"decoded lecture batch is not valid JSON: {error}")
+        fail(f"generated lecture batch is not valid JSON: {error}")
 
     if not isinstance(lectures, list):
-        fail("decoded lecture batch is not a list")
+        fail("generated lecture batch is not a list")
 
     by_id: dict[str, dict] = {}
     for lecture in lectures:
         if not isinstance(lecture, dict):
-            fail("decoded lecture batch contains a non-object item")
+            fail("generated lecture batch contains a non-object item")
         lecture_id = lecture.get("id")
         if not isinstance(lecture_id, str) or not lecture_id:
-            fail("decoded lecture is missing an id")
+            fail("generated lecture is missing an id")
         if lecture_id in by_id:
-            fail(f"decoded lecture id is duplicated: {lecture_id}")
+            fail(f"generated lecture id is duplicated: {lecture_id}")
         by_id[lecture_id] = lecture
     return by_id
 
 
-def validate_decoded_lectures(html: str) -> None:
-    lectures = extract_decoded_lectures(html)
+def validate_generated_lectures(html: str, source_lectures: dict[str, dict]) -> None:
+    generated = extract_generated_lectures(html)
+    if set(generated) != set(source_lectures):
+        fail("generated lecture IDs do not exactly match lectures/catalog.json")
 
-    for lecture_id, expected_counts in EXPECTED_DECODED_LECTURES.items():
-        lecture = lectures.get(lecture_id)
-        if lecture is None:
-            fail(f"decoded lecture batch is missing {lecture_id}")
-        for key, expected in expected_counts.items():
-            value = lecture.get(key)
-            if not isinstance(value, list):
-                fail(f"{lecture_id} is missing list {key}")
-            if len(value) != expected:
-                fail(f"{lecture_id} has {len(value)} {key}; expected {expected}")
+    for lecture_id, source in source_lectures.items():
+        if generated[lecture_id] != source:
+            fail(f"generated lecture content differs from JSON source: {lecture_id}")
 
 
 def validate_filter_source() -> None:
@@ -209,7 +295,7 @@ def validate_filter_source() -> None:
         fail("random Rapid Recall navigation ignores reduced-motion preferences")
 
 
-def validate_html(version: str) -> None:
+def validate_html(version: str, source_lectures: dict[str, dict]) -> None:
     index_path = DIST / "index.html"
     offline_path = DIST / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
     require_file(index_path, minimum_size=10_000)
@@ -224,12 +310,9 @@ def validate_html(version: str) -> None:
         "id=\"typeFilter\"",
         "id=\"search\"",
         "id=\"review-filter-extension\"",
+        "id=\"mobile-filter-extension\"",
         "id=\"print-manager-extension\"",
         "id=\"back-to-top-extension\"",
-        "urology-urinary-tract-infection",
-        "urology-urological-emergencies",
-        "urology-scrotal-swelling",
-        "neurosurgery-traumatic-brain-injury",
     )
     for marker in required_markers:
         if marker not in html:
@@ -246,7 +329,7 @@ def validate_html(version: str) -> None:
         if marker in html:
             fail(f"runtime compressed loader leaked into generated HTML: {marker}")
 
-    validate_decoded_lectures(html)
+    validate_generated_lectures(html, source_lectures)
 
     if f"const APP_VERSION = '{version}';" not in html:
         fail("generated application version does not match version.json")
@@ -259,20 +342,22 @@ def validate_html(version: str) -> None:
         fail(f"duplicate generated script ids: {', '.join(duplicate_script_ids)}")
 
     element_ids = re.findall(r"\sid=\"([^\"]+)\"", html)
-    duplicate_critical_ids = sorted(
-        value for value in {"search", "lectureFilter", "typeFilter", "emptyMessage", "appToast"}
+    invalid_critical_ids = sorted(
+        value
+        for value in {"search", "lectureFilter", "typeFilter", "emptyMessage", "appToast"}
         if element_ids.count(value) != 1
     )
-    if duplicate_critical_ids:
-        fail(f"critical element ids are missing or duplicated: {', '.join(duplicate_critical_ids)}")
+    if invalid_critical_ids:
+        fail(f"critical element ids are missing or duplicated: {', '.join(invalid_critical_ids)}")
 
 
 def main() -> int:
     require_file(DIST / "version.json")
     version = validate_metadata()
+    source_lectures = validate_lecture_sources()
 
-    generated_metadata = json.loads(read_text(DIST / "version.json"))
-    if generated_metadata.get("version") != version:
+    generated_metadata = read_json(DIST / "version.json")
+    if not isinstance(generated_metadata, dict) or generated_metadata.get("version") != version:
         fail("generated version.json differs from repository metadata")
 
     validate_manifest()
@@ -280,8 +365,8 @@ def main() -> int:
     validate_security_headers()
     validate_service_worker(version)
     validate_filter_source()
-    validate_html(version)
-    print(f"Validated Medical MEQ Bank {version}")
+    validate_html(version, source_lectures)
+    print(f"Validated Medical MEQ Bank {version} with {len(source_lectures)} JSON lectures")
     return 0
 
 
