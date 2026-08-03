@@ -18,7 +18,7 @@ The project is an offline-first Progressive Web App containing lecture-based MEQ
 
 1. Traumatic Brain Injury
 
-The uploaded lecture remains the exam-content authority. The application build verifies every reviewable lecture source and confirms that the generated study bank is identical to the committed JSON.
+The uploaded lecture remains the exam-content authority. The application build verifies every reviewable lecture source and confirms that the published and standalone study banks are identical to the committed JSON.
 
 ## Repository structure
 
@@ -26,6 +26,8 @@ The uploaded lecture remains the exam-content authority. The application build v
 src/index.html                     Reviewable HTML application shell
 src/app.css                        Core visual design and responsive layout
 src/app.js                         Core study-bank runtime
+src/progress-resilience.js         IndexedDB mirror for corrupted progress recovery
+src/lecture-loader.js              Subject-level lazy lecture loading
 src/pwa-client.js                  Updates, backup import/export and PWA client
 lectures/catalog.json              Published lecture registry and expected counts
 lectures/data/*.json               Reviewable medical lecture content
@@ -37,14 +39,18 @@ review-filter.css                  Filter interface styling
 responsive-sidebars.js             Responsive navigation defaults
 mobile-filters.js                  Compact mobile filters, chips and reset behavior
 mobile-filters.css                 Mobile filter styling
-search-optimization.js             Debounced full-bank search
-tools/lecture_builder.py           JSON validation and lecture insertion
+search-optimization.js             Debounced text search
+tools/lecture_builder.py           JSON validation and offline lecture insertion
 tools/build_app.py                 Production and standalone-offline builder
 scripts/validate_build.py          Source and generated-site integrity checks
 scripts/validate_mobile_filters.py Mobile filter integration checks
 scripts/validate_runtime_extensions.py Runtime ordering checks
-tests/app.spec.js                  Chromium end-to-end and offline tests
+scripts/validate_progress_resilience.py IndexedDB integration checks
+tests/app.spec.js                  Chromium functional, storage and offline tests
 tests/accessibility.spec.js        Automated WCAG A/AA audits
+tests/layout.spec.js               Responsive layout regression tests
+tests/performance.spec.js          Request and interaction performance budgets
+tests/webkit-smoke.spec.js         Safari and iPhone WebKit workflows
 service-worker.js                  Offline caching and update behavior
 build.sh                           Reproducible production build entrypoint
 ```
@@ -53,22 +59,26 @@ build.sh                           Reproducible production build entrypoint
 
 ## Online and standalone builds
 
-The online application keeps these assets separate so they can be reviewed, cached and updated independently:
+The online application keeps the shell and runtimes separate so they can be reviewed, cached and updated independently. Lecture JSON is loaded by subject, while the service worker pre-caches the catalog and all lecture files for reliable offline use.
 
 ```text
 index.html
 app.css
 app.js
+progress-resilience.js
+lecture-loader.js
 pwa-client.js
+lectures/catalog.json
+lectures/data/*.json
 ```
 
-The build also creates one self-contained file for direct offline use. It inlines the core CSS and both runtime files while keeping all study features and lecture content available:
+The build also creates one self-contained file for direct offline use. It embeds the application runtimes and the complete validated lecture bank:
 
 ```text
 dist/offline/Medical_MEQ_Review_Bank_Offline.html
 ```
 
-The browser test suite opens this file through a real `file://` URL, without a web server.
+The Chromium test suite opens this file through a real `file://` URL without a web server.
 
 ## Build locally
 
@@ -85,14 +95,22 @@ bash build.sh
 python3 scripts/validate_build.py
 python3 scripts/validate_mobile_filters.py
 python3 scripts/validate_runtime_extensions.py
+python3 scripts/validate_progress_resilience.py
 ```
 
-Run the locked Chromium and axe test suite:
+Run the locked Chromium and axe suite:
 
 ```bash
 npm ci
 npx playwright install chromium
 npm run test:e2e
+```
+
+Run Safari desktop and iPhone WebKit smoke tests:
+
+```bash
+npx playwright install webkit
+npx playwright test --config=playwright.webkit.config.js
 ```
 
 Serve the generated online output so the service worker can run:
@@ -115,7 +133,7 @@ Then open `http://localhost:8000`.
 3. Keep every study-item ID unique within the lecture.
 4. Reference only subtopic IDs declared in that lecture.
 5. Run the full build and validators.
-6. Confirm static validation, Chromium workflows and WCAG audits pass before merging.
+6. Confirm static validation, Chromium, WebKit and WCAG checks pass before merging.
 7. Bump `version.json` and the matching `APP_VERSION` in `service-worker.js` for a release.
 
 Compressed lecture chunks, browser-side decompression and JavaScript lecture payload files are not accepted. The validator rejects legacy `.js`, `.b64`, `.gz` and `.zip` files under `lectures/`.
@@ -125,11 +143,12 @@ Compressed lecture chunks, browser-side decompression and JavaScript lecture pay
 The `Validate Medical MEQ Bank` workflow runs on pull requests, `main`, and development branches. It checks:
 
 - reproducible application build from reviewable sources
-- split HTML, CSS, runtime and PWA-client source integrity
-- a self-contained directly openable offline file
+- split HTML, CSS and JavaScript runtime integrity
+- subject-level online lazy loading
+- a complete directly openable standalone offline file
 - Python and JavaScript syntax
 - lecture catalog integrity and expected item counts
-- exact parity between source JSON and generated content
+- exact parity between source JSON, published JSON and offline content
 - unique lecture and study-item IDs
 - valid subtopic references
 - absence of legacy compressed lecture sources
@@ -137,17 +156,18 @@ The `Validate Medical MEQ Bank` workflow runs on pull requests, `main`, and deve
 - version alignment and update detection
 - offline fallback and service-worker recovery
 - Cloudflare 404 handling and security headers
-- duplicate critical element IDs
 - Rapid Recall search and reduced-motion behavior
 - mobile filter expansion, active chips and reset
 - responsive sidebar preferences
-- debounced full-bank search
+- debounced text search
 - startup recovery from malformed saved progress
+- IndexedDB restoration only for corrupted progress, not deliberate resets
+- responsive layout and interaction budgets
 - automated WCAG A/AA audits on desktop and mobile
-- real Chromium workflows through Playwright
+- Chromium, Safari desktop and iPhone WebKit workflows
 
-The generated `dist/` directory and Playwright diagnostics are retained as short-lived workflow artifacts for inspection.
+Generated `dist/` output and browser diagnostics are retained as short-lived workflow artifacts for inspection.
 
 ## Privacy
 
-The repository is private. Deployment access is configured separately from repository visibility. Student progress currently remains in browser storage unless the user explicitly exports a backup.
+The repository is private. Deployment access is configured separately from repository visibility. Student progress remains on the device in local browser storage with an IndexedDB recovery mirror, unless the user explicitly exports a backup.
