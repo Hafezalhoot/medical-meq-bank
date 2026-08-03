@@ -1,5 +1,39 @@
 (() => {
   const CATALOG_URL = './lectures/catalog.json';
+
+  const normalizeLecture = lecture => {
+    if (!lecture || typeof lecture !== 'object') return lecture;
+    for (const key of ['subtopics', 'cases', 'coreShorts', 'imageQuestions', 'detailedShorts', 'rapid']) {
+      if (!Array.isArray(lecture[key])) lecture[key] = [];
+    }
+    lecture.cases.forEach(item => {
+      if (!Array.isArray(item.questions)) item.questions = [];
+      if (!Array.isArray(item.answer)) item.answer = [];
+      if (!Array.isArray(item.marking) || !item.marking.length) {
+        item.marking = [`Complete lecture-based model answer - ${item.marks || 0} marks`];
+      }
+      if (!Array.isArray(item.subtopics)) item.subtopics = [];
+      if (typeof item.scenario !== 'string') item.scenario = item.title || 'Clinical case';
+      if (typeof item.ar !== 'string') item.ar = '';
+      if (typeof item.trap !== 'string') item.trap = 'Keep the answer within the lecture pathway.';
+      if (typeof item.memory !== 'string') item.memory = item.title || 'Lecture recall';
+    });
+    lecture.coreShorts.forEach(item => {
+      if (!Array.isArray(item.subtopics)) item.subtopics = [];
+    });
+    lecture.detailedShorts.forEach(item => {
+      if (!Array.isArray(item.subtopics)) item.subtopics = [];
+    });
+    lecture.imageQuestions.forEach(item => {
+      if (!Array.isArray(item.questions)) item.questions = [];
+      if (!Array.isArray(item.answer)) item.answer = [];
+      if (!Array.isArray(item.subtopics)) item.subtopics = [];
+      if (typeof item.prompt !== 'string') item.prompt = item.title || 'Identify the illustrated finding.';
+    });
+    return lecture;
+  };
+
+  lectures.forEach(normalizeLecture);
   const loadedLectureIds = new Set(lectures.map(lecture => lecture.id));
   const subjectLoads = new Map();
   let catalogPromise = null;
@@ -79,7 +113,7 @@
         throw new Error(`Lecture ${entry.id} has invalid ${key}`);
       }
     }
-    return lecture;
+    return normalizeLecture(lecture);
   };
 
   const refreshApplication = () => {
