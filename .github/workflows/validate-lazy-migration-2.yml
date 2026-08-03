@@ -1,0 +1,73 @@
+name: Validate Lazy Lecture Migration 2
+
+on:
+  push:
+    branches:
+      - agent/harden-pwa-ci-foundation
+    paths:
+      - .github/workflows/validate-lazy-migration-2.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/harden-pwa-ci-foundation
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Run validation
+        id: validation
+        continue-on-error: true
+        run: |
+          set +e
+          {
+            echo "Commit: $(git rev-parse HEAD)"
+            bash build.sh
+            build=$?
+            echo "build=$build"
+            [ "$build" -eq 0 ] || exit "$build"
+            python3 scripts/validate_build.py
+            static=$?
+            python3 scripts/validate_mobile_filters.py
+            mobile=$?
+            python3 scripts/validate_runtime_extensions.py
+            runtime=$?
+            echo "static=$static mobile=$mobile runtime=$runtime"
+            [ "$static" -eq 0 ] && [ "$mobile" -eq 0 ] && [ "$runtime" -eq 0 ] || exit 1
+            npm ci --no-audit --no-fund
+            npm_status=$?
+            echo "npm=$npm_status"
+            [ "$npm_status" -eq 0 ] || exit "$npm_status"
+            npx playwright install --with-deps chromium
+            install=$?
+            echo "chromium=$install"
+            [ "$install" -eq 0 ] || exit "$install"
+            npm run test:e2e
+            tests=$?
+            echo "tests=$tests"
+            exit "$tests"
+          } > lazy-migration-diagnostic-2.txt 2>&1
+          status=$?
+          cat lazy-migration-diagnostic-2.txt
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit "$status"
+      - name: Save diagnostic
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          printf '\nFinal status: %s\n' "${{ steps.validation.outputs.status }}" >> lazy-migration-diagnostic-2.txt
+          git add lazy-migration-diagnostic-2.txt
+          git commit -m "Record lazy lecture validation rerun" || exit 0
+          git push origin HEAD:agent/harden-pwa-ci-foundation
+      - name: Fail unsuccessful validation
+        if: steps.validation.outputs.status != '0'
+        run: exit 1
