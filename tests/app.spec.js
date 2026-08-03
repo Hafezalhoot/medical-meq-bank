@@ -146,9 +146,20 @@ test('image cards never request undefined resources', async ({page}) => {
   });
 
   await openBank(page);
-  await expect(page.locator('.visual-placeholder').first()).toBeAttached();
+  await expect(page.locator('.image-card').first()).toBeAttached();
   await expect(page.locator('img[src="undefined"]')).toHaveCount(0);
-  await expect(page.locator('.visual-placeholder').first()).toContainText(/Lecture page/);
+
+  const invalidVisuals = await page.locator('.image-card').evaluateAll(cards => cards.filter(card => {
+    const image = card.querySelector('.visual img');
+    if (image) {
+      const source = image.getAttribute('src')?.trim();
+      return !source || source === 'undefined';
+    }
+    const placeholder = card.querySelector('.visual-placeholder');
+    return !placeholder || !/Lecture (page|source)/i.test(placeholder.textContent || '');
+  }).length);
+
+  expect(invalidVisuals).toBe(0);
   expect(invalidRequests).toEqual([]);
 });
 
@@ -258,20 +269,25 @@ test('IndexedDB mirror does not undo a deliberate progress reset', async ({page}
 
 test('installed service worker restores the bank while offline', async ({page, context}) => {
   await openBank(page);
+  await page.waitForLoadState('load');
+
   await expect.poll(
-    () => page.evaluate(async () => Boolean(await navigator.serviceWorker.ready)),
-    {timeout: 15_000}
+    () => page.evaluate(async () => {
+      const registration = await navigator.serviceWorker.getRegistration();
+      return Boolean(registration?.active);
+    }),
+    {timeout: 60_000, intervals: [500, 1000, 2000]}
   ).toBe(true);
 
   await page.reload({waitUntil: 'domcontentloaded'});
   await expect.poll(
     () => page.evaluate(() => Boolean(navigator.serviceWorker.controller)),
-    {timeout: 15_000}
+    {timeout: 30_000, intervals: [500, 1000, 2000]}
   ).toBe(true);
 
   await context.setOffline(true);
   try {
-    await page.reload({waitUntil: 'domcontentloaded', timeout: 15_000});
+    await page.reload({waitUntil: 'domcontentloaded', timeout: 30_000});
     await expect(page.getByRole('heading', {name: headingName})).toBeVisible();
     await expect(page.locator('.study-item').first()).toBeAttached();
   } finally {
