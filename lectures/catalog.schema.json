@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medical-meq-bank.local/schemas/lecture-catalog.schema.json",
+  "title": "Medical MEQ Lecture Catalog",
+  "type": "object",
+  "required": ["version", "lectures"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"const": 1},
+    "lectures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "file", "expectedCounts"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "file": {
+            "type": "string",
+            "pattern": "^data/[A-Za-z0-9._-]+\\.json$"
+          },
+          "expectedCounts": {
+            "type": "object",
+            "required": ["cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid"],
+            "properties": {
+              "cases": {"type": "integer", "minimum": 0},
+              "coreShorts": {"type": "integer", "minimum": 0},
+              "imageQuestions": {"type": "integer", "minimum": 0},
+              "detailedShorts": {"type": "integer", "minimum": 0},
+              "rapid": {"type": "integer", "minimum": 0}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
