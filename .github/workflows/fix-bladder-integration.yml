@@ -68,3 +68,5 @@ jobs:
           git add lectures/data/urology-bladder-cancer.json search-optimization.js tests/performance.spec.js .github/workflows/fix-bladder-integration.yml
           git commit -m "Harden Bladder Cancer integration"
           git push origin HEAD:agent/add-bladder-cancer
+
+# Triggered after the workflow became available on the branch.
