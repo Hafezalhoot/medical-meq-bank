@@ -28,7 +28,7 @@ def main() -> None:
         fail("generated progress-resilience.js differs from source")
 
     for marker in (
-        "medical-meq-bank-progress",
+        "const DB_NAME = 'medical-meq-bank';",
         "medicalBankStatusV2",
         "indexedDB.open",
         "snapshotNow",
