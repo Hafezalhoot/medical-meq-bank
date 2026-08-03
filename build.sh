@@ -8,6 +8,8 @@ required_files=(
   icons/icon-192.png
   icons/icon-512.png
   icons/apple-touch-icon.png
+  404.html
+  _headers
   review-filter.css
   review-filter.js
   print-manager.v8.css.gz.b64
@@ -33,6 +35,7 @@ python3 -m py_compile tools/build_app.py tools/lecture_builder.py
 rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT"
 install -m 0644 src/index.html "$OUTPUT/index.html"
+install -m 0644 404.html _headers "$OUTPUT/"
 cp -R icons "$OUTPUT/icons"
 
 if [ -d assets ]; then
