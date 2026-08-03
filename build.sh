@@ -21,8 +21,13 @@ required_files=(
   manifest.webmanifest
   service-worker.js
   version.json
+  lectures/catalog.json
+  lectures/catalog.schema.json
+  lectures/lecture.schema.json
   tools/build_app.py
   tools/lecture_builder.py
+  scripts/validate_build.py
+  scripts/validate_mobile_filters.py
 )
 
 for required in "${required_files[@]}"; do
@@ -32,7 +37,16 @@ for required in "${required_files[@]}"; do
   fi
 done
 
-python3 -m py_compile tools/build_app.py tools/lecture_builder.py
+if ! find lectures/data -maxdepth 1 -type f -name '*.json' -print -quit | grep -q .; then
+  echo "No reviewable lecture JSON files were found in lectures/data."
+  exit 1
+fi
+
+python3 -m py_compile \
+  tools/build_app.py \
+  tools/lecture_builder.py \
+  scripts/validate_build.py \
+  scripts/validate_mobile_filters.py
 
 rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT"
@@ -49,4 +63,4 @@ python3 tools/build_app.py "$OUTPUT"
 # Publish current PWA metadata and the hardened service worker.
 install -m 0644 manifest.webmanifest service-worker.js version.json "$OUTPUT/"
 
-echo "Medical MEQ Bank prepared in $OUTPUT from src/index.html"
+echo "Medical MEQ Bank prepared in $OUTPUT from reviewable source files"
