@@ -49,7 +49,7 @@ def main() -> None:
     require_markers(
         search,
         (
-            "FILTER_DELAY_MS = 160",
+            "FILTER_DELAY_MS = 300",
             "stopImmediatePropagation",
             "compositionstart",
             "compositionend",
@@ -67,6 +67,7 @@ def main() -> None:
             "MEQLectureLoader",
             "meq:lectures-loaded",
             "loadedLectureIds",
+            "normalizeLecture",
         ),
         "lecture loader source",
     )
