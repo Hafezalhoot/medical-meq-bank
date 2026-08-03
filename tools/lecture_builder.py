@@ -242,6 +242,7 @@ def _batch_extension(lectures_to_add: list[dict]) -> str:
     return (
         "(() => {\n"
         f"  const incomingLectures = {serialized};\n"
+        "  const existingIds = new Set(lectures.map(item => item.id));\n"
         "  const placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';\n"
         "  const normalize = lecture => {\n"
         "    for (const key of ['subtopics','cases','coreShorts','imageQuestions','detailedShorts','rapid']) {\n"
@@ -267,7 +268,6 @@ def _batch_extension(lectures_to_add: list[dict]) -> str:
         "    return lecture;\n"
         "  };\n"
         "  incomingLectures.forEach(normalize);\n"
-        "  const existingIds = new Set(lectures.map(item => item.id));\n"
         "  const added = incomingLectures.filter(item => !existingIds.has(item.id));\n"
         "  if (!added.length) return;\n"
         "  lectures.push(...added);\n"
