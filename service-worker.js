@@ -1,13 +1,16 @@
-const APP_VERSION = '2026.08.03.11';
+const APP_VERSION = '2026.08.03.12';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
 const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
+const LECTURE_ASSETS = /*__LECTURE_ASSETS__*/ [];
 
 const REQUIRED_ASSETS = [
   './index.html',
   './app.css',
   './app.js',
+  './lecture-loader.js',
   './pwa-client.js',
-  OFFLINE_PAGE
+  OFFLINE_PAGE,
+  ...LECTURE_ASSETS
 ];
 
 const OPTIONAL_ASSETS = [
