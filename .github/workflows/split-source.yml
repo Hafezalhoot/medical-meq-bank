@@ -1,0 +1,52 @@
+name: Split Application Source
+
+on:
+  push:
+    branches:
+      - agent/harden-pwa-ci-foundation
+    paths:
+      - .github/workflows/split-source.yml
+      - tools/split_source.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out development branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/harden-pwa-ci-foundation
+
+      - name: Split monolithic source
+        run: python3 tools/split_source.py
+
+      - name: Validate extracted source
+        run: |
+          set -euo pipefail
+          test -s src/index.html
+          test -s src/app.css
+          test -s src/app.js
+          grep -Fq '<link rel="stylesheet" href="./app.css">' src/index.html
+          grep -Fq '<script src="./app.js"></script>' src/index.html
+          grep -Fq "const APP_VERSION" src/app.js
+          grep -Fq "const lectures" src/app.js
+          node --check src/app.js
+
+      - name: Commit split application source
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/index.html src/app.css src/app.js
+          if git diff --cached --quiet; then
+            echo "Application source is already split."
+            exit 0
+          fi
+          git commit -m "Split application shell, styles, and runtime source"
+          git push origin HEAD:agent/harden-pwa-ci-foundation
