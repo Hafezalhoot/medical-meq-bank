@@ -1,0 +1,120 @@
+name: Add Urolithiasis lecture
+
+on:
+  push:
+    branches:
+      - agent/add-urolithiasis
+    paths:
+      - .github/workflows/add-urolithiasis.yml
+
+permissions:
+  contents: write
+
+jobs:
+  add-lecture:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out lecture branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/add-urolithiasis
+          fetch-depth: 0
+
+      - name: Generate lecture source and metadata
+        shell: bash
+        run: |
+          git fetch origin main
+          python3 - <<'PYDATA'
+          import base64
+          import gzip
+          import json
+          import re
+          import subprocess
+          from pathlib import Path
+
+          registered = subprocess.check_output(
+              ['git', 'show', 'origin/main:.github/workflows/add-urolithiasis.yml'],
+              text=True,
+          )
+          match = re.search(r'payload = """\s*(.*?)\s*"""', registered, flags=re.S)
+          if not match:
+              raise SystemExit('Could not read registered lecture payload')
+          lecture = json.loads(
+              gzip.decompress(base64.b64decode(match.group(1))).decode('utf-8')
+          )
+
+          lecture_path = Path('lectures/data/urology-urolithiasis.json')
+          lecture_path.write_text(
+              json.dumps(lecture, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+
+          catalog_path = Path('lectures/catalog.json')
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          entry = {
+              'id': 'urology-urolithiasis',
+              'title': 'Urolithiasis',
+              'subjectKey': 'urology',
+              'order': 7,
+              'file': 'data/urology-urolithiasis.json',
+              'expectedCounts': {
+                  'cases': 12,
+                  'coreShorts': 30,
+                  'imageQuestions': 10,
+                  'detailedShorts': 55,
+                  'rapid': 30,
+              },
+          }
+          catalog['lectures'] = [
+              item for item in catalog['lectures']
+              if item.get('id') != entry['id']
+          ]
+          catalog['lectures'].append(entry)
+          catalog['lectures'].sort(key=lambda item: (item['subjectKey'], item['order']))
+          catalog_path.write_text(
+              json.dumps(catalog, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+
+          version = '2026.08.03.18'
+          Path('version.json').write_text(
+              json.dumps(
+                  {'version': version, 'updatedAt': '2026-08-03T10:22:00+03:00'},
+                  indent=2,
+              ) + '\n',
+              encoding='utf-8',
+          )
+
+          worker_path = Path('service-worker.js')
+          worker = worker_path.read_text(encoding='utf-8')
+          worker, count = re.subn(
+              r"const APP_VERSION = '[^']+';",
+              f"const APP_VERSION = '{version}';",
+              worker,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit('Could not update service-worker version')
+          worker_path.write_text(worker, encoding='utf-8')
+
+          readme_path = Path('README.md')
+          readme = readme_path.read_text(encoding='utf-8')
+          if '7. Urolithiasis' not in readme:
+              marker = '6. Bladder Cancer'
+              if marker not in readme:
+                  raise SystemExit('Could not update README lecture list')
+              readme = readme.replace(marker, marker + '\n7. Urolithiasis', 1)
+          readme_path.write_text(readme, encoding='utf-8')
+
+          Path('.github/workflows/add-urolithiasis.yml').unlink()
+          PYDATA
+
+      - name: Commit lecture bank
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md lectures/catalog.json lectures/data/urology-urolithiasis.json version.json service-worker.js .github/workflows/add-urolithiasis.yml
+          git commit -m "Add Urolithiasis lecture bank"
+          git push origin HEAD:agent/add-urolithiasis
