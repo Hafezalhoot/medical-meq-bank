@@ -123,3 +123,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# Retry marker: progress-resilience validation now matches the actual database constant.
