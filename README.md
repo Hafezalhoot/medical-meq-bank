@@ -23,7 +23,10 @@ The uploaded lecture remains the exam-content authority. The application build v
 ## Repository structure
 
 ```text
-src/index.html                     Reviewable application shell
+src/index.html                     Reviewable HTML application shell
+src/app.css                        Core visual design and responsive layout
+src/app.js                         Core study-bank runtime
+src/pwa-client.js                  Updates, backup import/export and PWA client
 lectures/catalog.json              Published lecture registry and expected counts
 lectures/data/*.json               Reviewable medical lecture content
 lectures/lecture.schema.json       Lecture data contract
@@ -31,18 +34,41 @@ lectures/catalog.schema.json       Catalog data contract
 icons/                             Installable PWA icons
 review-filter.js                   Filtering, Rapid Recall and accessibility behavior
 review-filter.css                  Filter interface styling
+responsive-sidebars.js             Responsive navigation defaults
 mobile-filters.js                  Compact mobile filters, chips and reset behavior
 mobile-filters.css                 Mobile filter styling
-tools/lecture_builder.py           JSON validation and batch insertion
-tools/build_app.py                 HTML patching and extension injection
+search-optimization.js             Debounced full-bank search
+tools/lecture_builder.py           JSON validation and lecture insertion
+tools/build_app.py                 Production and standalone-offline builder
 scripts/validate_build.py          Source and generated-site integrity checks
 scripts/validate_mobile_filters.py Mobile filter integration checks
-tests/app.spec.js                  Chromium end-to-end smoke tests
+scripts/validate_runtime_extensions.py Runtime ordering checks
+tests/app.spec.js                  Chromium end-to-end and offline tests
+tests/accessibility.spec.js        Automated WCAG A/AA audits
 service-worker.js                  Offline caching and update behavior
 build.sh                           Reproducible production build entrypoint
 ```
 
 `dist/` is generated output and must not be edited or treated as source.
+
+## Online and standalone builds
+
+The online application keeps these assets separate so they can be reviewed, cached and updated independently:
+
+```text
+index.html
+app.css
+app.js
+pwa-client.js
+```
+
+The build also creates one self-contained file for direct offline use. It inlines the core CSS and both runtime files while keeping all study features and lecture content available:
+
+```text
+dist/offline/Medical_MEQ_Review_Bank_Offline.html
+```
+
+The browser test suite opens this file through a real `file://` URL, without a web server.
 
 ## Build locally
 
@@ -50,28 +76,32 @@ Requirements:
 
 - Bash
 - Python 3
+- Node.js 22 for browser and accessibility tests
 
-Run:
+Build and validate the generated application:
 
 ```bash
 bash build.sh
 python3 scripts/validate_build.py
 python3 scripts/validate_mobile_filters.py
+python3 scripts/validate_runtime_extensions.py
 ```
 
-Serve the generated output through a local HTTP server so the service worker can run:
+Run the locked Chromium and axe test suite:
+
+```bash
+npm ci
+npx playwright install chromium
+npm run test:e2e
+```
+
+Serve the generated online output so the service worker can run:
 
 ```bash
 python3 -m http.server 8000 --directory dist
 ```
 
 Then open `http://localhost:8000`.
-
-The generated standalone copy is available at:
-
-```text
-dist/offline/Medical_MEQ_Review_Bank_Offline.html
-```
 
 ## Adding a lecture
 
@@ -85,7 +115,7 @@ dist/offline/Medical_MEQ_Review_Bank_Offline.html
 3. Keep every study-item ID unique within the lecture.
 4. Reference only subtopic IDs declared in that lecture.
 5. Run the full build and validators.
-6. Confirm both static validation and Chromium browser tests pass before merging.
+6. Confirm static validation, Chromium workflows and WCAG audits pass before merging.
 7. Bump `version.json` and the matching `APP_VERSION` in `service-worker.js` for a release.
 
 Compressed lecture chunks, browser-side decompression and JavaScript lecture payload files are not accepted. The validator rejects legacy `.js`, `.b64`, `.gz` and `.zip` files under `lectures/`.
@@ -95,6 +125,8 @@ Compressed lecture chunks, browser-side decompression and JavaScript lecture pay
 The `Validate Medical MEQ Bank` workflow runs on pull requests, `main`, and development branches. It checks:
 
 - reproducible application build from reviewable sources
+- split HTML, CSS, runtime and PWA-client source integrity
+- a self-contained directly openable offline file
 - Python and JavaScript syntax
 - lecture catalog integrity and expected item counts
 - exact parity between source JSON and generated content
@@ -108,7 +140,10 @@ The `Validate Medical MEQ Bank` workflow runs on pull requests, `main`, and deve
 - duplicate critical element IDs
 - Rapid Recall search and reduced-motion behavior
 - mobile filter expansion, active chips and reset
+- responsive sidebar preferences
+- debounced full-bank search
 - startup recovery from malformed saved progress
+- automated WCAG A/AA audits on desktop and mobile
 - real Chromium workflows through Playwright
 
 The generated `dist/` directory and Playwright diagnostics are retained as short-lived workflow artifacts for inspection.
