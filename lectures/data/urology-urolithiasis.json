@@ -1,0 +1,1863 @@
+{
+  "id": "urology-urolithiasis",
+  "order": 7,
+  "subjectKey": "urology",
+  "subject": "Urology",
+  "title": "Urolithiasis",
+  "subtitle": "Epidemiology, stone composition, renal colic, investigations, management, procedures, bladder stones and prevention",
+  "sourceNote": "Built only from the uploaded Urolithiasis / Urinary Stones lecture by Dr Amr Hassan Alkhalily. The bank preserves the lecture terminology, percentages, imaging statements, management thresholds and referral criteria without adding external guideline updates.",
+  "subtopics": [
+    {
+      "id": "epidemiology",
+      "label": "Epidemiology"
+    },
+    {
+      "id": "pathophysiology",
+      "label": "Pathophysiology & Aetiology"
+    },
+    {
+      "id": "stone-types",
+      "label": "Types of Urinary Stones"
+    },
+    {
+      "id": "struvite",
+      "label": "Struvite & Staghorn Stones"
+    },
+    {
+      "id": "uric-acid",
+      "label": "Uric Acid Stones"
+    },
+    {
+      "id": "presentation",
+      "label": "Presentation & Renal Colic"
+    },
+    {
+      "id": "differential",
+      "label": "Differential Diagnosis"
+    },
+    {
+      "id": "complications",
+      "label": "Complications"
+    },
+    {
+      "id": "laboratory",
+      "label": "Laboratory Studies"
+    },
+    {
+      "id": "xray",
+      "label": "Plain X-ray (KUB)"
+    },
+    {
+      "id": "ultrasound",
+      "label": "Ultrasonography"
+    },
+    {
+      "id": "ct-ivu",
+      "label": "CT & IVU"
+    },
+    {
+      "id": "acute-management",
+      "label": "Acute Attack Management"
+    },
+    {
+      "id": "renal-stones",
+      "label": "Renal Stone Management"
+    },
+    {
+      "id": "ureteric-stones",
+      "label": "Ureteric Stone Management"
+    },
+    {
+      "id": "procedures",
+      "label": "ESWL, URS & PCNL"
+    },
+    {
+      "id": "bladder-stones",
+      "label": "Bladder Stones"
+    },
+    {
+      "id": "prevention-referral",
+      "label": "Prevention & Immediate Referral"
+    }
+  ],
+  "cases": [
+    {
+      "id": "ul-c01",
+      "title": "Classical Ureteric Colic",
+      "topic": "Presentation",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "presentation"
+      ],
+      "scenario": "A patient develops sudden severe flank pain radiating to the ipsilateral groin with nausea, vomiting and haematuria.",
+      "questions": [
+        "What is the most likely diagnosis?",
+        "State the classical triad.",
+        "Explain the mechanism of pain.",
+        "List the immediate analgesic options in the lecture."
+      ],
+      "answer": [
+        "Ureteric colic due to an obstructing ureteric stone.",
+        "Acute loin-to-groin pain, nausea and vomiting, and haematuria.",
+        "Obstruction raises collecting-system intraluminal pressure and stretches nerve endings; inflammatory mediators, oedema and hyperperistalsis also contribute.",
+        "NSAIDs; morphine or pethidine may be required."
+      ],
+      "memory": "Loin to groin + vomiting + haematuria = ureteric colic."
+    },
+    {
+      "id": "ul-c02",
+      "title": "Distal Ureteric Stone",
+      "topic": "Distal Ureter",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "presentation"
+      ],
+      "scenario": "A stone becomes lodged in the distal ureter or intramural tunnel.",
+      "questions": [
+        "What irritative urinary symptoms may occur?",
+        "What referred pain may occur?",
+        "Why do these symptoms appear?"
+      ],
+      "answer": [
+        "Urinary frequency or urgency.",
+        "Ipsilateral testicular and groin pain.",
+        "Because the distal stone irritates the bladder mucosa."
+      ],
+      "memory": "Distal stone irritates bladder: frequency, urgency, testicular/groin pain."
+    },
+    {
+      "id": "ul-c03",
+      "title": "Fever with Obstructed Kidney",
+      "topic": "Obstructed Infected Kidney",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "presentation",
+        "ureteric-stones",
+        "prevention-referral"
+      ],
+      "scenario": "A patient with a ureteric stone has fever and urinary obstruction.",
+      "questions": [
+        "What does this combination indicate?",
+        "What is the required immediate principle of management?",
+        "Is this an indication for immediate urological referral?"
+      ],
+      "answer": [
+        "An obstructed infected kidney.",
+        "Urgent decompression of the collecting system.",
+        "Yes; sepsis or UTI with obstructive uropathy requires immediate referral."
+      ],
+      "memory": "Fever + obstruction = infected obstructed kidney = urgent decompression."
+    },
+    {
+      "id": "ul-c04",
+      "title": "Recurrent UTI with Staghorn Stone",
+      "topic": "Struvite Stone",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "struvite",
+        "presentation"
+      ],
+      "scenario": "A patient has recurrent upper urinary tract infections and a branching renal stone.",
+      "questions": [
+        "What stone type is most likely?",
+        "State its urine pH and radiological character.",
+        "Explain its formation.",
+        "State its chemical constituents."
+      ],
+      "answer": [
+        "Struvite/infection stone.",
+        "It forms in alkaline urine and is radio-opaque.",
+        "Urease-producing organisms split urea, forming ammonium.",
+        "Calcium, magnesium, ammonium and phosphate."
+      ],
+      "memory": "Urease infection -> alkaline urine -> struvite -> staghorn."
+    },
+    {
+      "id": "ul-c05",
+      "title": "Radiolucent Stone in Acidic Urine",
+      "topic": "Uric Acid Stone",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "uric-acid",
+        "stone-types"
+      ],
+      "scenario": "A patient has a stone not seen on plain KUB and acidic urine.",
+      "questions": [
+        "What is the likely stone?",
+        "What percentage of stone types does it represent in the lecture?",
+        "What medical dissolution option is stated?"
+      ],
+      "answer": [
+        "Uric acid stone.",
+        "About 4%.",
+        "Oral alkalinizing agents can dissolve it."
+      ],
+      "memory": "Uric acid: radiolucent, acidic urine, alkalinize to dissolve."
+    },
+    {
+      "id": "ul-c06",
+      "title": "Stable Asymptomatic Calyceal Stone",
+      "topic": "Conservative Management",
+      "priority": "Core",
+      "marks": 7,
+      "subtopics": [
+        "renal-stones"
+      ],
+      "scenario": "An asymptomatic calyceal stone has remained stable for six months.",
+      "questions": [
+        "What management option is described?",
+        "How often is follow-up mentioned?",
+        "Is treatment of all renal stones considered settled?"
+      ],
+      "answer": [
+        "Annual follow-up may be sufficient.",
+        "Annual follow-up.",
+        "No; the lecture states that treating all renal stones remains debatable."
+      ],
+      "memory": "Stable asymptomatic calyceal stone for 6 months -> annual follow-up may suffice."
+    },
+    {
+      "id": "ul-c07",
+      "title": "Renal Stone 1.5 cm",
+      "topic": "Renal Stone Management",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "renal-stones",
+        "procedures"
+      ],
+      "scenario": "A patient has a 1.5 cm renal stone.",
+      "questions": [
+        "Which two active treatment options are stated for this size?",
+        "What condition makes ESWL suitable?",
+        "When is PCNL selected instead?"
+      ],
+      "answer": [
+        "ESWL or flexible ureteroscopy with laser disintegration.",
+        "A renal stone under 2 cm in a patent urinary tract is suitable for ESWL.",
+        "PCNL is used for a stone larger than 2 cm."
+      ],
+      "memory": "1-2 cm: ESWL or flexible URS; >2 cm: PCNL."
+    },
+    {
+      "id": "ul-c08",
+      "title": "Large Renal Stone",
+      "topic": "PCNL",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "renal-stones",
+        "procedures"
+      ],
+      "scenario": "A renal stone measures 2.5 cm.",
+      "questions": [
+        "What is the preferred modality in the lecture?",
+        "Expand the abbreviation.",
+        "Are open operations common?"
+      ],
+      "answer": [
+        "PCNL.",
+        "Percutaneous nephrolithotomy.",
+        "No; open surgery is rare."
+      ],
+      "memory": "Renal stone >2 cm -> PCNL."
+    },
+    {
+      "id": "ul-c09",
+      "title": "Obstruction in a Solitary Kidney",
+      "topic": "Emergency Surgery",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "ureteric-stones",
+        "prevention-referral"
+      ],
+      "scenario": "A patient with a solitary functioning kidney has unilateral stone obstruction and acute kidney injury.",
+      "questions": [
+        "Is urgent decompression indicated?",
+        "Which emergency indication does this represent?",
+        "What is the referral urgency?"
+      ],
+      "answer": [
+        "Yes.",
+        "Unilateral obstruction with AKI in a solitary functioning kidney.",
+        "Immediate urological referral and urgent decompression."
+      ],
+      "memory": "Solitary kidney + obstruction + AKI = urgent decompression."
+    },
+    {
+      "id": "ul-c11",
+      "title": "Persistent Ureteric Stone over 10 mm",
+      "topic": "Elective Intervention",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "ureteric-stones"
+      ],
+      "scenario": "An adult has a ureteric stone larger than 10 mm without sepsis.",
+      "questions": [
+        "Is intervention indicated?",
+        "Which modality is shown for stones above 10 mm in the lecture flowchart?",
+        "List other elective indications stated."
+      ],
+      "answer": [
+        "Yes; ureteral stones >10 mm are an indication for surgical management.",
+        "Ureteroscopy (URS).",
+        "Failed observation in pregnancy, persistent kidney obstruction related to stones, and recurrent UTI related to stones."
+      ],
+      "memory": "Ureteral stone >10 mm -> intervention; flowchart points to URS."
+    },
+    {
+      "id": "ul-c12",
+      "title": "Bladder Stone",
+      "topic": "Bladder Stone Treatment",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "bladder-stones"
+      ],
+      "scenario": "A pelvic X-ray demonstrates a large bladder stone.",
+      "questions": [
+        "State the two treatment options in the lecture.",
+        "Describe cystolitholapaxy."
+      ],
+      "answer": [
+        "Cystolitholapaxy and open cystolithotomy.",
+        "The stone is broken and removed using a cystoscope."
+      ],
+      "memory": "Bladder stone: cystolitholapaxy; open cystolithotomy if needed."
+    },
+    {
+      "id": "ul-c13",
+      "title": "Recurrent Stone Former",
+      "topic": "Prevention",
+      "priority": "Core",
+      "marks": 10,
+      "subtopics": [
+        "prevention-referral",
+        "epidemiology"
+      ],
+      "scenario": "A treated patient asks how to reduce recurrence.",
+      "questions": [
+        "How common is recurrence according to the lecture?",
+        "List lifestyle measures.",
+        "List the medications/supplements stated.",
+        "What monitoring is mentioned with citrate?"
+      ],
+      "answer": [
+        "Nearly half develop a second stone within 5-7 years.",
+        "Plenty of fluid throughout the day; balanced diet high in fibre and vegetables, with normal calcium and limited sodium and animal protein.",
+        "Thiazide diuretics, allopurinol and citrate supplementation.",
+        "Monitor potassium levels and liver enzymes."
+      ],
+      "memory": "Prevent recurrence: fluids all day, normal calcium, less salt/animal protein."
+    }
+  ],
+  "coreShorts": [
+    {
+      "id": "ul-s01",
+      "q": "State the epidemiological recurrence figure for treated urolithiasis.",
+      "a": "Nearly half develop a second stone within 5-7 years.",
+      "topic": "Epidemiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ]
+    },
+    {
+      "id": "ul-s02",
+      "q": "How does urine composition relate to stone composition?",
+      "a": "Higher urinary concentrations of calcium, oxalate or uric acid favour corresponding stone formation.",
+      "topic": "Pathophysiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology"
+      ]
+    },
+    {
+      "id": "ul-s03",
+      "q": "What does hypercalciuria cause?",
+      "a": "Calcium stones.",
+      "topic": "Pathophysiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology"
+      ]
+    },
+    {
+      "id": "ul-s04",
+      "q": "What does hyperuricosuria cause?",
+      "a": "Uric acid stones.",
+      "topic": "Pathophysiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology"
+      ]
+    },
+    {
+      "id": "ul-s05",
+      "q": "What does hyperoxaluria cause?",
+      "a": "Oxalate stones.",
+      "topic": "Pathophysiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology"
+      ]
+    },
+    {
+      "id": "ul-s06",
+      "q": "State the percentages of calcium oxalate, calcium phosphate and uric acid stones.",
+      "a": [
+        "Calcium oxalate: 74%.",
+        "Calcium phosphate: 20%.",
+        "Uric acid: 4%."
+      ],
+      "topic": "Stone Composition",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology",
+        "stone-types"
+      ]
+    },
+    {
+      "id": "ul-s07",
+      "q": "Enumerate the aetiological factors for urinary stones.",
+      "a": [
+        "Excess urinary calcium.",
+        "Excess urinary oxalates.",
+        "Excess uric acid.",
+        "Excess cystine.",
+        "Infection with urea-splitting organisms."
+      ],
+      "topic": "Aetiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology"
+      ]
+    },
+    {
+      "id": "ul-s08",
+      "q": "Classify urinary stones into calcium-containing and non-calcium-containing.",
+      "a": [
+        "Calcium-containing: calcium oxalate, calcium phosphate and infection/struvite stone.",
+        "Non-calcium-containing: uric acid and cystine stones."
+      ],
+      "topic": "Stone Types",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "stone-types"
+      ]
+    },
+    {
+      "id": "ul-s09",
+      "q": "Describe the radiological character and urine reaction of struvite stone.",
+      "a": "Radio-opaque and forms in alkaline urine.",
+      "topic": "Struvite Stone",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "struvite"
+      ]
+    },
+    {
+      "id": "ul-s10",
+      "q": "What organisms cause struvite stones?",
+      "a": "Urease-producing organisms.",
+      "topic": "Struvite Stone",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "struvite"
+      ]
+    },
+    {
+      "id": "ul-s11",
+      "q": "State the chemical constituents of struvite stone.",
+      "a": [
+        "Calcium.",
+        "Magnesium.",
+        "Ammonium.",
+        "Phosphate."
+      ],
+      "topic": "Struvite Stone",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "struvite"
+      ]
+    },
+    {
+      "id": "ul-s12",
+      "q": "What configuration may a struvite stone form?",
+      "a": "A staghorn stone.",
+      "topic": "Struvite Stone",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "struvite"
+      ]
+    },
+    {
+      "id": "ul-s13",
+      "q": "Describe a uric acid stone.",
+      "a": [
+        "Typically radiolucent.",
+        "Forms in acidic urine.",
+        "Represents about 4% of cases."
+      ],
+      "topic": "Uric Acid Stone",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "uric-acid"
+      ]
+    },
+    {
+      "id": "ul-s14",
+      "q": "State the classical triad of ureteric colic.",
+      "a": [
+        "Acute loin-to-groin pain.",
+        "Nausea and vomiting.",
+        "Haematuria."
+      ],
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-s15",
+      "q": "Why does obstruction cause ureteric colic?",
+      "a": "It increases intraluminal pressure in the collecting system and stretches nerve endings.",
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-s16",
+      "q": "What additional mechanisms contribute to stone pain?",
+      "a": [
+        "Local inflammatory mediators.",
+        "Oedema.",
+        "Hyperperistalsis."
+      ],
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-s17",
+      "q": "What symptoms may occur with a distal ureteric stone?",
+      "a": [
+        "Frequency or urgency.",
+        "Ipsilateral testicular and groin pain."
+      ],
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-s18",
+      "q": "What does fever with urinary obstruction indicate?",
+      "a": "An obstructed infected kidney requiring urgent decompression.",
+      "topic": "Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation",
+        "ureteric-stones"
+      ]
+    },
+    {
+      "id": "ul-s19",
+      "q": "Enumerate the differential diagnosis of renal colic.",
+      "a": [
+        "Myalgia.",
+        "Radiculitis.",
+        "Appendicitis.",
+        "Intestinal obstruction."
+      ],
+      "topic": "Differential Diagnosis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "differential"
+      ]
+    },
+    {
+      "id": "ul-s20",
+      "q": "Enumerate complications of urinary stones.",
+      "a": [
+        "Obstructive uropathy.",
+        "Calculus anuria.",
+        "Renal failure.",
+        "Infection.",
+        "SCC due to chronic irritation by a longstanding stone."
+      ],
+      "topic": "Complications",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "complications"
+      ]
+    },
+    {
+      "id": "ul-s21",
+      "q": "List the laboratory studies for urolithiasis.",
+      "a": [
+        "Urine analysis.",
+        "Renal function tests: urea and creatinine.",
+        "Uric acid.",
+        "Serum calcium.",
+        "Parathyroid hormone."
+      ],
+      "topic": "Laboratory Studies",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "laboratory"
+      ]
+    },
+    {
+      "id": "ul-s22",
+      "q": "How do calcium-containing stones appear on KUB?",
+      "a": "As radio-opaque shadows like bone.",
+      "topic": "KUB",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "xray"
+      ]
+    },
+    {
+      "id": "ul-s23",
+      "q": "How do non-calcium-containing stones appear on KUB?",
+      "a": "They are not seen, or may appear faint in cystine stones because of sulfur content.",
+      "topic": "KUB",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "xray"
+      ]
+    },
+    {
+      "id": "ul-s24",
+      "q": "List the differential diagnosis of a radio-opaque calculus on X-ray.",
+      "a": [
+        "Phleboliths.",
+        "Gallbladder stones overlying the right kidney.",
+        "Calcified mesenteric lymph nodes.",
+        "Pancreatic calcification.",
+        "Renal artery calcification."
+      ],
+      "topic": "KUB Differential",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "xray"
+      ]
+    },
+    {
+      "id": "ul-s25",
+      "q": "Describe the ultrasound appearance of a urinary stone.",
+      "a": "An echogenic focus with posterior acoustic shadowing.",
+      "topic": "Ultrasound",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ultrasound"
+      ]
+    },
+    {
+      "id": "ul-s26",
+      "q": "What secondary obstructive signs may ultrasound show?",
+      "a": "Hydronephrosis or hydroureter.",
+      "topic": "Ultrasound",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ultrasound"
+      ]
+    },
+    {
+      "id": "ul-s27",
+      "q": "Why is non-contrast spiral CT important?",
+      "a": [
+        "Gold-standard diagnostic tool.",
+        "Single imaging technique in emergency diagnosis of acute renal colic.",
+        "Determines stone size and location.",
+        "Assesses density in HU."
+      ],
+      "topic": "CT",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ct-ivu"
+      ]
+    },
+    {
+      "id": "ul-s28",
+      "q": "Outline treatment of an acute renal-colic attack.",
+      "a": [
+        "NSAIDs.",
+        "Morphine or pethidine if required.",
+        "Decrease fluid intake during the acute attack."
+      ],
+      "topic": "Acute Management",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "acute-management"
+      ]
+    },
+    {
+      "id": "ul-s29",
+      "q": "State renal-stone treatment according to size in the lecture.",
+      "a": [
+        "1-2 cm: ESWL or flexible URS with laser disintegration.",
+        "Larger than 2 cm: PCNL.",
+        "Open surgery is rare."
+      ],
+      "topic": "Renal Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "renal-stones",
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-s30",
+      "q": "State the emergency indications for urgent decompression.",
+      "a": [
+        "Obstructing stone with suspected or confirmed UTI.",
+        "Bilateral obstruction with AKI.",
+        "Unilateral obstruction with AKI in a solitary functioning kidney."
+      ],
+      "topic": "Ureteric Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ureteric-stones"
+      ]
+    }
+  ],
+  "imageQuestions": [
+    {
+      "id": "ul-i01",
+      "title": "Staghorn Stone Composite",
+      "topic": "Staghorn Stone",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "struvite"
+      ],
+      "prompt": "Use the page 7 composite showing the antler analogy, branching renal cast, KUB and gross specimen.",
+      "questions": [
+        "Identify the stone configuration.",
+        "State the stone type commonly associated with it in the lecture.",
+        "State its urine reaction and organism mechanism."
+      ],
+      "answer": [
+        "Staghorn stone.",
+        "Struvite/infection stone.",
+        "Alkaline urine; urease-producing organisms split urea and form ammonium."
+      ],
+      "page": 7
+    },
+    {
+      "id": "ul-i02",
+      "title": "KUB Radio-opaque Renal Calculus",
+      "topic": "KUB",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "xray"
+      ],
+      "prompt": "Use the page 14 plain KUB image with a dense renal-region shadow.",
+      "questions": [
+        "Name the imaging study.",
+        "Describe the appearance of calcium-containing stones.",
+        "State the broad visibility of non-calcium stones."
+      ],
+      "answer": [
+        "Plain X-ray abdomen (KUB).",
+        "Radio-opaque shadows like bone.",
+        "Usually not seen; cystine may appear faint because of sulfur."
+      ],
+      "page": 14
+    },
+    {
+      "id": "ul-i03",
+      "title": "Ultrasound Renal Stone",
+      "topic": "Ultrasound",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "ultrasound"
+      ],
+      "prompt": "Use the left ultrasound image on page 16.",
+      "questions": [
+        "Identify the finding.",
+        "Describe the sonographic appearance."
+      ],
+      "answer": [
+        "Renal middle calyceal stone.",
+        "Echogenic focus with posterior acoustic shadowing."
+      ],
+      "page": 16
+    },
+    {
+      "id": "ul-i04",
+      "title": "Ultrasound Hydronephrosis",
+      "topic": "Ultrasound",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "ultrasound"
+      ],
+      "prompt": "Use the right ultrasound image on page 16.",
+      "questions": [
+        "Identify the secondary sign.",
+        "State its cause in this context."
+      ],
+      "answer": [
+        "Mild pelvicalyceal hydronephrosis.",
+        "Obstruction due to a ureteric stone."
+      ],
+      "page": 16
+    },
+    {
+      "id": "ul-i05",
+      "title": "Non-contrast CT Renal and Ureteric Stones",
+      "topic": "CT",
+      "priority": "High",
+      "marks": 8,
+      "subtopics": [
+        "ct-ivu"
+      ],
+      "prompt": "Use the two coronal non-contrast CT images on page 17.",
+      "questions": [
+        "Identify the modality.",
+        "Describe the left image.",
+        "Describe the right image.",
+        "State two values of this study."
+      ],
+      "answer": [
+        "Non-contrast spiral CT.",
+        "Right middle calyceal dense stone.",
+        "Bilateral lower ureteric stones.",
+        "Determines size/location and assesses density in HU."
+      ],
+      "page": 17
+    },
+    {
+      "id": "ul-i06",
+      "title": "Intravenous Urography Image",
+      "topic": "IVU",
+      "priority": "Core",
+      "marks": 6,
+      "subtopics": [
+        "ct-ivu"
+      ],
+      "prompt": "Use the IVU image on page 18.",
+      "questions": [
+        "Identify the study.",
+        "Give two disadvantages.",
+        "What has largely replaced it?"
+      ],
+      "answer": [
+        "Intravenous urography.",
+        "Time consuming and nephrotoxic contrast; unsuitable in renal impairment.",
+        "Non-contrast CT."
+      ],
+      "page": 18
+    },
+    {
+      "id": "ul-i07",
+      "title": "Ureteric Stone Treatment Flowchart",
+      "topic": "Elective Ureteric Management",
+      "priority": "High",
+      "marks": 10,
+      "subtopics": [
+        "ureteric-stones"
+      ],
+      "prompt": "Use the location-and-size flowchart on page 23.",
+      "questions": [
+        "What treatment is shown for a proximal/mid-ureteric stone above 10 mm?",
+        "What treatments are shown for a proximal/mid stone 10 mm or less when SWL is not avoided?",
+        "List the reasons shown to avoid SWL.",
+        "What treatment is shown for a distal ureteric stone?"
+      ],
+      "answer": [
+        "URS.",
+        "SWL or URS.",
+        "Obesity, pregnancy, uncontrolled bleeding diathesis, high CT attenuation above 900 HU, and abnormal kidney/ureteral anatomy.",
+        "URS."
+      ],
+      "page": 23
+    },
+    {
+      "id": "ul-i08",
+      "title": "ESWL Procedure",
+      "topic": "ESWL",
+      "priority": "High",
+      "marks": 7,
+      "subtopics": [
+        "procedures"
+      ],
+      "prompt": "Use the ESWL machine/procedure image on page 24.",
+      "questions": [
+        "Identify the procedure.",
+        "Describe its mechanism.",
+        "State the renal-stone suitability stated."
+      ],
+      "answer": [
+        "Extracorporeal shock wave lithotripsy.",
+        "Externally generated shock waves are focused on the stone and fragment it into small gravels.",
+        "Renal stone under 2 cm in a patent urinary tract."
+      ],
+      "page": 24
+    },
+    {
+      "id": "ul-i09",
+      "title": "Ureteroscopy Instruments and Route",
+      "topic": "Ureteroscopy",
+      "priority": "High",
+      "marks": 6,
+      "subtopics": [
+        "procedures"
+      ],
+      "prompt": "Use the rigid/flexible instruments and urinary-tract diagram on page 25.",
+      "questions": [
+        "Identify the procedure.",
+        "Name the two instrument forms illustrated.",
+        "State the renal-stone use mentioned elsewhere in the lecture."
+      ],
+      "answer": [
+        "Ureteroscopy.",
+        "Flexible and rigid ureteroscopes.",
+        "Flexible URS with laser disintegration for renal stones 1-2 cm."
+      ],
+      "page": 25
+    },
+    {
+      "id": "ul-i10",
+      "title": "PCNL and Bladder Stone Images",
+      "topic": "Endourology",
+      "priority": "High",
+      "marks": 9,
+      "subtopics": [
+        "procedures",
+        "bladder-stones"
+      ],
+      "prompt": "Use pages 26 and 27: percutaneous renal access and the pelvic X-ray bladder stone.",
+      "questions": [
+        "Identify the renal procedure on page 26.",
+        "State its size indication in the lecture.",
+        "Identify the page 27 finding.",
+        "State its two treatments."
+      ],
+      "answer": [
+        "Percutaneous nephrolithotomy (PCNL).",
+        "Renal stone larger than 2 cm.",
+        "Bladder stone.",
+        "Cystolitholapaxy or open cystolithotomy."
+      ],
+      "page": "26-27"
+    }
+  ],
+  "detailedShorts": [
+    {
+      "id": "ul-d01",
+      "q": "State the recurrence rate after treatment.",
+      "a": "Nearly half develop a second stone within 5-7 years.",
+      "topic": "Epidemiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ]
+    },
+    {
+      "id": "ul-d02",
+      "q": "Explain how supersaturation contributes to stone formation.",
+      "a": "Higher urinary concentrations of calcium, oxalate and/or uric acid favour formation of corresponding calculi.",
+      "topic": "Pathophysiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology"
+      ]
+    },
+    {
+      "id": "ul-d03",
+      "q": "Relate hypercalciuria, hyperuricosuria and hyperoxaluria to stone type.",
+      "a": [
+        "Hypercalciuria -> calcium stones.",
+        "Hyperuricosuria -> uric acid stones.",
+        "Hyperoxaluria -> oxalate stones."
+      ],
+      "topic": "Pathophysiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology"
+      ]
+    },
+    {
+      "id": "ul-d04",
+      "q": "Give the percentage distribution of the major stone types.",
+      "a": [
+        "Calcium oxalate 74%.",
+        "Calcium phosphate 20%.",
+        "Uric acid 4%.",
+        "Cystine and struvite make up the remainder."
+      ],
+      "topic": "Stone Composition",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology",
+        "stone-types"
+      ]
+    },
+    {
+      "id": "ul-d05",
+      "q": "Enumerate the listed causes of urinary stones.",
+      "a": [
+        "Excess urinary calcium.",
+        "Excess urinary oxalates.",
+        "Excess uric acid.",
+        "Excess cystine.",
+        "Urea-splitting infection."
+      ],
+      "topic": "Aetiology",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "pathophysiology"
+      ]
+    },
+    {
+      "id": "ul-d06",
+      "q": "Classify calcium-containing stones.",
+      "a": [
+        "Calcium oxalate.",
+        "Calcium phosphate.",
+        "Infection/struvite stone."
+      ],
+      "topic": "Stone Types",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "stone-types"
+      ]
+    },
+    {
+      "id": "ul-d07",
+      "q": "Classify non-calcium-containing stones.",
+      "a": [
+        "Uric acid.",
+        "Cystine."
+      ],
+      "topic": "Stone Types",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "stone-types"
+      ]
+    },
+    {
+      "id": "ul-d08",
+      "q": "Describe struvite stone.",
+      "a": [
+        "Radio-opaque.",
+        "Forms in alkaline urine.",
+        "Caused by urease-producing organisms.",
+        "May form staghorn stones."
+      ],
+      "topic": "Struvite",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "struvite"
+      ]
+    },
+    {
+      "id": "ul-d09",
+      "q": "Explain the role of urease in struvite formation.",
+      "a": "Urease splits urea so ammonium is formed.",
+      "topic": "Struvite",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "struvite"
+      ]
+    },
+    {
+      "id": "ul-d10",
+      "q": "State the chemical analysis of struvite stones.",
+      "a": [
+        "Calcium.",
+        "Magnesium.",
+        "Ammonium.",
+        "Phosphate."
+      ],
+      "topic": "Struvite",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "struvite"
+      ]
+    },
+    {
+      "id": "ul-d11",
+      "q": "Describe uric acid stone.",
+      "a": [
+        "Typically radiolucent.",
+        "Forms in acidic urine.",
+        "Represents about 4% of cases."
+      ],
+      "topic": "Uric Acid",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "uric-acid"
+      ]
+    },
+    {
+      "id": "ul-d12",
+      "q": "List the factors that determine clinical presentation.",
+      "a": [
+        "Site of stone location/impaction.",
+        "Infection status.",
+        "Patient-related factors such as contralateral renal function."
+      ],
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-d13",
+      "q": "Describe classical ureteric colic.",
+      "a": "Severe acute flank pain radiating to the ipsilateral groin, commonly with nausea, vomiting and haematuria.",
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-d14",
+      "q": "State the triad typical of ureteric colic.",
+      "a": [
+        "Acute loin-to-groin pain.",
+        "Nausea and vomiting.",
+        "Haematuria."
+      ],
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-d15",
+      "q": "Explain the pressure mechanism of renal colic.",
+      "a": "Obstruction increases collecting-system intraluminal pressure, stretching nerve endings.",
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-d16",
+      "q": "State other contributors to calculus pain.",
+      "a": [
+        "Local inflammatory mediators.",
+        "Oedema.",
+        "Hyperperistalsis."
+      ],
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-d17",
+      "q": "Describe the presentation of a distal ureteric or intramural stone.",
+      "a": [
+        "Frequency or urgency from bladder mucosal irritation.",
+        "Ipsilateral testicular and groin pain."
+      ],
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation"
+      ]
+    },
+    {
+      "id": "ul-d18",
+      "q": "What is the significance of fever with obstruction?",
+      "a": "It indicates an obstructed infected kidney that requires urgent decompression.",
+      "topic": "Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation",
+        "ureteric-stones"
+      ]
+    },
+    {
+      "id": "ul-d19",
+      "q": "What may happen to large asymptomatic stones?",
+      "a": "They may cause chronic obstruction and subsequent impairment of renal function.",
+      "topic": "Presentation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "presentation",
+        "complications"
+      ]
+    },
+    {
+      "id": "ul-d20",
+      "q": "Enumerate differential diagnoses of renal colic.",
+      "a": [
+        "Myalgia.",
+        "Radiculitis.",
+        "Appendicitis.",
+        "Intestinal obstruction."
+      ],
+      "topic": "Differential",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "differential"
+      ]
+    },
+    {
+      "id": "ul-d21",
+      "q": "Enumerate complications of urinary calculi.",
+      "a": [
+        "Obstructive uropathy.",
+        "Calculus anuria.",
+        "Renal failure.",
+        "Infection.",
+        "SCC from chronic irritation by a longstanding stone."
+      ],
+      "topic": "Complications",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "complications"
+      ]
+    },
+    {
+      "id": "ul-d22",
+      "q": "Explain the malignancy complication mentioned.",
+      "a": "Chronic irritation by a longstanding stone may lead to squamous cell carcinoma.",
+      "topic": "Complications",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "complications"
+      ]
+    },
+    {
+      "id": "ul-d23",
+      "q": "List the laboratory studies.",
+      "a": [
+        "Urinalysis.",
+        "Urea and creatinine.",
+        "Uric acid.",
+        "Serum calcium.",
+        "Parathyroid hormone."
+      ],
+      "topic": "Laboratory",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "laboratory"
+      ]
+    },
+    {
+      "id": "ul-d24",
+      "q": "Describe calcium stones on plain KUB.",
+      "a": "Radio-opaque shadows like bone.",
+      "topic": "KUB",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "xray"
+      ]
+    },
+    {
+      "id": "ul-d25",
+      "q": "Describe non-calcium stones on KUB.",
+      "a": "Usually not visible; cystine may appear faint because of sulfur content.",
+      "topic": "KUB",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "xray"
+      ]
+    },
+    {
+      "id": "ul-d26",
+      "q": "Enumerate mimics of radio-opaque urinary calculi.",
+      "a": [
+        "Phleboliths.",
+        "Gallbladder stones overlying the right kidney.",
+        "Calcified mesenteric lymph nodes.",
+        "Pancreatic calcification.",
+        "Renal artery calcification."
+      ],
+      "topic": "KUB Differential",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "xray"
+      ]
+    },
+    {
+      "id": "ul-d27",
+      "q": "Describe direct ultrasound signs of a stone.",
+      "a": "An echogenic focus with posterior acoustic shadowing in the kidney, ureter or urinary bladder.",
+      "topic": "Ultrasound",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ultrasound"
+      ]
+    },
+    {
+      "id": "ul-d28",
+      "q": "Describe secondary ultrasound signs of obstruction.",
+      "a": "Hydronephrosis or hydroureter.",
+      "topic": "Ultrasound",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ultrasound"
+      ]
+    },
+    {
+      "id": "ul-d29",
+      "q": "State the diagnostic status of non-contrast spiral CT.",
+      "a": "The gold-standard diagnostic tool and the single imaging technique in emergency diagnosis of acute renal colic.",
+      "topic": "CT",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ct-ivu"
+      ]
+    },
+    {
+      "id": "ul-d30",
+      "q": "What information does CT provide?",
+      "a": [
+        "Stone size.",
+        "Stone location.",
+        "Stone density in Hounsfield units."
+      ],
+      "topic": "CT",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ct-ivu"
+      ]
+    },
+    {
+      "id": "ul-d31",
+      "q": "Enumerate limitations of IVU.",
+      "a": [
+        "Time consuming.",
+        "Nephrotoxic contrast.",
+        "Unsuitable in renal impairment.",
+        "Largely replaced by non-contrast CT."
+      ],
+      "topic": "IVU",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ct-ivu"
+      ]
+    },
+    {
+      "id": "ul-d32",
+      "q": "Outline acute-attack treatment.",
+      "a": [
+        "NSAIDs.",
+        "Morphine or pethidine if required.",
+        "Decrease fluid intake during the attack."
+      ],
+      "topic": "Acute Management",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "acute-management"
+      ]
+    },
+    {
+      "id": "ul-d33",
+      "q": "Enumerate the broad treatment modalities.",
+      "a": [
+        "Conservative.",
+        "Medical.",
+        "ESWL.",
+        "Endoscopy.",
+        "Laparoscopy.",
+        "Open surgery."
+      ],
+      "topic": "Treatment Modalities",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "acute-management",
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-d34",
+      "q": "State the observation option for an asymptomatic calyceal stone.",
+      "a": "Annual follow-up may be sufficient when it has remained stable for six months.",
+      "topic": "Renal Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "renal-stones"
+      ]
+    },
+    {
+      "id": "ul-d35",
+      "q": "What is chemolysis for a uric acid stone?",
+      "a": "Oral alkalinizing agents can dissolve it.",
+      "topic": "Renal Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "renal-stones",
+        "uric-acid"
+      ]
+    },
+    {
+      "id": "ul-d36",
+      "q": "State ESWL use for renal stones by size.",
+      "a": "For a 1-2 cm renal stone; the ESWL slide states under 2 cm in a patent urinary tract.",
+      "topic": "Renal Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "renal-stones",
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-d37",
+      "q": "State flexible URS use for renal stones.",
+      "a": "Flexible ureteroscopy with laser disintegration for stones 1-2 cm.",
+      "topic": "Renal Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "renal-stones",
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-d38",
+      "q": "State PCNL use for renal stones.",
+      "a": "For stones larger than 2 cm.",
+      "topic": "Renal Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "renal-stones",
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-d39",
+      "q": "When is laparoscopy mentioned for renal stones?",
+      "a": "With another indication, such as a secondary stone with PUJO.",
+      "topic": "Renal Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "renal-stones"
+      ]
+    },
+    {
+      "id": "ul-d40",
+      "q": "What is medical expulsive therapy in the lecture?",
+      "a": "Medication to promote stone passage, such as tamsulosin, in selected patients.",
+      "topic": "Ureteric Stones",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ureteric-stones"
+      ]
+    },
+    {
+      "id": "ul-d41",
+      "q": "List emergency indications for urgent decompression.",
+      "a": [
+        "Obstructing stone with suspected or confirmed UTI.",
+        "Bilateral obstruction with AKI.",
+        "Unilateral obstruction with AKI in a solitary functioning kidney."
+      ],
+      "topic": "Ureteric Emergency",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ureteric-stones"
+      ]
+    },
+    {
+      "id": "ul-d42",
+      "q": "List elective indications for ureteric-stone intervention.",
+      "a": [
+        "Ureteral stone >10 mm.",
+        "Pregnancy with failed observation.",
+        "Persistent stone-related kidney obstruction.",
+        "Recurrent stone-related UTI."
+      ],
+      "topic": "Ureteric Elective",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ureteric-stones"
+      ]
+    },
+    {
+      "id": "ul-d43",
+      "q": "According to the flowchart, what is used for proximal/mid ureteric stones >10 mm?",
+      "a": "URS.",
+      "topic": "Ureteric Flowchart",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ureteric-stones"
+      ]
+    },
+    {
+      "id": "ul-d44",
+      "q": "According to the flowchart, what are the options for proximal/mid stones <=10 mm when SWL is not avoided?",
+      "a": "SWL or URS.",
+      "topic": "Ureteric Flowchart",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ureteric-stones"
+      ]
+    },
+    {
+      "id": "ul-d45",
+      "q": "List reasons shown in the flowchart to avoid SWL.",
+      "a": [
+        "Obesity.",
+        "Pregnancy.",
+        "Uncontrolled bleeding diathesis.",
+        "High attenuation on CT above 900 HU.",
+        "Abnormal kidney/ureteral anatomy."
+      ],
+      "topic": "Ureteric Flowchart",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "ureteric-stones"
+      ]
+    },
+    {
+      "id": "ul-d46",
+      "q": "Describe ESWL.",
+      "a": "A non-invasive outpatient procedure in which externally generated shock waves are focused on the stone and fragment it into small gravels.",
+      "topic": "ESWL",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-d47",
+      "q": "State the ESWL suitability criterion on the slide.",
+      "a": "Renal stone under 2 cm in a patent urinary tract.",
+      "topic": "ESWL",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-d48",
+      "q": "Identify the two ureteroscope forms illustrated.",
+      "a": [
+        "Flexible ureteroscope.",
+        "Rigid ureteroscope."
+      ],
+      "topic": "Ureteroscopy",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-d49",
+      "q": "Expand PCNL and state its use.",
+      "a": "Percutaneous nephrolithotomy; used for renal stones larger than 2 cm.",
+      "topic": "PCNL",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "procedures"
+      ]
+    },
+    {
+      "id": "ul-d50",
+      "q": "State treatments of bladder stone.",
+      "a": [
+        "Cystolitholapaxy.",
+        "Open cystolithotomy."
+      ],
+      "topic": "Bladder Stone",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "bladder-stones"
+      ]
+    },
+    {
+      "id": "ul-d51",
+      "q": "Define cystolitholapaxy.",
+      "a": "Breaking and removing bladder stones using a cystoscope.",
+      "topic": "Bladder Stone",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "bladder-stones"
+      ]
+    },
+    {
+      "id": "ul-d52",
+      "q": "List lifestyle measures to prevent recurrence.",
+      "a": [
+        "Plenty of fluid throughout the day.",
+        "High-fibre and vegetable-rich balanced diet.",
+        "Normal calcium content.",
+        "Limited sodium and animal protein."
+      ],
+      "topic": "Prevention",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "prevention-referral"
+      ]
+    },
+    {
+      "id": "ul-d53",
+      "q": "List the pharmacological preventive measures stated.",
+      "a": [
+        "Thiazide diuretics.",
+        "Allopurinol.",
+        "Citrate supplementation."
+      ],
+      "topic": "Prevention",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "prevention-referral"
+      ]
+    },
+    {
+      "id": "ul-d54",
+      "q": "What monitoring is advised with citrate supplementation?",
+      "a": "Potassium levels and liver enzymes.",
+      "topic": "Prevention",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "prevention-referral"
+      ]
+    },
+    {
+      "id": "ul-d55",
+      "q": "Enumerate indications for immediate referral to a urologist.",
+      "a": [
+        "Insufficient medical analgesia.",
+        "Suspected sepsis.",
+        "UTI with obstructive uropathy.",
+        "Bilateral obstruction.",
+        "Calculary anuria.",
+        "Pregnancy or delayed menstruation.",
+        "Comorbidities or age above 60 years."
+      ],
+      "topic": "Referral",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "prevention-referral"
+      ]
+    }
+  ],
+  "rapid": [
+    [
+      "Most common stone type?",
+      "Calcium oxalate: 74%."
+    ],
+    [
+      "Uric acid stone percentage?",
+      "4%."
+    ],
+    [
+      "Hypercalciuria causes?",
+      "Calcium stones."
+    ],
+    [
+      "Struvite urine pH?",
+      "Alkaline."
+    ],
+    [
+      "Struvite radiology?",
+      "Radio-opaque."
+    ],
+    [
+      "Struvite organism mechanism?",
+      "Urease splits urea and forms ammonium."
+    ],
+    [
+      "Staghorn association?",
+      "Struvite/infection stone."
+    ],
+    [
+      "Uric acid stone radiology?",
+      "Typically radiolucent."
+    ],
+    [
+      "Uric acid urine pH?",
+      "Acidic."
+    ],
+    [
+      "Ureteric-colic triad?",
+      "Loin-to-groin pain + nausea/vomiting + haematuria."
+    ],
+    [
+      "Fever plus obstruction?",
+      "Obstructed infected kidney; urgent decompression."
+    ],
+    [
+      "Distal ureter symptoms?",
+      "Frequency/urgency and ipsilateral testicular/groin pain."
+    ],
+    [
+      "Stone malignancy complication?",
+      "SCC from chronic irritation."
+    ],
+    [
+      "Calcium stone on KUB?",
+      "Radio-opaque."
+    ],
+    [
+      "Cystine on KUB?",
+      "May be faint due to sulfur."
+    ],
+    [
+      "Ultrasound stone sign?",
+      "Echogenic focus with posterior acoustic shadowing."
+    ],
+    [
+      "CT status?",
+      "Gold standard."
+    ],
+    [
+      "CT also measures?",
+      "Stone density in HU."
+    ],
+    [
+      "First-line acute analgesic?",
+      "NSAIDs."
+    ],
+    [
+      "Other acute analgesics?",
+      "Morphine or pethidine."
+    ],
+    [
+      "Uric acid chemolysis?",
+      "Oral alkalinizing agents."
+    ],
+    [
+      "Renal stone 1-2 cm?",
+      "ESWL or flexible URS with laser."
+    ],
+    [
+      "Renal stone >2 cm?",
+      "PCNL."
+    ],
+    [
+      "MET example?",
+      "Tamsulosin."
+    ],
+    [
+      "Emergency decompression indications?",
+      "Infected obstruction, bilateral obstruction with AKI, or solitary kidney obstruction with AKI."
+    ],
+    [
+      "Elective intervention size trigger?",
+      "Ureteral stone >10 mm."
+    ],
+    [
+      "ESWL suitability?",
+      "Renal stone <2 cm in a patent urinary tract."
+    ],
+    [
+      "Bladder stone endoscopic treatment?",
+      "Cystolitholapaxy."
+    ],
+    [
+      "Dietary calcium for prevention?",
+      "Normal calcium content."
+    ],
+    [
+      "Immediate referral if analgesia fails?",
+      "Yes."
+    ]
+  ]
+}

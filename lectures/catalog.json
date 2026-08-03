@@ -99,6 +99,20 @@
         "detailedShorts": 55,
         "rapid": 30
       }
+    },
+    {
+      "id": "urology-urolithiasis",
+      "title": "Urolithiasis",
+      "subjectKey": "urology",
+      "order": 7,
+      "file": "data/urology-urolithiasis.json",
+      "expectedCounts": {
+        "cases": 12,
+        "coreShorts": 30,
+        "imageQuestions": 10,
+        "detailedShorts": 55,
+        "rapid": 30
+      }
     }
   ]
 }
