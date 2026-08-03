@@ -3,6 +3,9 @@
   const typeFilter = document.getElementById('typeFilter');
   if (!toolbar || !typeFilter || document.getElementById('reviewFilter')) return;
 
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  const validLevels = new Set(['mastered', 'review', 'weak']);
+
   if (![...typeFilter.options].some(option => option.value === 'rapid')) {
     const rapidOption = document.createElement('option');
     rapidOption.value = 'rapid';
@@ -23,7 +26,9 @@
     <option value="weak">Weak</option>`;
 
   const savedLevel = storage.get('medicalBankReviewFilterV1') || 'all';
-  reviewFilter.value = [...reviewFilter.options].some(option => option.value === savedLevel) ? savedLevel : 'all';
+  reviewFilter.value = [...reviewFilter.options].some(option => option.value === savedLevel)
+    ? savedLevel
+    : 'all';
   reviewFilter.dataset.level = reviewFilter.value;
   toolbar.insertBefore(reviewFilter, document.getElementById('randomBtn'));
 
@@ -31,8 +36,28 @@
   const priorityFilter = document.getElementById('priorityFilter');
   const rapidInapplicableControls = [topicFilter, priorityFilter, reviewFilter].filter(Boolean);
   let rapidModeActive = false;
+  let domCache = null;
 
   const optionExists = (control, value) => [...control.options].some(option => option.value === value);
+
+  const getDomCache = () => {
+    const studyItems = [...document.querySelectorAll('.study-item')];
+    const rapidItems = [...document.querySelectorAll('.rapid-item')];
+    const lectures = [...document.querySelectorAll('.lecture')];
+    const sections = [...document.querySelectorAll('.content-section')];
+
+    const changed = !domCache ||
+      domCache.studyItems.length !== studyItems.length ||
+      domCache.rapidItems.length !== rapidItems.length ||
+      domCache.lectures.length !== lectures.length ||
+      domCache.sections.length !== sections.length ||
+      domCache.studyItems[0] !== studyItems[0] ||
+      domCache.rapidItems[0] !== rapidItems[0] ||
+      domCache.lectures[0] !== lectures[0];
+
+    if (changed) domCache = {studyItems, rapidItems, lectures, sections};
+    return domCache;
+  };
 
   const setControlApplicability = rapidMode => {
     if (rapidMode) {
@@ -43,10 +68,10 @@
       if (!rapidModeActive) {
         rapidInapplicableControls.forEach(control => {
           control.dataset.rapidPreviousValue = control.value;
+          control.dataset.rapidPreviousTitle = control.title || '';
           control.value = 'all';
           control.disabled = true;
           control.classList.add('rapid-inapplicable');
-          control.dataset.rapidPreviousTitle = control.title || '';
           control.title = 'This filter is not used for Rapid Recall cards.';
         });
         rapidModeActive = true;
@@ -54,30 +79,30 @@
       return;
     }
 
-    if (rapidModeActive) {
-      rapidInapplicableControls.forEach(control => {
-        control.disabled = false;
-        control.classList.remove('rapid-inapplicable');
-        const previous = control.dataset.rapidPreviousValue || 'all';
-        control.value = optionExists(control, previous) ? previous : 'all';
-        control.title = control.dataset.rapidPreviousTitle || '';
-        delete control.dataset.rapidPreviousValue;
-        delete control.dataset.rapidPreviousTitle;
-      });
-      rapidModeActive = false;
-    }
+    if (!rapidModeActive) return;
+    rapidInapplicableControls.forEach(control => {
+      control.disabled = false;
+      control.classList.remove('rapid-inapplicable');
+      const previous = control.dataset.rapidPreviousValue || 'all';
+      control.value = optionExists(control, previous) ? previous : 'all';
+      control.title = control.dataset.rapidPreviousTitle || '';
+      delete control.dataset.rapidPreviousValue;
+      delete control.dataset.rapidPreviousTitle;
+    });
+    rapidModeActive = false;
   };
 
-  const prepareRapidItems = () => {
-    document.querySelectorAll('.lecture').forEach(lecture => {
+  const prepareRapidItems = ({lectures}) => {
+    lectures.forEach(lecture => {
       const lectureId = lecture.dataset.lecture || '';
       const lectureTitle = lecture.querySelector('.lecture-title')?.textContent?.trim() || '';
-      lecture.querySelectorAll('.rapid-item').forEach((item, index) => {
+      lecture.querySelectorAll('.rapid-item:not([data-rapid-prepared="1"])').forEach((item, index) => {
         const question = item.querySelector('strong')?.textContent?.trim() || '';
         const answer = item.querySelector('.rapid-answer')?.textContent?.trim() || '';
         item.dataset.type = 'rapid';
         item.dataset.lecture = lectureId;
         item.dataset.search = `${lectureTitle} ${question} ${answer}`.toLowerCase();
+        item.dataset.rapidPrepared = '1';
         item.setAttribute('role', 'button');
         item.tabIndex = 0;
         item.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
@@ -86,17 +111,17 @@
     });
   };
 
-  const syncAccessibility = () => {
+  const syncAccessibility = ({studyItems, rapidItems}) => {
     document.querySelectorAll('.status').forEach(button => {
       const selected = button.classList.contains('active');
       button.setAttribute('aria-pressed', selected ? 'true' : 'false');
       button.setAttribute('aria-label', `${button.textContent.trim()} rating`);
     });
-    document.querySelectorAll('.study-item').forEach(item => {
+    studyItems.forEach(item => {
       const toggle = item.querySelector('.toggle');
       if (toggle) toggle.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
     });
-    document.querySelectorAll('.rapid-item').forEach(item => {
+    rapidItems.forEach(item => {
       item.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
     });
     document.querySelectorAll('.nav-toggle').forEach(button => {
@@ -105,7 +130,13 @@
   };
 
   const updateReviewLabels = (counts, rapidMode) => {
-    const labels = {all: 'All statuses', unrated: 'Unrated', mastered: 'Mastered', review: 'Review', weak: 'Weak'};
+    const labels = {
+      all: 'All statuses',
+      unrated: 'Unrated',
+      mastered: 'Mastered',
+      review: 'Review',
+      weak: 'Weak'
+    };
     [...reviewFilter.options].forEach(option => {
       option.textContent = rapidMode && option.value === 'all'
         ? 'Status not used for Rapid Recall'
@@ -115,7 +146,8 @@
   };
 
   applyFilters = function () {
-    prepareRapidItems();
+    const dom = getDomCache();
+    prepareRapidItems(dom);
 
     const q = $('search').value.toLowerCase().trim();
     const lf = $('lectureFilter').value;
@@ -130,17 +162,20 @@
     let visibleRapidItems = 0;
     const counts = {all: 0, unrated: 0, mastered: 0, review: 0, weak: 0};
 
-    document.querySelectorAll('.study-item').forEach(item => {
-      const subOk = activeSubtopic === 'all' || (item.dataset.subtopics || '').split(' ').includes(activeSubtopic);
+    dom.studyItems.forEach(item => {
+      const searchText = item.dataset.search || '';
+      const subtopics = item.dataset.subtopics || '';
+      const subOk = activeSubtopic === 'all' || subtopics.split(' ').includes(activeSubtopic);
       const baseShow = !rapidMode &&
-        (!q || item.dataset.search.includes(q)) &&
+        (!q || searchText.includes(q)) &&
         (lf === 'all' || item.dataset.lecture === lf) &&
         (tf === 'all' || item.dataset.type === tf) &&
         (topic === 'all' || item.dataset.topic === topic) &&
-        (prio === 'all' || item.dataset.priority === prio) && subOk;
+        (prio === 'all' || item.dataset.priority === prio) &&
+        subOk;
       const statusKey = item.querySelector('.status')?.dataset.key;
       const storedLevel = statusKey ? state[statusKey] : '';
-      const level = ['mastered', 'review', 'weak'].includes(storedLevel) ? storedLevel : 'unrated';
+      const level = validLevels.has(storedLevel) ? storedLevel : 'unrated';
       if (baseShow) {
         counts.all += 1;
         counts[level] += 1;
@@ -150,33 +185,40 @@
       if (show) visibleStudyItems += 1;
     });
 
-    const showRapidInsideAll = tf === 'all' && !q && topic === 'all' && prio === 'all' && rf === 'all' && activeSubtopic === 'all';
-    document.querySelectorAll('.rapid-item').forEach(item => {
+    // Rapid Recall is part of "All types", including while searching. Topic,
+    // priority, saved rating and subtopic are intentionally inapplicable to it.
+    const showRapidInsideAll = tf === 'all' &&
+      topic === 'all' &&
+      prio === 'all' &&
+      rf === 'all' &&
+      activeSubtopic === 'all';
+
+    dom.rapidItems.forEach(item => {
       const requested = rapidMode || showRapidInsideAll;
+      const searchText = item.dataset.search || '';
       const show = requested &&
         (lf === 'all' || item.dataset.lecture === lf) &&
-        (!q || item.dataset.search.includes(q));
+        (!q || searchText.includes(q));
       item.classList.toggle('hidden', !show);
       if (show) visibleRapidItems += 1;
     });
 
     updateReviewLabels(counts, rapidMode);
 
-    document.querySelectorAll('.lecture').forEach(lecture => {
+    dom.lectures.forEach(lecture => {
       const lectureAllowed = lf === 'all' || lecture.dataset.lecture === lf;
-      const anyStudy = [...lecture.querySelectorAll('.study-item')].some(item => !item.classList.contains('hidden'));
-      const anyRapid = [...lecture.querySelectorAll('.rapid-item')].some(item => !item.classList.contains('hidden'));
+      const anyStudy = [...lecture.querySelectorAll('.study-item')]
+        .some(item => !item.classList.contains('hidden'));
+      const anyRapid = [...lecture.querySelectorAll('.rapid-item')]
+        .some(item => !item.classList.contains('hidden'));
       lecture.classList.toggle('hidden', !(lectureAllowed && (anyStudy || anyRapid)));
     });
 
-    document.querySelectorAll('.content-section').forEach(section => {
-      if (section.dataset.sectionType === 'rapid') {
-        const anyRapid = [...section.querySelectorAll('.rapid-item')].some(item => !item.classList.contains('hidden'));
-        section.classList.toggle('hidden', !anyRapid);
-        return;
-      }
-      const anyStudy = [...section.querySelectorAll('.study-item')].some(item => !item.classList.contains('hidden'));
-      section.classList.toggle('hidden', !anyStudy);
+    dom.sections.forEach(section => {
+      const selector = section.dataset.sectionType === 'rapid' ? '.rapid-item' : '.study-item';
+      const anyVisible = [...section.querySelectorAll(selector)]
+        .some(item => !item.classList.contains('hidden'));
+      section.classList.toggle('hidden', !anyVisible);
     });
 
     const visible = visibleStudyItems + visibleRapidItems;
@@ -195,7 +237,7 @@
         : messages[rf] || 'No study items match the current filters.';
 
     syncQuickButtons();
-    syncAccessibility();
+    syncAccessibility(dom);
   };
 
   reviewFilter.addEventListener('change', () => {
@@ -208,18 +250,22 @@
   }, true);
 
   document.addEventListener('click', event => {
+    if (!(event.target instanceof Element)) return;
     const rapidItem = event.target.closest('.rapid-item');
     if (rapidItem) setTimeout(() => {
       rapidItem.setAttribute('aria-expanded', rapidItem.classList.contains('open') ? 'true' : 'false');
     }, 0);
 
-    if (event.target.closest('.status, .toggle, .nav-toggle')) setTimeout(() => {
-      if (event.target.closest('.status')) applyFilters();
-      else syncAccessibility();
+    const status = event.target.closest('.status');
+    const accessibilityTarget = event.target.closest('.status, .toggle, .nav-toggle');
+    if (accessibilityTarget) setTimeout(() => {
+      if (status) applyFilters();
+      else syncAccessibility(getDomCache());
     }, 0);
   });
 
   document.addEventListener('keydown', event => {
+    if (!(event.target instanceof Element)) return;
     const rapidItem = event.target.closest('.rapid-item');
     if (!rapidItem || !['Enter', ' '].includes(event.key)) return;
     event.preventDefault();
@@ -233,7 +279,7 @@
     revealButton.onclick = event => {
       if (typeFilter.value !== 'rapid') {
         originalReveal?.call(revealButton, event);
-        syncAccessibility();
+        syncAccessibility(getDomCache());
         return;
       }
       revealAll = !revealAll;
@@ -259,13 +305,20 @@
       const item = items[Math.floor(Math.random() * items.length)];
       item.classList.add('open');
       item.setAttribute('aria-expanded', 'true');
-      item.scrollIntoView({behavior: 'smooth', block: 'center'});
-      item.animate([{outline: '5px solid #f79009'}, {outline: '0 solid transparent'}], {duration: 1300});
+      item.scrollIntoView({
+        behavior: reduceMotion?.matches ? 'auto' : 'smooth',
+        block: 'center'
+      });
+      if (!reduceMotion?.matches && typeof item.animate === 'function') {
+        item.animate(
+          [{outline: '5px solid #f79009'}, {outline: '0 solid transparent'}],
+          {duration: 1300}
+        );
+      }
     };
   }
 
-  // On a fresh phone or portrait tablet, keep both long sidebars collapsed so
-  // questions start much closer to the top. Any explicit user choice persists.
+  // On a fresh phone or portrait tablet, keep long navigation panels compact.
   const compactViewport = window.matchMedia('(max-width: 980px)').matches;
   const hasLecturePreference = storage.get('medicalBankHideLecturesV4') !== null;
   const hasSubtopicPreference = storage.get('medicalBankHideSubtopicsV4') !== null;
