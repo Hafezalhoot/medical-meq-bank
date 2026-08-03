@@ -241,8 +241,47 @@ def validate_service_worker(version: str) -> None:
         fail("service worker does not use a network-only version check")
     if "Promise.allSettled" not in worker:
         fail("optional PWA assets can still abort installation")
+    for required_asset in ("./app.css", "./app.js", "./pwa-client.js"):
+        if required_asset not in worker:
+            fail(f"service worker does not pre-cache required source asset: {required_asset}")
     if "Medical_MEQ_Review_Bank_Offline.html" not in worker:
         fail("service worker does not reference the generated offline page")
+
+
+def validate_split_sources(version: str) -> None:
+    source_index = read_text(ROOT / "src" / "index.html")
+    source_app_css = read_text(ROOT / "src" / "app.css")
+    source_app_js = read_text(ROOT / "src" / "app.js")
+    source_pwa = read_text(ROOT / "src" / "pwa-client.js")
+    if len(source_app_css) < 10_000 or len(source_app_js) < 100_000 or len(source_pwa) < 1_000:
+        fail("split application source is unexpectedly small")
+
+    source_markers = (
+        '<link rel="stylesheet" href="./app.css">',
+        '<script src="./app.js"></script>',
+        '<script src="./pwa-client.js"></script>',
+    )
+    for marker in source_markers:
+        if source_index.count(marker) != 1:
+            fail(f"source index must contain exactly one {marker}")
+    if "medicalBankStatusV2" in source_index or "APP_VERSION" in source_index:
+        fail("application JavaScript remains embedded in src/index.html")
+
+    app_js = read_text(DIST / "app.js")
+    pwa_client = read_text(DIST / "pwa-client.js")
+    app_css = read_text(DIST / "app.css")
+    if app_css != source_app_css:
+        fail("generated app.css differs from reviewable source")
+    if "const state=(()=>{try{" not in app_js:
+        fail("generated app.js does not contain the safe progress parser")
+    if "startsWith('medicalBank')).forEach(k=>localStorage.removeItem(k))" not in app_js:
+        fail("generated app.js does not clean stale progress before restore")
+    if "const state=JSON.parse(storage.get('medicalBankStatusV2')||'{}');" in app_js:
+        fail("unsafe progress parser remains in generated app.js")
+    if f"const APP_VERSION = '{version}';" not in pwa_client:
+        fail("generated PWA client version does not match version.json")
+    if "serviceWorker" not in pwa_client:
+        fail("generated PWA client does not register the service worker")
 
 
 def extract_generated_lectures(html: str) -> dict[str, dict]:
@@ -295,11 +334,11 @@ def validate_filter_source() -> None:
         fail("random Rapid Recall navigation ignores reduced-motion preferences")
 
 
-def validate_html(version: str, source_lectures: dict[str, dict]) -> None:
+def validate_html(source_lectures: dict[str, dict]) -> None:
     index_path = DIST / "index.html"
     offline_path = DIST / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
-    require_file(index_path, minimum_size=10_000)
-    require_file(offline_path, minimum_size=10_000)
+    require_file(index_path, minimum_size=2_000)
+    require_file(offline_path, minimum_size=100_000)
 
     html = read_text(index_path)
     offline_html = read_text(offline_path)
@@ -309,6 +348,9 @@ def validate_html(version: str, source_lectures: dict[str, dict]) -> None:
         "id=\"lectureFilter\"",
         "id=\"typeFilter\"",
         "id=\"search\"",
+        '<link rel="stylesheet" href="./app.css">',
+        '<script src="./app.js"></script>',
+        '<script src="./pwa-client.js"></script>',
         "id=\"review-filter-extension\"",
         "id=\"mobile-filter-extension\"",
         "id=\"print-manager-extension\"",
@@ -331,10 +373,23 @@ def validate_html(version: str, source_lectures: dict[str, dict]) -> None:
 
     validate_generated_lectures(html, source_lectures)
 
-    if f"const APP_VERSION = '{version}';" not in html:
-        fail("generated application version does not match version.json")
-    if "<base href=\"../\">" not in offline_html:
-        fail("standalone offline page has no stable base URL")
+    offline_required = (
+        'id="app-source-styles"',
+        'id="app-source-runtime"',
+        'id="pwa-client-runtime"',
+        "medicalBankStatusV2",
+        "APP_VERSION",
+    )
+    for marker in offline_required:
+        if marker not in offline_html:
+            fail(f"standalone offline page is missing marker: {marker}")
+    for external_marker in (
+        '<link rel="stylesheet" href="./app.css">',
+        '<script src="./app.js"></script>',
+        '<script src="./pwa-client.js"></script>',
+    ):
+        if external_marker in offline_html:
+            fail(f"standalone offline page still depends on external asset: {external_marker}")
 
     script_ids = re.findall(r"<script\s+id=\"([^\"]+)\"", html)
     duplicate_script_ids = sorted({value for value in script_ids if script_ids.count(value) > 1})
@@ -364,8 +419,9 @@ def main() -> int:
     validate_cloudflare_config()
     validate_security_headers()
     validate_service_worker(version)
+    validate_split_sources(version)
     validate_filter_source()
-    validate_html(version, source_lectures)
+    validate_html(source_lectures)
     print(f"Validated Medical MEQ Bank {version} with {len(source_lectures)} JSON lectures")
     return 0
 
