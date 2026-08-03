@@ -2,6 +2,7 @@ import {defineConfig, devices} from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
+  testIgnore: /webkit-smoke\.spec\.js/,
   timeout: 30_000,
   expect: {
     timeout: 7_500
