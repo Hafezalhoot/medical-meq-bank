@@ -8,3 +8,4 @@ __pycache__/
 .env
 .env.*
 !.env.example
+/lectures/data/urology-renal-tumors.json
