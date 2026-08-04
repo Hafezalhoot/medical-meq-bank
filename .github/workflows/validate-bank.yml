@@ -28,13 +28,14 @@ jobs:
       - name: Build bank
         run: bash build.sh
 
-      - name: Validate generated application
+      - name: Validate generated application and repository hygiene
         run: |
           python3 scripts/validate_build.py
           python3 scripts/validate_mobile_filters.py
           python3 scripts/validate_runtime_extensions.py
           python3 scripts/validate_progress_resilience.py
           python3 scripts/audit_repository.py
+          python3 scripts/validate_repository_hygiene.py
 
       - name: Validate JavaScript syntax
         run: |
