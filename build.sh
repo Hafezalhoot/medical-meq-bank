@@ -35,9 +35,11 @@ required_files=(
   lectures/payload-fixes/urology-urolithiasis.part05.2
   lectures/payload-fixes/urology-urolithiasis.part05.3
   tools/build_app.py
+  tools/finalize_offline.py
   tools/lecture_builder.py
   tools/materialize_verified_lectures_v2.py
   tools/materialize_verified_lectures_v3.py
+  scripts/audit_repository.py
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
   scripts/validate_runtime_extensions.py
@@ -59,9 +61,11 @@ fi
 
 python3 -m py_compile \
   tools/build_app.py \
+  tools/finalize_offline.py \
   tools/lecture_builder.py \
   tools/materialize_verified_lectures_v2.py \
   tools/materialize_verified_lectures_v3.py \
+  scripts/audit_repository.py \
   scripts/validate_build.py \
   scripts/validate_mobile_filters.py \
   scripts/validate_runtime_extensions.py \
@@ -88,6 +92,18 @@ install -m 0644 \
   src/lecture-loader.js \
   src/pwa-client.js \
   "$OUTPUT/"
+install -m 0644 \
+  review-filter.css \
+  review-filter.js \
+  responsive-sidebars.js \
+  mobile-filters.css \
+  mobile-filters.js \
+  search-optimization.js \
+  back-to-top.css \
+  back-to-top.js \
+  "$OUTPUT/"
+install -m 0644 src/print-manager.css "$OUTPUT/print-manager.css"
+install -m 0644 src/print-manager.js "$OUTPUT/print-manager.js"
 install -m 0644 404.html _headers service-worker.js "$OUTPUT/"
 install -m 0644 lectures/catalog.json "$OUTPUT/lectures/"
 cp lectures/data/*.json "$OUTPUT/lectures/data/"
@@ -101,5 +117,6 @@ python3 tools/build_app.py "$OUTPUT"
 
 # Publish metadata after the builder has patched the service worker.
 install -m 0644 manifest.webmanifest version.json "$OUTPUT/"
+python3 tools/finalize_offline.py
 
 echo "Medical MEQ Bank prepared in $OUTPUT from split reviewable source files"

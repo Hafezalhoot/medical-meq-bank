@@ -4,18 +4,16 @@ on:
   push:
     branches:
       - main
-      - agent/**
-      - feature/**
-      - fix/**
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: validate-bank-${{ github.ref }}
+  group: validate-bank-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -25,17 +23,19 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build bank
         run: bash build.sh
 
-      - name: Validate generated application
+      - name: Validate generated application and repository hygiene
         run: |
           python3 scripts/validate_build.py
           python3 scripts/validate_mobile_filters.py
           python3 scripts/validate_runtime_extensions.py
           python3 scripts/validate_progress_resilience.py
+          python3 scripts/audit_repository.py
+          python3 scripts/validate_repository_hygiene.py
 
       - name: Validate JavaScript syntax
         run: |
@@ -56,8 +56,12 @@ jobs:
           node --check back-to-top.js
           node --check tests/app.spec.js
           node --check tests/accessibility.spec.js
+          node --check tests/hardening.spec.js
           node --check tests/layout.spec.js
+          node --check tests/mobile-filters.spec.js
           node --check tests/performance.spec.js
+          node --check tests/print.spec.js
+          node --check tests/service-worker-assets.spec.js
           node --check tests/webkit-smoke.spec.js
           node --check playwright.config.js
           node --check playwright.webkit.config.js
@@ -83,24 +87,27 @@ jobs:
 
       - name: Upload generated site for inspection
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: medical-meq-bank-dist
           path: dist
           if-no-files-found: error
           retention-days: 7
 
-  browser-smoke:
+  chromium-quality:
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.0-noble
+      options: --user 1001
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -111,15 +118,12 @@ jobs:
       - name: Install locked test dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Run Chromium and accessibility tests
+      - name: Run Chromium, accessibility, performance, print and offline tests
         run: npm run test:e2e
 
       - name: Upload Chromium report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-report-chromium
           path: |
@@ -128,17 +132,20 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  webkit-smoke:
+  webkit-quality:
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.0-noble
+      options: --user 1001
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -149,15 +156,12 @@ jobs:
       - name: Install locked test dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Install WebKit
-        run: npx playwright install --with-deps webkit
-
-      - name: Run Safari and iPhone WebKit smoke tests
+      - name: Run Safari desktop and iPhone WebKit smoke tests
         run: npx playwright test --config=playwright.webkit.config.js
 
       - name: Upload WebKit report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-report-webkit
           path: |

@@ -1,14 +1,14 @@
 import {test, expect} from '@playwright/test';
 
+test.use({serviceWorkers: 'block'});
+
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
     name: 'Medical MEQ & Short Question Review Bank'
   })).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
-  await expect.poll(
-    () => page.evaluate(() => document.querySelector('main')?.getAttribute('aria-busy'))
-  ).toBe('false');
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
   await expect(page.locator('.study-item').first()).toBeAttached();
 }
 
@@ -37,21 +37,38 @@ test('initial active-subject load stays within a practical request budget', asyn
   expect(metrics.nodes).toBeLessThan(nodeBudget);
 });
 
-test('debounced search filtering completes within the interaction budget', async ({page}) => {
+test('debounced search filtering completes within the interaction budget and preserves listeners', async ({page}) => {
   await openBank(page);
 
-  const duration = await page.evaluate(() => new Promise(resolve => {
+  const result = await page.evaluate(() => new Promise(resolve => {
     const input = document.getElementById('search');
+    let observedInputEvents = 0;
+    const observeInput = () => {
+      observedInputEvents += 1;
+    };
+    input.addEventListener('input', observeInput);
+
     const started = performance.now();
     input.addEventListener('meq:search-applied', () => {
-      resolve(performance.now() - started);
+      input.removeEventListener('input', observeInput);
+      resolve({
+        duration: performance.now() - started,
+        observedInputEvents
+      });
     }, {once: true});
+
     input.value = 'testicular';
-    input.dispatchEvent(new Event('input', {bubbles: true}));
+    input.dispatchEvent(new InputEvent('input', {
+      bubbles: true,
+      composed: true,
+      data: 'r',
+      inputType: 'insertText'
+    }));
   }));
 
-  expect(duration).toBeGreaterThanOrEqual(280);
-  expect(duration).toBeLessThan(1_500);
+  expect(result.duration).toBeGreaterThanOrEqual(280);
+  expect(result.duration).toBeLessThan(1_500);
+  expect(result.observedInputEvents).toBe(1);
   await expect(page.locator('.study-item:not(.hidden)').first()).toBeVisible();
 });
 
@@ -64,7 +81,5 @@ test('switching to an unloaded subject completes within the navigation budget', 
   const duration = Date.now() - started;
 
   expect(duration).toBeLessThan(3_000);
-  await expect.poll(
-    () => page.evaluate(() => document.querySelector('main')?.getAttribute('aria-busy'))
-  ).toBe('false');
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
 });

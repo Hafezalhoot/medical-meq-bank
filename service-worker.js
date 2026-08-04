@@ -1,4 +1,4 @@
-const APP_VERSION = '2026.08.04.2';
+const APP_VERSION = '2026.08.04.3';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
 const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
 const LECTURE_ASSETS = /*__LECTURE_ASSETS__*/ [];
@@ -11,6 +11,16 @@ const REQUIRED_ASSETS = [
   './progress-resilience.js',
   './lecture-loader.js',
   './pwa-client.js',
+  './review-filter.css',
+  './review-filter.js',
+  './responsive-sidebars.js',
+  './mobile-filters.css',
+  './mobile-filters.js',
+  './search-optimization.js',
+  './print-manager.css',
+  './print-manager.js',
+  './back-to-top.css',
+  './back-to-top.js',
   './manifest.webmanifest',
   './version.json',
   './icons/icon-192.png',
@@ -19,8 +29,6 @@ const REQUIRED_ASSETS = [
   OFFLINE_PAGE,
   ...LECTURE_ASSETS
 ];
-// Extension styles and scripts are embedded into index.html during the build,
-// so there are currently no separate optional assets to request or cache.
 const OPTIONAL_ASSETS = [];
 
 self.addEventListener('install', event => {

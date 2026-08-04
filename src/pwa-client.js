@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.08.04.2';
+  const APP_VERSION = '2026.08.04.3';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -203,17 +203,6 @@
 
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     let refreshing = false;
-    const activateFirstInstall = worker => {
-      if (!worker || navigator.serviceWorker.controller) return;
-      const activateWhenInstalled = () => {
-        if (worker.state === 'installed' && !navigator.serviceWorker.controller) {
-          worker.postMessage({type: 'SKIP_WAITING'});
-        }
-      };
-      activateWhenInstalled();
-      worker.addEventListener('statechange', activateWhenInstalled);
-    };
-
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (!refreshing) {
         refreshing = true;
@@ -223,18 +212,10 @@
     window.addEventListener('load', async () => {
       try {
         const registration = await navigator.serviceWorker.register('./service-worker.js', {scope: './'});
-        if (!navigator.serviceWorker.controller) {
-          activateFirstInstall(registration.waiting || registration.installing);
-        } else if (registration.waiting) {
-          showUpdate(registration);
-        }
+        if (registration.waiting) showUpdate(registration);
         registration.addEventListener('updatefound', () => {
           const worker = registration.installing;
           if (!worker) return;
-          if (!navigator.serviceWorker.controller) {
-            activateFirstInstall(worker);
-            return;
-          }
           worker.addEventListener('statechange', () => {
             if (worker.state === 'installed' && navigator.serviceWorker.controller) showUpdate(registration);
           });

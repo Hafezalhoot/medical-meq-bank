@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Generate the deployable Medical MEQ Bank application.
 
-The online build keeps the shell and runtimes split, then loads lecture JSON by
-subject. The standalone offline copy embeds the full validated lecture bank and
-all core source assets so it remains directly openable as one HTML file.
+The online build keeps every executable runtime in a separate same-origin file.
+The standalone offline copy embeds the full validated lecture bank and all
+source assets so it remains directly openable as one HTML file.
 """
 
 from __future__ import annotations
@@ -41,33 +41,24 @@ def replace_regex_required(
     return updated
 
 
-def upsert_style(text: str, element_id: str, content: str) -> str:
-    tag = f'<style id="{element_id}">\n{content}\n</style>'
-    pattern = rf'<style id="{re.escape(element_id)}">.*?</style>'
-    if re.search(pattern, text, flags=re.S):
-        return re.sub(pattern, lambda _: tag, text, count=1, flags=re.S)
+def ensure_external_style(text: str, element_id: str, source: str) -> str:
+    tag = f'<link id="{element_id}" rel="stylesheet" href="{source}">'
+    inline_pattern = rf'<style id="{re.escape(element_id)}">.*?</style>'
+    external_pattern = rf'<link id="{re.escape(element_id)}"[^>]*>'
+    if re.search(inline_pattern, text, flags=re.S):
+        return re.sub(inline_pattern, lambda _: tag, text, count=1, flags=re.S)
+    if re.search(external_pattern, text):
+        return re.sub(external_pattern, lambda _: tag, text, count=1)
     if "</head>" not in text:
         raise SystemExit(f"Could not inject style {element_id}: missing </head>")
     return text.replace("</head>", tag + "\n</head>", 1)
 
 
-def upsert_script(
-    text: str,
-    element_id: str,
-    content: str,
-    *,
-    before_id: str | None = None,
-) -> str:
-    tag = f'<script id="{element_id}">\n{content}\n</script>'
-    pattern = rf'<script id="{re.escape(element_id)}">.*?</script>'
+def ensure_external_script(text: str, element_id: str, source: str) -> str:
+    tag = f'<script id="{element_id}" src="{source}"></script>'
+    pattern = rf'<script id="{re.escape(element_id)}"[^>]*>.*?</script>'
     if re.search(pattern, text, flags=re.S):
         return re.sub(pattern, lambda _: tag, text, count=1, flags=re.S)
-
-    if before_id:
-        marker = f'<script id="{before_id}">'
-        if marker in text:
-            return text.replace(marker, tag + "\n" + marker, 1)
-
     if "</body>" not in text:
         raise SystemExit(f"Could not inject script {element_id}: missing </body>")
     before_body, after_body = text.rsplit("</body>", 1)
@@ -114,6 +105,8 @@ def create_offline_copy(
     progress_js: str,
     lecture_batch_js: str,
     pwa_client_js: str,
+    extension_styles: tuple[tuple[str, str, str], ...],
+    extension_scripts: tuple[tuple[str, str, str], ...],
 ) -> str:
     offline = html
     offline = replace_required(
@@ -146,6 +139,21 @@ def create_offline_copy(
         f'<script id="pwa-client-runtime">\n{safe_inline_script(pwa_client_js)}\n</script>',
         "offline PWA client",
     )
+
+    for element_id, source, content in extension_styles:
+        offline = replace_required(
+            offline,
+            f'<link id="{element_id}" rel="stylesheet" href="{source}">',
+            f'<style id="{element_id}">\n{safe_inline_style(content)}\n</style>',
+            f"offline style {source}",
+        )
+    for element_id, source, content in extension_scripts:
+        offline = replace_required(
+            offline,
+            f'<script id="{element_id}" src="{source}"></script>',
+            f'<script id="{element_id}">\n{safe_inline_script(content)}\n</script>',
+            f"offline script {source}",
+        )
     return offline
 
 
@@ -207,6 +215,21 @@ def build(output: Path) -> None:
     back_to_top_js = (ROOT / "back-to-top.js").read_text(encoding="utf-8")
     lecture_batch_js = build_lecture_extensions(ROOT)
 
+    extension_styles = (
+        ("review-filter-styles", "./review-filter.css", review_css),
+        ("mobile-filter-styles", "./mobile-filters.css", mobile_filter_css),
+        ("print-manager-styles", "./print-manager.css", print_css),
+        ("back-to-top-styles", "./back-to-top.css", back_to_top_css),
+    )
+    extension_scripts = (
+        ("responsive-sidebar-extension", "./responsive-sidebars.js", responsive_sidebar_js),
+        ("review-filter-extension", "./review-filter.js", review_js),
+        ("mobile-filter-extension", "./mobile-filters.js", mobile_filter_js),
+        ("search-optimization-extension", "./search-optimization.js", search_optimization_js),
+        ("print-manager-extension", "./print-manager.js", print_js),
+        ("back-to-top-extension", "./back-to-top.js", back_to_top_js),
+    )
+
     text = html_path.read_text(encoding="utf-8")
     app_css = app_css_path.read_text(encoding="utf-8")
     app_js = app_js_path.read_text(encoding="utf-8")
@@ -223,21 +246,10 @@ def build(output: Path) -> None:
     text = ensure_external_script_after(text, "./app.js", "./progress-resilience.js")
     text = ensure_external_script_after(text, "./progress-resilience.js", "./lecture-loader.js")
     text = ensure_accessibility_attributes(text)
-    text = upsert_style(text, "review-filter-styles", review_css)
-    text = upsert_style(text, "mobile-filter-styles", mobile_filter_css)
-    text = upsert_style(text, "print-manager-styles", print_css)
-    text = upsert_style(text, "back-to-top-styles", back_to_top_css)
-    text = upsert_script(
-        text,
-        "responsive-sidebar-extension",
-        responsive_sidebar_js,
-        before_id="review-filter-extension",
-    )
-    text = upsert_script(text, "review-filter-extension", review_js)
-    text = upsert_script(text, "mobile-filter-extension", mobile_filter_js)
-    text = upsert_script(text, "search-optimization-extension", search_optimization_js)
-    text = upsert_script(text, "print-manager-extension", print_js)
-    text = upsert_script(text, "back-to-top-extension", back_to_top_js)
+    for element_id, source, _ in extension_styles:
+        text = ensure_external_style(text, element_id, source)
+    for element_id, source, _ in extension_scripts:
+        text = ensure_external_script(text, element_id, source)
 
     html_path.write_text(text, encoding="utf-8")
     app_js_path.write_text(app_js, encoding="utf-8")
@@ -253,6 +265,8 @@ def build(output: Path) -> None:
         progress_js=progress_js,
         lecture_batch_js=lecture_batch_js,
         pwa_client_js=pwa_client_js,
+        extension_styles=extension_styles,
+        extension_scripts=extension_scripts,
     )
     offline_path.write_text(offline_text, encoding="utf-8")
 
