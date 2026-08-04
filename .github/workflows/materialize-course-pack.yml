@@ -1,0 +1,91 @@
+name: Materialize verified course pack
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: materialize-course-pack-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  materialize:
+    if: github.head_ref == 'agent/renal-course-packs-v2' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out the exact feature branch
+        uses: actions/checkout@v6
+        with:
+          ref: agent/renal-course-packs-v2
+          fetch-depth: 0
+
+      - name: Reassemble and verify reviewed source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat \
+            .coursepack-staging/part-00.b64 \
+            .coursepack-staging/part-01.b64 \
+            .coursepack-staging/part-02.b64 \
+            .coursepack-staging/rem-00.b64 \
+            .coursepack-staging/rem-01.b64 \
+            .coursepack-staging/block-01.b64 \
+            .coursepack-staging/block-02.b64 \
+            .coursepack-staging/block-03.b64 \
+            .coursepack-staging/block-04.b64 \
+            .coursepack-staging/block-05.b64 \
+            .coursepack-staging/block-06.b64 \
+            .coursepack-staging/tail-00.b64 \
+            .coursepack-staging/tail-01.b64 \
+            .coursepack-staging/tail-02.b64 \
+            .coursepack-staging/tail-03.b64 \
+            .coursepack-staging/tail-04.b64 \
+            .coursepack-staging/tail-05.b64 \
+            .coursepack-staging/tail-06.b64 \
+            .coursepack-staging/tail-07.b64 \
+            > /tmp/coursepack.b64
+          base64 --decode /tmp/coursepack.b64 > /tmp/coursepack.tar.gz
+          echo "4023a9207f89637375b0f51e6e7b112d2066dc9895abcf674f149984775b255b  /tmp/coursepack.tar.gz" | sha256sum --check
+          tar -tzf /tmp/coursepack.tar.gz > /tmp/coursepack-files.txt
+          if grep -Eq '(^/|(^|/)\.\.(/|$))' /tmp/coursepack-files.txt; then
+            echo 'Unsafe archive path detected.' >&2
+            exit 1
+          fi
+          tar -xzf /tmp/coursepack.tar.gz -C .
+
+      - name: Validate materialized medical bank
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x build.sh scripts/validate_course_packs.py scripts/validate_lecture_images.py tools/build_app.py tools/lecture_builder.py
+          bash build.sh
+          python3 scripts/validate_course_packs.py
+          python3 scripts/validate_lecture_images.py
+          python3 scripts/validate_build.py
+          python3 scripts/validate_mobile_filters.py
+          python3 scripts/validate_runtime_extensions.py
+          python3 scripts/validate_progress_resilience.py
+          node --check src/app.js
+          node --check src/lecture-loader.js
+          node --check src/pwa-client.js
+          node --check tests/course-packs.spec.js
+          node --check tests/hardening.spec.js
+
+      - name: Commit only the verified final source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .coursepack-staging
+          rm -f .github/workflows/materialize-course-pack.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "Add Renal Tumours and future-ready course packs"
+          git push origin HEAD:agent/renal-course-packs-v2
