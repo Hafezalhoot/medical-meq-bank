@@ -19,12 +19,16 @@ const REQUIRED_ASSETS = [
   OFFLINE_PAGE,
   ...LECTURE_ASSETS
 ];
+// Extension styles and scripts are embedded into index.html during the build,
+// so there are currently no separate optional assets to request or cache.
+const OPTIONAL_ASSETS = [];
 
 self.addEventListener('install', event => {
   const isFirstInstall = !self.registration.active;
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(REQUIRED_ASSETS);
+    await Promise.allSettled(OPTIONAL_ASSETS.map(asset => cache.add(asset)));
     if (isFirstInstall) await self.skipWaiting();
   })());
 });
