@@ -92,6 +92,18 @@ install -m 0644 \
   src/lecture-loader.js \
   src/pwa-client.js \
   "$OUTPUT/"
+install -m 0644 \
+  review-filter.css \
+  review-filter.js \
+  responsive-sidebars.js \
+  mobile-filters.css \
+  mobile-filters.js \
+  search-optimization.js \
+  back-to-top.css \
+  back-to-top.js \
+  "$OUTPUT/"
+install -m 0644 src/print-manager.css "$OUTPUT/print-manager.css"
+install -m 0644 src/print-manager.js "$OUTPUT/print-manager.js"
 install -m 0644 404.html _headers service-worker.js "$OUTPUT/"
 install -m 0644 lectures/catalog.json "$OUTPUT/lectures/"
 cp lectures/data/*.json "$OUTPUT/lectures/data/"
