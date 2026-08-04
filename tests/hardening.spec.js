@@ -2,12 +2,14 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {test, expect} from '@playwright/test';
 
+// These tests exercise storage and network-failure behavior directly. The
+// dedicated service-worker lifecycle and offline coverage lives in app.spec.js.
+test.use({serviceWorkers: 'block'});
+
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page.locator('#reviewFilter')).toBeAttached();
-  await expect.poll(
-    () => page.evaluate(() => document.querySelector('main')?.getAttribute('aria-busy'))
-  ).toBe('false');
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
   await expect(page.locator('.study-item').first()).toBeAttached();
 }
 
@@ -89,6 +91,7 @@ test('one broken lecture response does not hide the remaining subject lectures',
     route.fulfill({status: 500, contentType: 'application/json', body: '{}'}));
 
   await openBank(page);
+  await expect(page.locator('#lecture-urology-urolithiasis')).toHaveCount(0);
   await expect(page.locator('.lecture')).toHaveCount(6);
   await expect(page.locator('#lecture-urology-congenital-anomalies')).toBeVisible();
   await expect.poll(
