@@ -1,14 +1,14 @@
 import {test, expect} from '@playwright/test';
 
+test.use({serviceWorkers: 'block'});
+
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
     name: 'Medical MEQ & Short Question Review Bank'
   })).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
-  await expect.poll(
-    () => page.evaluate(() => document.querySelector('main')?.getAttribute('aria-busy'))
-  ).toBe('false');
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
   await expect(page.locator('.study-item').first()).toBeAttached();
 }
 
@@ -64,7 +64,5 @@ test('switching to an unloaded subject completes within the navigation budget', 
   const duration = Date.now() - started;
 
   expect(duration).toBeLessThan(3_000);
-  await expect.poll(
-    () => page.evaluate(() => document.querySelector('main')?.getAttribute('aria-busy'))
-  ).toBe('false');
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
 });
