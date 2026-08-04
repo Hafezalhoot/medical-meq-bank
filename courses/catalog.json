@@ -7,13 +7,7 @@
       "id": "surgery",
       "label": "Surgery",
       "order": 1,
-      "pack": "packs/surgery.json"
-    },
-    {
-      "id": "internal-medicine",
-      "label": "Internal Medicine",
-      "order": 2,
-      "pack": "packs/internal-medicine.json"
+      "manifest": "surgery/course.json"
     }
   ]
 }

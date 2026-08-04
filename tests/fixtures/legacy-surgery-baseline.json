@@ -1,5 +1,4 @@
 {
-  "$schema": "./catalog.schema.json",
   "version": 1,
   "lectures": [
     {
@@ -7,7 +6,6 @@
       "title": "Traumatic Brain Injury",
       "subjectKey": "neurosurgery",
       "order": 1,
-      "file": "data/neurosurgery-traumatic-brain-injury.json",
       "expectedCounts": {
         "cases": 16,
         "coreShorts": 35,
@@ -21,7 +19,6 @@
       "title": "Congenital Anomalies",
       "subjectKey": "urology",
       "order": 1,
-      "file": "data/urology-congenital-anomalies.json",
       "expectedCounts": {
         "cases": 11,
         "coreShorts": 25,
@@ -35,7 +32,6 @@
       "title": "BPH & Prostate Carcinoma",
       "subjectKey": "urology",
       "order": 2,
-      "file": "data/urology-bph-prostate-carcinoma.json",
       "expectedCounts": {
         "cases": 12,
         "coreShorts": 27,
@@ -49,7 +45,6 @@
       "title": "Urological Emergencies",
       "subjectKey": "urology",
       "order": 3,
-      "file": "data/urology-urological-emergencies.json",
       "expectedCounts": {
         "cases": 15,
         "coreShorts": 31,
@@ -63,7 +58,6 @@
       "title": "Scrotal Swelling",
       "subjectKey": "urology",
       "order": 4,
-      "file": "data/urology-scrotal-swelling.json",
       "expectedCounts": {
         "cases": 15,
         "coreShorts": 35,
@@ -77,7 +71,6 @@
       "title": "Urinary Tract Infection",
       "subjectKey": "urology",
       "order": 5,
-      "file": "data/urology-urinary-tract-infection.json",
       "expectedCounts": {
         "cases": 15,
         "coreShorts": 35,
@@ -91,7 +84,6 @@
       "title": "Bladder Cancer",
       "subjectKey": "urology",
       "order": 6,
-      "file": "data/urology-bladder-cancer.json",
       "expectedCounts": {
         "cases": 12,
         "coreShorts": 30,
@@ -105,26 +97,11 @@
       "title": "Urolithiasis",
       "subjectKey": "urology",
       "order": 7,
-      "file": "data/urology-urolithiasis.json",
       "expectedCounts": {
         "cases": 12,
         "coreShorts": 30,
         "imageQuestions": 10,
         "detailedShorts": 60,
-        "rapid": 35
-      }
-    },
-    {
-      "id": "urology-renal-tumors",
-      "title": "Renal Tumours",
-      "subjectKey": "urology",
-      "order": 8,
-      "file": "data/urology-renal-tumors.json",
-      "expectedCounts": {
-        "cases": 12,
-        "coreShorts": 30,
-        "imageQuestions": 6,
-        "detailedShorts": 45,
         "rapid": 35
       }
     }

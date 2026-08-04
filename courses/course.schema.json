@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medical-meq-bank.local/schemas/course.schema.json",
+  "title": "Medical MEQ Content Pack",
+  "type": "object",
+  "required": ["version", "id", "label", "description", "order", "defaultSubject", "lectureCatalog", "subjects"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"const": 1},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "label": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "order": {"type": "number"},
+    "defaultSubject": {"type": "string", "minLength": 1},
+    "lectureCatalog": {"type": "string", "pattern": "^[A-Za-z0-9._/-]+\\.json$"},
+    "subjects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "order"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+          "label": {"type": "string", "minLength": 1},
+          "order": {"type": "number"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

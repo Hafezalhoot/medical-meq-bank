@@ -1,104 +1,59 @@
 import {test, expect} from '@playwright/test';
 
+test.use({serviceWorkers: 'block'});
+
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
-  await expect(page).toHaveTitle(/Medical MEQ Review Bank/);
-  await expect.poll(() => page.evaluate(() => Boolean(globalThis.MEQCourseRegistry))).toBe(true);
-  await expect.poll(() => page.evaluate(() => Boolean(globalThis.MEQLectureLoader))).toBe(true);
-  await expect(page.locator('#courseSelector')).toBeVisible();
-  await expect.poll(async () => page.locator('.lecture').count()).toBeGreaterThan(0);
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
+  await expect(page.locator('#lecture-urology-renal-tumors')).toBeAttached();
 }
 
-test('course configuration is loaded above subjects and preserves the surgery bank', async ({page}) => {
+test('course and subject configuration is loaded from the Surgery content pack', async ({page}) => {
   await openBank(page);
-
   await expect(page.locator('#courseSelector')).toHaveValue('surgery');
-  await expect(page.locator('#courseSelector option')).toHaveText(['Surgery', 'Internal Medicine']);
+  await expect(page.locator('#courseSelector option')).toHaveText(['Surgery']);
   await expect(page.locator('#subjectSelector option')).toHaveText([
-    'Urology',
-    'General Surgery',
-    'GIT Surgery',
-    'Neurosurgery'
+    'Urology', 'General Surgery', 'GIT Surgery', 'Neurosurgery'
   ]);
-
-  const registry = await page.evaluate(() => ({
-    activeCourse: globalThis.MEQCourseRegistry.activeCourse,
-    urologyCourse: globalThis.MEQCourseRegistry.courseForSubject('urology'),
-    medicineCourse: globalThis.MEQCourseRegistry.courseForSubject('cardiology'),
-    urologyCatalog: globalThis.MEQCourseRegistry.catalogForSubject('urology'),
-    cardiologyCatalog: globalThis.MEQCourseRegistry.catalogForSubject('cardiology')
-  }));
-  expect(registry).toEqual({
-    activeCourse: 'surgery',
-    urologyCourse: 'surgery',
-    medicineCourse: 'internal-medicine',
-    urologyCatalog: './lectures/catalog.json',
-    cardiologyCatalog: null
-  });
-});
-
-test('switching to a new course does not alter saved surgery progress', async ({page}) => {
-  const protectedKey = 'urology-bladder-cancer::case::bc-c01';
-  await page.addInitScript(key => {
-    localStorage.setItem('medicalBankStatusV2', JSON.stringify({[key]: 'mastered'}));
-    localStorage.setItem('medicalBankCourseV1', 'surgery');
-    localStorage.setItem('medicalBankSubjectV4:surgery', 'urology');
-  }, protectedKey);
-
-  await openBank(page);
-  await page.locator('#courseSelector').selectOption('internal-medicine');
-  await expect(page.locator('#subjectSelector')).toHaveValue('cardiology');
-  await expect(page.locator('#subjectSelector option')).toHaveText([
-    'Cardiology',
-    'Chest Medicine',
-    'Gastroenterology',
-    'Nephrology',
-    'Endocrinology',
-    'Hematology',
-    'Rheumatology'
-  ]);
-  await expect(page.locator('#empty')).toHaveClass(/show/);
-  await expect(page.locator('#emptyMessage')).toContainText('No lectures have been added');
-
-  await page.locator('#courseSelector').selectOption('surgery');
-  await expect(page.locator('#subjectSelector')).toHaveValue('urology');
-  await expect.poll(async () => page.locator('.lecture').count()).toBeGreaterThan(0);
-
-  const stored = await page.evaluate(key => {
-    const state = JSON.parse(localStorage.getItem('medicalBankStatusV2') || '{}');
-    return state[key];
-  }, protectedKey);
-  expect(stored).toBe('mastered');
-});
-
-test('Renal Tumors loads as lecture 08 with verified content and images', async ({page}) => {
-  await openBank(page);
-  await expect.poll(() => page.evaluate(() => globalThis.MEQLectureLoader.isLoaded('urology-renal-tumors'))).toBe(true);
-
-  await expect(page.locator('#lectureFilter option[value="urology-renal-tumors"]')).toHaveText('08. Renal Tumors');
-  await page.locator('#lectureFilter').selectOption('urology-renal-tumors');
-  await expect(page.locator('#lecture-urology-renal-tumors .lecture-title')).toHaveText('Renal Tumors');
-
-  const counts = await page.evaluate(() => {
-    const lecture = lectures.find(item => item.id === 'urology-renal-tumors');
-    return {
-      cases: lecture?.cases.length,
-      coreShorts: lecture?.coreShorts.length,
-      imageQuestions: lecture?.imageQuestions.length,
-      detailedShorts: lecture?.detailedShorts.length,
-      rapid: lecture?.rapid.length
-    };
-  });
-  expect(counts).toEqual({cases: 12, coreShorts: 30, imageQuestions: 6, detailedShorts: 45, rapid: 30});
+  await expect(page.locator('#lectureFilter option')).toHaveCount(9);
+  await expect(page.locator('#lecture-urology-renal-tumors .case')).toHaveCount(12);
   await expect(page.locator('#lecture-urology-renal-tumors .image-card')).toHaveCount(6);
-  await expect(page.locator('#lecture-urology-renal-tumors .image-card img')).toHaveCount(6);
 });
 
-test('full-bank loading spans configured courses without failing empty future packs', async ({page}) => {
+test('adding Renal Tumours preserves legacy progress keys and isolates its own progress', async ({page}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('medicalBankStatusV2', JSON.stringify({
+      'urology-bladder-cancer::core::bc-s01': 'mastered'
+    }));
+  });
   await openBank(page);
-  const result = await page.evaluate(() => globalThis.MEQLectureLoader.loadAll());
-  expect(result.failedSubjects).toEqual([]);
-  expect(result.lectureIds).toContain('urology-renal-tumors');
-  expect(result.lectureIds).toContain('urology-bladder-cancer');
-  expect(result.lectureIds).toContain('neurosurgery-traumatic-brain-injury');
+  const legacy = page.locator('[data-key="urology-bladder-cancer::core::bc-s01"][data-status="mastered"]');
+  await expect(legacy).toHaveClass(/active/);
+
+  const renal = page.locator('[data-key="urology-renal-tumors::core::rt-s01"][data-status="review"]');
+  await renal.click();
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('medicalBankStatusV2'))))
+    .toEqual({
+      'urology-bladder-cancer::core::bc-s01': 'mastered',
+      'urology-renal-tumors::core::rt-s01': 'review'
+    });
+});
+
+test('course registry and content-pack manifest are available as independent resources', async ({request}) => {
+  const registryResponse = await request.get('/courses/catalog.json');
+  expect(registryResponse.ok()).toBe(true);
+  const registry = await registryResponse.json();
+  expect(registry.defaultCourse).toBe('surgery');
+  expect(registry.courses).toEqual([
+    expect.objectContaining({id: 'surgery', manifest: 'surgery/course.json'})
+  ]);
+
+  const manifestResponse = await request.get('/courses/surgery/course.json');
+  expect(manifestResponse.ok()).toBe(true);
+  const manifest = await manifestResponse.json();
+  expect(manifest.defaultSubject).toBe('urology');
+  expect(manifest.lectureCatalog).toBe('../../lectures/catalog.json');
+  expect(manifest.subjects.map(subject => subject.id)).toEqual([
+    'urology', 'general', 'git', 'neurosurgery'
+  ]);
 });

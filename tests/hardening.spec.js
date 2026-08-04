@@ -2,8 +2,6 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {test, expect} from '@playwright/test';
 
-// These tests exercise storage and network-failure behavior directly. The
-// dedicated service-worker lifecycle and offline coverage lives in app.spec.js.
 test.use({serviceWorkers: 'block'});
 
 async function openBank(page) {
@@ -27,6 +25,9 @@ async function hasValidEmbeddedAvif(locator) {
       return false;
     }
   });
+}
+async function hasDecodedImage(locator) {
+  return locator.evaluate(image => image.complete && image.naturalWidth > 0 && image.naturalHeight > 0);
 }
 
 test('invalid progress backup is rejected without deleting current progress', async ({page}) => {
@@ -58,26 +59,30 @@ test('invalid progress backup is rejected without deleting current progress', as
     .toBe(JSON.stringify({'urology-congenital-anomalies::core::backup-safety': 'mastered'}));
 });
 
-test('standalone build embeds all verified Bladder Cancer and Urolithiasis images', async ({page}) => {
-  const offlineFile = pathToFileURL(
-    resolve('dist/offline/Medical_MEQ_Review_Bank_Offline.html')
-  ).href;
+test('standalone build embeds all verified Bladder, Urolithiasis and Renal Tumours images', async ({page}) => {
+  const offlineFile = pathToFileURL(resolve('dist/offline/Medical_MEQ_Review_Bank_Offline.html')).href;
   await page.goto(offlineFile, {waitUntil: 'domcontentloaded'});
 
   const bladder = page.locator('#lecture-urology-bladder-cancer .image-card img[src^="data:image/avif;base64,"]');
   const stones = page.locator('#lecture-urology-urolithiasis .image-card img[src^="data:image/avif;base64,"]');
+  const renal = page.locator('#lecture-urology-renal-tumors .image-card img[src^="data:image/avif;base64,"]');
   await expect(bladder).toHaveCount(8);
   await expect(stones).toHaveCount(10);
+  await expect(renal).toHaveCount(6);
   await expect(page.locator('img[src^="data:image/gif;base64,R0lGODlhAQABAAD"]')).toHaveCount(0);
 
   expect(await hasValidEmbeddedAvif(bladder.first())).toBe(true);
   expect(await hasValidEmbeddedAvif(stones.first())).toBe(true);
+  expect(await hasValidEmbeddedAvif(renal.first())).toBe(true);
 });
 
-test('online lecture JSON embeds verified AVIF assets for all 18 new image questions', async ({page}) => {
+test('online lecture JSON serves verified AVIF assets for all 24 recently added image questions', async ({page}) => {
   await openBank(page);
   await expect(page.locator('#lecture-urology-bladder-cancer .image-card img[src^="data:image/avif;base64,"]')).toHaveCount(8);
   await expect(page.locator('#lecture-urology-urolithiasis .image-card img[src^="data:image/avif;base64,"]')).toHaveCount(10);
+  const renal = page.locator('#lecture-urology-renal-tumors .image-card img[src$=".avif"]');
+  await expect(renal).toHaveCount(6);
+  expect(await hasDecodedImage(renal.first())).toBe(true);
 });
 
 test('one broken lecture response does not hide the remaining subject lectures', async ({page}) => {
@@ -92,7 +97,7 @@ test('one broken lecture response does not hide the remaining subject lectures',
 
   await openBank(page);
   await expect(page.locator('#lecture-urology-urolithiasis')).toHaveCount(0);
-  await expect(page.locator('.lecture')).toHaveCount(6);
+  await expect(page.locator('.lecture')).toHaveCount(7);
   await expect(page.locator('#lecture-urology-congenital-anomalies')).toBeVisible();
   await expect.poll(
     () => page.evaluate(() => globalThis.__meqLectureLoadErrors?.[0]?.lectureIds || [])

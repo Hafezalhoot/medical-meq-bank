@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="MEQ Bank">
-<meta name="description" content="Offline-first medical MEQ and short-question review bank organized by subject, lecture and subtopic.">
+<meta name="description" content="Offline-first medical MEQ and short-question review bank organized by course, subject, lecture and subtopic.">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
@@ -24,7 +24,7 @@
     <div class="hero-copy">
       <div class="eyebrow">Lecture-based • Expandable • Offline HTML</div>
       <h1>Medical MEQ & Short Question Review Bank</h1>
-      <p>MEQ cases, high-yield short questions, image spots and saved self-assessment—organized by subject, lecture and subtopic.</p>
+      <p>MEQ cases, high-yield short questions, image spots and saved self-assessment—organized by course, subject, lecture and subtopic.</p>
       <div class="hero-tags" id="heroTags"></div>
       <div class="pwa-tools" aria-label="App and backup tools">
         <button class="pwa-btn" id="installAppBtn" type="button" hidden>⬇ Install App</button>
@@ -35,9 +35,15 @@
       </div>
     </div>
     <div class="hero-panel">
-      <label class="hero-panel-label" for="subjectSelector">Main surgical subject</label>
-      <select id="subjectSelector" class="subject-select"></select>
-      <span class="subject-hint">Choose a subject to display its lectures and study content.</span>
+      <div class="hero-selector-group">
+        <label class="hero-panel-label" for="courseSelector">Medical course</label>
+        <select id="courseSelector" class="subject-select"></select>
+      </div>
+      <div class="hero-selector-group">
+        <label class="hero-panel-label" for="subjectSelector">Subject</label>
+        <select id="subjectSelector" class="subject-select"></select>
+      </div>
+      <span class="subject-hint">Choose a course, then a subject, to display its lecture-based question bank.</span>
     </div>
   </div>
 </section>
@@ -93,7 +99,7 @@
     <div class="empty" id="empty"><h2>No content found</h2><div id="emptyMessage">No study items match the current selection.</div></div>
   </main>
 </div>
-<div class="footer">Lecture-first bank • Four main surgical subjects • Two-level navigation • Separate core and overall progress</div>
+<div class="footer">Lecture-first medical bank • Course → subject → lecture → subtopic • Separate core and overall progress</div>
 </div>
 <div id="appToast" class="toast" role="status" aria-live="polite"></div>
 <script src="./app.js"></script>

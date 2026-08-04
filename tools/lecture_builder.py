@@ -1,275 +1,190 @@
 #!/usr/bin/env python3
-"""Load, validate and inject reviewable Medical MEQ lecture JSON sources."""
-
+"""Validate course content packs and build the standalone lecture bootstrap."""
 from __future__ import annotations
-
 from pathlib import Path
-import json
+import base64, copy, json
 
+COUNT_KEYS=("cases","coreShorts","imageQuestions","detailedShorts","rapid")
+VALID_PRIORITIES={"High","Core"}
 
-LECTURE_LIST_KEYS = (
-    "cases",
-    "coreShorts",
-    "imageQuestions",
-    "detailedShorts",
-    "rapid",
-)
-VALID_PRIORITIES = {"High", "Core"}
+def fail(message:str): raise SystemExit(message)
+def read_json(path:Path):
+    if not path.is_file(): fail(f"Missing JSON file: {path}")
+    try:return json.loads(path.read_text(encoding='utf-8'))
+    except Exception as e: fail(f"Could not read {path}: {e}")
+def nonempty(v): return isinstance(v,str) and bool(v.strip())
+def number(v): return isinstance(v,(int,float)) and not isinstance(v,bool)
+def string_list(v,allow_empty=False): return isinstance(v,list) and (allow_empty or bool(v)) and all(nonempty(x) for x in v)
+def safe_resolve(base:Path,relative:str,root:Path,label:str)->Path:
+    if not nonempty(relative): fail(f"{label} path is missing")
+    path=(base/relative).resolve()
+    if not path.is_relative_to(root.resolve()): fail(f"{label} escapes repository: {relative}")
+    return path
 
-
-def _non_empty_string(value: object) -> bool:
-    return isinstance(value, str) and bool(value.strip())
-
-
-def _valid_number(value: object) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
-
-
-def _string_list(value: object, *, allow_empty: bool = False) -> bool:
-    return (
-        isinstance(value, list)
-        and (allow_empty or bool(value))
-        and all(_non_empty_string(item) for item in value)
-    )
-
-
-def _validate_answer(value: object) -> bool:
-    return _non_empty_string(value) or _string_list(value)
-
-
-def validate_lecture(
-    lecture: object,
-    *,
-    label: str,
-    expected_id: str,
-    expected_counts: dict[str, int],
-) -> dict:
-    if not isinstance(lecture, dict):
-        raise SystemExit(f"{label} lecture is not an object")
-
-    if lecture.get("id") != expected_id:
-        raise SystemExit(f"{label} lecture has unexpected id: {lecture.get('id')!r}")
-
-    for key in ("title", "subjectKey", "subject", "subtitle", "sourceNote"):
-        if not _non_empty_string(lecture.get(key)):
-            raise SystemExit(f"{label} lecture is missing a valid {key}")
-    if not _valid_number(lecture.get("order")):
-        raise SystemExit(f"{label} lecture has an invalid order")
-
-    subtopics = lecture.get("subtopics")
-    if not isinstance(subtopics, list) or not subtopics:
-        raise SystemExit(f"{label} lecture is missing a non-empty subtopics list")
-
-    subtopic_ids: set[str] = set()
-    for index, subtopic in enumerate(subtopics, start=1):
-        if not isinstance(subtopic, dict):
-            raise SystemExit(f"{label} subtopic {index} is not an object")
-        subtopic_id = subtopic.get("id")
-        if not _non_empty_string(subtopic_id) or not _non_empty_string(subtopic.get("label")):
-            raise SystemExit(f"{label} subtopic {index} is incomplete")
-        if subtopic_id in subtopic_ids:
-            raise SystemExit(f"{label} has duplicate subtopic id: {subtopic_id}")
-        subtopic_ids.add(subtopic_id)
-
-    all_item_ids: set[str] = set()
-    required_fields = {
-        "cases": ("id", "title", "topic", "priority", "marks", "subtopics", "questions", "answer"),
-        "coreShorts": ("id", "q", "a", "topic", "priority", "marks", "subtopics"),
-        "imageQuestions": ("id", "title", "topic", "priority", "marks", "subtopics", "questions", "answer"),
-        "detailedShorts": ("id", "q", "a", "topic", "priority", "marks", "subtopics"),
-    }
-
-    for key in LECTURE_LIST_KEYS:
-        value = lecture.get(key)
-        if not isinstance(value, list):
-            raise SystemExit(f"{label} lecture is missing list {key}")
-
-        expected = expected_counts.get(key)
-        if not isinstance(expected, int) or isinstance(expected, bool) or expected < 0:
-            raise SystemExit(f"{label} has an invalid expected count for {key}")
-        if len(value) != expected:
-            raise SystemExit(f"{label} lecture has {len(value)} {key}; expected {expected}")
-
-        if key == "rapid":
-            for index, card in enumerate(value, start=1):
-                if not isinstance(card, list) or len(card) != 2 or not all(_non_empty_string(part) for part in card):
-                    raise SystemExit(f"{label} rapid card {index} must contain question and answer text")
+def validate_lecture(lecture,*,entry,course_key,label):
+    if not isinstance(lecture,dict) or lecture.get('id')!=entry.get('id'): fail(f"{label} has an unexpected lecture id")
+    for field in ('title','subjectKey','subject','subtitle','sourceNote'):
+        if not nonempty(lecture.get(field)): fail(f"{label} is missing {field}")
+    if lecture['title']!=entry['title'] or lecture['subjectKey']!=entry['subjectKey'] or lecture.get('order')!=entry['order']:
+        fail(f"{label} metadata differs from its catalog")
+    subtopics=lecture.get('subtopics')
+    if not isinstance(subtopics,list) or not subtopics: fail(f"{label} has no subtopics")
+    subids=[]
+    for sub in subtopics:
+        if not isinstance(sub,dict) or not nonempty(sub.get('id')) or not nonempty(sub.get('label')): fail(f"{label} has an invalid subtopic")
+        subids.append(sub['id'])
+    if len(subids)!=len(set(subids)): fail(f"{label} has duplicate subtopics")
+    expected=entry.get('expectedCounts')
+    if not isinstance(expected,dict) or set(expected)!=set(COUNT_KEYS): fail(f"{label} expectedCounts is invalid")
+    item_ids=set()
+    for key in COUNT_KEYS:
+        value=lecture.get(key)
+        if not isinstance(value,list) or len(value)!=expected[key]: fail(f"{label} has invalid {key} count")
+        if key=='rapid':
+            if any(not isinstance(card,list) or len(card)!=2 or not all(nonempty(part) for part in card) for card in value): fail(f"{label} has an invalid rapid card")
             continue
-
-        for index, item in enumerate(value, start=1):
-            if not isinstance(item, dict):
-                raise SystemExit(f"{label} {key} item {index} is not an object")
-            for field in required_fields[key]:
-                if field not in item:
-                    raise SystemExit(f"{label} {key} item {index} is missing {field}")
-
-            item_id = item.get("id")
-            if not _non_empty_string(item_id):
-                raise SystemExit(f"{label} {key} item {index} has an invalid id")
-            if item_id in all_item_ids:
-                raise SystemExit(f"{label} has duplicate study item id: {item_id}")
-            all_item_ids.add(item_id)
-
-            if not _non_empty_string(item.get("topic")):
-                raise SystemExit(f"{label} {item_id} has an invalid topic")
-            if item.get("priority") not in VALID_PRIORITIES:
-                raise SystemExit(f"{label} {item_id} has unsupported priority: {item.get('priority')!r}")
-            if not _valid_number(item.get("marks")) or item["marks"] < 0:
-                raise SystemExit(f"{label} {item_id} has invalid marks")
-
-            item_subtopics = item.get("subtopics")
-            if not _string_list(item_subtopics):
-                raise SystemExit(f"{label} {item_id} has invalid subtopics")
-            unknown_subtopics = sorted(set(item_subtopics) - subtopic_ids)
-            if unknown_subtopics:
-                raise SystemExit(
-                    f"{label} {item_id} references unknown subtopics: {', '.join(unknown_subtopics)}"
-                )
-
-            if key in {"cases", "imageQuestions"}:
-                if not _non_empty_string(item.get("title")):
-                    raise SystemExit(f"{label} {item_id} has an invalid title")
-                if not _string_list(item.get("questions")):
-                    raise SystemExit(f"{label} {item_id} has invalid questions")
-                if not _string_list(item.get("answer")):
-                    raise SystemExit(f"{label} {item_id} has invalid answer")
-
-                if key == "imageQuestions":
-                    image = item.get("image")
-                    page = item.get("page")
-                    has_image = _non_empty_string(image)
-                    has_page = (_non_empty_string(page) or _valid_number(page)) and not isinstance(page, bool)
-                    if not has_image and not has_page:
-                        raise SystemExit(f"{label} {item_id} needs an image or lecture-page reference")
-                    if has_image and not image.startswith(("./assets/", "assets/", "data:image/")):
-                        raise SystemExit(f"{label} {item_id} has an unsupported image source")
+        for item in value:
+            if not isinstance(item,dict) or not nonempty(item.get('id')): fail(f"{label}/{key} has an invalid item")
+            if item['id'] in item_ids: fail(f"{label} has duplicate item id {item['id']}")
+            item_ids.add(item['id'])
+            if not nonempty(item.get('topic')) or item.get('priority') not in VALID_PRIORITIES or not number(item.get('marks')): fail(f"{label}/{item['id']} has invalid shared fields")
+            if not string_list(item.get('subtopics')) or set(item['subtopics'])-set(subids): fail(f"{label}/{item['id']} has invalid subtopics")
+            if key in ('cases','imageQuestions'):
+                if not nonempty(item.get('title')) or not string_list(item.get('questions')) or not string_list(item.get('answer')): fail(f"{label}/{item['id']} has incomplete case/image content")
+                if key=='cases' and not nonempty(item.get('scenario')): fail(f"{label}/{item['id']} has no scenario")
+                if key=='imageQuestions':
+                    image=item.get('image'); page=item.get('page')
+                    if not nonempty(image) and not ((nonempty(page) or number(page)) and not isinstance(page,bool)): fail(f"{label}/{item['id']} has no visual")
+                    if nonempty(image) and not image.startswith(('data:image/','./assets/','assets/')): fail(f"{label}/{item['id']} has unsupported visual source")
             else:
-                if not _non_empty_string(item.get("q")):
-                    raise SystemExit(f"{label} {item_id} has an invalid question")
-                if not _validate_answer(item.get("a")):
-                    raise SystemExit(f"{label} {item_id} has an invalid answer")
+                answer=item.get('a')
+                if not nonempty(item.get('q')) or not (nonempty(answer) or string_list(answer)): fail(f"{label}/{item['id']} has invalid short content")
+    result=copy.deepcopy(lecture); result['courseKey']=course_key
+    return result
 
-    return lecture
+def load_course_packs(root:Path|str=Path('.')):
+    root=Path(root).resolve(); course_root=root/'courses'; registry_path=course_root/'catalog.json'
+    registry=read_json(registry_path)
+    if not isinstance(registry,dict) or registry.get('version')!=1 or not isinstance(registry.get('courses'),list) or not registry['courses']: fail('Course registry must be version 1 and non-empty')
+    course_ids=[]; manifests=[]; lectures=[]; assets=['courses/catalog.json']; lecture_ids=set(); catalog_paths=set()
+    for reg in registry['courses']:
+        if not isinstance(reg,dict) or not all(nonempty(reg.get(k)) for k in ('id','label','manifest')) or not number(reg.get('order')): fail('Invalid course registry entry')
+        if reg['id'] in course_ids: fail(f"Duplicate course id: {reg['id']}")
+        course_ids.append(reg['id'])
+        manifest_path=safe_resolve(course_root,reg['manifest'],root,f"Course {reg['id']} manifest")
+        manifest=read_json(manifest_path)
+        if not isinstance(manifest,dict) or manifest.get('version')!=1 or manifest.get('id')!=reg['id']: fail(f"Invalid manifest for {reg['id']}")
+        for field in ('label','description','defaultSubject','lectureCatalog'):
+            if not nonempty(manifest.get(field)): fail(f"Course {reg['id']} is missing {field}")
+        subjects=manifest.get('subjects')
+        if not isinstance(subjects,list) or not subjects: fail(f"Course {reg['id']} has no subjects")
+        subject_ids=[]
+        for subject in subjects:
+            if not isinstance(subject,dict) or not nonempty(subject.get('id')) or not nonempty(subject.get('label')) or not number(subject.get('order')): fail(f"Course {reg['id']} has invalid subject")
+            if subject['id'] in subject_ids: fail(f"Course {reg['id']} has duplicate subject {subject['id']}")
+            subject_ids.append(subject['id'])
+        if manifest['defaultSubject'] not in subject_ids: fail(f"Course {reg['id']} default subject is not declared")
+        catalog_path=safe_resolve(manifest_path.parent,manifest['lectureCatalog'],root,f"Course {reg['id']} lecture catalog")
+        if catalog_path in catalog_paths: fail(f"Lecture catalog is reused by multiple courses: {catalog_path}")
+        catalog_paths.add(catalog_path)
+        catalog=read_json(catalog_path)
+        if not isinstance(catalog,dict) or catalog.get('version')!=1 or not isinstance(catalog.get('lectures'),list): fail(f"Invalid lecture catalog for {reg['id']}")
+        asset_manifest=manifest_path.relative_to(root).as_posix(); asset_catalog=catalog_path.relative_to(root).as_posix()
+        assets.extend([asset_manifest,asset_catalog])
+        seen_orders=set()
+        for entry in catalog['lectures']:
+            if not isinstance(entry,dict) or not all(nonempty(entry.get(k)) for k in ('id','title','subjectKey','file')) or not number(entry.get('order')): fail(f"Invalid lecture entry in {reg['id']}")
+            if entry['subjectKey'] not in subject_ids: fail(f"Lecture {entry['id']} uses unknown subject {reg['id']}/{entry['subjectKey']}")
+            if entry['id'] in lecture_ids: fail(f"Duplicate global lecture id: {entry['id']}")
+            order_key=(entry['subjectKey'],float(entry['order']))
+            if order_key in seen_orders: fail(f"Duplicate order {entry['order']} in {reg['id']}/{entry['subjectKey']}")
+            seen_orders.add(order_key); lecture_ids.add(entry['id'])
+            source_path=safe_resolve(catalog_path.parent,entry['file'],root,f"Lecture {entry['id']}")
+            if source_path.suffix!='.json': fail(f"Lecture {entry['id']} is not JSON")
+            assets.append(source_path.relative_to(root).as_posix())
+            lecture=validate_lecture(read_json(source_path),entry=entry,course_key=reg['id'],label=f"{reg['id']}/{entry['id']}")
+            for visual in lecture['imageQuestions']:
+                source=visual.get('image')
+                if nonempty(source) and source.startswith(('./assets/','assets/')):
+                    asset_relative=source[2:] if source.startswith('./') else source
+                    asset_path=safe_resolve(root,asset_relative,root,f"Lecture image {entry['id']}/{visual['id']}")
+                    if not asset_path.is_file(): fail(f"Lecture image is missing: {asset_relative}")
+                    assets.append(asset_relative)
+            lectures.append(lecture)
+        manifests.append({'entry':reg,'manifest':manifest,'manifestPath':asset_manifest,'catalogPath':asset_catalog,'catalog':catalog})
+    if registry.get('defaultCourse') not in course_ids: fail('Course registry defaultCourse is not declared')
+    return {'registry':registry,'packs':manifests,'lectures':lectures,'assets':list(dict.fromkeys(assets))}
 
+def build_offline_asset_map(root:Path|str=Path('.'))->str:
+    root=Path(root).resolve(); data=load_course_packs(root); mapping={}
+    mime_by_suffix={'.avif':'image/avif','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp'}
+    for lecture in data['lectures']:
+        for visual in lecture['imageQuestions']:
+            source=visual.get('image')
+            if not nonempty(source) or source.startswith('data:image/') or not source.startswith(('./assets/','assets/')): continue
+            asset_relative=source[2:] if source.startswith('./') else source
+            path=safe_resolve(root,asset_relative,root,f"Offline image {lecture['id']}/{visual['id']}")
+            mime=mime_by_suffix.get(path.suffix.lower())
+            if not mime: fail(f"Unsupported offline image type: {asset_relative}")
+            mapping[source]=f"data:{mime};base64,"+base64.b64encode(path.read_bytes()).decode('ascii')
+    serialized=json.dumps(mapping,ensure_ascii=False,separators=(',',':')).replace('</',r'<\/')
+    return f"globalThis.MEQOfflineAssetMap = Object.freeze({serialized});"
 
-def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
-    root = Path(root)
-    lecture_dir = root / "lectures"
-    catalog_path = lecture_dir / "catalog.json"
-    if not catalog_path.is_file():
-        raise SystemExit("Missing lectures/catalog.json")
+def build_lecture_extensions(root:Path|str=Path('.'))->str:
+    data=load_course_packs(root)
+    courses=[]; subjects=[]
+    for pack in data['packs']:
+        reg=pack['entry']; man=pack['manifest']
+        courses.append({'id':reg['id'],'label':reg['label'],'order':reg['order'],'description':man['description'],'defaultSubject':man['defaultSubject']})
+        subjects.extend({'id':s['id'],'label':s['label'],'order':s['order'],'courseKey':reg['id']} for s in man['subjects'])
+    def dump(value):return json.dumps(value,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')
+    source_lectures=[]; lecture_courses={}
+    for lecture in data['lectures']:
+        source=copy.deepcopy(lecture); lecture_courses[source['id']]=source.pop('courseKey'); source_lectures.append(source)
+    return """(() => {
+  const incomingCourses = %s;
+  const incomingSubjects = %s;
+  const incomingLectureCourses = %s;
+  const incomingLectures = %s;
+  const existingIds = new Set(lectures.map(item => item.id));
+  courses.splice(0, courses.length, ...incomingCourses);
+  subjects.splice(0, subjects.length, ...incomingSubjects);
+  if (!courses.some(course => course.id === activeCourse)) activeCourse = %s;
+  const selectedCourse = courses.find(course => course.id === activeCourse) || courses[0];
+  const availableSubjects = subjects.filter(subject => subject.courseKey === selectedCourse?.id);
+  if (!availableSubjects.some(subject => subject.id === activeSubject)) {
+    activeSubject = availableSubjects.some(subject => subject.id === selectedCourse?.defaultSubject) ? selectedCourse.defaultSubject : (availableSubjects[0]?.id || '');
+  }
+  incomingLectures.forEach(lecture => {
+    lecture.courseKey = incomingLectureCourses[lecture.id];
+    for (const key of ['subtopics','cases','coreShorts','imageQuestions','detailedShorts','rapid']) if (!Array.isArray(lecture[key])) lecture[key] = [];
+    lecture.cases.forEach(item => {
+      if (!Array.isArray(item.questions)) item.questions=[];
+      if (!Array.isArray(item.answer)) item.answer=[];
+      if (!Array.isArray(item.marking)) item.marking=[];
+      if (!Array.isArray(item.subtopics)) item.subtopics=[];
+      if (typeof item.scenario !== 'string') item.scenario='';
+      if (typeof item.ar !== 'string') item.ar='';
+      if (typeof item.trap !== 'string') item.trap='';
+      if (typeof item.memory !== 'string') item.memory='';
+    });
+    lecture.imageQuestions.forEach(item => {
+      if (!Array.isArray(item.questions)) item.questions=[];
+      if (!Array.isArray(item.answer)) item.answer=[];
+      if (!Array.isArray(item.subtopics)) item.subtopics=[];
+      if (typeof item.prompt !== 'string') item.prompt='';
+    });
+    if (!existingIds.has(lecture.id)) { existingIds.add(lecture.id); lectures.push(lecture); }
+  });
+  storage.set('medicalBankCourseV1', activeCourse);
+  storage.set('medicalBankSubjectV4', activeSubject);
+  populateCourseSelector();
+  populateSubjectSelector();
+  populateLectureFilter();
+  updateTopicOptions();
+  render();
+  validateBank();
+  setSidebarState();
+})();"""%(dump(courses),dump(subjects),dump(lecture_courses),dump(source_lectures),dump(data['registry']['defaultCourse']))
 
-    try:
-        catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise SystemExit(f"Could not read lecture catalog: {error}") from error
-
-    if not isinstance(catalog, dict) or catalog.get("version") != 1:
-        raise SystemExit("Lecture catalog must be an object with version 1")
-    entries = catalog.get("lectures")
-    if not isinstance(entries, list) or not entries:
-        raise SystemExit("Lecture catalog has no lectures")
-
-    lectures: list[dict] = []
-    seen_ids: set[str] = set()
-    seen_files: set[Path] = set()
-    base = lecture_dir.resolve()
-    data_dir = (lecture_dir / "data").resolve()
-
-    for index, entry in enumerate(entries, start=1):
-        if not isinstance(entry, dict):
-            raise SystemExit(f"Lecture catalog entry {index} is not an object")
-
-        lecture_id = entry.get("id")
-        relative_file = entry.get("file")
-        expected_counts = entry.get("expectedCounts")
-        if not _non_empty_string(lecture_id) or not _non_empty_string(relative_file):
-            raise SystemExit(f"Lecture catalog entry {index} is incomplete")
-        if lecture_id in seen_ids:
-            raise SystemExit(f"Lecture catalog contains duplicate id: {lecture_id}")
-        if not isinstance(expected_counts, dict) or set(expected_counts) != set(LECTURE_LIST_KEYS):
-            raise SystemExit(f"Lecture catalog entry {lecture_id} must define all expected counts")
-
-        source_path = (lecture_dir / relative_file).resolve()
-        if not source_path.is_relative_to(base):
-            raise SystemExit(f"Lecture catalog path escapes lectures directory: {relative_file}")
-        if source_path.suffix != ".json" or source_path.parent != data_dir:
-            raise SystemExit(f"Lecture source must be a JSON file under lectures/data: {relative_file}")
-        if source_path in seen_files:
-            raise SystemExit(f"Lecture catalog reuses source file: {relative_file}")
-        if not source_path.is_file():
-            raise SystemExit(f"Lecture source is missing: {relative_file}")
-
-        try:
-            lecture = json.loads(source_path.read_text(encoding="utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as error:
-            raise SystemExit(f"Could not read lecture source {relative_file}: {error}") from error
-
-        lectures.append(validate_lecture(
-            lecture,
-            label=f"JSON {lecture_id}",
-            expected_id=lecture_id,
-            expected_counts=expected_counts,
-        ))
-        seen_ids.add(lecture_id)
-        seen_files.add(source_path)
-
-    unlisted_files = sorted(
-        path.relative_to(lecture_dir).as_posix()
-        for path in (lecture_dir / "data").glob("*.json")
-        if path.resolve() not in seen_files
-    )
-    if unlisted_files:
-        raise SystemExit("Lecture data files are not listed in catalog.json: " + ", ".join(unlisted_files))
-
-    return lectures
-
-
-def _batch_extension(lectures_to_add: list[dict]) -> str:
-    serialized = json.dumps(lectures_to_add, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-    return (
-        "(() => {\n"
-        f"  const incomingLectures = {serialized};\n"
-        "  const existingIds = new Set(lectures.map(item => item.id));\n"
-        "  const normalize = lecture => {\n"
-        "    for (const key of ['subtopics','cases','coreShorts','imageQuestions','detailedShorts','rapid']) {\n"
-        "      if (!Array.isArray(lecture[key])) lecture[key] = [];\n"
-        "    }\n"
-        "    lecture.cases.forEach(item => {\n"
-        "      if (!Array.isArray(item.questions)) item.questions = [];\n"
-        "      if (!Array.isArray(item.answer)) item.answer = [];\n"
-        "      if (!Array.isArray(item.marking)) item.marking = [];\n"
-        "      if (!Array.isArray(item.subtopics)) item.subtopics = [];\n"
-        "      if (typeof item.scenario !== 'string') item.scenario = '';\n"
-        "      if (typeof item.ar !== 'string') item.ar = '';\n"
-        "      if (typeof item.trap !== 'string') item.trap = '';\n"
-        "      if (typeof item.memory !== 'string') item.memory = '';\n"
-        "    });\n"
-        "    lecture.imageQuestions.forEach(item => {\n"
-        "      if (!Array.isArray(item.questions)) item.questions = [];\n"
-        "      if (!Array.isArray(item.answer)) item.answer = [];\n"
-        "      if (!Array.isArray(item.subtopics)) item.subtopics = [];\n"
-        "      if (typeof item.prompt !== 'string') item.prompt = '';\n"
-        "    });\n"
-        "    return lecture;\n"
-        "  };\n"
-        "  incomingLectures.forEach(normalize);\n"
-        "  const added = incomingLectures.filter(item => !existingIds.has(item.id));\n"
-        "  if (!added.length) return;\n"
-        "  lectures.push(...added);\n"
-        "  lectures.sort((a,b) => a.subjectKey.localeCompare(b.subjectKey) || a.order - b.order);\n"
-        "  populateLectureFilter();\n"
-        "  updateTopicOptions();\n"
-        "  render();\n"
-        "  validateBank();\n"
-        "  setSidebarState();\n"
-        "})();"
-    )
-
-
-def build_lecture_extensions(root: Path | str = Path(".")) -> str:
-    return _batch_extension(load_json_lectures(root))
-
-
-if __name__ == "__main__":
-    print(build_lecture_extensions())
+if __name__=='__main__': print(build_lecture_extensions())
