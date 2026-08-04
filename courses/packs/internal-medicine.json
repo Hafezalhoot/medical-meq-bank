@@ -1,0 +1,46 @@
+{
+  "$schema": "../course-pack.schema.json",
+  "version": 1,
+  "id": "internal-medicine",
+  "label": "Internal Medicine",
+  "order": 2,
+  "description": "Independent future content pack for Internal Medicine lectures.",
+  "defaultSubject": "cardiology",
+  "subjects": [
+    {
+      "id": "cardiology",
+      "label": "Cardiology",
+      "order": 1
+    },
+    {
+      "id": "chest",
+      "label": "Chest Medicine",
+      "order": 2
+    },
+    {
+      "id": "gastroenterology",
+      "label": "Gastroenterology",
+      "order": 3
+    },
+    {
+      "id": "nephrology",
+      "label": "Nephrology",
+      "order": 4
+    },
+    {
+      "id": "endocrinology",
+      "label": "Endocrinology",
+      "order": 5
+    },
+    {
+      "id": "hematology",
+      "label": "Hematology",
+      "order": 6
+    },
+    {
+      "id": "rheumatology",
+      "label": "Rheumatology",
+      "order": 7
+    }
+  ]
+}

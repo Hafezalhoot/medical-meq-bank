@@ -1,0 +1,32 @@
+{
+  "$schema": "../course-pack.schema.json",
+  "version": 1,
+  "id": "surgery",
+  "label": "Surgery",
+  "order": 1,
+  "description": "Surgical question bank content pack. Existing progress IDs remain unchanged.",
+  "defaultSubject": "urology",
+  "lectureCatalog": "../../lectures/catalog.json",
+  "subjects": [
+    {
+      "id": "urology",
+      "label": "Urology",
+      "order": 1
+    },
+    {
+      "id": "general",
+      "label": "General Surgery",
+      "order": 2
+    },
+    {
+      "id": "git",
+      "label": "GIT Surgery",
+      "order": 3
+    },
+    {
+      "id": "neurosurgery",
+      "label": "Neurosurgery",
+      "order": 4
+    }
+  ]
+}

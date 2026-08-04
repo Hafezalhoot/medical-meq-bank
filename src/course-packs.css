@@ -1,0 +1,7 @@
+.course-select{margin-bottom:4px}
+.course-hint{display:block;margin-bottom:14px}
+.course-panel-label{margin-top:0}
+.hero-panel .course-panel-label~label[for="subjectSelector"]{margin-top:12px}
+@media (max-width:700px){
+  .course-hint{margin-bottom:10px}
+}

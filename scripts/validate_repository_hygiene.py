@@ -14,7 +14,7 @@ FORBIDDEN_NAMES = {".DS_Store"}
 
 def tracked_files() -> list[str]:
     result = subprocess.run(
-        ["git", "ls-files", "-z"],
+        ["git", "-c", f"safe.directory={ROOT}", "ls-files", "-z"],
         cwd=ROOT,
         check=True,
         stdout=subprocess.PIPE,
