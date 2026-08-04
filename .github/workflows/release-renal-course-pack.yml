@@ -54,7 +54,7 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          rm -rf .staging
+          rm -rf .staging .coursepack-staging
           rm -f ci-course-pack-trigger.txt
           rm -f .github/workflows/stage-course-pack.yml
           rm -f .github/workflows/stage-course-pack-diagnostics.yml
