@@ -7,6 +7,8 @@ required_files=(
   src/index.html
   src/app.css
   src/app.js
+  src/course-packs.template.js
+  src/course-packs.css
   src/progress-resilience.js
   src/lecture-loader.js
   src/pwa-client.js
@@ -28,23 +30,44 @@ required_files=(
   manifest.webmanifest
   service-worker.js
   version.json
+  courses/catalog.json
+  courses/catalog.schema.json
+  courses/course-pack.schema.json
+  courses/packs/surgery.json
+  courses/packs/internal-medicine.json
+  courses/packs/surgery-baseline.json
+  assets-source/renal/manifest.json
+  assets-source/renal/rt-i01-gross-rcc.avif.b64
+  assets-source/renal/rt-i02-rcc-contrast-ct.avif.b64
+  assets-source/renal/rt-i03-wilms-clinical.avif.b64
+  assets-source/renal/rt-i04-wilms-ct.avif.b64
+  assets-source/renal/rt-i05-utuc-renal-pelvis-ct.avif.b64
+  assets-source/renal/rt-i06-goblet-sign.avif.b64
   lectures/catalog.json
   lectures/catalog.schema.json
   lectures/lecture.schema.json
+  lectures/templates/renal-parts/urology-renal-tumors.part01.jsonpart
+  lectures/templates/renal-parts/urology-renal-tumors.part02.jsonpart
+  lectures/templates/renal-parts/urology-renal-tumors.part03.jsonpart
+  lectures/templates/renal-parts/urology-renal-tumors.part04.jsonpart
   lectures/payload-fixes/urology-urolithiasis.part05.1
   lectures/payload-fixes/urology-urolithiasis.part05.2
   lectures/payload-fixes/urology-urolithiasis.part05.3
   tools/build_app.py
   tools/finalize_offline.py
+  tools/finalize_course_packs.py
   tools/lecture_builder.py
   tools/materialize_verified_lectures_v2.py
   tools/materialize_verified_lectures_v3.py
+  tools/materialize_renal_tumors.py
   scripts/audit_repository.py
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
   scripts/validate_runtime_extensions.py
   scripts/validate_progress_resilience.py
+  scripts/validate_course_packs.py
   scripts/validate_lecture_images.py
+  tests/course-packs.spec.js
 )
 
 for required in "${required_files[@]}"; do
@@ -62,24 +85,30 @@ fi
 python3 -m py_compile \
   tools/build_app.py \
   tools/finalize_offline.py \
+  tools/finalize_course_packs.py \
   tools/lecture_builder.py \
   tools/materialize_verified_lectures_v2.py \
   tools/materialize_verified_lectures_v3.py \
+  tools/materialize_renal_tumors.py \
   scripts/audit_repository.py \
   scripts/validate_build.py \
   scripts/validate_mobile_filters.py \
   scripts/validate_runtime_extensions.py \
   scripts/validate_progress_resilience.py \
+  scripts/validate_course_packs.py \
   scripts/validate_lecture_images.py
 
 python3 tools/materialize_verified_lectures_v3.py
+python3 tools/materialize_renal_tumors.py
 python3 scripts/validate_lecture_images.py
 
 node --check src/app.js
+node --check src/course-packs.template.js
 node --check src/progress-resilience.js
 node --check src/lecture-loader.js
 node --check src/pwa-client.js
 node --check src/print-manager.js
+node --check tests/course-packs.spec.js
 
 rm -rf "$OUTPUT"
 mkdir -p "$OUTPUT/lectures/data"
@@ -117,6 +146,9 @@ python3 tools/build_app.py "$OUTPUT"
 
 # Publish metadata after the builder has patched the service worker.
 install -m 0644 manifest.webmanifest version.json "$OUTPUT/"
+python3 tools/finalize_course_packs.py
 python3 tools/finalize_offline.py
+node --check "$OUTPUT/course-packs.js"
+python3 scripts/validate_course_packs.py
 
-echo "Medical MEQ Bank prepared in $OUTPUT from split reviewable source files"
+echo "Medical MEQ Bank prepared in $OUTPUT from independent course packs and split reviewable lecture files"
