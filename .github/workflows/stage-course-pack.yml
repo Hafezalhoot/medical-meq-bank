@@ -1,19 +1,16 @@
 name: Stage course pack payload
 
 on:
-  push:
-    branches:
-      - agent/course-packs-and-renal-tumors
-    paths:
-      - '.staging/**'
-      - '.github/workflows/stage-course-pack.yml'
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
 
 permissions:
   contents: write
 
 jobs:
   apply:
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && github.head_ref == 'agent/course-packs-and-renal-tumors'
     runs-on: ubuntu-latest
     steps:
       - name: Check out staging branch
