@@ -150,12 +150,10 @@ def main() -> None:
     if not renal or renal.get('expectedCounts') != expected_renal:
         fail('Renal Tumors lecture is missing or has unexpected counts')
 
-    app_source = (ROOT / 'src' / 'app.js').read_text(encoding='utf-8')
-    if 'const subjects = [];' not in app_source:
-        fail('subject list is still hard-coded in app.js')
-    for legacy_label in ('"Urology"','"General Surgery"','"GIT Surgery"','"Neurosurgery"'):
-        if legacy_label in app_source[:800]:
-            fail('legacy subject configuration remains at the top of app.js')
+    course_template = (ROOT / 'src' / 'course-packs.template.js').read_text(encoding='utf-8')
+    for marker in ('MEQCourseRegistry', 'subjects.splice(0, subjects.length', 'catalogForSubject', 'allSubjectKeys'):
+        if marker not in course_template:
+            fail(f'course runtime does not own subject configuration: {marker}')
 
     dist = ROOT / 'dist'
     if dist.is_dir():
