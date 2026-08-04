@@ -9,14 +9,12 @@
     lecture.cases.forEach(item => {
       if (!Array.isArray(item.questions)) item.questions = [];
       if (!Array.isArray(item.answer)) item.answer = [];
-      if (!Array.isArray(item.marking) || !item.marking.length) {
-        item.marking = [`Complete lecture-based model answer - ${item.marks || 0} marks`];
-      }
+      if (!Array.isArray(item.marking)) item.marking = [];
       if (!Array.isArray(item.subtopics)) item.subtopics = [];
-      if (typeof item.scenario !== 'string') item.scenario = item.title || 'Clinical case';
+      if (typeof item.scenario !== 'string') item.scenario = '';
       if (typeof item.ar !== 'string') item.ar = '';
-      if (typeof item.trap !== 'string') item.trap = 'Keep the answer within the lecture pathway.';
-      if (typeof item.memory !== 'string') item.memory = item.title || 'Lecture recall';
+      if (typeof item.trap !== 'string') item.trap = '';
+      if (typeof item.memory !== 'string') item.memory = '';
     });
     lecture.coreShorts.forEach(item => {
       if (!Array.isArray(item.subtopics)) item.subtopics = [];
@@ -28,7 +26,7 @@
       if (!Array.isArray(item.questions)) item.questions = [];
       if (!Array.isArray(item.answer)) item.answer = [];
       if (!Array.isArray(item.subtopics)) item.subtopics = [];
-      if (typeof item.prompt !== 'string') item.prompt = item.title || 'Identify the illustrated finding.';
+      if (typeof item.prompt !== 'string') item.prompt = '';
     });
     return lecture;
   };
@@ -53,22 +51,24 @@
     }
   };
 
-  const showLoadError = (subjectKey, error) => {
-    console.error(`Could not load ${subjectKey} lectures:`, error);
-    if (subjectKey === activeSubject && empty && emptyMessage) {
+  const showLoadError = (subjectKey, failures) => {
+    const failedIds = failures.map(failure => failure.entry.id);
+    console.error(`Could not load ${subjectKey} lectures:`, failures);
+    if (subjectKey === activeSubject && empty && emptyMessage && !visibleLectures().length) {
       empty.classList.add('show');
       emptyMessage.textContent = 'Lectures could not be loaded. Check the connection and try again.';
     }
     if (typeof showToast === 'function') {
-      showToast('Lectures could not be loaded. Try again while online.');
+      showToast(`${failedIds.length} lecture${failedIds.length === 1 ? '' : 's'} could not be loaded.`);
     }
+    document.dispatchEvent(new CustomEvent('meq:lecture-load-errors', {
+      detail: {subjectKey, lectureIds: failedIds}
+    }));
   };
 
   const readJson = async url => {
     const response = await fetch(url, {credentials: 'same-origin'});
-    if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText} for ${url}`);
-    }
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText} for ${url}`);
     return response.json();
   };
 
@@ -80,9 +80,7 @@
         }
         const ids = new Set();
         catalog.lectures.forEach((entry, index) => {
-          if (!entry || typeof entry !== 'object') {
-            throw new Error(`Invalid catalog entry ${index + 1}`);
-          }
+          if (!entry || typeof entry !== 'object') throw new Error(`Invalid catalog entry ${index + 1}`);
           for (const key of ['id', 'title', 'subjectKey', 'file']) {
             if (typeof entry[key] !== 'string' || !entry[key].trim()) {
               throw new Error(`Catalog entry ${index + 1} has invalid ${key}`);
@@ -145,26 +143,39 @@
         const entries = catalog.lectures
           .filter(entry => entry.subjectKey === subjectKey)
           .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
-
         const missingEntries = entries.filter(entry => !loadedLectureIds.has(entry.id));
-        const loaded = await Promise.all(missingEntries.map(async entry => {
+
+        const settled = await Promise.allSettled(missingEntries.map(async entry => {
           const fileUrl = new URL(entry.file, new URL(CATALOG_URL, location.href));
-          return validateLecture(await readJson(fileUrl.href), entry);
+          return {entry, lecture: validateLecture(await readJson(fileUrl.href), entry)};
         }));
 
-        for (const lecture of loaded) {
-          if (loadedLectureIds.has(lecture.id)) continue;
-          loadedLectureIds.add(lecture.id);
-          lectures.push(lecture);
-        }
+        const failures = [];
+        settled.forEach((result, index) => {
+          const entry = missingEntries[index];
+          if (result.status === 'rejected') {
+            failures.push({entry, error: String(result.reason)});
+            return;
+          }
+          const lecture = result.value.lecture;
+          if (!loadedLectureIds.has(lecture.id)) {
+            loadedLectureIds.add(lecture.id);
+            lectures.push(lecture);
+          }
+        });
+
         if (subjectKey === activeSubject) refreshApplication();
-        return entries.map(entry => entry.id);
+        if (failures.length) showLoadError(subjectKey, failures);
+        return {
+          loaded: entries.map(entry => entry.id).filter(id => loadedLectureIds.has(id)),
+          failed: failures.map(failure => failure.entry.id)
+        };
       } finally {
         if (affectsActiveView && subjectKey === activeSubject) setBusy(false, subjectKey);
       }
     })().catch(error => {
       subjectLoads.delete(subjectKey);
-      showLoadError(subjectKey, error);
+      showLoadError(subjectKey, [{entry: {id: subjectKey}, error: String(error)}]);
       throw error;
     });
 
@@ -175,9 +186,14 @@
   const loadAll = async () => {
     const catalog = await loadCatalog();
     const subjectKeys = [...new Set(catalog.lectures.map(entry => entry.subjectKey))];
-    await Promise.all(subjectKeys.map(loadSubject));
+    const results = await Promise.allSettled(subjectKeys.map(loadSubject));
     refreshApplication();
-    return [...loadedLectureIds];
+    return {
+      lectureIds: [...loadedLectureIds],
+      failedSubjects: results
+        .map((result, index) => result.status === 'rejected' ? subjectKeys[index] : null)
+        .filter(Boolean)
+    };
   };
 
   subjectSelector?.addEventListener('change', () => {

@@ -96,8 +96,8 @@
         "cases": 12,
         "coreShorts": 30,
         "imageQuestions": 8,
-        "detailedShorts": 55,
-        "rapid": 30
+        "detailedShorts": 59,
+        "rapid": 34
       }
     },
     {
@@ -110,8 +110,8 @@
         "cases": 12,
         "coreShorts": 30,
         "imageQuestions": 10,
-        "detailedShorts": 55,
-        "rapid": 30
+        "detailedShorts": 60,
+        "rapid": 35
       }
     }
   ]
