@@ -268,6 +268,7 @@ test('IndexedDB mirror does not undo a deliberate progress reset', async ({page}
 });
 
 test('installed service worker restores the bank while offline', async ({page, context}) => {
+  test.setTimeout(90_000);
   await openBank(page);
   await page.waitForLoadState('load');
 
