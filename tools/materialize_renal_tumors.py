@@ -10,7 +10,8 @@ import hashlib
 import json
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'lectures' / 'templates' / 'urology-renal-tumors.json'
+TEMPLATE_DIR = ROOT / 'lectures' / 'templates' / 'renal-parts'
+TEMPLATE_PATTERN = 'urology-renal-tumors.part*.jsonpart'
 MANIFEST = ROOT / 'assets-source' / 'renal' / 'manifest.json'
 OUTPUT = ROOT / 'lectures' / 'data' / 'urology-renal-tumors.json'
 PREFIX = 'data:image/avif;base64,'
@@ -28,7 +29,13 @@ def load_json(path: Path) -> object:
 
 
 def main() -> None:
-    lecture = load_json(TEMPLATE)
+    parts = sorted(TEMPLATE_DIR.glob(TEMPLATE_PATTERN))
+    if not parts:
+        fail('lecture template parts are missing')
+    try:
+        lecture = json.loads(''.join(path.read_text(encoding='utf-8') for path in parts))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        fail(f'cannot assemble lecture template: {error}')
     manifest = load_json(MANIFEST)
     if not isinstance(lecture, dict) or lecture.get('id') != 'urology-renal-tumors':
         fail('lecture template has an unexpected id')
