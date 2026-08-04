@@ -19,25 +19,12 @@ const REQUIRED_ASSETS = [
   OFFLINE_PAGE,
   ...LECTURE_ASSETS
 ];
-const OPTIONAL_ASSETS = [
-  './review-filter.css',
-  './review-filter.js',
-  './responsive-sidebars.js',
-  './mobile-filters.css',
-  './mobile-filters.js',
-  './search-optimization.js',
-  './print-manager.css',
-  './print-manager.js',
-  './back-to-top.css',
-  './back-to-top.js'
-];
 
 self.addEventListener('install', event => {
   const isFirstInstall = !self.registration.active;
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(REQUIRED_ASSETS);
-    await Promise.allSettled(OPTIONAL_ASSETS.map(asset => cache.add(asset)));
     if (isFirstInstall) await self.skipWaiting();
   })());
 });
