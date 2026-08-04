@@ -58,6 +58,7 @@ jobs:
           node --check tests/accessibility.spec.js
           node --check tests/hardening.spec.js
           node --check tests/layout.spec.js
+          node --check tests/mobile-filters.spec.js
           node --check tests/performance.spec.js
           node --check tests/print.spec.js
           node --check tests/service-worker-assets.spec.js
