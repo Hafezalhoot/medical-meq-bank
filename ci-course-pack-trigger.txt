@@ -1,1 +1,0 @@
-Trigger the final pull-request quality gate after verified course-pack materialization.
