@@ -114,6 +114,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FINAL_SHA: ${{ steps.commit.outputs.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         shell: bash
         run: |
           set -euxo pipefail
@@ -124,7 +125,7 @@ jobs:
           final_sha = os.environ['FINAL_SHA']
           owner = 'Hafezalhoot'
           repo = 'medical-meq-bank'
-          number = 13
+          number = int(os.environ['PR_NUMBER'])
           headers = {
               'Authorization': f'Bearer {token}',
               'Accept': 'application/vnd.github+json',
@@ -150,7 +151,6 @@ jobs:
               raise SystemExit(f"GitHub head {pull['head']['sha']} did not reach tested SHA {final_sha}")
 
           if pull.get('draft'):
-              graphql_headers = dict(headers)
               graphql_payload = {
                   'query': 'mutation($id:ID!){markPullRequestReadyForReview(input:{pullRequestId:$id}){pullRequest{isDraft}}}',
                   'variables': {'id': pull['node_id']}
@@ -173,7 +173,7 @@ jobs:
               f'https://api.github.com/repos/{owner}/{repo}/pulls/{number}/merge',
               'PUT',
               {
-                  'commit_title': 'Add Renal Tumours and future-ready medical course packs (#13)',
+                  'commit_title': f'Add Renal Tumours and future-ready medical course packs (#{number})',
                   'commit_message': 'Lecture-first Renal Tumours bank plus Course → Subject content-pack architecture, compatibility guards, images, offline support and full regressions.',
                   'merge_method': 'squash',
                   'sha': final_sha
