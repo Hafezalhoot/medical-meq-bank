@@ -29,6 +29,35 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          check_blob() {
+            local expected="$1"
+            local path="$2"
+            local actual
+            actual="$(git hash-object "$path")"
+            if [ "$actual" != "$expected" ]; then
+              echo "$path blob checksum is $actual; expected $expected" >&2
+              exit 1
+            fi
+          }
+          check_blob be281077be043924f14954ce0bd21f0c9ed3e3a7 .coursepack-staging/fix-tail02/p-00
+          check_blob 54d2bdb921ec38089eb02ce0f354de66b55aec7b .coursepack-staging/fix-tail02/p-01
+          check_blob a42f964ba06e0660fac5c7addf7bc26b6584f57b .coursepack-staging/fix-tail02/p-02
+          check_blob 2cf8f439b4fca53ec03e41c38740c33bcec43ed4 .coursepack-staging/fix-tail02/p-03
+          check_blob 384f24d336cd2ad7e627eb6de506996f53048bd4 .coursepack-staging/fix-tail02/p-04
+          check_blob 8011d2fc1603025999b163f28850c72133528617 .coursepack-staging/fix-tail02/p-05
+          check_blob e0818564be7c64008912a66eb07b03cecf0c48f6 .coursepack-staging/fix-tail02/p-06
+          check_blob bdc3e823a17708866b83e3fdb30fa18cb2a1de38 .coursepack-staging/fix-tail02/p-07
+          check_blob fb59fd0b16927e1c28fb370e1558b88b09d6e3f3 .coursepack-staging/fix-tail02/p-08
+          check_blob 97f9b14e75c121fbddd858e5ca8a4eb3f088eb63 .coursepack-staging/fix-tail05/p-00
+          check_blob 59ee8f0d41df1d7b22c25593cbc3100808b73a30 .coursepack-staging/fix-tail05/p-01
+          check_blob f37a148b9ffc1bd01ba67f8dc5fe51db608b2eb2 .coursepack-staging/fix-tail05/p-02
+          check_blob dcf5ca1451474f68425ca521a27935cde58de6ac .coursepack-staging/fix-tail05/p-03
+          check_blob f71ef0eded57f976cc67ed235bf2a7d1f1bcb433 .coursepack-staging/fix-tail05/p-04
+          check_blob fa4fbfde4781bf41351b4371b88a1f2aa43d9428 .coursepack-staging/fix-tail05/p-05
+          check_blob 37b2309ab2e3e13cbb3ce51457c8555bde46e3e6 .coursepack-staging/fix-tail05/p-06
+          check_blob 0cce3e3a7c13efa58c9648df31feed2df37987e6 .coursepack-staging/fix-tail05/p-07
+          check_blob 612a9b19d08c2b13c049c9e56a9b489054e1ffdd .coursepack-staging/fix-tail05/p-08
+
           cat \
             .coursepack-staging/part-00.b64 \
             .coursepack-staging/part-01.b64 \
@@ -43,10 +72,10 @@ jobs:
             .coursepack-staging/block-06.b64 \
             .coursepack-staging/tail-00.b64 \
             .coursepack-staging/tail-01.b64 \
-            .coursepack-staging/tail-02.b64 \
+            .coursepack-staging/fix-tail02/p-* \
             .coursepack-staging/tail-03.b64 \
             .coursepack-staging/tail-04.b64 \
-            .coursepack-staging/tail-05.b64 \
+            .coursepack-staging/fix-tail05/p-* \
             .coursepack-staging/tail-06.b64 \
             .coursepack-staging/tail-07.b64 \
             > /tmp/coursepack.b64
