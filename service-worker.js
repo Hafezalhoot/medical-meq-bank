@@ -13,7 +13,6 @@ const REQUIRED_ASSETS = [
   './pwa-client.js',
   './manifest.webmanifest',
   './version.json',
-  './lectures/catalog.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
