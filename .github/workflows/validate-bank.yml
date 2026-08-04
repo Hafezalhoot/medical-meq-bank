@@ -34,17 +34,20 @@ jobs:
           python3 scripts/validate_mobile_filters.py
           python3 scripts/validate_runtime_extensions.py
           python3 scripts/validate_progress_resilience.py
+          python3 scripts/validate_course_packs.py
           python3 scripts/audit_repository.py
           python3 scripts/validate_repository_hygiene.py
 
       - name: Validate JavaScript syntax
         run: |
           node --check src/app.js
+          node --check src/course-packs.template.js
           node --check src/progress-resilience.js
           node --check src/lecture-loader.js
           node --check src/pwa-client.js
           node --check src/print-manager.js
           node --check dist/app.js
+          node --check dist/course-packs.js
           node --check dist/progress-resilience.js
           node --check dist/lecture-loader.js
           node --check dist/pwa-client.js
@@ -56,6 +59,7 @@ jobs:
           node --check back-to-top.js
           node --check tests/app.spec.js
           node --check tests/accessibility.spec.js
+          node --check tests/course-packs.spec.js
           node --check tests/hardening.spec.js
           node --check tests/layout.spec.js
           node --check tests/mobile-filters.spec.js
@@ -69,15 +73,24 @@ jobs:
       - name: Verify required source and deployment files
         run: |
           test -s package-lock.json
+          test -s src/course-packs.template.js
+          test -s src/course-packs.css
           test -s src/print-manager.css
           test -s src/print-manager.js
+          test -s courses/catalog.json
+          test -s courses/packs/surgery.json
+          test -s courses/packs/internal-medicine.json
           test -s dist/index.html
           test -s dist/app.css
           test -s dist/app.js
+          test -s dist/course-packs.css
+          test -s dist/course-packs.js
           test -s dist/progress-resilience.js
           test -s dist/lecture-loader.js
           test -s dist/pwa-client.js
+          test -s dist/courses/catalog.json
           test -s dist/lectures/catalog.json
+          test -s dist/lectures/data/urology-renal-tumors.json
           test -s dist/404.html
           test -s dist/_headers
           test -s dist/offline/Medical_MEQ_Review_Bank_Offline.html
