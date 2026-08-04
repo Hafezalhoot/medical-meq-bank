@@ -29,56 +29,60 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          check_blob() {
+          check_normalized() {
             local expected="$1"
             local path="$2"
             local actual
-            actual="$(git hash-object "$path")"
+            actual="$(tr -d '\r\n' < "$path" | sha256sum | awk '{print $1}')"
             if [ "$actual" != "$expected" ]; then
-              echo "$path blob checksum is $actual; expected $expected" >&2
+              echo "$path normalized checksum is $actual; expected $expected" >&2
               exit 1
             fi
           }
-          check_blob be281077be043924f14954ce0bd21f0c9ed3e3a7 .coursepack-staging/fix-tail02/p-00
-          check_blob 54d2bdb921ec38089eb02ce0f354de66b55aec7b .coursepack-staging/fix-tail02/p-01
-          check_blob a42f964ba06e0660fac5c7addf7bc26b6584f57b .coursepack-staging/fix-tail02/p-02
-          check_blob 2cf8f439b4fca53ec03e41c38740c33bcec43ed4 .coursepack-staging/fix-tail02/p-03
-          check_blob 384f24d336cd2ad7e627eb6de506996f53048bd4 .coursepack-staging/fix-tail02/p-04
-          check_blob 8011d2fc1603025999b163f28850c72133528617 .coursepack-staging/fix-tail02/p-05
-          check_blob e0818564be7c64008912a66eb07b03cecf0c48f6 .coursepack-staging/fix-tail02/p-06
-          check_blob bdc3e823a17708866b83e3fdb30fa18cb2a1de38 .coursepack-staging/fix-tail02/p-07
-          check_blob fb59fd0b16927e1c28fb370e1558b88b09d6e3f3 .coursepack-staging/fix-tail02/p-08
-          check_blob 97f9b14e75c121fbddd858e5ca8a4eb3f088eb63 .coursepack-staging/fix-tail05/p-00
-          check_blob 59ee8f0d41df1d7b22c25593cbc3100808b73a30 .coursepack-staging/fix-tail05/p-01
-          check_blob f37a148b9ffc1bd01ba67f8dc5fe51db608b2eb2 .coursepack-staging/fix-tail05/p-02
-          check_blob dcf5ca1451474f68425ca521a27935cde58de6ac .coursepack-staging/fix-tail05/p-03
-          check_blob f71ef0eded57f976cc67ed235bf2a7d1f1bcb433 .coursepack-staging/fix-tail05/p-04
-          check_blob fa4fbfde4781bf41351b4371b88a1f2aa43d9428 .coursepack-staging/fix-tail05/p-05
-          check_blob 37b2309ab2e3e13cbb3ce51457c8555bde46e3e6 .coursepack-staging/fix-tail05/p-06
-          check_blob 0cce3e3a7c13efa58c9648df31feed2df37987e6 .coursepack-staging/fix-tail05/p-07
-          check_blob 612a9b19d08c2b13c049c9e56a9b489054e1ffdd .coursepack-staging/fix-tail05/p-08
+          append_normalized() {
+            tr -d '\r\n' < "$1" >> /tmp/coursepack.b64
+          }
 
-          cat \
-            .coursepack-staging/part-00.b64 \
-            .coursepack-staging/part-01.b64 \
-            .coursepack-staging/part-02.b64 \
-            .coursepack-staging/rem-00.b64 \
-            .coursepack-staging/rem-01.b64 \
-            .coursepack-staging/block-01.b64 \
-            .coursepack-staging/block-02.b64 \
-            .coursepack-staging/block-03.b64 \
-            .coursepack-staging/block-04.b64 \
-            .coursepack-staging/block-05.b64 \
-            .coursepack-staging/block-06.b64 \
-            .coursepack-staging/tail-00.b64 \
-            .coursepack-staging/tail-01.b64 \
-            .coursepack-staging/fix-tail02/p-* \
-            .coursepack-staging/tail-03.b64 \
-            .coursepack-staging/tail-04.b64 \
-            .coursepack-staging/fix-tail05/p-* \
-            .coursepack-staging/tail-06.b64 \
-            .coursepack-staging/tail-07.b64 \
-            > /tmp/coursepack.b64
+          check_normalized eac200910275c6885f203f9b3d70e851e0998657ce651d2bbcc5f3014b52ed9c .coursepack-staging/fix-tail02/p-00
+          check_normalized d811b5d4f0561ff7b7e1c6c551368b98cd4e6d09bc27c2294f6ec87f5fc23b3c .coursepack-staging/fix-tail02/p-01
+          check_normalized 977b77727915717c247a8c0f4dfda292676f1860308bbae4e041250b6dcad2c2 .coursepack-staging/fix-tail02/p-02
+          check_normalized 3187ea10144c0b8a2b519007bf389b2db47cf1b54cddcb57ec21094fd9d6c344 .coursepack-staging/fix-tail02/p-03
+          check_normalized 4b2e56992b4c7194457f0a1e21b009214f17ca503684172464d6ec697d8ad4ae .coursepack-staging/fix-tail02/p-04
+          check_normalized 7d2e98b15b7196551f5690c7891ac0c9d232ad64ba6675bf5218e2cfe06dae2a .coursepack-staging/fix-tail02/p-05
+          check_normalized 1791109203fdc874b8df6f53297f34377b6af78d97d1201d8f861d1e937de463 .coursepack-staging/fix-tail02/p-06
+          check_normalized 5c1b513cccfeb17b9d7805a36eca504674169252f0080a6d6601ede055298e00 .coursepack-staging/fix-tail02/p-07
+          check_normalized 0e7441a592ace2b48f61f3932ca9d9e9e982c2d19170e8951fb65f197f912c99 .coursepack-staging/fix-tail02/p-08
+          check_normalized 4afcb8cfca6ab1cb42b0a67f6093add9e5ceb749a2fd183663a5011fe8d7c6b1 .coursepack-staging/fix-tail05/p-00
+          check_normalized 4641c919bdf01380f98b7fcf0c4ecc8b36b14c3ae5e5ba674bd6fc3a5b48b66a .coursepack-staging/fix-tail05/p-01
+          check_normalized 797021207a2697f13537218479946fe03893ebfc7fee28a43f223bb282f95107 .coursepack-staging/fix-tail05/p-02
+          check_normalized 7fbc7b877ec6ac3421dd8c500237c0fbf3b86e36f80e93cf701eb75b84d9ef7f .coursepack-staging/fix-tail05/p-03
+          check_normalized 35178f535862653097451726198524706a02410c0bd6a14e58cb3a9587e679d3 .coursepack-staging/fix-tail05/p-04
+          check_normalized 660dc66814c23b1d7553e0d302f6c19521978e6d70f7635cb9d44591d979cfe0 .coursepack-staging/fix-tail05/p-05
+          check_normalized 4fd503fc44291d275a6a651ae5b3b6917d62ac11afc306e5521a1737e246727c .coursepack-staging/fix-tail05/p-06
+          check_normalized 6a2bf953a949401c31f5637bd9613fb012d7b0e3d6be7ff7d858b5891fee80d7 .coursepack-staging/fix-tail05/p-07
+          check_normalized 10044b6723922ba00c9bc5a3ae8bd1013e23c442e0d60dc7b19e72c961ba36ff .coursepack-staging/fix-tail05/p-08
+
+          : > /tmp/coursepack.b64
+          append_normalized .coursepack-staging/part-00.b64
+          append_normalized .coursepack-staging/part-01.b64
+          append_normalized .coursepack-staging/part-02.b64
+          append_normalized .coursepack-staging/rem-00.b64
+          append_normalized .coursepack-staging/rem-01.b64
+          append_normalized .coursepack-staging/block-01.b64
+          append_normalized .coursepack-staging/block-02.b64
+          append_normalized .coursepack-staging/block-03.b64
+          append_normalized .coursepack-staging/block-04.b64
+          append_normalized .coursepack-staging/block-05.b64
+          append_normalized .coursepack-staging/block-06.b64
+          append_normalized .coursepack-staging/tail-00.b64
+          append_normalized .coursepack-staging/tail-01.b64
+          for path in .coursepack-staging/fix-tail02/p-*; do append_normalized "$path"; done
+          append_normalized .coursepack-staging/tail-03.b64
+          append_normalized .coursepack-staging/tail-04.b64
+          for path in .coursepack-staging/fix-tail05/p-*; do append_normalized "$path"; done
+          append_normalized .coursepack-staging/tail-06.b64
+          append_normalized .coursepack-staging/tail-07.b64
+
           base64 --decode /tmp/coursepack.b64 > /tmp/coursepack.tar.gz
           echo "4023a9207f89637375b0f51e6e7b112d2066dc9895abcf674f149984775b255b  /tmp/coursepack.tar.gz" | sha256sum --check
           tar -tzf /tmp/coursepack.tar.gz > /tmp/coursepack-files.txt
