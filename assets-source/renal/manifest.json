@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "rt-i01",
+      "source": "rt-i01-gross-rcc.avif.b64",
+      "bytes": 6634,
+      "sha256": "0bd58785d874f51e92f74d8190474378cbcfcd92deaa520b438d72b0c6ee8346"
+    },
+    {
+      "id": "rt-i02",
+      "source": "rt-i02-rcc-contrast-ct.avif.b64",
+      "bytes": 4023,
+      "sha256": "65eeabc75a9e056514cc5afcbf2bf1645f093250caa3ddb675ce8b1d0a32bf10"
+    },
+    {
+      "id": "rt-i03",
+      "source": "rt-i03-wilms-clinical.avif.b64",
+      "bytes": 5508,
+      "sha256": "6f2edfd07cf368af54720d11e6f4636f8ca5f87015db031b01758a3fd7c58e99"
+    },
+    {
+      "id": "rt-i04",
+      "source": "rt-i04-wilms-ct.avif.b64",
+      "bytes": 3736,
+      "sha256": "46e6e1463fc9c7da520c998c1716e662a1e0fac01dda5afdf4b8a7688510c88d"
+    },
+    {
+      "id": "rt-i05",
+      "source": "rt-i05-utuc-renal-pelvis-ct.avif.b64",
+      "bytes": 4261,
+      "sha256": "7ecd274d4c6b9eaacc842abcdc8f5d1ff9274358a0f012ef6ef5223e256a3a37"
+    },
+    {
+      "id": "rt-i06",
+      "source": "rt-i06-goblet-sign.avif.b64",
+      "bytes": 3634,
+      "sha256": "5ace477088fc3546089183ddb1f6af4183aa70fc099358ca5f852ba06e9764a0"
+    }
+  ]
+}
