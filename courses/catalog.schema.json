@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medical-meq-bank.local/schemas/course-catalog.schema.json",
+  "title": "Medical MEQ Course Catalog",
+  "type": "object",
+  "required": ["version", "defaultCourse", "courses"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"const": 1},
+    "defaultCourse": {"type": "string", "minLength": 1},
+    "courses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "order", "pack"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+          "label": {"type": "string", "minLength": 1},
+          "order": {"type": "number"},
+          "pack": {"type": "string", "pattern": "^packs/[A-Za-z0-9._-]+\\.json$"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
