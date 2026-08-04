@@ -1,0 +1,59 @@
+name: Stage course pack payload diagnostics
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]' && github.head_ref == 'agent/course-packs-and-renal-tumors'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out staging branch
+        uses: actions/checkout@v6
+        with:
+          ref: agent/course-packs-and-renal-tumors
+          fetch-depth: 0
+
+      - name: Verify and extract reviewed payloads
+        shell: bash
+        run: |
+          set -o pipefail
+          exec > >(tee /tmp/stage.log) 2>&1
+          set -euxo pipefail
+          cat .staging/heavy.b64.part00 .staging/heavy.b64.part01 .staging/heavy.b64.tail* > /tmp/heavy.b64
+          base64 --decode /tmp/heavy.b64 > /tmp/heavy.tar.gz
+          echo "a3aa48ae08de07dbc9ac349b5253d1b04707ee6a2bd532709106757e1e377bdd  /tmp/heavy.tar.gz" | sha256sum --check
+          cat .staging/small.b64.part* > /tmp/small.b64
+          base64 --decode /tmp/small.b64 > /tmp/small.tar.gz
+          echo "659edc9421f09fa520b20fbd2db39fbde7d336b3b3ddeed95bd05324aa7af021  /tmp/small.tar.gz" | sha256sum --check
+          tar -xzf /tmp/heavy.tar.gz -C .
+          tar -xzf /tmp/small.tar.gz -C .
+          rm -rf .staging
+          chmod +x build.sh scripts/validate_course_packs.py scripts/validate_lecture_images.py tools/build_app.py tools/lecture_builder.py
+          git status --short
+
+      - name: Commit exact verified files
+        shell: bash
+        run: |
+          set -o pipefail
+          exec > >(tee -a /tmp/stage.log) 2>&1
+          set -euxo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add Renal Tumours and course content packs"
+          git push origin HEAD:agent/course-packs-and-renal-tumors
+
+      - name: Upload staging diagnostics
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: course-pack-staging-diagnostics
+          path: /tmp/stage.log
+          if-no-files-found: warn
+          retention-days: 1
