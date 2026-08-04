@@ -1,5 +1,5 @@
 (() => {
-  const CATALOG_URL = './lectures/catalog.json';
+  const DEFAULT_CATALOG_URL = './lectures/catalog.json';
 
   const normalizeLecture = lecture => {
     if (!lecture || typeof lecture !== 'object') return lecture;
@@ -34,12 +34,18 @@
   lectures.forEach(normalizeLecture);
   const loadedLectureIds = new Set(lectures.map(lecture => lecture.id));
   const subjectLoads = new Map();
-  let catalogPromise = null;
+  const catalogPromises = new Map();
 
   const main = document.querySelector('main');
   const empty = document.getElementById('empty');
   const emptyMessage = document.getElementById('emptyMessage');
   const subjectSelector = document.getElementById('subjectSelector');
+
+  const catalogUrlForSubject = subjectKey => {
+    const configured = globalThis.MEQCourseRegistry?.catalogForSubject(subjectKey);
+    if (configured === null) return null;
+    return configured || DEFAULT_CATALOG_URL;
+  };
 
   const setBusy = (busy, subjectKey = activeSubject) => {
     main?.setAttribute('aria-busy', busy ? 'true' : 'false');
@@ -72,11 +78,12 @@
     return response.json();
   };
 
-  const loadCatalog = () => {
-    if (!catalogPromise) {
-      catalogPromise = readJson(CATALOG_URL).then(catalog => {
+  const loadCatalog = (catalogUrl = DEFAULT_CATALOG_URL) => {
+    if (!catalogUrl) return Promise.resolve({version: 1, lectures: []});
+    if (!catalogPromises.has(catalogUrl)) {
+      const promise = readJson(catalogUrl).then(catalog => {
         if (!catalog || catalog.version !== 1 || !Array.isArray(catalog.lectures)) {
-          throw new Error('Invalid lecture catalog');
+          throw new Error(`Invalid lecture catalog: ${catalogUrl}`);
         }
         const ids = new Set();
         catalog.lectures.forEach((entry, index) => {
@@ -91,11 +98,12 @@
         });
         return catalog;
       }).catch(error => {
-        catalogPromise = null;
+        catalogPromises.delete(catalogUrl);
         throw error;
       });
+      catalogPromises.set(catalogUrl, promise);
     }
-    return catalogPromise;
+    return catalogPromises.get(catalogUrl);
   };
 
   const validateLecture = (lecture, entry) => {
@@ -139,14 +147,20 @@
       if (affectsActiveView) setBusy(true, subjectKey);
 
       try {
-        const catalog = await loadCatalog();
+        const catalogUrl = catalogUrlForSubject(subjectKey);
+        if (!catalogUrl) {
+          if (subjectKey === activeSubject) refreshApplication();
+          return {loaded: [], failed: []};
+        }
+
+        const catalog = await loadCatalog(catalogUrl);
         const entries = catalog.lectures
           .filter(entry => entry.subjectKey === subjectKey)
           .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
         const missingEntries = entries.filter(entry => !loadedLectureIds.has(entry.id));
 
         const settled = await Promise.allSettled(missingEntries.map(async entry => {
-          const fileUrl = new URL(entry.file, new URL(CATALOG_URL, location.href));
+          const fileUrl = new URL(entry.file, new URL(catalogUrl, location.href));
           return {entry, lecture: validateLecture(await readJson(fileUrl.href), entry)};
         }));
 
@@ -184,8 +198,12 @@
   };
 
   const loadAll = async () => {
-    const catalog = await loadCatalog();
-    const subjectKeys = [...new Set(catalog.lectures.map(entry => entry.subjectKey))];
+    const configuredSubjects = globalThis.MEQCourseRegistry?.allSubjectKeys();
+    let subjectKeys = Array.isArray(configuredSubjects) ? [...new Set(configuredSubjects)] : [];
+    if (!subjectKeys.length) {
+      const catalog = await loadCatalog(DEFAULT_CATALOG_URL);
+      subjectKeys = [...new Set(catalog.lectures.map(entry => entry.subjectKey))];
+    }
     const results = await Promise.allSettled(subjectKeys.map(loadSubject));
     refreshApplication();
     return {
@@ -204,6 +222,7 @@
     loadSubject,
     loadAll,
     loadCatalog,
+    catalogUrlForSubject,
     isLoaded: lectureId => loadedLectureIds.has(lectureId),
     loadedLectureIds
   });
