@@ -1,13 +1,16 @@
 import {test, expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+test.use({serviceWorkers: 'block'});
+
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
     name: 'Medical MEQ & Short Question Review Bank'
   })).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
-  await expect.poll(async () => page.locator('.lecture').count()).toBeGreaterThan(0);
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
+  await expect(page.locator('.study-item').first()).toBeAttached();
 }
 
 async function auditPage(page) {
