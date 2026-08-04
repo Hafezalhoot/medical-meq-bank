@@ -35,9 +35,11 @@ required_files=(
   lectures/payload-fixes/urology-urolithiasis.part05.2
   lectures/payload-fixes/urology-urolithiasis.part05.3
   tools/build_app.py
+  tools/finalize_offline.py
   tools/lecture_builder.py
   tools/materialize_verified_lectures_v2.py
   tools/materialize_verified_lectures_v3.py
+  scripts/audit_repository.py
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
   scripts/validate_runtime_extensions.py
@@ -59,9 +61,11 @@ fi
 
 python3 -m py_compile \
   tools/build_app.py \
+  tools/finalize_offline.py \
   tools/lecture_builder.py \
   tools/materialize_verified_lectures_v2.py \
   tools/materialize_verified_lectures_v3.py \
+  scripts/audit_repository.py \
   scripts/validate_build.py \
   scripts/validate_mobile_filters.py \
   scripts/validate_runtime_extensions.py \
@@ -101,5 +105,6 @@ python3 tools/build_app.py "$OUTPUT"
 
 # Publish metadata after the builder has patched the service worker.
 install -m 0644 manifest.webmanifest version.json "$OUTPUT/"
+python3 tools/finalize_offline.py
 
 echo "Medical MEQ Bank prepared in $OUTPUT from split reviewable source files"
