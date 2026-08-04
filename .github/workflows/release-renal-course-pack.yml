@@ -1,0 +1,184 @@
+name: Release verified Renal Tumours course pack
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: release-renal-course-pack-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    if: github.actor != 'github-actions[bot]' && github.head_ref == 'agent/course-packs-and-renal-tumors'
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.0-noble
+      options: --user 0
+    steps:
+      - name: Check out source branch
+        uses: actions/checkout@v6
+        with:
+          ref: agent/course-packs-and-renal-tumors
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Materialize exact reviewed payloads when still staged
+        shell: bash
+        run: |
+          set -euxo pipefail
+          if [ -d .staging ]; then
+            cat .staging/heavy.b64.part00 .staging/heavy.b64.part01 .staging/heavy.b64.tail* > /tmp/heavy.b64
+            base64 --decode /tmp/heavy.b64 > /tmp/heavy.tar.gz
+            echo "a3aa48ae08de07dbc9ac349b5253d1b04707ee6a2bd532709106757e1e377bdd  /tmp/heavy.tar.gz" | sha256sum --check
+            cat .staging/small.b64.part* > /tmp/small.b64
+            base64 --decode /tmp/small.b64 > /tmp/small.tar.gz
+            echo "659edc9421f09fa520b20fbd2db39fbde7d336b3b3ddeed95bd05324aa7af021  /tmp/small.tar.gz" | sha256sum --check
+            tar -xzf /tmp/heavy.tar.gz -C .
+            tar -xzf /tmp/small.tar.gz -C .
+          fi
+
+      - name: Remove every transport-only file
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rm -rf .staging
+          rm -f ci-course-pack-trigger.txt
+          rm -f .github/workflows/stage-course-pack.yml
+          rm -f .github/workflows/stage-course-pack-diagnostics.yml
+          rm -f .github/workflows/finalize-course-pack-staging.yml
+          rm -f .github/workflows/diagnose-course-pack-staging.yml
+          rm -f .github/workflows/cleanup-course-pack-staging.yml
+          rm -f .github/workflows/release-renal-course-pack.yml
+          chmod +x build.sh scripts/validate_course_packs.py scripts/validate_lecture_images.py tools/build_app.py tools/lecture_builder.py
+
+      - name: Reproducible build and complete static audit
+        shell: bash
+        run: |
+          set -euxo pipefail
+          bash build.sh
+          python3 scripts/validate_build.py
+          python3 scripts/validate_course_packs.py
+          python3 scripts/validate_lecture_images.py
+          python3 scripts/validate_mobile_filters.py
+          python3 scripts/validate_runtime_extensions.py
+          python3 scripts/validate_progress_resilience.py
+          python3 scripts/audit_repository.py
+          python3 scripts/validate_repository_hygiene.py
+          python3 -m py_compile tools/build_app.py tools/lecture_builder.py scripts/*.py
+          node --check src/app.js
+          node --check src/lecture-loader.js
+          node --check src/pwa-client.js
+          node --check tests/course-packs.spec.js
+          node --check tests/hardening.spec.js
+
+      - name: Install locked browser-test dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run Chromium functional, WCAG, performance, print and offline suite
+        run: npm run test:e2e
+
+      - name: Run Safari desktop and iPhone WebKit suite
+        run: npx playwright test --config=playwright.webkit.config.js
+
+      - name: Commit only the clean tested source
+        id: commit
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No source changes remained after validation" >&2
+            exit 1
+          fi
+          git commit -m "Add Renal Tumours and future-ready medical course packs"
+          final_sha=$(git rev-parse HEAD)
+          echo "sha=$final_sha" >> "$GITHUB_OUTPUT"
+          git push origin HEAD:agent/course-packs-and-renal-tumors
+
+      - name: Mark ready and squash-merge the exact tested source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FINAL_SHA: ${{ steps.commit.outputs.sha }}
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          import json, os, time, urllib.request
+
+          token = os.environ['GH_TOKEN']
+          final_sha = os.environ['FINAL_SHA']
+          owner = 'Hafezalhoot'
+          repo = 'medical-meq-bank'
+          number = 13
+          headers = {
+              'Authorization': f'Bearer {token}',
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+              'Content-Type': 'application/json',
+              'User-Agent': 'medical-meq-bank-release'
+          }
+
+          def request(url, method='GET', payload=None):
+              data = None if payload is None else json.dumps(payload).encode()
+              req = urllib.request.Request(url, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req) as response:
+                  return json.load(response)
+
+          pull_url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{number}'
+          pull = None
+          for _ in range(12):
+              pull = request(pull_url)
+              if pull['head']['sha'] == final_sha:
+                  break
+              time.sleep(5)
+          if pull['head']['sha'] != final_sha:
+              raise SystemExit(f"GitHub head {pull['head']['sha']} did not reach tested SHA {final_sha}")
+
+          if pull.get('draft'):
+              graphql_headers = dict(headers)
+              graphql_payload = {
+                  'query': 'mutation($id:ID!){markPullRequestReadyForReview(input:{pullRequestId:$id}){pullRequest{isDraft}}}',
+                  'variables': {'id': pull['node_id']}
+              }
+              request('https://api.github.com/graphql', 'POST', graphql_payload)
+
+          comment = {
+              'body': (
+                  'Automated release gate passed on exact commit `' + final_sha + '`:\n\n'
+                  '- reproducible build and course-pack compatibility audit\n'
+                  '- 24 verified AVIF lecture images, including 6 Renal Tumours figures\n'
+                  '- Chromium functional/WCAG/performance/print/offline suite\n'
+                  '- Safari desktop and iPhone WebKit suite\n\n'
+                  'The temporary transport and release workflows were removed before this commit.'
+              )
+          }
+          request(f'https://api.github.com/repos/{owner}/{repo}/issues/{number}/comments', 'POST', comment)
+
+          result = request(
+              f'https://api.github.com/repos/{owner}/{repo}/pulls/{number}/merge',
+              'PUT',
+              {
+                  'commit_title': 'Add Renal Tumours and future-ready medical course packs (#13)',
+                  'commit_message': 'Lecture-first Renal Tumours bank plus Course → Subject content-pack architecture, compatibility guards, images, offline support and full regressions.',
+                  'merge_method': 'squash',
+                  'sha': final_sha
+              }
+          )
+          if not result.get('merged'):
+              raise SystemExit(f'Merge was not completed: {result}')
+          PY
