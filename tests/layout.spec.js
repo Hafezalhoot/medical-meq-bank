@@ -1,5 +1,7 @@
 import {test, expect} from '@playwright/test';
 
+test.use({serviceWorkers: 'block'});
+
 const viewports = [
   {name: 'small phone', width: 360, height: 800},
   {name: 'phone', width: 390, height: 844},
@@ -14,9 +16,7 @@ async function openBank(page, viewport) {
     name: 'Medical MEQ & Short Question Review Bank'
   })).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
-  await expect.poll(
-    () => page.evaluate(() => document.querySelector('main')?.getAttribute('aria-busy'))
-  ).toBe('false');
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
 }
 
 for (const viewport of viewports) {
