@@ -8,8 +8,10 @@ import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[1]
-FORBIDDEN_PREFIXES = ("node_modules/", "playwright-report/", "test-results/", "__pycache__/")
+FORBIDDEN_PREFIXES = ("node_modules/", "dist/", "tmp/", "test-results/", "__pycache__/")
+FORBIDDEN_PREFIX_STEMS = ("playwright-report",)
 FORBIDDEN_NAMES = {".DS_Store"}
+FORBIDDEN_EXACT_PATHS = {"print-manager.js", "print-manager.css"}
 
 
 def tracked_files() -> list[str]:
@@ -27,7 +29,13 @@ def main() -> None:
         path
         for path in tracked_files()
         if path.startswith(FORBIDDEN_PREFIXES)
+        or any(
+            part.startswith(stem)
+            for part in Path(path).parts
+            for stem in FORBIDDEN_PREFIX_STEMS
+        )
         or Path(path).name in FORBIDDEN_NAMES
+        or path in FORBIDDEN_EXACT_PATHS
         or path.endswith((".pyc", ".pyo"))
     )
     if offenders:
@@ -36,11 +44,11 @@ def main() -> None:
         raise SystemExit(f"REPOSITORY HYGIENE FAILED: generated files are tracked: {preview}{suffix}")
 
     gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
-    for required in ("node_modules/", "dist/", "test-results/", "playwright-report/", "__pycache__/"):
+    for required in ("node_modules/", "dist/", "tmp/", "test-results/", "playwright-report/", "playwright-report-*/", "__pycache__/"):
         if required not in gitignore:
             raise SystemExit(f"REPOSITORY HYGIENE FAILED: .gitignore is missing {required}")
 
-    print("Repository hygiene passed: dependency, report, cache and OS artifacts are not tracked")
+    print("Repository hygiene passed: generated artifacts and legacy duplicate sources are not tracked")
 
 
 if __name__ == "__main__":

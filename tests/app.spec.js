@@ -2,7 +2,7 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {test, expect} from '@playwright/test';
 
-const headingName = 'Medical MEQ & Short Question Review Bank';
+const headingName = 'Medical MEQ Review Bank';
 
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
@@ -215,56 +215,54 @@ test('malformed saved progress cannot prevent startup', async ({page}) => {
   expect(pageErrors).toEqual([]);
 });
 
-test('corrupted progress is restored from the IndexedDB mirror', async ({page}) => {
+test('legacy progress migrates to IndexedDB and survives a corrupt legacy key', async ({page}) => {
   const expected = {
-    'urology-congenital-anomalies::core::recovery-check': 'done'
+    'urology-congenital-anomalies::core::recovery-check': 'mastered'
   };
 
-  await openBank(page);
-  await expect.poll(
-    () => page.evaluate(() => Boolean(globalThis.MEQProgressResilience))
-  ).toBe(true);
-
-  await page.evaluate(async value => {
+  await page.addInitScript(value => {
     localStorage.setItem('medicalBankStatusV2', JSON.stringify(value));
-    await globalThis.MEQProgressResilience.snapshotNow();
-    localStorage.setItem('medicalBankStatusV2', '{corrupted-json');
   }, expected);
-
-  await page.reload({waitUntil: 'domcontentloaded'});
-  await expect.poll(async () => {
-    try {
-      return await page.evaluate(() => {
-        const raw = localStorage.getItem('medicalBankStatusV2');
-        if (!raw) return null;
-        try { return JSON.parse(raw); } catch (error) { return null; }
-      });
-    } catch (error) {
-      return null;
-    }
-  }, {timeout: 15_000}).toEqual(expected);
-});
-
-test('IndexedDB mirror does not undo a deliberate progress reset', async ({page}) => {
-  const snapshot = {
-    'urology-congenital-anomalies::core::reset-check': 'done'
-  };
-
   await openBank(page);
+
   await expect.poll(
-    () => page.evaluate(() => Boolean(globalThis.MEQProgressResilience))
-  ).toBe(true);
-
-  await page.evaluate(async value => {
-    localStorage.setItem('medicalBankStatusV2', JSON.stringify(value));
-    await globalThis.MEQProgressResilience.snapshotNow();
-    localStorage.removeItem('medicalBankStatusV2');
-  }, snapshot);
-
-  await page.reload({waitUntil: 'domcontentloaded'});
+    () => page.evaluate(() => globalThis.MEQProgressStore?.exportAll?.())
+  ).toEqual(expected);
   await expect.poll(
     () => page.evaluate(() => localStorage.getItem('medicalBankStatusV2'))
   ).toBeNull();
+
+  await page.evaluate(async () => {
+    localStorage.setItem('medicalBankStatusV2', '{corrupted-json');
+    await globalThis.MEQProgressStore.snapshotNow();
+  });
+  await page.reload({waitUntil: 'domcontentloaded'});
+
+  await expect.poll(
+    () => page.evaluate(() => globalThis.MEQProgressStore?.exportAll?.()),
+    {timeout: 15_000}
+  ).toEqual(expected);
+});
+
+test('explicit IndexedDB progress reset remains empty after reload', async ({page}) => {
+  await openBank(page);
+  await expect.poll(
+    () => page.evaluate(() => Boolean(globalThis.MEQProgressStore))
+  ).toBe(true);
+
+  await page.evaluate(async () => {
+    await globalThis.MEQProgressStore.set(
+      'urology-congenital-anomalies::core::reset-check',
+      'review'
+    );
+    await globalThis.MEQProgressStore.clear();
+    await globalThis.MEQProgressStore.snapshotNow();
+  });
+
+  await page.reload({waitUntil: 'domcontentloaded'});
+  await expect.poll(
+    () => page.evaluate(() => globalThis.MEQProgressStore?.exportAll?.())
+  ).toEqual({});
 });
 
 test('installed service worker restores the bank while offline', async ({page, context}) => {
@@ -313,4 +311,39 @@ test('standalone offline HTML opens directly without a server', async ({page}) =
   await expect(page.locator('script[src="./progress-resilience.js"]')).toHaveCount(0);
   await expect(page.locator('script[src="./pwa-client.js"]')).toHaveCount(0);
   expect(pageErrors).toEqual([]);
+});
+
+
+test('rating one item persists one IndexedDB record without rebuilding legacy localStorage', async ({page}) => {
+  await openBank(page);
+  const status = page.locator('.study-item').first().locator('.status.mastered');
+  await status.click();
+
+  const result = await page.evaluate(async () => {
+    await globalThis.MEQProgressStore.ready;
+    const progress = await globalThis.MEQProgressStore.exportAll();
+    return {
+      count: Object.keys(progress).length,
+      values: Object.values(progress),
+      legacy: localStorage.getItem('medicalBankStatusV2')
+    };
+  });
+
+  expect(result.count).toBe(1);
+  expect(result.values).toEqual(['mastered']);
+  expect(result.legacy).toBeNull();
+});
+
+
+test('empty search state offers one-click filter recovery', async ({page}) => {
+  await openBank(page);
+
+  const search = page.locator('#search');
+  await search.fill('unlikely-no-result-term-zzzzzz');
+  await expect(page.locator('#empty')).toHaveClass(/show/);
+  await expect(page.locator('#emptyResetBtn')).toBeVisible();
+
+  await page.locator('#emptyResetBtn').click();
+  await expect(search).toHaveValue('');
+  await expect(page.locator('#empty')).not.toHaveClass(/show/);
 });

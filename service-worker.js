@@ -1,4 +1,4 @@
-const APP_VERSION = '2026.08.04.4';
+const APP_VERSION = '2026.10.03.4';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
 const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
 const LECTURE_ASSETS = /*__LECTURE_ASSETS__*/ [];
@@ -26,7 +26,6 @@ const REQUIRED_ASSETS = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
-  OFFLINE_PAGE,
   ...LECTURE_ASSETS
 ];
 const OPTIONAL_ASSETS = [];

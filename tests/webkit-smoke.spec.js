@@ -3,7 +3,7 @@ import {test, expect} from '@playwright/test';
 async function waitForBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
-    name: 'Medical MEQ & Short Question Review Bank'
+    name: 'Medical MEQ Review Bank'
   })).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
   await expect.poll(

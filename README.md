@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank
 
-Private source repository for the Medical MEQ & Short Question Review Bank.
+Private source repository for the Medical MEQ Review Bank.
 
 The project is an offline-first Progressive Web App containing lecture-based MEQ cases, high-yield short questions, image/spot questions, detailed practice, Rapid Recall, saved progress, dark mode, printing, and lecture/subtopic navigation.
 
@@ -15,6 +15,7 @@ The project is an offline-first Progressive Web App containing lecture-based MEQ
 5. Scrotal Swelling
 6. Bladder Cancer
 7. Urolithiasis
+8. Renal Tumors
 
 ### Neurosurgery
 
@@ -29,8 +30,8 @@ AGENTS.md                           Development, testing and release contract
 src/index.html                     Reviewable HTML application shell
 src/app.css                        Core visual design and responsive layout
 src/app.js                         Core study-bank runtime
-src/progress-resilience.js         IndexedDB mirror for corrupted progress recovery
-src/lecture-loader.js              Subject-level lazy lecture loading
+src/progress-resilience.js         Primary per-item IndexedDB progress storage, migration and recovery
+src/lecture-loader.js              Metadata-first, lecture-level catalog loading
 src/pwa-client.js                  Updates, backup import/export and PWA client
 src/print-manager.css              Reviewable print and PDF styles
 src/print-manager.js               Reviewable print and PDF runtime
@@ -44,8 +45,8 @@ review-filter.css                  Filter interface styling
 responsive-sidebars.js             Responsive navigation defaults
 mobile-filters.js                  Compact mobile filters, chips and reset behavior
 mobile-filters.css                 Mobile filter styling
-search-optimization.js             Debounced text search
-tools/lecture_builder.py           JSON validation and offline lecture insertion
+search-optimization.js             Course-scoped search over unloaded lecture indexes
+tools/lecture_builder.py           Shared lecture validation and publishing helpers
 tools/build_app.py                 Production and standalone-offline builder
 tools/finalize_offline.py          Removes PWA-only links from the standalone file
 scripts/validate_build.py          Source and generated-site integrity checks
@@ -70,7 +71,7 @@ build.sh                           Reproducible production build entrypoint
 
 ## Online and standalone builds
 
-The online application keeps the shell and core runtimes separate so they can be reviewed, cached and updated independently. Lecture JSON is loaded by subject, while the service worker pre-caches the catalog and all lecture files for reliable offline use.
+The online application keeps the shell and core runtimes separate so they can be reviewed, cached and updated independently. Lecture delivery is metadata-first and lecture-level; service-worker installation caches the shell/catalog while lecture payloads are cached on use or by explicit offline download, so corpus growth does not increase mandatory first-load cost linearly.
 
 ```text
 index.html
@@ -83,13 +84,13 @@ lectures/catalog.json
 lectures/data/*.json
 ```
 
-The build also creates one self-contained file for direct offline use. It embeds the application runtimes and the complete validated lecture bank and contains no local file dependencies:
+The build also keeps a **bounded legacy** self-contained export for direct `file://` use. It embeds the complete validated lecture bank and has no local file dependencies:
 
 ```text
 dist/offline/Medical_MEQ_Review_Bank_Offline.html
 ```
 
-The Chromium test suite opens this file through a real `file://` URL without a web server.
+This legacy export has an 8 MB hard ceiling so it cannot become an unbounded delivery path as the bank grows. The scalable offline path is the installed PWA: the shell/catalog are installed once, then learners explicitly save individual lectures or an entire subject for offline use. The Chromium suite still opens the legacy file directly to preserve backward compatibility.
 
 ## Build locally
 
@@ -99,17 +100,13 @@ Requirements:
 - Python 3
 - Node.js 22 for browser and accessibility tests
 
-Build and validate the generated application:
+Build and run the complete static quality gate:
 
 ```bash
-bash build.sh
-python3 scripts/validate_build.py
-python3 scripts/validate_mobile_filters.py
-python3 scripts/validate_runtime_extensions.py
-python3 scripts/validate_progress_resilience.py
-python3 scripts/audit_repository.py
-python3 scripts/validate_repository_hygiene.py
+npm run quality:static
 ```
+
+This command runs the reproducible build and the single canonical `scripts/quality_gate.sh`: generated-file checks, data/build validators, repository/CSP audit, performance budgets, repository hygiene (when Git metadata is available), and JavaScript syntax checks.
 
 Run the locked Chromium and axe suite:
 
@@ -123,7 +120,7 @@ Run Safari desktop and iPhone WebKit smoke tests:
 
 ```bash
 npx playwright install webkit
-npx playwright test --config=playwright.webkit.config.js
+npm run test:webkit
 ```
 
 GitHub Actions uses the exact Playwright container version matching `@playwright/test`, so CI does not repeatedly install browser and operating-system packages.
@@ -138,28 +135,39 @@ Then open `http://localhost:8000`.
 
 ## Adding a lecture
 
-1. Create one readable JSON file under `lectures/data/` using `lectures/lecture.schema.json`.
-2. Add one entry to `lectures/catalog.json` containing the same lecture ID, its JSON path, and the expected counts for:
-   - `cases`
-   - `coreShorts`
-   - `imageQuestions`
-   - `detailedShorts`
-   - `rapid`
-3. Keep every study-item ID unique within the lecture.
-4. Reference only subtopic IDs declared in that lecture.
-5. Run the full build and validators.
-6. Confirm static validation, Chromium, WebKit and WCAG checks pass before merging.
-7. Bump `version.json` and the matching `APP_VERSION` in `service-worker.js` and `src/pwa-client.js` for a release.
+Use the canonical authoring tool; do not hand-edit multiple registries for a normal lecture addition.
 
-Compressed lecture chunks, browser-side decompression and JavaScript lecture payload files are not accepted. The validator rejects legacy `.js`, `.b64`, `.gz` and `.zip` files under `lectures/`.
+Dry-run validation:
+
+```bash
+python3 tools/add_lecture.py /path/to/new-lecture.json --course surgery
+```
+
+If the dry run is correct, register it:
+
+```bash
+python3 tools/add_lecture.py /path/to/new-lecture.json --course surgery --write
+```
+
+Then run the static release gate:
+
+```bash
+npm run quality:static
+```
+
+The authoring command validates the lecture structure, item IDs, subtopics, course/subject membership and duplicate ordering, derives expected counts, writes the canonical reviewable source, updates the catalog, and updates the Surgery compatibility baseline when applicable.
+
+See [CONTENT_AUTHORING.md](./CONTENT_AUTHORING.md) for the complete content-ingestion contract.
+
+Compressed lecture chunks and repair transports are legacy compatibility inputs only for already-migrated materialized lectures. Do not create new lecture-specific materializers, browser-side decompression paths, or ad-hoc payload files for new content.
 
 ## Release safety
 
-The `Validate Medical MEQ Bank` workflow runs once for each pull request and once after merge to `main`. Superseded runs for the same pull request are cancelled. It checks:
+The `Validate Medical MEQ Bank` workflow is the intended quality gate for pull requests and merges to `main`. Superseded runs for the same pull request are cancelled. If GitHub Actions is unavailable at the platform/control-plane level, releases must remain unpromoted until the same validation matrix can be executed successfully. It checks:
 
 - reproducible application build from reviewable sources
 - split HTML, CSS and JavaScript runtime integrity
-- subject-level online lazy loading
+- lecture-level online lazy loading and metadata-first subject navigation
 - a complete directly openable standalone offline file
 - Python and JavaScript syntax
 - lecture catalog integrity and expected item counts
@@ -189,4 +197,22 @@ Generated `dist/` output and browser diagnostics are retained as short-lived wor
 
 ## Privacy
 
-The repository is private. Deployment access is configured separately from repository visibility. Student progress remains on the device in local browser storage with an IndexedDB recovery mirror, unless the user explicitly exports a backup.
+The repository is private. Deployment access is configured separately from repository visibility. Student progress remains on the device in per-item IndexedDB records; localStorage is reserved for small UI preferences and a legacy fallback if IndexedDB is unavailable. Progress leaves the device only when the user explicitly exports a backup.
+
+
+## Modernization program
+
+The active scalability and reliability work is tracked in [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md). That file is the source of truth for completed work, current blockers, remaining phases, acceptance criteria, and release decisions.
+
+Deployment is currently based on Cloudflare Workers static assets; see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+
+## Project operations
+
+- [Scalability modernization and live progress](PROJECT_PROGRESS.md)
+- [Canonical lecture authoring workflow](CONTENT_AUTHORING.md)
+- [Release, versioning, cache and rollback policy](RELEASE_PROCESS.md)
+- [GitHub Actions recovery runbook](ACTIONS_RECOVERY.md)
+- [UI design system](UI_DESIGN_SYSTEM.md)
+- [Full UI/UX audit](UI_UX_AUDIT.md)
+- [Cloudflare deployment guidance](DEPLOYMENT.md)

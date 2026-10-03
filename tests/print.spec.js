@@ -68,3 +68,13 @@ test('print center builds a complete worksheet document with saved pagination se
     if (candidate !== page) await candidate.close();
   }
 });
+
+
+test('print center close control meets the minimum interaction target', async ({page}) => {
+  await openBank(page);
+  await page.locator('#printCenterQuickBtn').click();
+  const box = await page.locator('#printCenterClose').boundingBox();
+  expect(box).toBeTruthy();
+  expect(box.width).toBeGreaterThanOrEqual(44);
+  expect(box.height).toBeGreaterThanOrEqual(44);
+});

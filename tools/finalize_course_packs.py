@@ -28,8 +28,12 @@ def read_json(path: Path) -> object:
 def load_embedded_registry() -> dict:
     catalog_path = COURSES / "catalog.json"
     catalog = read_json(catalog_path)
-    if not isinstance(catalog, dict) or catalog.get("version") != 1:
-        fail("courses/catalog.json must be version 1")
+    if (
+        not isinstance(catalog, dict)
+        or catalog.get("version") != 1
+        or catalog.get("schemaVersion") != 2
+    ):
+        fail("courses/catalog.json must be version 1 with schemaVersion 2")
     entries = catalog.get("courses")
     if not isinstance(entries, list) or not entries:
         fail("course catalog has no courses")
@@ -48,7 +52,12 @@ def load_embedded_registry() -> dict:
         if not pack_path.is_relative_to(COURSES.resolve()) or pack_path.suffix != ".json":
             fail(f"course {course_id} uses an unsafe pack path")
         pack = read_json(pack_path)
-        if not isinstance(pack, dict) or pack.get("id") != course_id:
+        if (
+            not isinstance(pack, dict)
+            or pack.get("id") != course_id
+            or pack.get("version") != 1
+            or pack.get("schemaVersion") != 2
+        ):
             fail(f"course pack {pack_relative} does not match {course_id}")
         prepared = deepcopy(pack)
         lecture_catalog = prepared.get("lectureCatalog")

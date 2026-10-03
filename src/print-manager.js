@@ -1,6 +1,15 @@
 (() => {
   if (document.getElementById('printCenterModal')) return;
 
+  const svgIcon = shapes => `<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">${shapes}</svg>`;
+  const icons = {
+    study: svgIcon('<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"></path><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5A2.5 2.5 0 0 1 20 22V5.5Z"></path>'),
+    worksheet: svgIcon('<path d="M4 20h4l11-11-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path>'),
+    compact: svgIcon('<path d="M6 2h8l4 4v16H6z"></path><path d="M14 2v5h5"></path><path d="M9 12h6"></path><path d="M9 16h6"></path>'),
+    print: svgIcon('<path d="M7 8V3h10v5"></path><rect x="6" y="14" width="12" height="7" rx="1"></rect><path d="M6 17H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path>'),
+    close: svgIcon('<path d="m6 6 12 12"></path><path d="m18 6-12 12"></path>')
+  };
+
   const escapeHtml = value => String(value ?? '')
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
@@ -55,7 +64,7 @@
           <h2 id="printCenterTitle">Print & PDF Center</h2>
           <p id="printCenterDescription">Create a study copy, a handwritten worksheet, or a compact question sheet.</p>
         </div>
-        <button class="print-center-close" id="printCenterClose" type="button" aria-label="Close print center">×</button>
+        <button class="print-center-close" id="printCenterClose" type="button" aria-label="Close print center">${icons.close}</button>
       </header>
       <div class="print-center-body">
         <div class="print-center-summary">
@@ -69,21 +78,21 @@
             <label class="print-mode-card">
               <input type="radio" name="printMode" value="study">
               <span class="print-mode-check" aria-hidden="true"></span>
-              <span class="print-mode-icon" aria-hidden="true">📘</span>
+              <span class="print-mode-icon" aria-hidden="true">${icons.study}</span>
               <span class="print-mode-title">Study copy</span>
               <span class="print-mode-copy">Questions with full model answers, marking schemes, exam traps, and memory triggers.</span>
             </label>
             <label class="print-mode-card">
               <input type="radio" name="printMode" value="worksheet">
               <span class="print-mode-check" aria-hidden="true"></span>
-              <span class="print-mode-icon" aria-hidden="true">✍️</span>
+              <span class="print-mode-icon" aria-hidden="true">${icons.worksheet}</span>
               <span class="print-mode-title">Handwritten worksheet</span>
               <span class="print-mode-copy">Questions only, with lined answer space sized for handwriting.</span>
             </label>
             <label class="print-mode-card">
               <input type="radio" name="printMode" value="compact">
               <span class="print-mode-check" aria-hidden="true"></span>
-              <span class="print-mode-icon" aria-hidden="true">📄</span>
+              <span class="print-mode-icon" aria-hidden="true">${icons.compact}</span>
               <span class="print-mode-title">Compact questions</span>
               <span class="print-mode-copy">Questions only, placed one after another with no answer space.</span>
             </label>
@@ -196,7 +205,7 @@
     originalPrintButton.removeAttribute('onclick');
     originalPrintButton.id = 'printCenterSidebarBtn';
     originalPrintButton.classList.add('print-center-launch');
-    originalPrintButton.innerHTML = '<span class="print-icon" aria-hidden="true">🖨️</span><span>Print / Save PDF</span>';
+    originalPrintButton.innerHTML = `<span class="print-icon" aria-hidden="true">${icons.print}</span><span>Print / Save PDF</span>`;
   }
 
   const navControls = document.querySelector('.nav-controls');
@@ -206,7 +215,7 @@
     quickPrintButton.id = 'printCenterQuickBtn';
     quickPrintButton.type = 'button';
     quickPrintButton.className = 'nav-toggle print-center-launch';
-    quickPrintButton.innerHTML = '<span class="print-icon" aria-hidden="true">🖨️</span><span>Print / PDF</span>';
+    quickPrintButton.innerHTML = `<span class="print-icon" aria-hidden="true">${icons.print}</span><span>Print / PDF</span>`;
     navControls.appendChild(quickPrintButton);
   }
 
@@ -342,17 +351,10 @@
     overlay.hidden = false;
     document.body.classList.add('print-center-open');
     createButton.disabled = true;
-    createButton.textContent = 'Loading complete bank…';
+    createButton.textContent = 'Preparing selection…';
 
-    try {
-      if (globalThis.MEQLectureLoader?.loadAll) {
-        await globalThis.MEQLectureLoader.loadAll();
-      }
-    } catch (error) {
-      console.error('Could not load the complete bank before printing:', error);
-      showToast('Some lectures could not be loaded. Printing the available selection.');
-    }
-
+    // Printing is intentionally scoped to the currently rendered lecture/filter
+    // selection. Loading the full corpus here made print cost grow with the bank.
     applySettings(loadSettings());
     updateSummary();
     createButton.textContent = 'Print / Save PDF';
