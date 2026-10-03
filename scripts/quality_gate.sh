@@ -14,7 +14,6 @@ required_generated=(
   dist/print-manager.js
   dist/courses/catalog.json
   dist/lectures/catalog.json
-  dist/lectures/data/urology-renal-tumors.json
   dist/404.html
   dist/_headers
   dist/offline/Medical_MEQ_Review_Bank_Offline.html
