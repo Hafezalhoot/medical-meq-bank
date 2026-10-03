@@ -127,6 +127,54 @@ test('one broken lecture response does not hide catalog metadata or other lectur
 });
 
 
+test('backup import rolls back progress and preferences when progress replacement fails', async ({page}) => {
+  await openBank(page);
+
+  await page.evaluate(async () => {
+    localStorage.setItem('medicalBankDarkV4', '0');
+    const original = globalThis.MEQProgressStore;
+    await original.replaceAll({
+      'urology-congenital-anomalies::core::backup-before': 'mastered'
+    });
+
+    let replaceCalls = 0;
+    globalThis.MEQProgressStore = {
+      ...original,
+      replaceAll: async progress => {
+        replaceCalls += 1;
+        if (replaceCalls === 1) throw new Error('simulated progress replacement failure');
+        return original.replaceAll(progress);
+      }
+    };
+  });
+
+  const backup = JSON.stringify({
+    schema: 'medical-meq-progress',
+    schemaVersion: 2,
+    preferences: {
+      medicalBankDarkV4: '1'
+    },
+    progress: {
+      'urology-congenital-anomalies::core::backup-after': 'review'
+    }
+  });
+
+  await page.locator('#importProgressFile').setInputFiles({
+    name: 'progress-v2-rollback.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(backup)
+  });
+
+  await expect(page.locator('#appToast')).toContainText('current progress was kept');
+  await expect.poll(
+    () => page.evaluate(() => globalThis.MEQProgressStore?.exportAll?.())
+  ).toEqual({'urology-congenital-anomalies::core::backup-before': 'mastered'});
+  await expect.poll(
+    () => page.evaluate(() => localStorage.getItem('medicalBankDarkV4'))
+  ).toBe('0');
+});
+
+
 test('backup schema v2 restores progress and preferences transactionally', async ({page}) => {
   await openBank(page);
 
