@@ -60,6 +60,18 @@ test('print center builds a complete worksheet document with saved pagination se
   expect(generated.html).toContain('data-page-count=');
   expect(generated.pagination?.pages || 0).toBeGreaterThan(0);
 
+  const pdfPage = await context.newPage();
+  await pdfPage.setContent(generated.html, {waitUntil: 'load'});
+  await pdfPage.emulateMedia({media: 'print'});
+  const pdf = await pdfPage.pdf({
+    format: 'A4',
+    printBackground: true,
+    preferCSSPageSize: true
+  });
+  expect(pdf.subarray(0, 5).toString()).toBe('%PDF-');
+  expect(pdf.length).toBeGreaterThan(5_000);
+  await pdfPage.close();
+
   await expect.poll(
     () => page.evaluate(() => localStorage.getItem('medicalBankPrintSettingsV1'))
   ).not.toBeNull();
