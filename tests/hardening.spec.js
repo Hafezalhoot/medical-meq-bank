@@ -175,6 +175,58 @@ test('backup import rolls back progress and preferences when progress replacemen
 });
 
 
+test('backup import reports when automatic rollback also fails', async ({page}) => {
+  await openBank(page);
+
+  await page.evaluate(async () => {
+    localStorage.setItem('medicalBankDarkV4', '0');
+    const original = globalThis.MEQProgressStore;
+    await original.replaceAll({
+      'urology-congenital-anomalies::core::rollback-before': 'mastered'
+    });
+
+    let replaceCalls = 0;
+    globalThis.MEQProgressStore = {
+      ...original,
+      replaceAll: async progress => {
+        replaceCalls += 1;
+        if (replaceCalls === 1) return original.replaceAll(progress);
+        throw new Error('simulated rollback replacement failure');
+      },
+      snapshotNow: async () => {
+        if (replaceCalls === 1) throw new Error('simulated post-write snapshot failure');
+        return original.snapshotNow();
+      }
+    };
+  });
+
+  const backup = JSON.stringify({
+    schema: 'medical-meq-progress',
+    schemaVersion: 2,
+    preferences: {
+      medicalBankDarkV4: '1'
+    },
+    progress: {
+      'urology-congenital-anomalies::core::rollback-after': 'review'
+    }
+  });
+
+  await page.locator('#importProgressFile').setInputFiles({
+    name: 'progress-v2-rollback-failure.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(backup)
+  });
+
+  await expect(page.locator('#appToast')).toContainText('automatic rollback could not complete');
+  await expect.poll(
+    () => page.evaluate(() => globalThis.MEQProgressStore?.exportAll?.())
+  ).toEqual({'urology-congenital-anomalies::core::rollback-after': 'review'});
+  await expect.poll(
+    () => page.evaluate(() => localStorage.getItem('medicalBankDarkV4'))
+  ).toBe('0');
+});
+
+
 test('backup schema v2 restores progress and preferences transactionally', async ({page}) => {
   await openBank(page);
 
