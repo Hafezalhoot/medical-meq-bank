@@ -36,7 +36,7 @@
 | Content/catalog invariants | ✅ Pass | 9 unique lecture IDs; course/subject order is unique; every catalog entry has course + payload version metadata |
 | Surgery compatibility baseline | ✅ Pass | All 9 current Surgery lectures are protected by the common baseline, including Renal Tumors |
 | Dependency lock consistency | ✅ Pass | `package.json` and `package-lock.json` agree on Playwright 1.62.1 and axe-playwright 4.13.0 |
-| Full clean build | ⚠️ Blocked externally | Repository-side workflow was reduced to a native `echo`/`uname` runner probe with no checkout/actions/dependencies and still failed before job creation. GitHub Actions latest evidence: run `37161474808` on commit `bfaf589960e2dbc1e0196c605bdca314dac1e822` reports blank workflow name, `path: BuildFailed`, `(Unknown event)`, `startup_failure`, and contains zero jobs; no repository test step starts. Private-repo clone is unavailable from the current execution container |
+| Full clean build | ⚠️ Blocked externally | Repository-side workflow was reduced to a native `echo`/`uname` runner probe with no checkout/actions/dependencies and still failed before job creation. GitHub Actions latest release-candidate evidence: run `37161592860` on commit `6134522ba2ef49abc3077bccc26cf7feec85af0a` reports blank workflow name, `path: BuildFailed`, `(Unknown event)`, `startup_failure`, and contains zero jobs; no repository test step starts. Private-repo clone is unavailable from the current execution container |
 | Chromium + axe + performance + print + offline | ⚠️ Blocked externally | Test code is updated, but no GitHub Actions job is created |
 | WebKit / iPhone | ⚠️ Blocked externally | Test code is updated, but no GitHub Actions job is created |
 | Cloudflare production URL / Access / branch control | ⚠️ External verification | No Cloudflare connector is available; verify these settings in the Cloudflare dashboard before promotion |
@@ -286,6 +286,9 @@ Every phase should preserve or improve these checks:
 ## Change log
 
 ### 2026-10-03 — Release candidate UI and operations hardening
+- ✅ 2026-10-04 follow-up: hardened backup failure reporting so a failed automatic rollback no longer claims that current progress was preserved; failure injection now covers the partial-rollback case explicitly.
+- ✅ 2026-10-04 follow-up: bumped the release candidate and PWA cache identity to `2026.10.04.1` after runtime changes, keeping `version.json`, service worker, and PWA client synchronized.
+- ⚠️ 2026-10-04 follow-up: release-candidate commit `6134522ba2ef49abc3077bccc26cf7feec85af0a` remains mergeable-clean, but run `37161592860` still fails before job creation; code-side release work is therefore complete pending external runner/Cloudflare controls.
 - ✅ 2026-10-04 follow-up: removed the last lecture-specific generated-file assertion from `scripts/quality_gate.sh`; published lecture completeness is validated generically from `lectures/catalog.json`.
 - ✅ 2026-10-04 follow-up: converted `scripts/validate_lecture_images.py` from three hard-coded Urology lecture IDs to data-driven AVIF/hash/count validation backed by `materialization.json` and asset manifests.
 - ✅ 2026-10-04 follow-up: added failure-injection coverage proving backup import rolls back both IndexedDB progress and local preferences if progress replacement fails mid-restore.
