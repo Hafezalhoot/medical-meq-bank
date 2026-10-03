@@ -267,6 +267,10 @@
         await progressStore.snapshotNow();
       } catch (rollbackError) {
         console.error('Progress rollback failed:', rollbackError);
+        const rollbackFailure = new Error('Automatic progress rollback failed');
+        rollbackFailure.name = 'ProgressRollbackError';
+        rollbackFailure.cause = rollbackError;
+        throw rollbackFailure;
       }
       throw error;
     }
@@ -312,7 +316,11 @@
         setTimeout(() => location.reload(), 700);
       } catch (error) {
         console.warn('Progress import rejected:', error);
-        toast('The backup was rejected and your current progress was kept.');
+        toast(
+          error?.name === 'ProgressRollbackError'
+            ? 'Progress restore failed and automatic rollback could not complete. Reload and verify your progress before continuing.'
+            : 'The backup was rejected and your current progress was kept.'
+        );
       } finally {
         importBtn.disabled = false;
         importFile.value = '';
