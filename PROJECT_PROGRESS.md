@@ -36,7 +36,7 @@
 | Content/catalog invariants | ✅ Pass | 9 unique lecture IDs; course/subject order is unique; every catalog entry has course + payload version metadata |
 | Surgery compatibility baseline | ✅ Pass | All 9 current Surgery lectures are protected by the common baseline, including Renal Tumors |
 | Dependency lock consistency | ✅ Pass | `package.json` and `package-lock.json` agree on Playwright 1.62.1 and axe-playwright 4.13.0 |
-| Full clean build | ⚠️ Blocked externally | Repository-side workflow was reduced to a native `echo`/`uname` runner probe with no checkout/actions/dependencies and still failed before job creation. GitHub Actions latest evidence: run `37139094282` reports blank workflow name, `path: BuildFailed`, `(Unknown event)`, `startup_failure`, and contains zero jobs and zero artifacts; no repository test step starts. Private-repo clone is unavailable from the current execution container |
+| Full clean build | ⚠️ Blocked externally | Repository-side workflow was reduced to a native `echo`/`uname` runner probe with no checkout/actions/dependencies and still failed before job creation. GitHub Actions latest evidence: run `37161202301` on commit `96bf11fb023fb3545b89c08d599cd053f42301b0` reports blank workflow name, `path: BuildFailed`, `(Unknown event)`, `startup_failure`, and contains zero jobs; no repository test step starts. Private-repo clone is unavailable from the current execution container |
 | Chromium + axe + performance + print + offline | ⚠️ Blocked externally | Test code is updated, but no GitHub Actions job is created |
 | WebKit / iPhone | ⚠️ Blocked externally | Test code is updated, but no GitHub Actions job is created |
 | Cloudflare production URL / Access / branch control | ⚠️ External verification | No Cloudflare connector is available; verify these settings in the Cloudflare dashboard before promotion |
@@ -286,6 +286,8 @@ Every phase should preserve or improve these checks:
 ## Change log
 
 ### 2026-10-03 — Release candidate UI and operations hardening
+- ✅ 2026-10-04 follow-up: aligned `CONTENT_AUTHORING.md` with the canonical `npm run quality:static`, `npm run test:e2e`, and `npm run test:webkit` release commands so lecture onboarding no longer duplicates stale validator steps.
+- ⚠️ 2026-10-04 follow-up: the documentation-only commit `96bf11fb023fb3545b89c08d599cd053f42301b0` triggered Actions run `37161202301`, which again failed as synthetic `BuildFailed/startup_failure` with zero jobs, confirming the blocker persists independently of application code.
 - ✅ Finalized a canonical local/CI static gate: `npm run quality:static` → `build.sh` → `scripts/quality_gate.sh`; build creates `dist/` first, then validators/performance/repository/JS checks execute exactly once.
 - ✅ Added shared `npm run test:webkit` and aligned README + GitHub CI with the same command.
 - ✅ Updated README lecture onboarding to use `tools/add_lecture.py` dry-run/write flow instead of manual multi-file edits.
