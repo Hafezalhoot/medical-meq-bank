@@ -10,7 +10,7 @@
 - **Working branch:** `hardening/scalability-overhaul-20261003`
 - **Baseline commit:** `ae7d0b47b89236a9b152a3083c422779946a41b1`
 - **Started:** 2026-10-03
-- **Release candidate:** `2026.10.03.4`
+- **Release candidate:** `2026.10.04.1`
 - **Delivery PR:** `#19` (`hardening/scalability-overhaul-20261003` → `main`)
 - **Primary goal:** preserve the current reliable PWA and study UX while removing the architectural ceilings that would prevent safe growth to many courses, subjects, lectures, study items, images, and users.
 - **Non-goal:** framework churn. React/Next.js/Supabase are not introduced unless a measured requirement cannot be met by the existing platform and data model.
@@ -32,7 +32,7 @@
 | Source architecture refactor | ✅ Pass | Lecture-level loading, bounded rendering, selective offline caching, per-item progress, scoped search and generic authoring pipeline are implemented on PR #19 |
 | Repository hygiene | ✅ Pass | Recursive Git tree contains no tracked `dist/`, `tmp/`, test results, Playwright reports, Python caches, or bytecode |
 | JavaScript source syntax | ✅ Pass | All shipped runtime JavaScript files parse successfully in an independent V8 syntax pass |
-| Version consistency | ✅ Pass | `version.json`, service worker, and PWA client all declare `2026.10.03.4` |
+| Version consistency | ✅ Pass | `version.json`, service worker, and PWA client all declare `2026.10.04.1` |
 | Content/catalog invariants | ✅ Pass | 9 unique lecture IDs; course/subject order is unique; every catalog entry has course + payload version metadata |
 | Surgery compatibility baseline | ✅ Pass | All 9 current Surgery lectures are protected by the common baseline, including Renal Tumors |
 | Dependency lock consistency | ✅ Pass | `package.json` and `package-lock.json` agree on Playwright 1.62.1 and axe-playwright 4.13.0 |
@@ -249,7 +249,7 @@ Course catalog
 
 - ✅ P8-01 `dist/`, temporary outputs and Playwright reports are not tracked; repository hygiene blocks them.
 - ✅ P8-02 CI uploads generated site/browser reports as short-lived 7-day artifacts.
-- ✅ P8-03 Added `RELEASE_PROCESS.md` and release candidate `2026.10.03.4`; version/cache synchronization is build-validated.
+- ✅ P8-03 Added `RELEASE_PROCESS.md` and release candidate `2026.10.04.1`; version/cache synchronization is build-validated.
 - ✅ P8-04 CODEOWNERS was deliberately not added: there is no demonstrated multi-reviewer ownership need, so the repository stays simpler.
 - ✅ P8-05 Updated locked Playwright/axe tooling and cleared stale dependency PR noise; only PR #19 is open.
 - ✅ P8-06 Rollback and production-promotion policy is documented in `RELEASE_PROCESS.md` and `DEPLOYMENT.md`.
@@ -306,14 +306,14 @@ Every phase should preserve or improve these checks:
 - ✅ Removed all diagnostic smoke workflows after isolation, restored the full Chromium/WebKit quality matrix, aligned the Playwright container with locked `1.62.1`, and centralized static checks in `scripts/quality_gate.sh` / `npm run quality:static`.
 - ⚠️ Exact remediation is now documented in `RELEASE_PROCESS.md`: organization Actions enablement, standard hosted-runner policy, action allowlist/SHA policy, execution protections, and private-repository billing/usage must be checked by an organization administrator.
 - ⚠️ GitHub Actions latest evidence: run `37139094282` reports blank workflow name, `path: BuildFailed`, `(Unknown event)`, `startup_failure`, and contains zero jobs and zero artifacts; no repository test step starts.
-- 🧪 Final UI release candidate `2026.10.03.4` includes the Clinical Study Workspace hierarchy, lecture-overview progress, semantic active states, unified vector icon language, filter recovery, and design-system documentation.
+- 🧪 Final UI release candidate `2026.10.04.1` includes the Clinical Study Workspace hierarchy, lecture-overview progress, semantic active states, unified vector icon language, filter recovery, and design-system documentation.
 - ✅ Completed the Clinical Study Workspace redesign using the UI/UX design-system audit: compact header, content-first hierarchy, breadcrumb orientation, progress-priority dashboard, bounded reading width, lower visual noise, and stable interactions.
 - ✅ Added lecture progress to the overview, direct empty-state recovery, associated filter labels, semantic progressbar states, and sticky-focus protection.
 - ✅ Added permanent `UI_DESIGN_SYSTEM.md` + `UI_UX_AUDIT.md`; no new framework, UI library, font request, or animation dependency was introduced.
 - ✅ Fixed shared-catalog validation so each course validates only its own `courseId` entries while preserving global lecture-ID uniqueness; this removes a blocker to the first Internal Medicine lecture.
 - ✅ Independent static release audit passed repository hygiene, runtime JavaScript parsing, version synchronization, catalog identity/order checks, 9/9 Surgery baseline coverage, and package/lock dependency consistency.
 
-- 🧪 Prepared release candidate `2026.10.03.4` and synchronized `version.json`, PWA client, and service-worker cache identity.
+- 🧪 Prepared release candidate `2026.10.04.1` and synchronized `version.json`, PWA client, and service-worker cache identity.
 - ✅ Removed generated `dist/`, temporary build output, and browser reports from tracked source; CI keeps artifacts for 7 days.
 - ✅ Added `CONTENT_AUTHORING.md`, `RELEASE_PROCESS.md`, and README operation links.
 - ✅ Added one-command lecture dry-run/registration tooling and unified the Surgery regression baseline across all 9 current lectures.
