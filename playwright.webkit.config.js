@@ -8,7 +8,7 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   workers: 1,
-  retries: 1,
+  retries: process.env.CI ? 1 : 0,
   reporter: [['list'], ['html', {outputFolder: 'playwright-report-webkit', open: 'never'}]],
   use: {
     baseURL: 'http://127.0.0.1:4174',
