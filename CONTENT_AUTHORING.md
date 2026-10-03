@@ -52,15 +52,21 @@ The write mode:
 3. connects a course to the shared lecture catalog when it receives its first lecture;
 4. updates the Surgery compatibility baseline when applicable.
 
-Then run the complete quality gate:
+Then run the canonical static quality gate:
 
 ```bash
-bash build.sh
-python3 scripts/validate_build.py
-python3 scripts/validate_repository_hygiene.py
+npm run quality:static
 ```
 
-Browser verification must also pass in Chromium and WebKit before production promotion.
+This single command builds `dist/` and runs the shared source, data, repository, performance, image-integrity, and JavaScript syntax checks. Do not repeat individual validators manually unless diagnosing a specific failure.
+
+Browser verification must also pass in Chromium and WebKit before production promotion:
+
+```bash
+npm ci --no-audit --no-fund
+npm run test:e2e
+npm run test:webkit
+```
 
 ## Payload and metadata versions
 
