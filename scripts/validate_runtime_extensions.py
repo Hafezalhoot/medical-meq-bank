@@ -49,13 +49,13 @@ def main() -> None:
     require_markers(
         search,
         (
-            "FILTER_DELAY_MS = 300",
-            "stopImmediatePropagation",
-            "compositionstart",
-            "compositionend",
+            "SEARCH_DELAY_MS = 320",
+            "dataset.meqSearchOptimized",
+            "indexScopeKey",
+            "loadIndex",
             "meq:search-applied",
-            "dataset.optimizedSearch",
-            "dataset.filterDelay",
+            "globalSearchResults",
+            "globalThis.MEQSearch",
         ),
         "search optimization source",
     )
