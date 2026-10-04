@@ -112,7 +112,7 @@ def main() -> None:
             fail(f"missing {required.relative_to(ROOT)}")
 
     registry = load_embedded_registry()
-    serialized = json.dumps(registry, ensure_ascii=False, separators=(",", ":")).replace("</", "<\/")
+    serialized = json.dumps(registry, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     template = (ROOT / "src" / "course-packs.template.js").read_text(encoding="utf-8")
     placeholder = "/*__COURSE_CONFIG__*/ null"
     if template.count(placeholder) != 1:
