@@ -197,7 +197,7 @@ Generated `dist/` output and browser diagnostics are retained as short-lived wor
 
 ## Privacy
 
-The repository is private. Deployment access is configured separately from repository visibility. Student progress remains on the device in per-item IndexedDB records; localStorage is reserved for small UI preferences and a legacy fallback if IndexedDB is unavailable. Progress leaves the device only when the user explicitly exports a backup.
+The source repository is public, so tracked code and medical content can be viewed or cloned by anyone. Deployment access is configured separately from repository visibility. Student progress remains on the device in per-item IndexedDB records; localStorage is reserved for small UI preferences and a legacy fallback if IndexedDB is unavailable. Progress leaves the device only when the user explicitly exports a backup.
 
 
 ## Modernization program
@@ -212,7 +212,7 @@ Deployment is currently based on Cloudflare Workers static assets; see [DEPLOYME
 - [Scalability modernization and live progress](PROJECT_PROGRESS.md)
 - [Canonical lecture authoring workflow](CONTENT_AUTHORING.md)
 - [Release, versioning, cache and rollback policy](RELEASE_PROCESS.md)
-- [GitHub Actions recovery runbook](ACTIONS_RECOVERY.md)
+- [GitHub Actions incident record and recovery runbook](ACTIONS_RECOVERY.md)
 - [UI design system](UI_DESIGN_SYSTEM.md)
 - [Full UI/UX audit](UI_UX_AUDIT.md)
 - [Cloudflare deployment guidance](DEPLOYMENT.md)

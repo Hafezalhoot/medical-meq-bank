@@ -61,21 +61,17 @@ A commit is **release-candidate only** until all repository checks complete succ
 
 Generated `dist/` and Playwright reports are CI artifacts, not source-controlled release inputs.
 
-## GitHub Actions control-plane recovery
+## GitHub Actions operational status
 
-The 2026-10-03 modernization branch reproduced a GitHub-side `startup_failure` before job creation. A diagnostic workflow containing only `runs-on: ubuntu-latest` plus `echo`/`uname` failed with the same synthetic `BuildFailed` result and zero jobs. This rules out application code, Playwright, Docker containers, checkout/setup actions, and the project validators as the cause.
+The 2026-10-03 synthetic `BuildFailed/startup_failure` incident was operationally resolved on 2026-10-04 by transferring the same public repository from the `Hafez-Alhoot` organization to the personal `Hafezalhoot` account. The repository ID and history were preserved. The exact organization-side policy/provisioning cause was not identified.
 
-The repository connector does not expose organization Actions administration, so recovery requires an organization owner or a user with the relevant Actions-policy/runners permission. The evidence and exact recovery/escalation steps are maintained in `ACTIONS_RECOVERY.md`.
+The current release gate is healthy. On PR #19 head `81931f5bfc6f8b2ea39498756a5805aa6d64d897`, GitHub Actions run `37190821886` passed:
 
-Check **Hafez-Alhoot → Settings → Actions → General**:
+- `validate`;
+- `chromium-quality` including axe, performance, Print/PDF and offline coverage;
+- `webkit-quality` including Safari desktop and iPhone WebKit.
 
-1. **Actions permissions:** GitHub Actions must be enabled for this repository. If selected repositories are used, include `medical-meq-bank`.
-2. **Standard hosted runners:** ensure standard GitHub-hosted runners are enabled for this repository/organization.
-3. **Action policy:** the restored quality workflow uses GitHub-authored `actions/checkout`, `actions/setup-node`, and `actions/upload-artifact`. If actions are restricted, allow GitHub-authored actions or explicitly allow those actions. If the organization requires full commit-SHA pinning, pin them before rerunning.
-4. **Workflow execution protections:** ensure pushes/PRs from the repository owner are allowed to execute workflows.
-5. **Billing/usage:** because this is a private repository, confirm the account has available Actions minutes/allowed spending and that Actions is not in a GitHub-controlled disabled state.
-
-After changing the setting, rerun PR #19. The first expected signal is that GitHub creates a real `validate` job rather than a synthetic `BuildFailed` run.
+Issue #20 is closed. `ACTIONS_RECOVERY.md` is retained as an incident record and fallback runbook if the same zero-job signature ever returns.
 
 The reusable local equivalent is:
 

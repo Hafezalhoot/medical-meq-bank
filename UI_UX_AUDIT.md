@@ -2,11 +2,11 @@
 
 **Audit scope:** complete source-level design/UX review from micro-interactions to page architecture.
 **Current redesign branch:** `hardening/scalability-overhaul-20261003`
-**Browser verification:** still blocked by the repository-wide GitHub Actions `startup_failure`; source-level checks and regression tests are updated meanwhile.
+**Browser verification:** green on release candidate `2026.10.04.2`; current-head run `37190821886` passed Chromium/axe/performance/print/offline plus Safari desktop and iPhone WebKit.
 
 ## Source-level scorecard
 
-> These scores evaluate the implemented source/design system. Final visual QA remains gated by the browser matrix.
+> These scores evaluate the implemented source/design system. Automated browser/accessibility verification is green; subjective visual review remains a product-design activity rather than a release blocker.
 
 | Area | Score | Note |
 | --- | ---: | --- |
@@ -14,8 +14,8 @@
 | Visual consistency | 9.4/10 | Shared radius/elevation/icon/state language documented and implemented |
 | Study flow | 9.2/10 | Search → filter → lecture → subtopic → question is direct; lecture overview now shows progress |
 | Accessibility structure | 9.3/10 | Labels, focus, semantic active states, progressbars, keyboard Rapid Recall and modal behavior covered |
-| Responsive architecture | 8.9/10 | Mobile sheet, hidden-by-default compact sidebars, safe areas and landscape rules implemented; browser execution pending |
-| Dark mode | 9.0/10 | Semantic token pairing and static AA contrast checks pass; visual axe/browser pass pending |
+| Responsive architecture | 8.9/10 | Mobile sheet, hidden-by-default compact sidebars, safe areas and landscape rules implemented; browser matrix green |
+| Dark mode | 9.0/10 | Semantic token pairing and contrast checks pass; axe/browser verification is green |
 | Print / offline UX | 9.1/10 | Dedicated Print Center, vector controls, offline busy/error states and selective caching |
 | Maintainability | 9.5/10 | No new UI framework/dependency; permanent design system and audit govern future work |
 | **Overall source-level UI/UX** | **9.2/10** | Production visual sign-off waits for the blocked browser matrix |

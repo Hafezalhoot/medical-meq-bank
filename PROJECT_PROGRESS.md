@@ -111,7 +111,7 @@ Course catalog
 - ✅ P0-01 Create modernization branch.
 - ✅ P0-02 Add this persistent progress log.
 - ✅ P0-03 Reproduce and diagnose the failing `main` validation path.
-- ✅ P0-04 Update stale deployment/readme references to the current organization and Cloudflare Workers setup.
+- ✅ P0-04 Keep deployment/readme references aligned with the current personal repository owner and Cloudflare Workers setup.
 - ✅ P0-05 Tighten repository hygiene checks to reject all Playwright report variants; generated `dist/` cleanup remains in Phase 8.
 - ✅ P0-06 Remove tracked generated artifacts from source control — `dist/`, temporary outputs, and Playwright reports are no longer tracked; hygiene rejects their return.
 - ⚠️ P0-07 CI quality gates are restored and the complete matrix is green in run `37190596970`; enforcing those checks as non-bypassable `main` branch protection and confirming Cloudflare branch control remain external configuration tasks.
@@ -299,6 +299,7 @@ Every phase should preserve or improve these checks:
 - ✅ Removed the temporary hosted-runner probe and the Python invalid-escape warning from the build.
 - ✅ Retained verified legacy compressed/template source inputs intentionally as reproducible data inputs; the generic content engine is the only build path and passed the full matrix.
 - ⚠️ Final release blockers are configuration-only: protect `main` with required quality checks (#21) and verify Cloudflare production hostname/Access/branch control.
+- ✅ Documentation was reconciled after the repository became public and moved to `Hafezalhoot`; README, deployment, release, Actions incident, and UI/UX audit docs no longer describe the old private-organization state as current.
 
 
 ### 2026-10-03 — Release candidate UI and operations hardening
@@ -393,7 +394,7 @@ Every phase should preserve or improve these checks:
 - ✅ Opened draft PR #19 as the delivery track for the modernization program.
 - ✅ Reproduced the current GitHub Actions failure on the modernization branch and PR.
 - ✅ Confirmed the failure signature is pre-job: empty workflow name, path `BuildFailed`, `startup_failure`, and zero jobs. No repository build/test code executes in this state.
-- ✅ Updated deployment documentation from the stale Pages/personal-repository instructions to the current Cloudflare Workers + organization setup.
+- ✅ Updated deployment documentation from stale Pages instructions to the current Cloudflare Workers setup; later ownership/visibility changes are recorded in the 2026-10-04 entry.
 - ✅ Added release/rollback guidance and documented that Cloudflare production promotion must remain gated by the validation matrix.
 - ✅ Hardened repository hygiene to reject all `playwright-report*` variants.
 - ✅ Removed the tracked `playwright-report-webkit/index.html` artifact.

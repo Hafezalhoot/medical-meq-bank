@@ -1,12 +1,20 @@
-# GitHub Actions Recovery Runbook
+# GitHub Actions Incident Record and Recovery Runbook
 
-This runbook documents the current GitHub-hosted runner provisioning failure for the private Medical MEQ Bank repository.
+> **Resolved 2026-10-04.** The repository is now public under personal account `Hafezalhoot`, and the complete quality matrix is green. Run `37190821886` passed `validate`, `chromium-quality`, and `webkit-quality` on the current PR head. The exact organization-side cause was not identified.
+>
+> The material below is retained as the incident record and fallback diagnostic procedure if the same zero-job signature ever returns.
+
+This runbook documents the former GitHub-hosted runner provisioning failure.
 
 ## Confirmed failure signature
 
-Repository:
+Current repository:
 
-`Hafez-Alhoot/medical-meq-bank`
+`Hafezalhoot/medical-meq-bank`
+
+Owner during the incident:
+
+`Hafez-Alhoot` organization
 
 Repository ID:
 
@@ -46,11 +54,11 @@ That makes a broad GitHub Actions outage unlikely and increases the likelihood o
 
 The temporary probe workflow has been removed after diagnosis.
 
-## Most likely account / organization checks
+## Historical account / organization checks
 
 GitHub-hosted Actions usage for private repositories is charged to the **repository owner** after included usage. An account-level billing lock or Actions budget restriction can stop hosted-runner provisioning before a job starts.
 
-Check the organization that owns this repository:
+At the time of the incident the repository was organization-owned. These were the relevant checks:
 
 ### 1. Billing and payment state
 
@@ -103,7 +111,7 @@ Escalate to GitHub Support as a hosted-runner/control-plane issue.
 
 Provide:
 
-- repository: `Hafez-Alhoot/medical-meq-bank`
+- repository during incident: `Hafez-Alhoot/medical-meq-bank` (same repository ID, now `Hafezalhoot/medical-meq-bank`)
 - repository ID: `1320445840`
 - synthetic workflow ID: `351923769`
 - run `37139141492`
@@ -112,28 +120,30 @@ Provide:
 - note that the same workflow file previously produced real jobs on `main`
 - note that a one-job shell-only probe reproduces the same pre-job failure.
 
-Ask Support to inspect the private repository / organization Actions execution entitlement and any stale synthetic `BuildFailed` routing or hosted-runner provisioning lock.
+If the same signature recurs, ask Support to inspect Actions execution entitlement and any stale synthetic `BuildFailed` routing or hosted-runner provisioning lock.
 
 ## What not to do
 
+The project is now intentionally public; repository visibility is a product/release decision, not an incident-response workaround.
+
 Do **not**:
 
-- make the medical repository public merely to bypass private-repository Actions billing;
 - weaken the quality workflow;
 - merge PR #19 just because source-level checks pass;
 - allow Cloudflare to auto-promote an unverified commit.
 
-## Verification after recovery
+## Verified recovery
 
-Once the account/repository issue is fixed, push or update the modernization branch and confirm:
+Recovery is confirmed:
 
-1. the run is named **Validate Medical MEQ Bank** instead of blank / `BuildFailed`;
-2. job `validate` is created;
+1. the workflow is named **Validate Medical MEQ Bank** instead of blank / `BuildFailed`;
+2. job `validate` is created and passes;
 3. the shared static quality gate passes;
 4. `chromium-quality` passes;
 5. `webkit-quality` passes;
-6. generated artifacts are present;
-7. only then remove Draft status from PR #19 and consider production promotion.
+6. generated artifacts are present.
+
+Latest current-head evidence: run `37190821886`. PR #19 remains Draft only because `main` branch protection and Cloudflare production controls still require external configuration.
 
 ## Current deployment safety fallback
 
@@ -150,4 +160,4 @@ That gate checks:
 - repository hygiene when a Git worktree is available;
 - JavaScript syntax for source, generated runtime, tests, and Playwright configs.
 
-This does **not** replace browser E2E/accessibility/WebKit verification, but it prevents Cloudflare or a local build from accepting obvious source/data/PWA regressions while GitHub-hosted runners are unavailable.
+This does **not** replace browser E2E/accessibility/WebKit verification. It remains defense in depth even though GitHub-hosted runners are now operational.

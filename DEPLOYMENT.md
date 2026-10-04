@@ -1,6 +1,6 @@
-# Private deployment setup
+# Deployment and access setup
 
-The source repository remains **private**. Deployment visibility and user access are controlled separately in Cloudflare.
+The source repository is **public** under the personal `Hafezalhoot` account. Repository visibility and deployed-app access are separate; use Cloudflare Access if the Worker must be restricted.
 
 ## Current platform
 
@@ -8,7 +8,7 @@ The application is configured as a **Cloudflare Worker with static assets** thro
 
 Repository:
 
-`Hafez-Alhoot/medical-meq-bank`
+`Hafezalhoot/medical-meq-bank`
 
 Production source branch:
 
@@ -37,7 +37,7 @@ Connect the GitHub repository from Cloudflare Dashboard → Workers & Pages → 
 Recommended settings:
 
 - Git provider: GitHub
-- Repository: `Hafez-Alhoot/medical-meq-bank`
+- Repository: `Hafezalhoot/medical-meq-bank`
 - Production branch: `main`
 - Build command: `bash build.sh`
 - Production deploy command: use the release policy below
@@ -78,10 +78,10 @@ If the bank is intended for a restricted group:
 1. Open Cloudflare Zero Trust → Access → Applications.
 2. Add the Worker's production hostname as a self-hosted application.
 3. Create the required Allow policy.
-4. Use the organization's chosen identity provider or One-time PIN.
+4. Use the chosen identity provider or One-time PIN.
 5. Test both allowed and denied users before publishing the URL.
 
-Repository privacy does **not** make the deployed Worker private by itself.
+Public repository visibility does **not** control access to the deployed Worker. If the deployed bank must be restricted, enforce that separately with Cloudflare Access.
 
 ## PWA and offline behavior
 
@@ -94,6 +94,7 @@ Student progress remains local to the browser unless the user explicitly exports
 Before promoting a production version:
 
 - `bash build.sh` succeeds, including the canonical static quality gate.
+- GitHub PR quality checks are green and `main` branch protection requires them.
 - All Python validators/repository audits and performance budgets succeed.
 - JavaScript syntax checks succeed.
 - Chromium/Playwright checks succeed.
