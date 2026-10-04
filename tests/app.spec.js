@@ -62,7 +62,7 @@ test('search waits for the debounce interval', async ({page}) => {
     () => page.evaluate(() => Boolean(globalThis.MEQSearch?.renderResults))
   ).toBe(true);
 
-  const immediatelyEmpty = await page.evaluate(() => {
+  const initialSignals = await page.evaluate(() => {
     window.__meqSearchApplied = 0;
     const input = document.getElementById('search');
     input.addEventListener('meq:search-applied', () => {
@@ -70,15 +70,18 @@ test('search waits for the debounce interval', async ({page}) => {
     });
     input.value = 'definitely-no-such-medical-item-8374';
     input.dispatchEvent(new Event('input', {bubbles: true}));
-    return document.getElementById('empty').classList.contains('show');
+    return window.__meqSearchApplied;
   });
 
-  expect(immediatelyEmpty).toBe(false);
+  expect(initialSignals).toBe(0);
+  await page.waitForTimeout(150);
+  expect(await page.evaluate(() => window.__meqSearchApplied)).toBe(0);
 
   await expect.poll(
     () => page.evaluate(() => window.__meqSearchApplied)
   ).toBe(1);
-  await expect(page.locator('#empty')).toHaveClass(/show/);
+  await expect(page.locator('#globalSearchResults')).toBeVisible();
+  await expect(page.locator('#globalSearchStatus')).toContainText('No matching study items');
 });
 
 test('mobile filter bar stays compact and opens an accessible bottom sheet', async ({page}) => {
