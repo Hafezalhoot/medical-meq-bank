@@ -68,7 +68,7 @@ test('debounced search filtering completes within the interaction budget and pre
   expect(result.duration).toBeGreaterThanOrEqual(280);
   expect(result.duration).toBeLessThan(1_500);
   expect(result.observedInputEvents).toBe(1);
-  await expect(page.locator('.study-item:not(.hidden)').first()).toBeVisible();
+  await expect(page.locator('#globalSearchResults .global-search-result').first()).toBeVisible();
 });
 
 test('switching to an unloaded subject completes within the navigation budget', async ({page}) => {
