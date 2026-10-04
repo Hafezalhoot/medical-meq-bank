@@ -37,9 +37,9 @@ test('print center builds a complete worksheet document with saved pagination se
 
   await page.locator('#printCenterCreate').click();
   await expect.poll(
-    () => page.evaluate(() => Boolean(globalThis.__medicalBankLastPrintHTML)),
+    () => page.evaluate(() => globalThis.__medicalBankLastPaginationResult?.pages || 0),
     {timeout: 20_000}
-  ).toBe(true);
+  ).toBeGreaterThan(0);
 
   const generated = await page.evaluate(() => ({
     html: globalThis.__medicalBankLastPrintHTML,
