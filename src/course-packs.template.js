@@ -9,12 +9,16 @@
   const packById = new Map(Object.entries(embedded.packs));
   const orderedCourses = [...catalog.courses]
     .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
-  const subjectOwner = new Map();
+  const subjectOwners = new Map();
 
   for (const course of orderedCourses) {
     const pack = packById.get(course.id);
     if (!pack) continue;
-    for (const subject of pack.subjects) subjectOwner.set(subject.id, pack);
+    for (const subject of pack.subjects) {
+      const owners = subjectOwners.get(subject.id) || [];
+      owners.push(pack);
+      subjectOwners.set(subject.id, owners);
+    }
   }
 
   const panel = document.querySelector('.hero-panel');
@@ -48,11 +52,28 @@
   let activeCourse = '';
 
   const packForCourse = courseId => packById.get(courseId) || null;
-  const packForSubject = subjectKey => subjectOwner.get(subjectKey) || null;
-  const catalogForSubject = subjectKey => packForSubject(subjectKey)?.lectureCatalogUrl || null;
-  const allSubjectKeys = () => orderedCourses.flatMap(course =>
-    (packForCourse(course.id)?.subjects || []).map(subject => subject.id)
+  const packHasSubject = (pack, subjectKey) =>
+    Boolean(pack?.subjects?.some(subject => subject.id === subjectKey));
+  const packForSubject = (subjectKey, courseId = activeCourse) => {
+    const scopedPack = packForCourse(courseId);
+    if (scopedPack && packHasSubject(scopedPack, subjectKey)) return scopedPack;
+    const owners = subjectOwners.get(subjectKey) || [];
+    return owners.length === 1 ? owners[0] : null;
+  };
+  const catalogForSubject = (subjectKey, courseId = activeCourse) =>
+    packForSubject(subjectKey, courseId)?.lectureCatalogUrl || null;
+  const subjectScope = (subjectKey, courseId = activeCourse) => {
+    const pack = packForSubject(subjectKey, courseId);
+    return pack ? `${pack.id}/${subjectKey}` : null;
+  };
+  const allSubjectScopes = () => orderedCourses.flatMap(course =>
+    (packForCourse(course.id)?.subjects || []).map(subject => ({
+      courseId: course.id,
+      subjectKey: subject.id,
+      scopeId: `${course.id}/${subject.id}`
+    }))
   );
+  const allSubjectKeys = () => [...new Set(allSubjectScopes().map(scope => scope.subjectKey))];
 
   const refreshCourseView = () => {
     activeSubtopic = 'all';
@@ -111,7 +132,7 @@
   });
 
   const storedCourse = storage.get('medicalBankCourseV1');
-  const inferredCourse = packForSubject(activeSubject)?.id;
+  const inferredCourse = packForSubject(activeSubject, storedCourse)?.id;
   const initialCourse = packForCourse(storedCourse)?.id || inferredCourse || catalog.defaultCourse || orderedCourses[0]?.id;
 
   globalThis.MEQCourseRegistry = Object.freeze({
@@ -120,7 +141,18 @@
     packs: packById,
     activateCourse,
     catalogForSubject,
-    courseForSubject: subjectKey => packForSubject(subjectKey)?.id || null,
+    courseForSubject: (subjectKey, courseId = activeCourse) =>
+      packForSubject(subjectKey, courseId)?.id || null,
+    subjectScope,
+    lectureScope: (lectureId, subjectKey, courseId = activeCourse) => {
+      const scope = subjectScope(subjectKey, courseId);
+      return scope ? `${scope}/${lectureId}` : null;
+    },
+    itemScope: (lectureId, subjectKey, type, itemId, courseId = activeCourse) => {
+      const lecture = subjectScope(subjectKey, courseId);
+      return lecture ? `${lecture}/${lectureId}/${type}/${itemId}` : null;
+    },
+    allSubjectScopes,
     allSubjectKeys,
     get activeCourse() { return activeCourse; }
   });

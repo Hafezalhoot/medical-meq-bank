@@ -15,5 +15,6 @@
       "order": 2,
       "pack": "packs/internal-medicine.json"
     }
-  ]
+  ],
+  "schemaVersion": 2
 }

@@ -105,6 +105,19 @@
         "detailedShorts": 60,
         "rapid": 35
       }
+    },
+    {
+      "id": "urology-renal-tumors",
+      "title": "Renal Tumors",
+      "subjectKey": "urology",
+      "order": 8,
+      "expectedCounts": {
+        "cases": 12,
+        "coreShorts": 30,
+        "imageQuestions": 6,
+        "detailedShorts": 45,
+        "rapid": 30
+      }
     }
   ]
 }

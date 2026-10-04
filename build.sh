@@ -36,30 +36,18 @@ required_files=(
   courses/packs/surgery.json
   courses/packs/internal-medicine.json
   courses/packs/surgery-baseline.json
-  assets-source/renal/manifest.json
-  assets-source/renal/rt-i01-gross-rcc.avif.b64
-  assets-source/renal/rt-i02-rcc-contrast-ct.avif.b64
-  assets-source/renal/rt-i03-wilms-clinical.avif.b64
-  assets-source/renal/rt-i04-wilms-ct.avif.b64
-  assets-source/renal/rt-i05-utuc-renal-pelvis-ct.avif.b64
-  assets-source/renal/rt-i06-goblet-sign.avif.b64
   lectures/catalog.json
   lectures/catalog.schema.json
   lectures/lecture.schema.json
-  lectures/templates/renal-parts/urology-renal-tumors.part01.jsonpart
-  lectures/templates/renal-parts/urology-renal-tumors.part02.jsonpart
-  lectures/templates/renal-parts/urology-renal-tumors.part03.jsonpart
-  lectures/templates/renal-parts/urology-renal-tumors.part04.jsonpart
-  lectures/payload-fixes/urology-urolithiasis.part05.1
-  lectures/payload-fixes/urology-urolithiasis.part05.2
-  lectures/payload-fixes/urology-urolithiasis.part05.3
+  lectures/materialization.json
+  tools/add_lecture.py
   tools/build_app.py
+  tools/build_search_index.py
   tools/finalize_offline.py
   tools/finalize_course_packs.py
   tools/lecture_builder.py
-  tools/materialize_verified_lectures_v2.py
-  tools/materialize_verified_lectures_v3.py
-  tools/materialize_renal_tumors.py
+  tools/publish_lectures.py
+  tools/materialize_lectures.py
   scripts/audit_repository.py
   scripts/validate_build.py
   scripts/validate_mobile_filters.py
@@ -67,6 +55,9 @@ required_files=(
   scripts/validate_progress_resilience.py
   scripts/validate_course_packs.py
   scripts/validate_lecture_images.py
+  scripts/validate_performance_budget.py
+  scripts/validate_repository_hygiene.py
+  scripts/quality_gate.sh
   tests/course-packs.spec.js
 )
 
@@ -83,23 +74,25 @@ if ! find lectures/data -maxdepth 1 -type f -name '*.json' -print -quit | grep -
 fi
 
 python3 -m py_compile \
+  tools/add_lecture.py \
   tools/build_app.py \
+  tools/build_search_index.py \
   tools/finalize_offline.py \
   tools/finalize_course_packs.py \
   tools/lecture_builder.py \
-  tools/materialize_verified_lectures_v2.py \
-  tools/materialize_verified_lectures_v3.py \
-  tools/materialize_renal_tumors.py \
+  tools/publish_lectures.py \
+  tools/materialize_lectures.py \
   scripts/audit_repository.py \
   scripts/validate_build.py \
   scripts/validate_mobile_filters.py \
   scripts/validate_runtime_extensions.py \
   scripts/validate_progress_resilience.py \
   scripts/validate_course_packs.py \
-  scripts/validate_lecture_images.py
+  scripts/validate_lecture_images.py \
+  scripts/validate_performance_budget.py \
+  scripts/validate_repository_hygiene.py
 
-python3 tools/materialize_verified_lectures_v3.py
-python3 tools/materialize_renal_tumors.py
+python3 tools/materialize_lectures.py
 python3 scripts/validate_lecture_images.py
 
 node --check src/app.js
@@ -135,7 +128,8 @@ install -m 0644 src/print-manager.css "$OUTPUT/print-manager.css"
 install -m 0644 src/print-manager.js "$OUTPUT/print-manager.js"
 install -m 0644 404.html _headers service-worker.js "$OUTPUT/"
 install -m 0644 lectures/catalog.json "$OUTPUT/lectures/"
-cp lectures/data/*.json "$OUTPUT/lectures/data/"
+python3 tools/publish_lectures.py "$OUTPUT/lectures/data"
+python3 tools/build_search_index.py "$OUTPUT/lectures/search"
 cp -R icons "$OUTPUT/icons"
 
 if [ -d assets ]; then
@@ -148,7 +142,7 @@ python3 tools/build_app.py "$OUTPUT"
 install -m 0644 manifest.webmanifest version.json "$OUTPUT/"
 python3 tools/finalize_course_packs.py
 python3 tools/finalize_offline.py
-node --check "$OUTPUT/course-packs.js"
-python3 scripts/validate_course_packs.py
+
+bash scripts/quality_gate.sh
 
 echo "Medical MEQ Bank prepared in $OUTPUT from independent course packs and split reviewable lecture files"

@@ -15,6 +15,30 @@ LECTURE_LIST_KEYS = (
     "rapid",
 )
 VALID_PRIORITIES = {"High", "Core"}
+TOP_LEVEL_FIELDS = {
+    "schemaVersion", "courseId", "canonicalId",
+    "id", "order", "subjectKey", "subject", "title", "subtitle", "sourceNote",
+    "subtopics", "cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid",
+}
+SUBTOPIC_FIELDS = {"id", "label"}
+ITEM_FIELDS = {
+    "cases": {
+        "id", "title", "topic", "priority", "marks", "subtopics", "questions", "answer",
+        "scenario", "ar", "marking", "trap", "memory",
+    },
+    "coreShorts": {"id", "q", "a", "topic", "priority", "marks", "subtopics", "section"},
+    "detailedShorts": {"id", "q", "a", "topic", "priority", "marks", "subtopics", "section"},
+    "imageQuestions": {
+        "id", "title", "topic", "priority", "marks", "subtopics", "questions", "answer",
+        "prompt", "image", "page", "imageBytes", "imageSha256",
+    },
+}
+
+
+def _reject_unknown_fields(value: dict, allowed: set[str], *, label: str) -> None:
+    unknown = sorted(set(value) - allowed)
+    if unknown:
+        raise SystemExit(f"{label} contains unsupported fields: {', '.join(unknown)}")
 
 
 def _non_empty_string(value: object) -> bool:
@@ -46,6 +70,7 @@ def validate_lecture(
 ) -> dict:
     if not isinstance(lecture, dict):
         raise SystemExit(f"{label} lecture is not an object")
+    _reject_unknown_fields(lecture, TOP_LEVEL_FIELDS, label=f"{label} lecture")
 
     if lecture.get("id") != expected_id:
         raise SystemExit(f"{label} lecture has unexpected id: {lecture.get('id')!r}")
@@ -64,6 +89,7 @@ def validate_lecture(
     for index, subtopic in enumerate(subtopics, start=1):
         if not isinstance(subtopic, dict):
             raise SystemExit(f"{label} subtopic {index} is not an object")
+        _reject_unknown_fields(subtopic, SUBTOPIC_FIELDS, label=f"{label} subtopic {index}")
         subtopic_id = subtopic.get("id")
         if not _non_empty_string(subtopic_id) or not _non_empty_string(subtopic.get("label")):
             raise SystemExit(f"{label} subtopic {index} is incomplete")
@@ -99,6 +125,11 @@ def validate_lecture(
         for index, item in enumerate(value, start=1):
             if not isinstance(item, dict):
                 raise SystemExit(f"{label} {key} item {index} is not an object")
+            _reject_unknown_fields(
+                item,
+                ITEM_FIELDS[key],
+                label=f"{label} {key} item {index}",
+            )
             for field in required_fields[key]:
                 if field not in item:
                     raise SystemExit(f"{label} {key} item {index} is missing {field}")
@@ -164,8 +195,12 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
         raise SystemExit(f"Could not read lecture catalog: {error}") from error
 
-    if not isinstance(catalog, dict) or catalog.get("version") != 1:
-        raise SystemExit("Lecture catalog must be an object with version 1")
+    if (
+        not isinstance(catalog, dict)
+        or catalog.get("version") != 1
+        or catalog.get("schemaVersion") != 2
+    ):
+        raise SystemExit("Lecture catalog must be version 1 with metadata schemaVersion 2")
     entries = catalog.get("lectures")
     if not isinstance(entries, list) or not entries:
         raise SystemExit("Lecture catalog has no lectures")
@@ -183,10 +218,19 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
         lecture_id = entry.get("id")
         relative_file = entry.get("file")
         expected_counts = entry.get("expectedCounts")
+        course_id = entry.get("courseId")
+        payload_schema_version = entry.get("schemaVersion")
         if not _non_empty_string(lecture_id) or not _non_empty_string(relative_file):
             raise SystemExit(f"Lecture catalog entry {index} is incomplete")
         if lecture_id in seen_ids:
             raise SystemExit(f"Lecture catalog contains duplicate id: {lecture_id}")
+        if not _non_empty_string(course_id):
+            raise SystemExit(f"Lecture catalog entry {lecture_id} is missing courseId")
+        if payload_schema_version != 1:
+            raise SystemExit(
+                f"Lecture catalog entry {lecture_id} uses unsupported payload schemaVersion "
+                f"{payload_schema_version!r}"
+            )
         if not isinstance(expected_counts, dict) or set(expected_counts) != set(LECTURE_LIST_KEYS):
             raise SystemExit(f"Lecture catalog entry {lecture_id} must define all expected counts")
 
@@ -205,12 +249,17 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
             raise SystemExit(f"Could not read lecture source {relative_file}: {error}") from error
 
-        lectures.append(validate_lecture(
+        validated = validate_lecture(
             lecture,
             label=f"JSON {lecture_id}",
             expected_id=lecture_id,
             expected_counts=expected_counts,
-        ))
+        )
+        published = dict(validated)
+        published["schemaVersion"] = payload_schema_version
+        published["courseId"] = course_id
+        published["canonicalId"] = f"{course_id}/{entry['subjectKey']}/{lecture_id}"
+        lectures.append(published)
         seen_ids.add(lecture_id)
         seen_files.add(source_path)
 
