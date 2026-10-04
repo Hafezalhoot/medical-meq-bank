@@ -357,6 +357,7 @@
 
   const resetFilters = () => {
     searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input', {bubbles: true}));
     selectValue(lectureFilter);
 
     if (typeFilter.value === 'rapid') {
