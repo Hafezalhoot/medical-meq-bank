@@ -31,22 +31,20 @@ test('WebKit opens the active subject and loads another subject on demand', asyn
   page.on('pageerror', error => pageErrors.push(error.message));
 
   await waitForBank(page);
-  const expectedCounts = await page.evaluate(async () => {
-    const catalog = await globalThis.MEQLectureLoader.loadCatalog();
-    return {
-      urology: catalog.lectures.filter(entry => entry.subjectKey === 'urology').length,
-      neurosurgery: catalog.lectures.filter(entry => entry.subjectKey === 'neurosurgery').length
-    };
-  });
   await expect.poll(
     () => page.evaluate(() => globalThis.MEQLectureLoader?.loadedLectureIds.size)
-  ).toBe(expectedCounts.urology);
+  ).toBe(1);
 
   await page.locator('#subjectSelector').selectOption('neurosurgery');
   await expect(page.locator('#lecture-neurosurgery-traumatic-brain-injury')).toBeVisible();
   await expect.poll(
+    () => page.evaluate(() =>
+      globalThis.MEQLectureLoader?.isLoaded('neurosurgery-traumatic-brain-injury')
+    )
+  ).toBe(true);
+  await expect.poll(
     () => page.evaluate(() => globalThis.MEQLectureLoader?.loadedLectureIds.size)
-  ).toBe(expectedCounts.urology + expectedCounts.neurosurgery);
+  ).toBe(2);
 
   expect(pageErrors).toEqual([]);
 });
@@ -65,7 +63,8 @@ test('iPhone WebKit can expand, search and reset mobile filters', async ({page},
 
   await page.locator('#search').fill('testicular');
   await expect(page.locator('#activeFilterChips')).toContainText('Search: testicular');
-  await expect(page.locator('.study-item:not(.hidden)').first()).toBeVisible();
+  await expect(page.locator('#globalSearchResults')).toBeVisible();
+  await expect(page.locator('#globalSearchResults .global-search-result').first()).toBeVisible();
 
   const resetButton = page.locator('#resetFiltersBtn');
   await expect(resetButton).toBeVisible();
@@ -73,5 +72,6 @@ test('iPhone WebKit can expand, search and reset mobile filters', async ({page},
   await resetButton.click();
   await expect(page.locator('#search')).toHaveValue('');
   await expect(page.locator('#activeFilterChips')).toBeHidden();
+  await expect(page.locator('#globalSearchResults')).toBeHidden();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 });
