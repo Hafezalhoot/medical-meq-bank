@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank
 
-Private source repository for the Medical MEQ Review Bank.
+Public source repository for the Medical MEQ Review Bank.
 
 The project is an offline-first Progressive Web App containing lecture-based MEQ cases, high-yield short questions, image/spot questions, detailed practice, Rapid Recall, saved progress, dark mode, printing, and lecture/subtopic navigation.
 
