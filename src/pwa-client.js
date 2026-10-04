@@ -384,9 +384,10 @@
   };
 
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    const hadController = Boolean(navigator.serviceWorker.controller);
     let refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
+      if (hadController && !refreshing) {
         refreshing = true;
         location.reload();
       }
