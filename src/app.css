@@ -63,7 +63,7 @@ body{background:#f4f7fb}
 .study-breadcrumb{margin:12px 2px 0;color:var(--muted);font-size:.78rem}
 .study-breadcrumb ol{display:flex;align-items:center;gap:8px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
 .study-breadcrumb li:not(.breadcrumb-separator){display:flex;align-items:baseline;gap:5px;min-width:0}
-.study-breadcrumb li span{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:#8792a2}
+.study-breadcrumb li span{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:#667085}
 .study-breadcrumb li strong{font-size:.8rem;color:#344054;max-width:34ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .study-breadcrumb li[aria-current="page"] strong{color:var(--brand)}
 .breadcrumb-separator{color:#b0bac8}
@@ -130,7 +130,7 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
   --brand-soft:#172b4d;
 }
 .dark body,.dark{background:#0b1220}
-.dark .study-breadcrumb li span{color:#8492a6}
+.dark .study-breadcrumb li span{color:#a7b2c2}
 .dark .study-breadcrumb li strong{color:#d0d5dd}
 .dark .study-breadcrumb li[aria-current="page"] strong{color:#9ec1ff}
 .dark .progress-stat .stat-label{color:#c0cad7}
