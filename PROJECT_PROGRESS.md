@@ -286,6 +286,7 @@ Every phase should preserve or improve these checks:
 ## Change log
 
 ### 2026-10-03 — Release candidate UI and operations hardening
+- ✅ 2026-10-04: repository visibility changed from private to public to enable the free public-repository CI/protection path; a fresh Actions run is required to verify whether the previous pre-job startup blocker is cleared.
 - ✅ 2026-10-04 follow-up: hardened backup failure reporting so a failed automatic rollback no longer claims that current progress was preserved; failure injection now covers the partial-rollback case explicitly.
 - ✅ 2026-10-04 follow-up: bumped the release candidate and PWA cache identity to `2026.10.04.1` after runtime changes, keeping `version.json`, service worker, and PWA client synchronized.
 - ⚠️ 2026-10-04 follow-up: release-candidate commit `6134522ba2ef49abc3077bccc26cf7feec85af0a` remains mergeable-clean, but run `37161592860` still fails before job creation; code-side release work is therefore complete pending external runner/Cloudflare controls.
