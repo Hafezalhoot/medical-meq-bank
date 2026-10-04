@@ -65,7 +65,7 @@ Generated `dist/` and Playwright reports are CI artifacts, not source-controlled
 
 The 2026-10-03 synthetic `BuildFailed/startup_failure` incident was operationally resolved on 2026-10-04 by transferring the same public repository from the `Hafez-Alhoot` organization to the personal `Hafezalhoot` account. The repository ID and history were preserved. The exact organization-side policy/provisioning cause was not identified.
 
-The current release gate is healthy. On PR #19 head `81931f5bfc6f8b2ea39498756a5805aa6d64d897`, GitHub Actions run `37190821886` passed:
+The current release gate is healthy. On PR #19 head `f5eaa43d9b08a3b0e2129685e344bc836bc9641a`, GitHub Actions run `37191073031` passed:
 
 - `validate`;
 - `chromium-quality` including axe, performance, Print/PDF and offline coverage;
