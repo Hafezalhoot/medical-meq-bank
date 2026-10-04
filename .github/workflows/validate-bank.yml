@@ -22,11 +22,6 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Public runner probe
-        run: |
-          echo "runner-ready"
-          uname -a
-
       - name: Check out repository
         uses: actions/checkout@v6
 
