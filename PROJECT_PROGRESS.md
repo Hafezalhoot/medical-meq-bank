@@ -287,6 +287,7 @@ Every phase should preserve or improve these checks:
 ## Change log
 
 ### 2026-10-04 — Personal-account migration and CI recovery
+- ✅ Final repository-side release audit confirmed the latest full GitHub Actions matrix is green on head `f5eaa43d9b08a3b0e2129685e344bc836bc9641a` (run `37191073031`), and corrected stale public-visibility/release-evidence documentation.
 
 - ✅ Transferred the public repository from the `Hafez-Alhoot` organization to personal account `Hafezalhoot` while preserving repository ID, history, PR #19, issues and branches.
 - ✅ GitHub-hosted runners began provisioning normally after the transfer; issue #20 is resolved. The exact organization-side policy that caused the former zero-job `BuildFailed/startup_failure` was not identified.
