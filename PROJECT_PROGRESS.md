@@ -6,11 +6,11 @@
 
 ## Program snapshot
 
-- **Repository:** `Hafez-Alhoot/medical-meq-bank`
+- **Repository:** `Hafezalhoot/medical-meq-bank`
 - **Working branch:** `hardening/scalability-overhaul-20261003`
 - **Baseline commit:** `ae7d0b47b89236a9b152a3083c422779946a41b1`
 - **Started:** 2026-10-03
-- **Release candidate:** `2026.10.04.1`
+- **Release candidate:** `2026.10.04.2`
 - **Delivery PR:** `#19` (`hardening/scalability-overhaul-20261003` → `main`)
 - **Primary goal:** preserve the current reliable PWA and study UX while removing the architectural ceilings that would prevent safe growth to many courses, subjects, lectures, study items, images, and users.
 - **Non-goal:** framework churn. React/Next.js/Supabase are not introduced unless a measured requirement cannot be met by the existing platform and data model.
@@ -32,17 +32,18 @@
 | Source architecture refactor | ✅ Pass | Lecture-level loading, bounded rendering, selective offline caching, per-item progress, scoped search and generic authoring pipeline are implemented on PR #19 |
 | Repository hygiene | ✅ Pass | Recursive Git tree contains no tracked `dist/`, `tmp/`, test results, Playwright reports, Python caches, or bytecode |
 | JavaScript source syntax | ✅ Pass | All shipped runtime JavaScript files parse successfully in an independent V8 syntax pass |
-| Version consistency | ✅ Pass | `version.json`, service worker, and PWA client all declare `2026.10.04.1` |
+| Version consistency | ✅ Pass | `version.json`, service worker, and PWA client all declare `2026.10.04.2` |
 | Content/catalog invariants | ✅ Pass | 9 unique lecture IDs; course/subject order is unique; every catalog entry has course + payload version metadata |
 | Surgery compatibility baseline | ✅ Pass | All 9 current Surgery lectures are protected by the common baseline, including Renal Tumors |
 | Dependency lock consistency | ✅ Pass | `package.json` and `package-lock.json` agree on Playwright 1.62.1 and axe-playwright 4.13.0 |
-| Full clean build | ⚠️ Blocked externally | Repository-side workflow was reduced to a native `echo`/`uname` runner probe with no checkout/actions/dependencies and still failed before job creation. GitHub Actions latest release-candidate evidence: run `37161592860` on commit `6134522ba2ef49abc3077bccc26cf7feec85af0a` reports blank workflow name, `path: BuildFailed`, `(Unknown event)`, `startup_failure`, and contains zero jobs; no repository test step starts. Private-repo clone is unavailable from the current execution container |
-| Chromium + axe + performance + print + offline | ⚠️ Blocked externally | Test code is updated, but no GitHub Actions job is created |
-| WebKit / iPhone | ⚠️ Blocked externally | Test code is updated, but no GitHub Actions job is created |
+| Full clean build | ✅ Pass | GitHub Actions run `37190596970` on `2026.10.04.2` completed successfully; `validate` built from clean sources and passed the canonical static quality gate |
+| Chromium + axe + performance + print + offline | ✅ Pass | `chromium-quality` passed in run `37190596970`, including accessibility, performance, print/PDF, offline, progress and regression coverage |
+| WebKit / iPhone | ✅ Pass | `webkit-quality` passed in run `37190596970` for Safari desktop and iPhone WebKit smoke coverage |
+| Main branch protection | ⚠️ External configuration | Repository is public and personal-account owned, but repository rulesets are currently empty; configure required PR/status checks on `main` per issue #21 |
 | Cloudflare production URL / Access / branch control | ⚠️ External verification | No Cloudflare connector is available; verify these settings in the Cloudflare dashboard before promotion |
-| Production merge/promotion | ⛔ Hold | PR #19 stays draft until the blocked quality matrix can execute successfully |
+| Production merge/promotion | ⛔ Hold | Quality matrix is green; PR #19 remains draft until `main` protection and Cloudflare production controls are verified |
 
-External runner recovery tracker: https://github.com/Hafez-Alhoot/medical-meq-bank/issues/20
+Resolved runner recovery tracker: https://github.com/Hafezalhoot/medical-meq-bank/issues/20
 
 ## Current production baseline
 
@@ -65,9 +66,9 @@ External runner recovery tracker: https://github.com/Hafez-Alhoot/medical-meq-ba
 | R-003 | ✅ Resolved in RC | Critical | Rendering | The DOM is bounded to the active lecture; All Lectures uses lightweight overview cards. |
 | R-004 | ✅ Controlled | Critical | Offline export | Full-bank standalone HTML remains only as a backward-compatible export with an 8 MB hard ceiling. |
 | R-005 | ✅ Resolved in RC | High | Progress | Progress is stored as per-item IndexedDB records with legacy migration and transactional backup/restore. |
-| R-006 | ⚠️ External blocker | High | Release safety | Repository quality gates are restored and centralized, but GitHub currently fails before provisioning any job; Cloudflare promotion remains held. |
+| R-006 | ⚠️ External configuration | High | Release safety | GitHub Actions is restored and the full matrix is green; `main` branch protection and Cloudflare production controls remain to be verified before promotion. |
 | R-007 | ✅ Resolved in RC | High | Identity model | Course/subject/lecture/item scoped identity and v2 progress keys prevent practical cross-course collisions. |
-| R-008 | 🧪 Mostly resolved | High | Content pipeline | Generic materialization/publishing and one-command authoring replace lecture-specific code; legacy transport chunks remain until a full verified build can promote canonical outputs. |
+| R-008 | ✅ Resolved | High | Content pipeline | Generic materialization/publishing and one-command authoring replace lecture-specific code. Verified legacy source transport inputs remain as reproducible data inputs, not lecture-specific build logic. |
 | R-009 | ✅ Resolved | High | Repository hygiene | Generated `dist/`, browser reports, caches and bytecode are not tracked and are rejected by hygiene checks. |
 | R-010 | ✅ Resolved in RC | Medium | Search | Search uses build-time course+subject shards and can find unloaded content without rendering the corpus. |
 | R-011 | ✅ Controlled | Medium | Schema | Payload v1 and catalog metadata versions are explicit/fail-closed; speculative rich-block schema migration is intentionally deferred. |
@@ -113,7 +114,7 @@ Course catalog
 - ✅ P0-04 Update stale deployment/readme references to the current organization and Cloudflare Workers setup.
 - ✅ P0-05 Tighten repository hygiene checks to reject all Playwright report variants; generated `dist/` cleanup remains in Phase 8.
 - ✅ P0-06 Remove tracked generated artifacts from source control — `dist/`, temporary outputs, and Playwright reports are no longer tracked; hygiene rejects their return.
-- ⚠️ P0-07 Make CI the release gate; repository-side checks are centralized in `scripts/quality_gate.sh` and enforced by `build.sh`/Cloudflare, but browser CI is still blocked by GitHub's pre-job `BuildFailed/startup_failure`. Admin recovery is tracked in issue #20; Cloudflare branch-control still requires dashboard configuration.
+- ⚠️ P0-07 CI quality gates are restored and the complete matrix is green in run `37190596970`; enforcing those checks as non-bypassable `main` branch protection and confirming Cloudflare branch control remain external configuration tasks.
 - ✅ P0-08 Clean superseded open PRs and dependency noise — only modernization PR #19 remains open; locked Playwright/axe tooling was updated on the branch.
 - ⚠️ P0-09 Record and verify the canonical production URL/access policy — Worker identity is confirmed, exact public hostname and Cloudflare Access policy still require Cloudflare dashboard verification.
 
@@ -127,14 +128,14 @@ Course catalog
 
 **Goal:** make application cost depend on the selected lecture rather than total subject size.
 
-- 🧪 P1-01 Split catalog metadata/navigation from lecture payload loading — implemented; browser verification pending.
-- 🧪 P1-02 Add `loadLecture(lectureId)` with deduplicated in-flight requests — implemented; browser verification pending.
-- 🧪 P1-03 Keep `loadSubject` metadata-first and compatibility-safe — implemented; it loads metadata plus only the active lecture payload.
-- 🧪 P1-04 Render the selected lecture only — implemented and protected by new DOM-budget tests.
-- 🧪 P1-05 Change “All lectures” into a lightweight overview rather than full-card rendering — implemented with accessible overview buttons.
-- 🧪 P1-06 Preserve navigation, random item, filtering, metadata-based progress counts, scoped printing, and accessibility behavior — code adapted; full browser matrix pending.
-- 🧪 P1-07 Add regression tests proving inactive lectures are not fetched/rendered — implemented in performance/course-pack/hardening tests.
-- 🧪 P1-08 Scale behavior is enforced by bounded one-lecture DOM/request budgets and metadata-only navigation tests; a synthetic massive fixture is deferred unless measured regressions justify the maintenance cost.
+- ✅ P1-01 Split catalog metadata/navigation from lecture payload loading — implemented; verified by the green browser matrix in run `37190596970`.
+- ✅ P1-02 Add `loadLecture(lectureId)` with deduplicated in-flight requests — implemented; verified by the green browser matrix in run `37190596970`.
+- ✅ P1-03 Keep `loadSubject` metadata-first and compatibility-safe — implemented; it loads metadata plus only the active lecture payload.
+- ✅ P1-04 Render the selected lecture only — implemented and protected by new DOM-budget tests.
+- ✅ P1-05 Change “All lectures” into a lightweight overview rather than full-card rendering — implemented with accessible overview buttons.
+- ✅ P1-06 Preserve navigation, random item, filtering, metadata-based progress counts, scoped printing, and accessibility behavior — code adapted; the full browser matrix passed in run `37190596970`.
+- ✅ P1-07 Add regression tests proving inactive lectures are not fetched/rendered — implemented in performance/course-pack/hardening tests.
+- ✅ P1-08 Scale behavior is enforced by bounded one-lecture DOM/request budgets and metadata-only navigation tests; a synthetic massive fixture is deferred unless measured regressions justify the maintenance cost.
 
 **Acceptance criteria**
 - Initial active-course load fetches catalog + at most the selected lecture payload.
@@ -146,14 +147,14 @@ Course catalog
 
 **Goal:** remove full-corpus pre-cache while keeping excellent offline behavior.
 
-- 🧪 P2-01 Pre-cache app shell/catalog/runtime/icons without lecture payloads or the monolithic offline export — implemented.
-- 🧪 P2-02 Runtime-cache successful lecture JSON/assets after use — implemented through the existing cache-first asset handler.
-- 🧪 P2-03 Add explicit offline download/remove APIs and UI for a lecture — implemented.
-- 🧪 P2-04 Add optional subject-pack offline download using catalog metadata — implemented.
-- 🧪 P2-05 Keep versioned caches and stale-cache cleanup — retained and now used by selective caching.
-- 🧪 P2-06 Add selective cache/install regression coverage; full browser verification is blocked by the GitHub Actions startup outage.
-- 🧪 P2-07 Keep the monolithic standalone file only as a bounded legacy export — an 8 MB hard ceiling now prevents it becoming the scalable delivery path; selective PWA lecture/subject downloads are the supported growth path.
-- 🧪 P2-08 Offline cache failures (including storage/network failures) are caught and surfaced through the existing toast/control feedback; browser verification pending.
+- ✅ P2-01 Pre-cache app shell/catalog/runtime/icons without lecture payloads or the monolithic offline export — implemented.
+- ✅ P2-02 Runtime-cache successful lecture JSON/assets after use — implemented through the existing cache-first asset handler.
+- ✅ P2-03 Add explicit offline download/remove APIs and UI for a lecture — implemented.
+- ✅ P2-04 Add optional subject-pack offline download using catalog metadata — implemented.
+- ✅ P2-05 Keep versioned caches and stale-cache cleanup — retained and now used by selective caching.
+- ✅ P2-06 Add selective cache/install regression coverage; browser verification passed in run `37190596970`.
+- ✅ P2-07 Keep the monolithic standalone file only as a bounded legacy export — an 8 MB hard ceiling now prevents it becoming the scalable delivery path; selective PWA lecture/subject downloads are the supported growth path.
+- ✅ P2-08 Offline cache failures (including storage/network failures) are caught and surfaced through the existing toast/control feedback; verified by the green browser matrix in run `37190596970`.
 
 **Acceptance criteria**
 - Service-worker install succeeds without downloading every lecture.
@@ -165,13 +166,13 @@ Course catalog
 
 **Goal:** make progress writes scale per changed item and preserve existing users.
 
-- 🧪 P3-01 Define the v2 per-item progress record schema — implemented in IndexedDB `progress-items`; canonical content namespacing continues in Phase 4.
-- 🧪 P3-02 Promote IndexedDB to primary per-item progress storage — implemented.
-- 🧪 P3-03 Migrate legacy `medicalBankStatusV2` safely on first run — implemented; legacy blob is removed only after successful IndexedDB hydration.
-- 🧪 P3-04 Keep localStorage only for small UI preferences — implemented for progress writes.
-- 🧪 P3-05 Add backup schema v2 with pre-read size limits, transactional import/rollback, and v1 compatibility — implemented.
-- 🧪 P3-06 Preserve explicit reset semantics and legacy corruption recovery — implemented around the v2 store.
-- 🧪 P3-07 Add migration, reset, per-item write, v1 rejection, v2 import and rollback-oriented regression tests — implemented; execution pending.
+- ✅ P3-01 Define the v2 per-item progress record schema — implemented in IndexedDB `progress-items`; canonical content namespacing continues in Phase 4.
+- ✅ P3-02 Promote IndexedDB to primary per-item progress storage — implemented.
+- ✅ P3-03 Migrate legacy `medicalBankStatusV2` safely on first run — implemented; legacy blob is removed only after successful IndexedDB hydration.
+- ✅ P3-04 Keep localStorage only for small UI preferences — implemented for progress writes.
+- ✅ P3-05 Add backup schema v2 with pre-read size limits, transactional import/rollback, and v1 compatibility — implemented.
+- ✅ P3-06 Preserve explicit reset semantics and legacy corruption recovery — implemented around the v2 store.
+- ✅ P3-07 Add migration, reset, per-item write, v1 rejection, v2 import and rollback-oriented regression tests — implemented; the regression suite passed in run `37190596970`.
 
 **Acceptance criteria**
 - Rating one item writes one progress record, not the full bank state.
@@ -182,13 +183,13 @@ Course catalog
 
 **Goal:** support multiple courses/curricula/editions without collisions or inconsistent payloads.
 
-- 🧪 P4-01 Define canonical scoped identity rules: course / subject / lecture / item — implemented through `subjectScope`, `lectureScope`, `itemScope`, and v2 progress keys.
-- 🧪 P4-02 Add schema versioning to catalogs and lecture payloads — every catalog entry now declares `schemaVersion: 1`; unsupported versions are rejected by runtime/build validators.
+- ✅ P4-01 Define canonical scoped identity rules: course / subject / lecture / item — implemented through `subjectScope`, `lectureScope`, `itemScope`, and v2 progress keys.
+- ✅ P4-02 Add schema versioning to catalogs and lecture payloads — every catalog entry now declares `schemaVersion: 1`; unsupported versions are rejected by runtime/build validators.
 - ✅ P4-03 Typed-block rewrite deliberately deferred — current case/core/image/extra/rapid v1 structures remain the stable contract until a real rich-content requirement justifies migration.
 - ✅ P4-04 Image/media integrity metadata remains enforced for materialized AVIF content; broader asset-reference migration is deliberately deferred until embedded-media size is a measured bottleneck.
 - ✅ P4-05 No speculative content migration utility is shipped: payload v1 is explicit and fail-closed; a deterministic migration becomes mandatory only when a real payload v2 is introduced.
-- 🧪 P4-06 Validators now enforce scoped subjects, globally unique lecture IDs, supported schema versions, catalog counts, search identities, and generic materialization contracts.
-- 🧪 P4-07 Legacy progress keys lazily migrate to canonical course/subject/lecture/type/item v2 keys without discarding existing ratings.
+- ✅ P4-06 Validators now enforce scoped subjects, globally unique lecture IDs, supported schema versions, catalog counts, search identities, and generic materialization contracts.
+- ✅ P4-07 Legacy progress keys lazily migrate to canonical course/subject/lecture/type/item v2 keys without discarding existing ratings.
 
 **Acceptance criteria**
 - Duplicate local IDs across different courses cannot collide.
@@ -199,13 +200,13 @@ Course catalog
 
 **Goal:** remove lecture-specific build logic.
 
-- 🧪 P5-01 Define one canonical lecture build contract — `lectures/materialization.json` is now the single declaration for generated lecture sources while ordinary lectures remain reviewable JSON under `lectures/data`.
-- 🧪 P5-02 Fold renal/urolithiasis/bladder materialization into generic tooling — implemented by `tools/materialize_lectures.py`; the materializer and image validator are data-driven and contain no target lecture IDs.
-- ⏳ P5-03 Keep the legacy transport inputs until the current release can run a fresh full browser matrix. Historical green run `30875638166` proves the same contracts materialize correctly (Bladder 104,884 bytes/8 images; Urolithiasis 118,306 bytes/10 images; Renal 6 images; 24 AVIF images total), so deleting or rewriting these medical assets before current verification would add risk without user benefit.
+- ✅ P5-01 Define one canonical lecture build contract — `lectures/materialization.json` is now the single declaration for generated lecture sources while ordinary lectures remain reviewable JSON under `lectures/data`.
+- ✅ P5-02 Fold renal/urolithiasis/bladder materialization into generic tooling — implemented by `tools/materialize_lectures.py`; the materializer and image validator are data-driven and contain no target lecture IDs.
+- ✅ P5-03 Retain the verified legacy compressed/template source inputs as reproducible data inputs. The generic materializer passed the fresh full matrix in run `37190596970`; rewriting or deleting validated medical source transport data is intentionally avoided unless a provenance-preserving canonical replacement is introduced.
 - ✅ P5-04 Materialization checksums and search metadata are generated/validated from source; lecture catalog metadata remains explicit for reviewability.
 - ✅ P5-05 Unified Surgery compatibility protection — all 9 current lectures, including Renal Tumors, use the same baseline path; the renal-specific validator exception was removed.
 - ✅ P5-06 Added `tools/add_lecture.py` with dry-run/write modes plus `CONTENT_AUTHORING.md` as the contributor workflow.
-- 🧪 P5-07 Legacy compressed/template targets retain their raw-byte/SHA-256 and image-integrity contracts. Historical workflow `30875638166` passed validate + 33 Chromium tests + 2 WebKit tests and validated all 24 embedded AVIF images on the pre-modernization content baseline. Shared catalogs are now course-scoped; a fresh run of the refactored generic engine remains required after runner recovery.
+- ✅ P5-07 Legacy compressed/template targets retain their raw-byte/SHA-256 and image-integrity contracts. Historical workflow `30875638166` passed validate + 33 Chromium tests + 2 WebKit tests and validated all 24 embedded AVIF images on the pre-modernization content baseline. Shared catalogs are now course-scoped; the refactored generic engine passed the fresh full matrix in run `37190596970`.
 
 **Acceptance criteria**
 - No runtime/build pipeline script names a specific lecture ID.
@@ -216,12 +217,12 @@ Course catalog
 
 **Goal:** search the content corpus without rendering it.
 
-- 🧪 P6-01 Create compact build-time search metadata — implemented as course+subject shards plus a tiny search catalog; embedded image/base64 payloads are explicitly excluded.
-- 🧪 P6-02 Search lecture/item metadata independently of active DOM — implemented.
-- 🧪 P6-03 Load a lecture payload only when its search result is opened — implemented and covered by a regression test.
+- ✅ P6-01 Create compact build-time search metadata — implemented as course+subject shards plus a tiny search catalog; embedded image/base64 payloads are explicitly excluded.
+- ✅ P6-02 Search lecture/item metadata independently of active DOM — implemented.
+- ✅ P6-03 Load a lecture payload only when its search result is opened — implemented and covered by a regression test.
 - ✅ P6-04 No Web Worker added yet by design; per-subject shards cap the working set and a worker remains a measured-performance upgrade, not speculative complexity.
-- 🧪 P6-05 Search results use real buttons, visible focus, live result counts, actionable empty-state guidance, responsive layout, and reduced-motion-aware scrolling; full a11y browser verification pending.
-- 🧪 P6-06 Added search-shard size budgets plus request/DOM/result-count regressions; end-to-end browser execution remains pending executable CI.
+- ✅ P6-05 Search results use real buttons, visible focus, live result counts, actionable empty-state guidance, responsive layout, and reduced-motion-aware scrolling; full a11y verified by the green browser matrix in run `37190596970`.
+- ✅ P6-06 Added search-shard size budgets plus request/DOM/result-count regressions; end-to-end browser coverage passed in run `37190596970`.
 
 **Acceptance criteria**
 - Search can find content in unloaded lectures.
@@ -232,16 +233,16 @@ Course catalog
 
 **Goal:** improve quality without hiding architecture problems with styling.
 
-- 🧪 P7-01 Added skip navigation, unified visible focus, ≥44px primary interaction targets, safe-area padding, phone-landscape coverage, reduced-motion-aware scrolling, and scroll-margin protection from sticky controls.
+- ✅ P7-01 Added skip navigation, unified visible focus, ≥44px primary interaction targets, safe-area padding, phone-landscape coverage, reduced-motion-aware scrolling, and scroll-margin protection from sticky controls.
 - ✅ P7-02 Replaced structural emoji/text control glyphs in the main app and Print Center with a consistent inline SVG stroke language.
-- 🧪 P7-03 Added a delayed skeleton for lecture loading so quick loads do not flash an indicator while slower loads receive visible feedback.
-- 🧪 P7-04 Offline lecture/subject actions expose busy/cached state and distinguish quota/session/network failure guidance.
-- 🧪 P7-05 Dark mode retains semantic tokens; primary/muted/brand/revision-state foreground/background pairs pass static WCAG AA contrast calculations, with browser axe/visual verification still gated by Actions.
-- ⚠️ P7-06 Axe, keyboard, Chromium and iPhone/WebKit tests were extended, but the full browser matrix cannot execute while GitHub Actions fails before job creation.
+- ✅ P7-03 Added a delayed skeleton for lecture loading so quick loads do not flash an indicator while slower loads receive visible feedback.
+- ✅ P7-04 Offline lecture/subject actions expose busy/cached state and distinguish quota/session/network failure guidance.
+- ✅ P7-05 Dark mode retains semantic tokens; primary/muted/brand/revision-state foreground/background pairs pass static WCAG AA contrast calculations, with axe verification now green in run `37190596970`.
+- ✅ P7-06 Axe, keyboard, Chromium and iPhone/WebKit coverage passed in GitHub Actions run `37190596970`.
 - ✅ P7-07 Reworked page hierarchy into a Clinical Study Workspace: compact header, explicit Course → Specialty → Lecture breadcrumb, search-first toolbar, progress-priority stats, bounded reading width, quieter navigation surfaces, and stable card elevation.
 - ✅ P7-08 Added lecture-level rated-progress cues to the All Lectures overview so the learner can choose Start vs Continue without opening every lecture.
 - ✅ P7-09 Added `UI_DESIGN_SYSTEM.md` and `UI_UX_AUDIT.md` so future courses/features reuse the same hierarchy, spacing, responsive, accessibility, and component language.
-- 🧪 P7-10 Added regression tests for redesigned heading, semantic progress bars, breadcrumb orientation, empty-state recovery, Print Center target size, mobile targets, and landscape overflow.
+- ✅ P7-10 Added regression tests for redesigned heading, semantic progress bars, breadcrumb orientation, empty-state recovery, Print Center target size, mobile targets, and landscape overflow.
 
 ### Phase 8 — Repository and operations hardening
 
@@ -249,11 +250,11 @@ Course catalog
 
 - ✅ P8-01 `dist/`, temporary outputs and Playwright reports are not tracked; repository hygiene blocks them.
 - ✅ P8-02 CI uploads generated site/browser reports as short-lived 7-day artifacts.
-- ✅ P8-03 Added `RELEASE_PROCESS.md` and release candidate `2026.10.04.1`; version/cache synchronization is build-validated.
+- ✅ P8-03 Added `RELEASE_PROCESS.md` and release candidate `2026.10.04.2`; version/cache synchronization is build-validated.
 - ✅ P8-04 CODEOWNERS was deliberately not added: there is no demonstrated multi-reviewer ownership need, so the repository stays simpler.
 - ✅ P8-05 Updated locked Playwright/axe tooling and cleared stale dependency PR noise; only PR #19 is open.
 - ✅ P8-06 Rollback and production-promotion policy is documented in `RELEASE_PROCESS.md` and `DEPLOYMENT.md`.
-- ⚠️ P8-07 Repository privacy expectations are documented; exact production hostname and active Cloudflare Access policy still require Cloudflare dashboard verification.
+- ⚠️ P8-07 Repository visibility is intentionally public under `Hafezalhoot`; exact production hostname, active Cloudflare Access policy and production branch control still require Cloudflare dashboard verification.
 
 ### Phase 9 — Optional multi-device/user platform
 
@@ -284,6 +285,21 @@ Every phase should preserve or improve these checks:
 | Security | CSP/header audit and no unsafe runtime regressions |
 
 ## Change log
+
+### 2026-10-04 — Personal-account migration and CI recovery
+
+- ✅ Transferred the public repository from the `Hafez-Alhoot` organization to personal account `Hafezalhoot` while preserving repository ID, history, PR #19, issues and branches.
+- ✅ GitHub-hosted runners began provisioning normally after the transfer; issue #20 is resolved. The exact organization-side policy that caused the former zero-job `BuildFailed/startup_failure` was not identified.
+- ✅ Release candidate `2026.10.04.2` passed the complete GitHub Actions matrix in run `37190596970`: `validate`, `chromium-quality`, and `webkit-quality`.
+- ✅ Fixed stale search-runtime validation and aligned Chromium/WebKit tests with metadata-first one-lecture loading and course/subject search shards.
+- ✅ Fixed mobile filter reset so it clears stale global-search results.
+- ✅ Raised breadcrumb label contrast to pass automated WCAG A/AA checks.
+- ✅ Prevented an unnecessary page reload on first service-worker installation while retaining reload behavior for real service-worker updates.
+- ✅ Hardened Print Center regression timing so PDF/pagination assertions wait for completed pagination.
+- ✅ Removed the temporary hosted-runner probe and the Python invalid-escape warning from the build.
+- ✅ Retained verified legacy compressed/template source inputs intentionally as reproducible data inputs; the generic content engine is the only build path and passed the full matrix.
+- ⚠️ Final release blockers are configuration-only: protect `main` with required quality checks (#21) and verify Cloudflare production hostname/Access/branch control.
+
 
 ### 2026-10-03 — Release candidate UI and operations hardening
 - ✅ 2026-10-04: repository visibility changed from private to public to enable the free public-repository CI/protection path; a fresh Actions run is required to verify whether the previous pre-job startup blocker is cleared.
@@ -409,6 +425,8 @@ User progress and stable content IDs are treated as persistent data. Breaking sc
 
 ### D-004 — Treat synthetic GitHub Actions BuildFailed as a control-plane blocker
 The failure was isolated with a workflow containing only a standard hosted runner plus shell-native `echo`/`uname`; the result remained `BuildFailed/startup_failure` with zero jobs. Therefore application code, workflow actions, containers, and validators are excluded as root causes. Organization/repository Actions policy, hosted-runner enablement, workflow-execution policy, account billing/usage, or a GitHub-controlled Actions disablement remain the actionable control-plane checks. No production promotion is considered verified until GitHub creates real jobs and the complete quality matrix passes.
+
+Operational outcome: the blocker was resolved by transferring the same repository to the personal `Hafezalhoot` account, after which hosted runners executed normally. The exact organization-side policy/provisioning setting was not identified, so the historical diagnosis remains a control-plane finding rather than a specific billing/policy attribution.
 
 ### D-005 — Do not couple Cloudflare production promotion to an unverified push
 Workers Builds can deploy directly from the production branch. Until the quality gate is functioning and Cloudflare branch control is verified, the approved operational pattern is version upload/preview first, then explicit promotion after validation.
