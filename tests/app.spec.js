@@ -55,12 +55,12 @@ test('All study items search includes matching Rapid Recall cards', async ({page
   await expect(matchingRapid.first()).toBeVisible();
 });
 
-test('full-bank text search waits for the debounce interval', async ({page}) => {
+test('search waits for the debounce interval', async ({page}) => {
   await openBank(page);
 
-  const search = page.locator('#search');
-  await expect(search).toHaveAttribute('data-optimized-search', '1');
-  await expect(search).toHaveAttribute('data-filter-delay', '300');
+  await expect.poll(
+    () => page.evaluate(() => Boolean(globalThis.MEQSearch?.renderResults))
+  ).toBe(true);
 
   const immediatelyEmpty = await page.evaluate(() => {
     window.__meqSearchApplied = 0;
@@ -127,9 +127,11 @@ test('mobile filter bar stays compact and opens an accessible bottom sheet', asy
   await toggle.click();
   await page.locator('#search').fill('testicular');
   await expect(chips).toContainText('Search: testicular');
+  await expect(page.locator('#globalSearchResults')).toBeVisible();
   await page.locator('#resetFiltersBtn').click();
   await expect(page.locator('#search')).toHaveValue('');
   await expect(chips).toBeHidden();
+  await expect(page.locator('#globalSearchResults')).toBeHidden();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(page.locator('#search')).toBeFocused();
 
