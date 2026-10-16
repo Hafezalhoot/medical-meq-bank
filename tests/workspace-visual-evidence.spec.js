@@ -23,7 +23,7 @@ test('capture actual V2 reading surfaces across desktop, phone, and dark/focus s
   await attachScreenshot(page, testInfo, 'desktop-study');
 
   await page.locator('#courseLibraryDisclosure summary').click();
-  await expect(page.locator('.course-library-card')).toHaveCount(2);
+  await expect(page.locator('.course-library-card')).toHaveCount(3);
   await attachScreenshot(page, testInfo, 'desktop-course-library');
   await page.locator('#courseLibraryDisclosure summary').click();
 
