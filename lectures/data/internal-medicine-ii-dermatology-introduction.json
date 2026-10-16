@@ -1381,9 +1381,9 @@
       ],
       "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 4",
-      "prompt": "Original illustrative schematic. Identify panel A using palpability and size.",
+      "prompt": "Original illustrative schematic. Identify panel A using palpability and size. The source-style vignette specifies a diameter of 0.6 cm; the schematic is not to scale.",
       "questions": [
-        "Identify panel A using palpability and size."
+        "Original illustrative schematic. Identify panel A using palpability and size. The source-style vignette specifies a diameter of 0.6 cm; the schematic is not to scale."
       ],
       "answer": [
         "Macule — flat, non-palpable area of discoloration under 1 cm."
@@ -1400,9 +1400,9 @@
       ],
       "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 4",
-      "prompt": "Original illustrative schematic. Identify panel B using size and surface shape.",
+      "prompt": "Original illustrative schematic. Identify panel B using size and surface shape. The source-style vignette specifies a diameter of 2 cm; the schematic is not to scale.",
       "questions": [
-        "Identify panel B using size and surface shape."
+        "Original illustrative schematic. Identify panel B using size and surface shape. The source-style vignette specifies a diameter of 2 cm; the schematic is not to scale."
       ],
       "answer": [
         "Patch — flat, non-palpable area of discoloration over 1 cm."
@@ -1419,9 +1419,9 @@
       ],
       "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 5",
-      "prompt": "Original illustrative schematic. Identify lesion in panel C.",
+      "prompt": "Original illustrative schematic. Identify lesion in panel C. The source-style vignette specifies a diameter of 0.5 cm; the schematic is not to scale.",
       "questions": [
-        "Identify lesion in panel C."
+        "Original illustrative schematic. Identify lesion in panel C. The source-style vignette specifies a diameter of 0.5 cm; the schematic is not to scale."
       ],
       "answer": [
         "Papule — solid palpable elevation under 1 cm."
@@ -1438,9 +1438,9 @@
       ],
       "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 5",
-      "prompt": "Original illustrative schematic. Identify lesion in panel D.",
+      "prompt": "Original illustrative schematic. Identify lesion in panel D. The source-style vignette specifies a diameter of 3 cm; the schematic is not to scale.",
       "questions": [
-        "Identify lesion in panel D."
+        "Original illustrative schematic. Identify lesion in panel D. The source-style vignette specifies a diameter of 3 cm; the schematic is not to scale."
       ],
       "answer": [
         "Plaque — solid palpable elevation over 1 cm."
@@ -1457,9 +1457,9 @@
       ],
       "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 6",
-      "prompt": "Original illustrative schematic. Identify panel E; give its lecture example.",
+      "prompt": "Original illustrative schematic. Identify panel E; give its lecture example. The source-style vignette specifies a diameter of 0.5 cm; the schematic is not to scale.",
       "questions": [
-        "Identify panel E; give its lecture example."
+        "Original illustrative schematic. Identify panel E; give its lecture example. The source-style vignette specifies a diameter of 0.5 cm; the schematic is not to scale."
       ],
       "answer": [
         "Vesicle — clear fluid under 1 cm.",
@@ -1477,9 +1477,9 @@
       ],
       "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 6",
-      "prompt": "Original illustrative schematic. Identify panel F; give its lecture example.",
+      "prompt": "Original illustrative schematic. Identify panel F; give its lecture example. The source-style vignette specifies a diameter of 2 cm; the schematic is not to scale.",
       "questions": [
-        "Identify panel F; give its lecture example."
+        "Original illustrative schematic. Identify panel F; give its lecture example. The source-style vignette specifies a diameter of 2 cm; the schematic is not to scale."
       ],
       "answer": [
         "Bulla — clear fluid over 1 cm.",
@@ -1497,9 +1497,9 @@
       ],
       "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 7",
-      "prompt": "Original illustrative schematic. Identify panel G and the type of content inside.",
+      "prompt": "Original illustrative schematic. Identify panel G and the type of content inside. The source-style vignette specifies a diameter of 0.6 cm; the schematic is not to scale.",
       "questions": [
-        "Identify panel G and the type of content inside."
+        "Original illustrative schematic. Identify panel G and the type of content inside. The source-style vignette specifies a diameter of 0.6 cm; the schematic is not to scale."
       ],
       "answer": [
         "Pustule — a raised lesion under 1 cm containing purulent fluid."
