@@ -1,0 +1,2561 @@
+{
+  "id": "internal-medicine-ii-dermatology-introduction",
+  "order": 1,
+  "subjectKey": "dermatology",
+  "subject": "Dermatology",
+  "title": "Introduction to Dermatology",
+  "subtitle": "Basic skin structure, function and morphology of primary and secondary lesions",
+  "sourceNote": "Lecture-first exam source: user-supplied Dermatology Department book 2022.pdf, Introduction to Dermatology, pp. 1-10 (printed teaching text). Explanations, examples and self-test marks are study aids, not additional university facts or official marks. Prepared as a draft for learner/lecturer verification; original source scan and clinical photographs are not published.",
+  "subtopics": [
+    {
+      "id": "clinical-links",
+      "label": "Introduction and Systemic Associations"
+    },
+    {
+      "id": "epidermis",
+      "label": "Epidermis and Its Cells"
+    },
+    {
+      "id": "dermis-hypodermis",
+      "label": "Dermis and Hypodermis"
+    },
+    {
+      "id": "appendages",
+      "label": "Skin Appendages"
+    },
+    {
+      "id": "functions",
+      "label": "Functions of the Skin"
+    },
+    {
+      "id": "flat-solid-lesions",
+      "label": "Macule, Patch, Papule and Plaque"
+    },
+    {
+      "id": "nodule-blisters",
+      "label": "Nodule, Vesicle and Bulla"
+    },
+    {
+      "id": "other-primary",
+      "label": "Pustule, Wheal, Comedo and Burrow"
+    },
+    {
+      "id": "secondary-surface",
+      "label": "Secondary Pustule, Crust, Scale and Excoriation"
+    },
+    {
+      "id": "secondary-depth",
+      "label": "Fissure, Erosion, Ulcer, Atrophy and Lichenification"
+    }
+  ],
+  "cases": [
+    {
+      "id": "derm-case-001",
+      "title": "Colour change points beyond the skin",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "A patient has a pale appearance on general inspection.",
+      "ar": "لون الجلد ممكن يدل على systemic disease.",
+      "questions": [
+        "Which appearance is described?",
+        "What systemic condition is it related to in the lecture?"
+      ],
+      "answer": [
+        "Pallor.",
+        "Anemia."
+      ],
+      "subtopics": [
+        "clinical-links"
+      ],
+      "memory": "Lecture PDF p. 1.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-002",
+      "title": "Thyroid-associated cutaneous conditions",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "A student encounters both vitiligo and alopecia areata in the teaching book.",
+      "ar": "خد بالك الارتباط مع الـ thyroid في المحاضرة.",
+      "questions": [
+        "Name the two cutaneous conditions.",
+        "What internal disorder may be associated with both?"
+      ],
+      "answer": [
+        "Vitiligo and alopecia areata.",
+        "Thyroid disease."
+      ],
+      "subtopics": [
+        "clinical-links"
+      ],
+      "memory": "Lecture PDF p. 1.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-003",
+      "title": "Hepatitis and skin findings",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "A patient is described as having lichen planus.",
+      "ar": "Lichen planus مع hepatitis C.",
+      "questions": [
+        "Which systemic infection is associated in the lecture?",
+        "Is this example of a cutaneous sign or a lesion-size rule?"
+      ],
+      "answer": [
+        "Hepatitis C.",
+        "A cutaneous clue to systemic disease."
+      ],
+      "subtopics": [
+        "clinical-links"
+      ],
+      "memory": "Lecture PDF p. 1.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-004",
+      "title": "Regeneration of the epidermis",
+      "topic": "Epidermis and Its Cells",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "A section of skin highlights actively dividing cells resting on the basement membrane.",
+      "ar": "Basal = renewal.",
+      "questions": [
+        "Identify the epidermal layer.",
+        "What is its function?"
+      ],
+      "answer": [
+        "Basal cell layer.",
+        "It is the proliferating layer responsible for epidermal renewal."
+      ],
+      "subtopics": [
+        "epidermis"
+      ],
+      "memory": "Lecture PDF p. 2.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-005",
+      "title": "Keratohyaline-containing cells",
+      "topic": "Epidermis and Its Cells",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "The slide labels cells containing granules described as keratin precursors.",
+      "ar": "Granular → Keratohyaline.",
+      "questions": [
+        "Which layer is this?",
+        "What are the granules called?"
+      ],
+      "answer": [
+        "Granular cell layer.",
+        "Keratohyaline granules."
+      ],
+      "subtopics": [
+        "epidermis"
+      ],
+      "memory": "Lecture PDF p. 2.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-006",
+      "title": "Two sweat gland pathways",
+      "topic": "Skin Appendages",
+      "priority": "High",
+      "marks": 6,
+      "scenario": "One gland opens on the epidermal surface while another drains through a pilosebaceous duct.",
+      "ar": "Distinguish opening, not just name.",
+      "questions": [
+        "Name the directly opening gland.",
+        "Name the pilosebaceous duct gland.",
+        "Give two listed sites of the second type."
+      ],
+      "answer": [
+        "Eccrine.",
+        "Apocrine.",
+        "Any two: body flexures, areolae, genitalia, eyelids."
+      ],
+      "subtopics": [
+        "appendages"
+      ],
+      "memory": "Lecture PDF p. 3.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-007",
+      "title": "Flat discoloured lesion",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "A circumscribed discoloured lesion is flat, non-palpable and 0.7 cm wide.",
+      "ar": "الحجم وحده مع كونها flat هو الفاصل.",
+      "questions": [
+        "What type of primary lesion is this?",
+        "What would it be called if it were 2 cm, still flat and non-palpable?"
+      ],
+      "answer": [
+        "Macule (less than 1 cm).",
+        "Patch (more than 1 cm)."
+      ],
+      "subtopics": [
+        "flat-solid-lesions"
+      ],
+      "memory": "Lecture PDF p. 4.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-008",
+      "title": "Small solid raised lesion",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "High",
+      "marks": 6,
+      "scenario": "A rounded, circumscribed, solid palpable elevation measures 0.6 cm.",
+      "ar": "Solid and palpable: papule vs plaque.",
+      "questions": [
+        "Identify the primary lesion.",
+        "Mention the lecture example.",
+        "What is the analogous lesion above 1 cm?"
+      ],
+      "answer": [
+        "Papule.",
+        "Verruca (wart).",
+        "Plaque."
+      ],
+      "subtopics": [
+        "flat-solid-lesions"
+      ],
+      "memory": "Lecture PDF p. 5.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-009",
+      "title": "Deep solid lesion",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "A solid skin elevation exceeds 1 cm and extends into deep dermis/subcutis.",
+      "ar": "Deep component distinguishes nodule.",
+      "questions": [
+        "Identify the lesion.",
+        "Give the lecture example."
+      ],
+      "answer": [
+        "Nodule.",
+        "Lepromatous leprosy."
+      ],
+      "subtopics": [
+        "nodule-blisters"
+      ],
+      "memory": "Lecture PDF p. 6.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-010",
+      "title": "Fluid-filled elevations",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "High",
+      "marks": 6,
+      "scenario": "Two circumscribed clear-fluid elevations measure 0.5 cm and 2 cm.",
+      "ar": "Clear fluid + 1 cm cutoff.",
+      "questions": [
+        "Identify each.",
+        "What is their collective name?",
+        "What structural property distinguishes a cyst?"
+      ],
+      "answer": [
+        "0.5 cm: Vesicle; 2 cm: Bulla.",
+        "Blisters.",
+        "A cyst has a wall."
+      ],
+      "subtopics": [
+        "nodule-blisters"
+      ],
+      "memory": "Lecture PDF p. 6.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-011",
+      "title": "Transient eruption",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "An elevated skin lesion is edematous, erythematous and transient.",
+      "ar": "Transient = key clue.",
+      "questions": [
+        "Identify the primary lesion.",
+        "Which disease is it associated with?"
+      ],
+      "answer": [
+        "Wheal.",
+        "Urticaria."
+      ],
+      "subtopics": [
+        "other-primary"
+      ],
+      "memory": "Lecture PDF p. 7.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-012",
+      "title": "Acne follicular opening",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "High",
+      "marks": 6,
+      "scenario": "A lesion shows keratinous impaction of a follicle with an open orifice.",
+      "ar": "Open vs closed orifice.",
+      "questions": [
+        "Identify the lesion.",
+        "What is its common name?",
+        "What changes in the closed variant?"
+      ],
+      "answer": [
+        "Open comedo.",
+        "Blackhead.",
+        "Closed comedo has a closed follicular orifice (whitehead)."
+      ],
+      "subtopics": [
+        "other-primary"
+      ],
+      "memory": "Lecture PDF p. 7.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-013",
+      "title": "Linear subcorneal mark",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "High",
+      "marks": 6,
+      "scenario": "A linear raised track lies beneath the stratum corneum.",
+      "ar": "Under stratum corneum.",
+      "questions": [
+        "Name the lesion.",
+        "Which condition has it as a primary lesion?",
+        "Which organism is named in the source?"
+      ],
+      "answer": [
+        "Burrow.",
+        "Scabies.",
+        "Female Sarcoptes scabiei mite."
+      ],
+      "subtopics": [
+        "other-primary"
+      ],
+      "memory": "Lecture PDF p. 8.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-014",
+      "title": "Exudate on the surface",
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "A secondary lesion is formed from dried serum, blood or pus.",
+      "ar": "Crust means dried exudate.",
+      "questions": [
+        "What is the lesion?",
+        "Name two listed causes that can turn a primary lesion into a secondary lesion."
+      ],
+      "answer": [
+        "Crust.",
+        "Any two: trauma, scratching, oozing, dryness, topical applications, secondary infection."
+      ],
+      "subtopics": [
+        "secondary-surface"
+      ],
+      "memory": "Lecture PDF p. 8.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-015",
+      "title": "Superficial and deep losses",
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "One injury is a partial loss of epidermis; another extends through the epidermis into deeper tissue.",
+      "ar": "Do not confuse depth and scarring.",
+      "questions": [
+        "Identify each.",
+        "Which normally heals without scar according to the source?"
+      ],
+      "answer": [
+        "Erosion: superficial/partial epidermal loss. Ulcer: full-thickness epidermal plus deeper loss.",
+        "Erosion heals without a scar."
+      ],
+      "subtopics": [
+        "secondary-depth"
+      ],
+      "memory": "Lecture PDF p. 9.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    },
+    {
+      "id": "derm-case-016",
+      "title": "Rubbing and lines",
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "High",
+      "marks": 4,
+      "scenario": "A lesion has thickened epidermis and prominently accentuated normal skin lines after repeated itching.",
+      "ar": "Accentuation of skin lines.",
+      "questions": [
+        "Identify the lesion.",
+        "What behaviour usually produces it?"
+      ],
+      "answer": [
+        "Lichenification.",
+        "Continuous rubbing or itching."
+      ],
+      "subtopics": [
+        "secondary-depth"
+      ],
+      "memory": "Lecture PDF p. 10.",
+      "trap": "This vignette is a morphology/source-recall practice prompt, not an extra treatment or diagnostic guideline."
+    }
+  ],
+  "coreShorts": [
+    {
+      "id": "derm-core-001",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define dermatology.",
+      "a": "A medical field concerned with diagnosis and treatment of skin disorders.",
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-002",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What fraction of total body weight is assigned to skin in the lecture?",
+      "a": "1/7 of total body weight.",
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-003",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What is the stated average adult skin surface area?",
+      "a": "1.75 m².",
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-004",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 4,
+      "q": "What should be included in the skin component of a general examination?",
+      "a": [
+        "Skin",
+        "Hair",
+        "Nails",
+        "Mucous membranes"
+      ],
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-005",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which systemic condition is associated with pallor?",
+      "a": "Anemia.",
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-006",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "High",
+      "marks": 2,
+      "q": "Which systemic condition is associated with cyanosis?",
+      "a": "Hypoxia.",
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-007",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which systemic condition is associated with jaundice?",
+      "a": "Hepatitis.",
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-008",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which skin conditions may be associated with thyroid disease?",
+      "a": [
+        "Vitiligo",
+        "Alopecia areata"
+      ],
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-009",
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which systemic infection is associated with lichen planus in the lecture?",
+      "a": "Hepatitis C.",
+      "section": "Source: PDF p. 1",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-core-010",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 3,
+      "q": "Name the three main skin layers in order.",
+      "a": [
+        "Epidermis",
+        "Dermis",
+        "Hypodermis"
+      ],
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-011",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which membrane lies immediately beneath the epidermis?",
+      "a": "Basement membrane.",
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-012",
+      "topic": "Epidermis and Its Cells",
+      "priority": "High",
+      "marks": 3,
+      "q": "Which three cell categories make up the epidermis?",
+      "a": [
+        "Keratinocytes",
+        "Melanocytes",
+        "Langerhans cells"
+      ],
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-013",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What are the main functions of keratinocytes described?",
+      "a": [
+        "Produce keratin supporting skin integrity and impermeability",
+        "Secrete different cytokines"
+      ],
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-014",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 4,
+      "q": "List the keratinocyte layers from below upward.",
+      "a": [
+        "Basal cell",
+        "Prickle (squamous) cell",
+        "Granular cell",
+        "Horny cell (stratum corneum)"
+      ],
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-015",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which layer rests on the basement membrane and proliferates?",
+      "a": "Basal cell layer.",
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-016",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which layer lies distal to the basal layer?",
+      "a": "Prickle (squamous) cell layer.",
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-017",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which layer has keratohyaline granules?",
+      "a": "Granular cell layer.",
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-018",
+      "topic": "Epidermis and Its Cells",
+      "priority": "High",
+      "marks": 2,
+      "q": "What are keratohyaline granules described as?",
+      "a": "Keratin precursors.",
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-019",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What forms the horny cell layer?",
+      "a": "Dead keratinocytes without nuclei.",
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-020",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which cells synthesize melanin?",
+      "a": "Melanocytes.",
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-021",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which epidermal cells have a major immune role?",
+      "a": "Langerhans cells.",
+      "section": "Source: PDF p. 2",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-core-022",
+      "topic": "Dermis and Hypodermis",
+      "priority": "Core",
+      "marks": 3,
+      "q": "Describe the dermis matrix.",
+      "a": [
+        "Collagen fibres",
+        "Elastic fibres",
+        "Glycosaminoglycan-containing matrix"
+      ],
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "dermis-hypodermis"
+      ]
+    },
+    {
+      "id": "derm-core-023",
+      "topic": "Dermis and Hypodermis",
+      "priority": "Core",
+      "marks": 4,
+      "q": "Which structures are found in the dermis?",
+      "a": [
+        "Blood vessels and lymphatics",
+        "Nerve fibres and nerve endings",
+        "Hair follicles",
+        "Sebaceous and sweat glands"
+      ],
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "dermis-hypodermis"
+      ]
+    },
+    {
+      "id": "derm-core-024",
+      "topic": "Dermis and Hypodermis",
+      "priority": "High",
+      "marks": 2,
+      "q": "Describe the composition of hypodermis.",
+      "a": "Fat-cell lobules separated by collagen-containing fibrous septa and large blood vessels.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "dermis-hypodermis"
+      ]
+    },
+    {
+      "id": "derm-core-025",
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What do nails contain?",
+      "a": "Hard keratin.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-026",
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What do hair follicles produce?",
+      "a": "Hair shafts composed of hard keratin.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-027",
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Where do sebaceous glands discharge sebum?",
+      "a": "Into hair follicles.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-028",
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What is a pilosebaceous unit?",
+      "a": "Hair follicle with sebaceous gland, associated with arrector pili muscles.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-029",
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "q": "How do eccrine sweat glands open?",
+      "a": "Through sweat ducts directly onto the skin surface.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-030",
+      "topic": "Skin Appendages",
+      "priority": "High",
+      "marks": 2,
+      "q": "How do apocrine glands discharge?",
+      "a": "Through pilosebaceous ducts.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-031",
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 4,
+      "q": "Where are apocrine glands located?",
+      "a": [
+        "Body flexures",
+        "Areolae",
+        "Genitalia",
+        "Eyelids"
+      ],
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-032",
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "q": "How does absence of hair follicles manifest?",
+      "a": "Alopecia.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-033",
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "q": "How does melanocyte destruction manifest?",
+      "a": "Depigmentation.",
+      "section": "Source: PDF p. 3",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-core-034",
+      "topic": "Functions of the Skin",
+      "priority": "Core",
+      "marks": 8,
+      "q": "Enumerate the eight listed functions of skin.",
+      "a": [
+        "Protection",
+        "Prevention of water/electrolyte loss",
+        "Sweat excretion",
+        "Temperature control",
+        "Sensation",
+        "Vitamin D formation under UVB",
+        "Immunological function",
+        "Psychological function"
+      ],
+      "section": "Source: PDF p. 4",
+      "subtopics": [
+        "functions"
+      ]
+    },
+    {
+      "id": "derm-core-035",
+      "topic": "Functions of the Skin",
+      "priority": "Core",
+      "marks": 3,
+      "q": "What mechanisms of temperature control are listed?",
+      "a": [
+        "Vasodilatation",
+        "Vasoconstriction",
+        "Evaporation of sweat"
+      ],
+      "section": "Source: PDF p. 4",
+      "subtopics": [
+        "functions"
+      ]
+    },
+    {
+      "id": "derm-core-036",
+      "topic": "Functions of the Skin",
+      "priority": "High",
+      "marks": 4,
+      "q": "Which sensory modalities does skin detect?",
+      "a": [
+        "Temperature",
+        "Pain",
+        "Pressure",
+        "Touch"
+      ],
+      "section": "Source: PDF p. 4",
+      "subtopics": [
+        "functions"
+      ]
+    },
+    {
+      "id": "derm-core-037",
+      "topic": "Functions of the Skin",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which ultraviolet band forms vitamin D from its precursor?",
+      "a": "UVB in sunlight.",
+      "section": "Source: PDF p. 4",
+      "subtopics": [
+        "functions"
+      ]
+    },
+    {
+      "id": "derm-core-038",
+      "topic": "Functions of the Skin",
+      "priority": "Core",
+      "marks": 3,
+      "q": "Which cells support the immunological function listed?",
+      "a": [
+        "Dendritic cells",
+        "Keratinocytes",
+        "Lymphocytes"
+      ],
+      "section": "Source: PDF p. 4",
+      "subtopics": [
+        "functions"
+      ]
+    },
+    {
+      "id": "derm-core-039",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a macule.",
+      "a": "Circumscribed, flat, non-palpable area of skin discolouration less than 1 cm in diameter.",
+      "section": "Source: PDF p. 4",
+      "subtopics": [
+        "flat-solid-lesions"
+      ]
+    },
+    {
+      "id": "derm-core-040",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a patch.",
+      "a": "Circumscribed, flat, non-palpable area of skin discolouration more than 1 cm in diameter.",
+      "section": "Source: PDF p. 4",
+      "subtopics": [
+        "flat-solid-lesions"
+      ]
+    },
+    {
+      "id": "derm-core-041",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which pigmentary disorders are illustrated as macule/patch examples?",
+      "a": [
+        "Pityriasis versicolor",
+        "Vitiligo"
+      ],
+      "section": "Source: PDF p. 4",
+      "subtopics": [
+        "flat-solid-lesions"
+      ]
+    },
+    {
+      "id": "derm-core-042",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "High",
+      "marks": 2,
+      "q": "Define a papule.",
+      "a": "Circumscribed, solid, palpable lesion less than 1 cm in diameter.",
+      "section": "Source: PDF p. 5",
+      "subtopics": [
+        "flat-solid-lesions"
+      ]
+    },
+    {
+      "id": "derm-core-043",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What example of a papule is given?",
+      "a": "Verruca (wart).",
+      "section": "Source: PDF p. 5",
+      "subtopics": [
+        "flat-solid-lesions"
+      ]
+    },
+    {
+      "id": "derm-core-044",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a plaque.",
+      "a": "Circumscribed, solid, palpable lesion more than 1 cm in diameter.",
+      "section": "Source: PDF p. 5",
+      "subtopics": [
+        "flat-solid-lesions"
+      ]
+    },
+    {
+      "id": "derm-core-045",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which example is given for plaque?",
+      "a": "Psoriasis.",
+      "section": "Source: PDF p. 5",
+      "subtopics": [
+        "flat-solid-lesions"
+      ]
+    },
+    {
+      "id": "derm-core-046",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a nodule.",
+      "a": "Circumscribed, solid skin elevation more than 1 cm with a deep dermal/subcutaneous component.",
+      "section": "Source: PDF p. 6",
+      "subtopics": [
+        "nodule-blisters"
+      ]
+    },
+    {
+      "id": "derm-core-047",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which example is given for a nodule?",
+      "a": "Lepromatous leprosy.",
+      "section": "Source: PDF p. 6",
+      "subtopics": [
+        "nodule-blisters"
+      ]
+    },
+    {
+      "id": "derm-core-048",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "High",
+      "marks": 2,
+      "q": "Define a vesicle.",
+      "a": "Circumscribed skin elevation less than 1 cm containing clear fluid.",
+      "section": "Source: PDF p. 6",
+      "subtopics": [
+        "nodule-blisters"
+      ]
+    },
+    {
+      "id": "derm-core-049",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a bulla.",
+      "a": "Circumscribed skin elevation more than 1 cm containing clear fluid.",
+      "section": "Source: PDF p. 6",
+      "subtopics": [
+        "nodule-blisters"
+      ]
+    },
+    {
+      "id": "derm-core-050",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Give the lecture examples for vesicle and bulla.",
+      "a": [
+        "Vesicle: Herpes simplex",
+        "Bulla: Bullous impetigo"
+      ],
+      "section": "Source: PDF p. 6",
+      "subtopics": [
+        "nodule-blisters"
+      ]
+    },
+    {
+      "id": "derm-core-051",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What is the collective term for vesicles and bullae?",
+      "a": "Blisters.",
+      "section": "Source: PDF p. 6",
+      "subtopics": [
+        "nodule-blisters"
+      ]
+    },
+    {
+      "id": "derm-core-052",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 2,
+      "q": "How does a cyst differ from vesicles or bullae?",
+      "a": "A cyst has a wall.",
+      "section": "Source: PDF p. 6",
+      "subtopics": [
+        "nodule-blisters"
+      ]
+    },
+    {
+      "id": "derm-core-053",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a pustule.",
+      "a": "Circumscribed skin elevation less than 1 cm filled with purulent fluid.",
+      "section": "Source: PDF p. 7",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-core-054",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "High",
+      "marks": 2,
+      "q": "Give the example listed for pustule.",
+      "a": "Pustular psoriasis.",
+      "section": "Source: PDF p. 7",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-core-055",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a wheal.",
+      "a": "Transient, edematous, erythematous or skin-coloured elevated lesion of variable size.",
+      "section": "Source: PDF p. 7",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-core-056",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Which disease has wheal as its primary lesion?",
+      "a": "Urticaria.",
+      "section": "Source: PDF p. 7",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-core-057",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What is a comedo?",
+      "a": "The primary lesion of acne.",
+      "section": "Source: PDF p. 7",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-core-058",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What distinguishes open and closed comedones?",
+      "a": [
+        "Open comedo: blackhead; keratinous impaction with open follicular orifice",
+        "Closed comedo: whitehead; closed orifice"
+      ],
+      "section": "Source: PDF p. 7",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-core-059",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Describe a burrow.",
+      "a": "Linear elevation under stratum corneum excavated by the female Sarcoptes scabiei mite; primary lesion of scabies.",
+      "section": "Source: PDF p. 8",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-core-060",
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "High",
+      "marks": 6,
+      "q": "What causes secondary skin lesions?",
+      "a": [
+        "Trauma",
+        "Scratching",
+        "Oozing",
+        "Dryness",
+        "Topical applications",
+        "Secondary infection"
+      ],
+      "section": "Source: PDF p. 8",
+      "subtopics": [
+        "secondary-surface"
+      ]
+    },
+    {
+      "id": "derm-core-061",
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Can a pustule be a secondary lesion?",
+      "a": "Yes, after secondary infection, e.g., scabies or pediculosis capitis.",
+      "section": "Source: PDF p. 8",
+      "subtopics": [
+        "secondary-surface"
+      ]
+    },
+    {
+      "id": "derm-core-062",
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a crust.",
+      "a": "Dried serum, blood or pus on the skin surface.",
+      "section": "Source: PDF p. 8",
+      "subtopics": [
+        "secondary-surface"
+      ]
+    },
+    {
+      "id": "derm-core-063",
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a scale.",
+      "a": "Keratin accumulation due to increased proliferation or reduced desquamation of stratum corneum.",
+      "section": "Source: PDF p. 9",
+      "subtopics": [
+        "secondary-surface"
+      ]
+    },
+    {
+      "id": "derm-core-064",
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define excoriation.",
+      "a": "Superficial discontinuation of epidermis due to injury, caused by scratching with fingernails.",
+      "section": "Source: PDF p. 9",
+      "subtopics": [
+        "secondary-surface"
+      ]
+    },
+    {
+      "id": "derm-core-065",
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define a fissure.",
+      "a": "Linear cleft through epidermis into dermis; often painful with marked drying, thickening and loss of elasticity.",
+      "section": "Source: PDF p. 9",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    },
+    {
+      "id": "derm-core-066",
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "High",
+      "marks": 2,
+      "q": "Define erosion.",
+      "a": "Partial loss of epidermis/epithelium without deeper involvement; heals without scar.",
+      "section": "Source: PDF p. 9",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    },
+    {
+      "id": "derm-core-067",
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define ulcer.",
+      "a": "Full-thickness epidermal/epithelial loss with deeper layer involvement; usually heals with scar.",
+      "section": "Source: PDF p. 10",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    },
+    {
+      "id": "derm-core-068",
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What is epidermal atrophy?",
+      "a": "Thinning of epidermis producing wrinkling and shiny appearance.",
+      "section": "Source: PDF p. 10",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    },
+    {
+      "id": "derm-core-069",
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "Core",
+      "marks": 2,
+      "q": "What is dermal atrophy?",
+      "a": "Loss of collagen or elastic fibres producing depression.",
+      "section": "Source: PDF p. 10",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    },
+    {
+      "id": "derm-core-070",
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "Core",
+      "marks": 2,
+      "q": "Define lichenification.",
+      "a": "Increased epidermal thickness with accentuation of natural skin lines, usually due to continuous rubbing or itching.",
+      "section": "Source: PDF p. 10",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    }
+  ],
+  "imageQuestions": [
+    {
+      "id": "derm-image-001",
+      "title": "The outermost layer",
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "epidermis"
+      ],
+      "image": "./assets/lectures/dermatology-intro/skin-layers.svg",
+      "page": "Lecture PDF p. 2",
+      "prompt": "Original illustrative schematic. A layered section is shown. Identify the outermost skin layer.",
+      "questions": [
+        "A layered section is shown. Identify the outermost skin layer."
+      ],
+      "answer": [
+        "Epidermis.",
+        "It rests on the basement membrane."
+      ]
+    },
+    {
+      "id": "derm-image-002",
+      "title": "Fat-containing layer",
+      "topic": "Dermis and Hypodermis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "dermis-hypodermis"
+      ],
+      "image": "./assets/lectures/dermatology-intro/skin-layers.svg",
+      "page": "Lecture PDF p. 3",
+      "prompt": "Original illustrative schematic. Which illustrated layer contains fat-cell lobules and fibrous septa?",
+      "questions": [
+        "Which illustrated layer contains fat-cell lobules and fibrous septa?"
+      ],
+      "answer": [
+        "Hypodermis (subcutaneous tissue)."
+      ]
+    },
+    {
+      "id": "derm-image-003",
+      "title": "Flat lesion under 1 cm",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "flat-solid-lesions"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 4",
+      "prompt": "Original illustrative schematic. Identify panel A using palpability and size.",
+      "questions": [
+        "Identify panel A using palpability and size."
+      ],
+      "answer": [
+        "Macule — flat, non-palpable area of discoloration under 1 cm."
+      ]
+    },
+    {
+      "id": "derm-image-004",
+      "title": "Flat lesion over 1 cm",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "flat-solid-lesions"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 4",
+      "prompt": "Original illustrative schematic. Identify panel B using size and surface shape.",
+      "questions": [
+        "Identify panel B using size and surface shape."
+      ],
+      "answer": [
+        "Patch — flat, non-palpable area of discoloration over 1 cm."
+      ]
+    },
+    {
+      "id": "derm-image-005",
+      "title": "Small solid palpable elevation",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "flat-solid-lesions"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 5",
+      "prompt": "Original illustrative schematic. Identify lesion in panel C.",
+      "questions": [
+        "Identify lesion in panel C."
+      ],
+      "answer": [
+        "Papule — solid palpable elevation under 1 cm."
+      ]
+    },
+    {
+      "id": "derm-image-006",
+      "title": "Broad solid palpable lesion",
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "flat-solid-lesions"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 5",
+      "prompt": "Original illustrative schematic. Identify lesion in panel D.",
+      "questions": [
+        "Identify lesion in panel D."
+      ],
+      "answer": [
+        "Plaque — solid palpable elevation over 1 cm."
+      ]
+    },
+    {
+      "id": "derm-image-007",
+      "title": "Small clear-fluid blister",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "nodule-blisters"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 6",
+      "prompt": "Original illustrative schematic. Identify panel E; give its lecture example.",
+      "questions": [
+        "Identify panel E; give its lecture example."
+      ],
+      "answer": [
+        "Vesicle — clear fluid under 1 cm.",
+        "Example: Herpes simplex."
+      ]
+    },
+    {
+      "id": "derm-image-008",
+      "title": "Large clear-fluid blister",
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "nodule-blisters"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 6",
+      "prompt": "Original illustrative schematic. Identify panel F; give its lecture example.",
+      "questions": [
+        "Identify panel F; give its lecture example."
+      ],
+      "answer": [
+        "Bulla — clear fluid over 1 cm.",
+        "Example: Bullous impetigo."
+      ]
+    },
+    {
+      "id": "derm-image-009",
+      "title": "Purulent elevation",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "other-primary"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 7",
+      "prompt": "Original illustrative schematic. Identify panel G and the type of content inside.",
+      "questions": [
+        "Identify panel G and the type of content inside."
+      ],
+      "answer": [
+        "Pustule — a raised lesion under 1 cm containing purulent fluid."
+      ]
+    },
+    {
+      "id": "derm-image-010",
+      "title": "Transient edema",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "other-primary"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 7",
+      "prompt": "Original illustrative schematic. Identify panel H, assuming the elevation is transient and edematous.",
+      "questions": [
+        "Identify panel H, assuming the elevation is transient and edematous."
+      ],
+      "answer": [
+        "Wheal — transient edematous lesion seen in urticaria."
+      ]
+    },
+    {
+      "id": "derm-image-011",
+      "title": "Follicular keratin plug",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "other-primary"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 7",
+      "prompt": "Original illustrative schematic. Identify panel I if its follicular orifice is open.",
+      "questions": [
+        "Identify panel I if its follicular orifice is open."
+      ],
+      "answer": [
+        "Open comedo (blackhead)."
+      ]
+    },
+    {
+      "id": "derm-image-012",
+      "title": "Linear burrow",
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "other-primary"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 8",
+      "prompt": "Original illustrative schematic. Identify panel J and the source organism.",
+      "questions": [
+        "Identify panel J and the source organism."
+      ],
+      "answer": [
+        "Burrow, produced by the female Sarcoptes scabiei mite in scabies."
+      ]
+    },
+    {
+      "id": "derm-image-013",
+      "title": "Dried exudate",
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "secondary-surface"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 8",
+      "prompt": "Original illustrative schematic. Identify panel K given that the material on the surface is dried serum, blood or pus.",
+      "questions": [
+        "Identify panel K given that the material on the surface is dried serum, blood or pus."
+      ],
+      "answer": [
+        "Crust."
+      ]
+    },
+    {
+      "id": "derm-image-014",
+      "title": "Accumulated keratin",
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "secondary-surface"
+      ],
+      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
+      "page": "Lecture PDF p. 9",
+      "prompt": "Original illustrative schematic. Identify panel L.",
+      "questions": [
+        "Identify panel L."
+      ],
+      "answer": [
+        "Scale — keratin accumulation from increased proliferation or reduced desquamation."
+      ]
+    }
+  ],
+  "detailedShorts": [
+    {
+      "id": "derm-detailed-001",
+      "q": "Explain why skin examination can be relevant to systemic medicine.",
+      "a": [
+        "Pallor may indicate anemia; cyanosis may indicate hypoxia; jaundice may indicate hepatitis.",
+        "Vitiligo and alopecia areata may be associated with thyroid disease; lichen planus with hepatitis C.",
+        "Include hair, nails and mucous membranes in a general examination."
+      ],
+      "topic": "Introduction and Systemic Associations",
+      "priority": "Core",
+      "marks": 3,
+      "section": "PDF p. 1 • Structured practice",
+      "subtopics": [
+        "clinical-links"
+      ]
+    },
+    {
+      "id": "derm-detailed-002",
+      "q": "Describe the layers of keratinocytes from basal to superficial.",
+      "a": [
+        "Basal: proliferating cells on basement membrane.",
+        "Prickle: distal to basal.",
+        "Granular: keratohyaline granules, precursors of keratin.",
+        "Horny/stratum corneum: dead keratinocytes without nuclei."
+      ],
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 4,
+      "section": "PDF p. 2 • Structured practice",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-detailed-003",
+      "q": "Compare keratinocytes, melanocytes and Langerhans cells.",
+      "a": [
+        "Keratinocytes: keratin, skin integrity, impermeability and cytokines.",
+        "Melanocytes: melanin and skin colour.",
+        "Langerhans cells: skin immune function."
+      ],
+      "topic": "Epidermis and Its Cells",
+      "priority": "Core",
+      "marks": 3,
+      "section": "PDF p. 2 • Structured practice",
+      "subtopics": [
+        "epidermis"
+      ]
+    },
+    {
+      "id": "derm-detailed-004",
+      "q": "Describe major components of the dermis and hypodermis.",
+      "a": [
+        "Dermis: collagen, elastic fibres, glycosaminoglycan matrix, vessels, lymphatics, nerves, appendages.",
+        "Hypodermis: fat-cell lobules separated by collagenous fibrous septa and large blood vessels."
+      ],
+      "topic": "Dermis and Hypodermis",
+      "priority": "Core",
+      "marks": 2,
+      "section": "PDF p. 3 • Structured practice",
+      "subtopics": [
+        "dermis-hypodermis"
+      ]
+    },
+    {
+      "id": "derm-detailed-005",
+      "q": "Compare eccrine and apocrine sweat glands.",
+      "a": [
+        "Eccrine: duct opens directly on epidermal surface; present all over the body.",
+        "Apocrine: discharge via pilosebaceous duct; present in flexures, areolae, genitalia, eyelids."
+      ],
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "section": "PDF p. 3 • Structured practice",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-detailed-006",
+      "q": "Explain the pilosebaceous unit and relevant skin appendages.",
+      "a": [
+        "Hair follicle and sebaceous gland form a pilosebaceous unit; arrector pili muscle helps discharge sebum into the follicle.",
+        "Nails and hair shafts are made of hard keratin."
+      ],
+      "topic": "Skin Appendages",
+      "priority": "Core",
+      "marks": 2,
+      "section": "PDF p. 3 • Structured practice",
+      "subtopics": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "derm-detailed-007",
+      "q": "List and explain the eight main functions of skin.",
+      "a": [
+        "Protection from injuries, microbes and UV rays.",
+        "Prevention of water/electrolyte loss; sweat excretion.",
+        "Temperature control via vasodilatation, vasoconstriction, evaporation.",
+        "Sensation: temperature, pain, pressure, touch.",
+        "Vitamin D production under UVB; immunity via dendritic cells, keratinocytes, lymphocytes; psychological expression/communication."
+      ],
+      "topic": "Functions of the Skin",
+      "priority": "Core",
+      "marks": 5,
+      "section": "PDF p. 4 • Structured practice",
+      "subtopics": [
+        "functions"
+      ]
+    },
+    {
+      "id": "derm-detailed-008",
+      "q": "Differentiate macule, patch, papule and plaque.",
+      "a": [
+        "Macule: flat/non-palpable discolouration <1 cm; Patch: similar but >1 cm.",
+        "Papule: solid palpable <1 cm; Plaque: solid palpable >1 cm.",
+        "Examples from lecture: verruca for papule, psoriasis for plaque."
+      ],
+      "topic": "Macule, Patch, Papule and Plaque",
+      "priority": "Core",
+      "marks": 3,
+      "section": "PDF p. 4 • Structured practice",
+      "subtopics": [
+        "flat-solid-lesions"
+      ]
+    },
+    {
+      "id": "derm-detailed-009",
+      "q": "Differentiate nodule, vesicle and bulla.",
+      "a": [
+        "Nodule: solid >1 cm with deep dermal/subcutaneous component.",
+        "Vesicle: clear fluid <1 cm; Bulla: clear fluid >1 cm.",
+        "Vesicles and bullae = blisters; cyst has a wall."
+      ],
+      "topic": "Nodule, Vesicle and Bulla",
+      "priority": "Core",
+      "marks": 3,
+      "section": "PDF p. 6 • Structured practice",
+      "subtopics": [
+        "nodule-blisters"
+      ]
+    },
+    {
+      "id": "derm-detailed-010",
+      "q": "Describe pustule and wheal with lecture examples.",
+      "a": [
+        "Pustule: circumscribed elevated lesion <1 cm with purulent contents, e.g., pustular psoriasis.",
+        "Wheal: transient edematous erythematous or skin-coloured elevation of varied size; primary lesion in urticaria."
+      ],
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 2,
+      "section": "PDF p. 7 • Structured practice",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-detailed-011",
+      "q": "Differentiate open and closed comedones.",
+      "a": [
+        "Both are primary lesions of acne.",
+        "Open comedo/blackhead: keratinous follicular impaction with open orifice.",
+        "Closed comedo/whitehead: closed orifice."
+      ],
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 3,
+      "section": "PDF p. 7 • Structured practice",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-detailed-012",
+      "q": "Explain a burrow and its association.",
+      "a": [
+        "Linear elevation under stratum corneum.",
+        "Dug by female Sarcoptes scabiei mite.",
+        "Primary lesion of scabies."
+      ],
+      "topic": "Pustule, Wheal, Comedo and Burrow",
+      "priority": "Core",
+      "marks": 3,
+      "section": "PDF p. 8 • Structured practice",
+      "subtopics": [
+        "other-primary"
+      ]
+    },
+    {
+      "id": "derm-detailed-013",
+      "q": "Explain how secondary skin lesions arise.",
+      "a": [
+        "Modifications of primary lesions due to trauma, scratching, oozing, dryness, topical applications or secondary infection.",
+        "Secondary pustules can occur in infected scabies or pediculosis capitis."
+      ],
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "Core",
+      "marks": 2,
+      "section": "PDF p. 8 • Structured practice",
+      "subtopics": [
+        "secondary-surface"
+      ]
+    },
+    {
+      "id": "derm-detailed-014",
+      "q": "Differentiate crust, scale and excoriation.",
+      "a": [
+        "Crust: dried serum, blood or pus on surface.",
+        "Scale: keratin accumulation from increased proliferation or reduced desquamation.",
+        "Excoriation: superficial epidermal discontinuity from injury/scratching."
+      ],
+      "topic": "Secondary Pustule, Crust, Scale and Excoriation",
+      "priority": "Core",
+      "marks": 3,
+      "section": "PDF p. 9 • Structured practice",
+      "subtopics": [
+        "secondary-surface"
+      ]
+    },
+    {
+      "id": "derm-detailed-015",
+      "q": "Compare fissure, erosion and ulcer including scar outcome.",
+      "a": [
+        "Fissure: linear cleft through epidermis into dermis, painful, associated with dryness, thickening and reduced elasticity.",
+        "Erosion: partial epidermal/epithelial loss, does not reach deeper tissues; heals without scar.",
+        "Ulcer: full-thickness epidermal/epithelial loss with deeper involvement; usually heals with scar."
+      ],
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "Core",
+      "marks": 3,
+      "section": "PDF p. 9 • Structured practice",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    },
+    {
+      "id": "derm-detailed-016",
+      "q": "Differentiate epidermal and dermal atrophy.",
+      "a": [
+        "Epidermal atrophy: thinning with wrinkling, shiny appearance.",
+        "Dermal atrophy: loss of collagen or elastic fibres causing depression."
+      ],
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "Core",
+      "marks": 2,
+      "section": "PDF p. 10 • Structured practice",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    },
+    {
+      "id": "derm-detailed-017",
+      "q": "Explain lichenification.",
+      "a": [
+        "Increased epidermal thickness and accentuated natural skin lines.",
+        "Usually follows continuous rubbing or itching."
+      ],
+      "topic": "Fissure, Erosion, Ulcer, Atrophy and Lichenification",
+      "priority": "Core",
+      "marks": 2,
+      "section": "PDF p. 10 • Structured practice",
+      "subtopics": [
+        "secondary-depth"
+      ]
+    }
+  ],
+  "rapid": [
+    [
+      "Field concerned with skin disorders?",
+      "Dermatology."
+    ],
+    [
+      "Skin's fraction of total body weight in lecture?",
+      "1/7."
+    ],
+    [
+      "Average adult skin area in lecture?",
+      "1.75 m²."
+    ],
+    [
+      "Pallor is related to?",
+      "Anemia."
+    ],
+    [
+      "Cyanosis is related to?",
+      "Hypoxia."
+    ],
+    [
+      "Jaundice is related to?",
+      "Hepatitis."
+    ],
+    [
+      "Vitiligo / alopecia areata association?",
+      "Thyroid disease."
+    ],
+    [
+      "Lichen planus association?",
+      "Hepatitis C."
+    ],
+    [
+      "Skin layers, superficial to deep?",
+      "Epidermis → Dermis → Hypodermis."
+    ],
+    [
+      "Major epidermal cell?",
+      "Keratinocyte."
+    ],
+    [
+      "Layer of epidermal renewal?",
+      "Basal cell layer."
+    ],
+    [
+      "Keratohyaline granules occur in?",
+      "Granular cell layer."
+    ],
+    [
+      "Cells without nuclei in outermost epidermis?",
+      "Horny cell layer (stratum corneum)."
+    ],
+    [
+      "Skin pigment made by?",
+      "Melanocytes make melanin."
+    ],
+    [
+      "Immune cells of epidermis?",
+      "Langerhans cells."
+    ],
+    [
+      "Dermal support fibres?",
+      "Collagen and elastic fibres."
+    ],
+    [
+      "Hypodermis composed mainly of?",
+      "Fat-cell lobules and fibrous septa."
+    ],
+    [
+      "Nails / hair shafts contain?",
+      "Hard keratin."
+    ],
+    [
+      "Sweat gland opening directly onto surface?",
+      "Eccrine."
+    ],
+    [
+      "Gland that empties into pilosebaceous duct?",
+      "Apocrine."
+    ],
+    [
+      "Temperature control mechanisms?",
+      "Vasodilatation, vasoconstriction, sweat evaporation."
+    ],
+    [
+      "Vitamin D source radiation?",
+      "UVB."
+    ],
+    [
+      "Macule versus patch cutoff?",
+      "<1 cm versus >1 cm; both flat, non-palpable."
+    ],
+    [
+      "Papule versus plaque cutoff?",
+      "<1 cm versus >1 cm; both solid and palpable."
+    ],
+    [
+      "Nodule key depth feature?",
+      "Deep dermal/subcutaneous component; >1 cm."
+    ],
+    [
+      "Vesicle versus bulla?",
+      "Clear fluid: <1 cm vs >1 cm."
+    ],
+    [
+      "Collective name vesicle / bulla?",
+      "Blisters."
+    ],
+    [
+      "How cyst differs from blister?",
+      "A cyst has a wall."
+    ],
+    [
+      "Pustule fluid?",
+      "Purulent fluid."
+    ],
+    [
+      "Wheal key characteristic?",
+      "Transient and edematous; urticaria."
+    ],
+    [
+      "Open comedo common name?",
+      "Blackhead."
+    ],
+    [
+      "Closed comedo common name?",
+      "Whitehead."
+    ],
+    [
+      "Primary lesion of scabies?",
+      "Burrow."
+    ],
+    [
+      "Burrow formed by?",
+      "Female Sarcoptes scabiei mite."
+    ],
+    [
+      "Crust formed by?",
+      "Dried serum, blood or pus."
+    ],
+    [
+      "Scale formed by?",
+      "Keratin accumulation."
+    ],
+    [
+      "Excoriation mechanism?",
+      "Scratching with fingernails."
+    ],
+    [
+      "Erosion scar result?",
+      "Heals without scar."
+    ],
+    [
+      "Ulcer scar result?",
+      "Usually heals with scar."
+    ],
+    [
+      "Atrophy due to dermal loss?",
+      "Loss of collagen or elastic fibres, depression."
+    ],
+    [
+      "Lichenification skin lines?",
+      "Accentuated normal skin lines from repeated rubbing/itching."
+    ]
+  ],
+  "studyGuide": {
+    "explanation": [
+      {
+        "heading": "1. Dermatology and systemic disease — مدخل لطب الجلدية",
+        "paragraphs": [
+          "Dermatology هو فرع الطب الذي يهتم بتشخيص وعلاج أمراض الجلد. والجلد في المحاضرة موصوف بأنه أكبر عضو في الجسم، ويزن 1/7 من وزن الجسم، ومتوسط مساحته عند البالغ 1.75 m².",
+          "فحص المريض العام لازم يشمل Skin, Hair, Nails and Mucous membranes، لأن مظهر الجلد قد يكون علامة على مرض خارج الجلد نفسه.",
+          "Skin colour clues المذكورة: Pallor مع anemia؛ Cyanosis مع hypoxia؛ Jaundice مع hepatitis. وبعض الأمراض الجلدية ترتبط بأمراض داخلية: Vitiligo وAlopecia areata مع thyroid disease؛ وLichen planus مع hepatitis C."
+        ],
+        "sourcePage": "PDF p. 1",
+        "understandingAids": [
+          "ابدأ دائمًا بالسؤال: هل التغيّر جلدي فقط، أم علامة على مشكلة Systemic؟ ده ترتيب للفهم، مش معلومة امتحانية إضافية."
+        ]
+      },
+      {
+        "heading": "2. The three main skin layers — طبقات الجلد",
+        "paragraphs": [
+          "الترتيب من الخارج للداخل: Epidermis ثم Dermis ثم Hypodermis (Subcutaneous tissue).",
+          "Epidermis هي الطبقة الخارجية وترتكز على Basement membrane. وبها Keratinocytes وMelanocytes وLangerhans cells. طبقة Dermis تحت الـBasement membrane، ثم Hypodermis الغنية بالدهون تحتها."
+        ],
+        "sourcePage": "PDF pp. 2-3",
+        "understandingAids": [
+          "ارسم 3 خطوط رأسية في دماغك: Epidermis فوق، Dermis وسط، Hypodermis تحت."
+        ]
+      },
+      {
+        "heading": "3. Epidermal cells and the order of keratinocyte layers",
+        "paragraphs": [
+          "Keratinocytes هي الخلايا الأساسية للـEpidermis. تنتج Keratin الذي يساعد على المحافظة على Skin integrity وImpermeability، كما تفرز Cytokines مختلفة.",
+          "من الأسفل للأعلى: (1) Basal cell layer ترتكز على Basement membrane وهي Proliferating layer بخلايا تنقسم وتجدد البشرة؛ (2) Prickle (squamous) cell layer أعلى الـBasal؛ (3) Granular cell layer تحتوي Keratohyaline granules وهي precursors للـKeratin؛ (4) Horny cell layer أو Stratum corneum وهي أقصى طبقة سطحية، وتتكون من Dead keratinocytes without nuclei.",
+          "Melanocytes تصنع Melanin وتساهم في لون الجلد. Langerhans cells لها دور رئيسي في Skin immune function."
+        ],
+        "sourcePage": "PDF p. 2",
+        "understandingAids": [
+          "للترتيب من تحت لفوق احفظه كأربع مراحل: Basal → Prickle → Granular → Horny، من غير إضافة طبقات مش موجودة في المحاضرة."
+        ]
+      },
+      {
+        "heading": "4. Dermis, Hypodermis and skin appendages",
+        "paragraphs": [
+          "Dermis تتكون من Collagen fibres وElastic fibres ومادة بينية بها Glycosaminoglycans، مع Blood vessels, Lymphatics, Nerve fibres/endings, Hair follicles, Sebaceous glands and Sweat glands.",
+          "Hypodermis (Subcutaneous tissue) فيها Lobules of fat cells مفصولة بـFibrous septa تحتوي Collagen وLarge blood vessels.",
+          "Appendages: Nails من Hard keratin؛ Hair follicles تنتج Hair shafts من Hard keratin؛ Sebaceous glands تفرغ Sebum في Hair follicles بمساعدة Arrector pili muscles، ومع Hair follicle تُكوّن Pilosebaceous unit.",
+          "Sweat glands: Eccrine تفتح مباشرة على سطح الجلد عبر Sweat ducts وتوجد على سطح الجسم. Apocrine تفرغ خلال Pilosebaceous ducts وتوجد في Body flexures, Areolae, Genitalia and Eyelids.",
+          "الأهمية السريرية المذكورة: Absence of hair follicles يظهر كـAlopecia، وDestruction of melanocytes يظهر كـDepigmentation."
+        ],
+        "sourcePage": "PDF p. 3"
+      },
+      {
+        "heading": "5. Eight listed functions of skin",
+        "paragraphs": [
+          "1) Protection من Physical injury وThermal injury وInvading microorganisms وUltraviolet rays. 2) Prevention of water and electrolyte loss. 3) Excretion of sweat.",
+          "4) Temperature control عن طريق Vasodilatation وVasoconstriction وEvaporation of sweat؛ 5) Sensory function (Temperature, Pain, Pressure, Touch).",
+          "6) Formation of Vitamin D from its precursor under UVB sunlight؛ 7) Immunological function via Dendritic cells, Keratinocytes and Lymphocytes؛ 8) Psychological function in expression and communication."
+        ],
+        "sourcePage": "PDF p. 4"
+      },
+      {
+        "heading": "6. Primary lesions: Macule, Patch, Papule and Plaque",
+        "paragraphs": [
+          "Primary lesions هي الـInitial lesions لأمراض الجلد. Macule منطقة محددة Flat, Non-palpable متغيرة اللون وأقل من 1 cm. Patch نفس الوصف لكن أكبر من 1 cm؛ اللون قد يكون Hypopigmented أو Hyperpigmented أو Red أو غير ذلك. أمثلة المحاضرة: Pityriasis versicolor وVitiligo.",
+          "Papule منطقة محددة Solid, Palpable وأقل من 1 cm؛ قد تُرى بأشكال وألوان مختلفة وقد تُغطى بقشور. مثال: Verruca (warts).",
+          "Plaque آفة Solid, Palpable أكبر من 1 cm، وقد تتكون مع Increased epidermal thickness أو Cells/Deposits in dermis، ومثالها Psoriasis."
+        ],
+        "sourcePage": "PDF pp. 4-5",
+        "understandingAids": [
+          "التمييز الامتحاني هنا سؤالين: Flat ولا Palpable؟ وبعدها أقل ولا أكبر من 1 cm؟"
+        ]
+      },
+      {
+        "heading": "7. Primary lesions: Nodule and clear-fluid blisters",
+        "paragraphs": [
+          "Nodule ارتفاع جلدي Solid أكبر من 1 cm وله Deep component في Dermis أو Subcutis، وقد يكون الجزء الأكبر من الكتلة تحت سطح الجلد. المثال المذكور: Lepromatous leprosy.",
+          "Vesicle ارتفاع جلدي محدد به Clear fluid وأقل من 1 cm؛ مثال Herpes simplex. Bulla أيضًا Clear fluid لكن أكبر من 1 cm؛ مثال Bullous impetigo.",
+          "Vesicles and Bullae يُطلق عليهما معًا Blisters. وCyst يختلف عنهما بوجود Wall."
+        ],
+        "sourcePage": "PDF p. 6",
+        "understandingAids": [
+          "مفتاح Blister هو محتواه Clear fluid؛ ثم قارن الحجم عند 1 cm."
+        ]
+      },
+      {
+        "heading": "8. More primary lesions: Pustule, Wheal, Comedo and Burrow",
+        "paragraphs": [
+          "Pustule ارتفاع محدد أقل من 1 cm لكنه مليء بـPurulent fluid. مثال Pustular psoriasis.",
+          "Wheal هو Primary lesion في Urticaria، ويمتاز بأنه Transient, Edematous, Erythematous or Skin-coloured elevation، وأحجامه متنوعة.",
+          "Comedo هو Primary lesion of Acne. Open comedo (Black head): Keratinous impaction داخل Follicular canal مع Open orifice. Closed comedo (White head): Closed orifice.",
+          "Burrow هو Primary lesion في Scabies، ويظهر كـLinear elevation تحت Stratum corneum تحفره Female Sarcoptes scabiei mite."
+        ],
+        "sourcePage": "PDF pp. 7-8"
+      },
+      {
+        "heading": "9. Secondary lesions: causes, pustule, crust, scale, excoriation",
+        "paragraphs": [
+          "Secondary lesions تحدث نتيجة Modification of primary lesions بفعل Trauma, Scratching, Oozing, Dryness, Topical applications أو Secondary infection.",
+          "Pustule قد يظهر أيضًا كـSecondary lesion لو حدثت عدوى ثانوية لمرض جلدي، مثل Scabies أو Pediculosis capitis.",
+          "Crust هو Dried serum, blood or pus على سطح الجلد. Scale هو تراكم Keratin نتيجة Increased proliferation أو Decreased desquamation of stratum corneum.",
+          "Excoriation تعني Superficial discontinuation of epidermis due to injury، وتحدث في وصف المحاضرة نتيجة Scratching with fingernails."
+        ],
+        "sourcePage": "PDF pp. 8-9"
+      },
+      {
+        "heading": "10. Fissure vs Erosion vs Ulcer",
+        "paragraphs": [
+          "Fissure هو Linear cleft through epidermis extending into dermis، وغالبًا مؤلم، وينتج مع Marked drying, Skin thickening and Loss of elasticity.",
+          "Erosion هو Partial loss of epidermis/epithelium من غير امتداد لطبقات أعمق، ويشفى Without a scar.",
+          "Ulcer هو Full-thickness loss of epidermis/epithelium plus deeper layer involvement، وعادة يشفى With a scar."
+        ],
+        "sourcePage": "PDF pp. 9-10",
+        "understandingAids": [
+          "اعمل مقارنة 3 أسطر: Fissure = linear cleft؛ Erosion = superficial, no scar؛ Ulcer = deeper, usually scar."
+        ]
+      },
+      {
+        "heading": "11. Atrophy and lichenification",
+        "paragraphs": [
+          "Atrophy epidermal يعني Thinning of epidermis مع Wrinkling and Shiny appearance؛ وDermal atrophy نتيجة Loss of collagen or elastic fibres وتظهر كـDepression.",
+          "Lichenification هي Increased epidermal thickness مع Accentuation of natural skin lines، وغالبًا بسبب Continuous rubbing or itching."
+        ],
+        "sourcePage": "PDF p. 10"
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "derm-mcq-001",
+        "question": "Which organ is described as the largest in the lecture?",
+        "options": [
+          "Liver",
+          "Skin",
+          "Lung",
+          "Kidney"
+        ],
+        "answerIndex": 1,
+        "rationale": "The lecture describes skin as the body's largest organ.",
+        "sourcePage": "PDF p. 1"
+      },
+      {
+        "id": "derm-mcq-002",
+        "question": "What fraction of total body weight is attributed to the skin?",
+        "options": [
+          "1/10",
+          "1/3",
+          "1/7",
+          "1/2"
+        ],
+        "answerIndex": 2,
+        "rationale": "The printed lecture figure is 1/7; do not substitute other figures.",
+        "sourcePage": "PDF p. 1"
+      },
+      {
+        "id": "derm-mcq-003",
+        "question": "Which skin condition is linked to hepatitis C?",
+        "options": [
+          "Alopecia areata",
+          "Lichen planus",
+          "Vitiligo",
+          "Pityriasis versicolor"
+        ],
+        "answerIndex": 1,
+        "rationale": "Lichen planus is listed as a clue to hepatitis C.",
+        "sourcePage": "PDF p. 1"
+      },
+      {
+        "id": "derm-mcq-004",
+        "question": "Vitiligo and alopecia areata are associated in the lecture with disease of which organ?",
+        "options": [
+          "Thyroid",
+          "Liver",
+          "Lung",
+          "Heart"
+        ],
+        "answerIndex": 0,
+        "rationale": "Thyroid disease is the stated association.",
+        "sourcePage": "PDF p. 1"
+      },
+      {
+        "id": "derm-mcq-005",
+        "question": "Which epidermal layer rests directly on the basement membrane?",
+        "options": [
+          "Granular",
+          "Horny",
+          "Basal",
+          "Prickle"
+        ],
+        "answerIndex": 2,
+        "rationale": "Basal cell layer rests on the basement membrane.",
+        "sourcePage": "PDF p. 2"
+      },
+      {
+        "id": "derm-mcq-006",
+        "question": "Keratohyaline granules are found in which layer?",
+        "options": [
+          "Prickle",
+          "Granular",
+          "Horny",
+          "Basal"
+        ],
+        "answerIndex": 1,
+        "rationale": "Granular cell layer contains keratohyaline granules.",
+        "sourcePage": "PDF p. 2"
+      },
+      {
+        "id": "derm-mcq-007",
+        "question": "The stratum corneum consists of which cells?",
+        "options": [
+          "Living melanocytes",
+          "Nucleated immune cells",
+          "Dead keratinocytes without nuclei",
+          "Fibroblasts"
+        ],
+        "answerIndex": 2,
+        "rationale": "The horny cell layer consists of dead keratinocytes without nuclei.",
+        "sourcePage": "PDF p. 2"
+      },
+      {
+        "id": "derm-mcq-008",
+        "question": "Which epidermal cells have an important immune function?",
+        "options": [
+          "Melanocytes",
+          "Langerhans cells",
+          "Keratinocytes only",
+          "Fat cells"
+        ],
+        "answerIndex": 1,
+        "rationale": "Langerhans cells are described as a major immune-cell type.",
+        "sourcePage": "PDF p. 2"
+      },
+      {
+        "id": "derm-mcq-009",
+        "question": "Which tissue contains fat-cell lobules and fibrous septa?",
+        "options": [
+          "Basal layer",
+          "Granular layer",
+          "Hypodermis",
+          "Epidermis"
+        ],
+        "answerIndex": 2,
+        "rationale": "Hypodermis (subcutaneous tissue) is described that way.",
+        "sourcePage": "PDF p. 3"
+      },
+      {
+        "id": "derm-mcq-010",
+        "question": "Which sweat gland empties through a duct onto the epidermis?",
+        "options": [
+          "Apocrine",
+          "Sebaceous",
+          "Eccrine",
+          "Pilosebaceous"
+        ],
+        "answerIndex": 2,
+        "rationale": "Eccrine glands open onto the surface through sweat ducts.",
+        "sourcePage": "PDF p. 3"
+      },
+      {
+        "id": "derm-mcq-011",
+        "question": "Which is a site of apocrine sweat glands listed in the lecture?",
+        "options": [
+          "Entire skin surface equally",
+          "Areolae",
+          "Basement membrane",
+          "Stratum corneum"
+        ],
+        "answerIndex": 1,
+        "rationale": "Areolae, flexures, genitalia and eyelids are listed locations.",
+        "sourcePage": "PDF p. 3"
+      },
+      {
+        "id": "derm-mcq-012",
+        "question": "Which of the following is a listed mechanism of skin temperature regulation?",
+        "options": [
+          "Vasoconstriction",
+          "Erythropoiesis",
+          "Bile secretion",
+          "Peristalsis"
+        ],
+        "answerIndex": 0,
+        "rationale": "The source lists vasodilatation, vasoconstriction and sweat evaporation.",
+        "sourcePage": "PDF p. 4"
+      },
+      {
+        "id": "derm-mcq-013",
+        "question": "Vitamin D formation in the source is linked to which ultraviolet range?",
+        "options": [
+          "UVA",
+          "UVC",
+          "UVB",
+          "Visible light"
+        ],
+        "answerIndex": 2,
+        "rationale": "UVB is stated explicitly.",
+        "sourcePage": "PDF p. 4"
+      },
+      {
+        "id": "derm-mcq-014",
+        "question": "A flat, non-palpable 0.4 cm discoloured area is a:",
+        "options": [
+          "Papule",
+          "Macule",
+          "Plaque",
+          "Nodule"
+        ],
+        "answerIndex": 1,
+        "rationale": "Macule: flat/non-palpable under 1 cm.",
+        "sourcePage": "PDF p. 4"
+      },
+      {
+        "id": "derm-mcq-015",
+        "question": "A flat, non-palpable 3 cm discoloured area is a:",
+        "options": [
+          "Patch",
+          "Papule",
+          "Vesicle",
+          "Wheal"
+        ],
+        "answerIndex": 0,
+        "rationale": "Patch: flat/non-palpable over 1 cm.",
+        "sourcePage": "PDF p. 4"
+      },
+      {
+        "id": "derm-mcq-016",
+        "question": "A small, solid, palpable elevation under 1 cm is a:",
+        "options": [
+          "Patch",
+          "Papule",
+          "Bulla",
+          "Ulcer"
+        ],
+        "answerIndex": 1,
+        "rationale": "Papule is solid and palpable under 1 cm.",
+        "sourcePage": "PDF p. 5"
+      },
+      {
+        "id": "derm-mcq-017",
+        "question": "Psoriasis is given as an example of which primary solid lesion?",
+        "options": [
+          "Plaque",
+          "Macule",
+          "Vesicle",
+          "Burrow"
+        ],
+        "answerIndex": 0,
+        "rationale": "Psoriasis is the listed plaque example.",
+        "sourcePage": "PDF p. 5"
+      },
+      {
+        "id": "derm-mcq-018",
+        "question": "Which primary lesion has a deep dermal/subcutaneous component?",
+        "options": [
+          "Macule",
+          "Nodule",
+          "Wheal",
+          "Patch"
+        ],
+        "answerIndex": 1,
+        "rationale": "Nodule is solid, over 1 cm, with a deep component.",
+        "sourcePage": "PDF p. 6"
+      },
+      {
+        "id": "derm-mcq-019",
+        "question": "A 0.5 cm elevation filled with clear fluid is a:",
+        "options": [
+          "Pustule",
+          "Bulla",
+          "Vesicle",
+          "Papule"
+        ],
+        "answerIndex": 2,
+        "rationale": "Vesicle contains clear fluid and is under 1 cm.",
+        "sourcePage": "PDF p. 6"
+      },
+      {
+        "id": "derm-mcq-020",
+        "question": "A 2 cm clear-fluid blister is a:",
+        "options": [
+          "Bulla",
+          "Papule",
+          "Wheal",
+          "Pustule"
+        ],
+        "answerIndex": 0,
+        "rationale": "Bulla is a circumscribed clear-fluid elevation over 1 cm.",
+        "sourcePage": "PDF p. 6"
+      },
+      {
+        "id": "derm-mcq-021",
+        "question": "Which feature distinguishes a cyst from a vesicle/bulla in this lecture?",
+        "options": [
+          "Has a wall",
+          "Always contains pus",
+          "Is always under 1 cm",
+          "Is flat"
+        ],
+        "answerIndex": 0,
+        "rationale": "The source says a cyst has a wall.",
+        "sourcePage": "PDF p. 6"
+      },
+      {
+        "id": "derm-mcq-022",
+        "question": "A purulent, circumscribed elevation under 1 cm is a:",
+        "options": [
+          "Vesicle",
+          "Pustule",
+          "Macule",
+          "Wheal"
+        ],
+        "answerIndex": 1,
+        "rationale": "Pustule is defined by purulent contents.",
+        "sourcePage": "PDF p. 7"
+      },
+      {
+        "id": "derm-mcq-023",
+        "question": "The primary lesion in urticaria is:",
+        "options": [
+          "Scale",
+          "Wheal",
+          "Crust",
+          "Comedo"
+        ],
+        "answerIndex": 1,
+        "rationale": "Wheal is transient and edematous.",
+        "sourcePage": "PDF p. 7"
+      },
+      {
+        "id": "derm-mcq-024",
+        "question": "An open comedo is commonly called a:",
+        "options": [
+          "Whitehead",
+          "Blackhead",
+          "Bulla",
+          "Plaque"
+        ],
+        "answerIndex": 1,
+        "rationale": "Open comedo/blackhead has an open follicular orifice.",
+        "sourcePage": "PDF p. 7"
+      },
+      {
+        "id": "derm-mcq-025",
+        "question": "Which organism excavates a scabies burrow?",
+        "options": [
+          "Female Sarcoptes scabiei",
+          "Keratinocyte",
+          "Langerhans cell",
+          "Melanocyte"
+        ],
+        "answerIndex": 0,
+        "rationale": "The source names the female Sarcoptes scabiei mite.",
+        "sourcePage": "PDF p. 8"
+      },
+      {
+        "id": "derm-mcq-026",
+        "question": "Crust is composed of:",
+        "options": [
+          "Fat-cell lobules",
+          "Dried serum, blood or pus",
+          "Collagen fibres",
+          "Keratohyaline granules"
+        ],
+        "answerIndex": 1,
+        "rationale": "This is the printed definition of crust.",
+        "sourcePage": "PDF p. 8"
+      },
+      {
+        "id": "derm-mcq-027",
+        "question": "Scale is associated with:",
+        "options": [
+          "Increased keratin accumulation",
+          "Loss of hair follicles",
+          "Clear fluid",
+          "Subcutaneous fat lobules"
+        ],
+        "answerIndex": 0,
+        "rationale": "Scale results from keratin accumulation with increased proliferation or decreased desquamation.",
+        "sourcePage": "PDF p. 9"
+      },
+      {
+        "id": "derm-mcq-028",
+        "question": "Which secondary lesion normally heals without a scar?",
+        "options": [
+          "Ulcer",
+          "Erosion",
+          "Lichenification",
+          "Crust"
+        ],
+        "answerIndex": 1,
+        "rationale": "Erosion is superficial and heals without scarring in the lecture.",
+        "sourcePage": "PDF p. 9"
+      },
+      {
+        "id": "derm-mcq-029",
+        "question": "Which secondary lesion usually heals with a scar?",
+        "options": [
+          "Macule",
+          "Wheal",
+          "Ulcer",
+          "Papule"
+        ],
+        "answerIndex": 2,
+        "rationale": "The lecture states that ulcer usually heals with a scar.",
+        "sourcePage": "PDF p. 10"
+      },
+      {
+        "id": "derm-mcq-030",
+        "question": "Accentuation of normal skin lines due to rubbing is:",
+        "options": [
+          "Atrophy",
+          "Lichenification",
+          "Vesicle",
+          "Comedo"
+        ],
+        "answerIndex": 1,
+        "rationale": "Lichenification is increased epidermal thickness and accentuated normal skin lines.",
+        "sourcePage": "PDF p. 10"
+      }
+    ],
+    "infographic": {
+      "image": "./assets/lectures/dermatology-intro/lesions-classification.svg",
+      "alt": "Original lecture-based contrast chart: macule versus patch, papule versus plaque, vesicle versus bulla, pustule versus wheal; key secondary lesion definitions.",
+      "caption": "Study-only schematic infographic summarizing the morphology definitions and one-centimetre cutoffs explicitly printed in the uploaded lecture.",
+      "sourcePage": "PDF pp. 4-10"
+    }
+  }
+}
