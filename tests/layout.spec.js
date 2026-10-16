@@ -292,3 +292,15 @@ test('Impeccable: offline subject storage remains reachable through Study tools'
   await expect(page.locator('#offlineSubjectBtn')).toBeVisible();
   await expect(page.locator('#offlineSubjectBtn')).toBeEnabled();
 });
+
+test('Impeccable: Escape closes mobile study utilities and restores focus safely', async ({page}) => {
+  await openBank(page, {width: 390, height: 844});
+  const toggle = page.locator('#pwaToolsToggle');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await page.locator('#exportProgressBtn').focus();
+  await page.keyboard.press('Escape');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(toggle).toBeFocused();
+  await expect(page.locator('#exportProgressBtn')).toBeHidden();
+});
