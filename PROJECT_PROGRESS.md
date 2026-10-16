@@ -21,6 +21,15 @@
 - ⚠️ PR #23 remains Draft; 360px screenshots and real-device visual approval are pending. Site production and reviewed content remain unchanged.
 - ⏳ Next product milestone: Study Home / continue learning / review queue built on existing course, lecture and progress data.
 
+## V2 browser visual evidence — 2026-10-16
+
+- ✅ Final current-head app/navigation layout and course selector browser run [38912689508](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38912689508) passed all **validate / chromium-quality / webkit-quality** jobs on `8b141de972b3048d78ec19cf3af5240a79381be6`.
+- ✅ Inspected genuine Chromium Playwright screenshot artifacts at desktop 1440×900, phone 390×844, expanded Course Library, expanded Stats and desktop Focus Mode.
+- ✅ After screenshot-driven iteration: mobile utilities folded into Study tools; two-column Course/Specialty picker on mobile and desktop; one-row mobile Lectures/Topics/Focus/Print actions; concise header and calm reading surfaces; focus mode remains reversible.
+- ✅ Exported human-review screenshots from the CI build (not synthetic mockups); attached to conversation for product design review.
+- ⚠️ Impeccable skill is **not installed** in this environment. Applied available public critique/distill/polish concepts and UI/UX Pro Max patterns, not an Impeccable tool audit.
+- ⏳ Retain PR #23 as Draft until stakeholder visual acceptance and any remaining cross-course Study Home / My Review improvements are scoped into following increments. Production main and Worker remain untouched.
+
 ## Medical Study Workspace V2 (2026-10-16)
 
 **Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  
