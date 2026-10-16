@@ -185,6 +185,64 @@ class LectureIntakeTests(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, "referenced image does not exist"):
             self.run_cli()
 
+    def test_optional_study_guide_is_source_traced_and_schema_checked(self):
+        document = draft()
+        document["studyGuide"] = {
+            "explanation": [{
+                "heading": "Definition from PDF",
+                "paragraphs": ["Explanation text from source only."],
+                "sourcePage": "Slide 3",
+                "understandingAids": ["A separately labeled understanding aid."],
+            }],
+            "mcqs": [{
+                "id": "test-mcq-1", "question": "Which approved source choice is correct?",
+                "options": ["A", "B", "C", "D"], "answerIndex": 1,
+                "rationale": "As stated on the source slide.", "sourcePage": "Slide 4",
+            }],
+        }
+        save(self.root / "draft.json", document)
+        self.run_cli()
+        self.run_cli(flags=("--write", "--reviewed"))
+        stored = json.loads((self.root / "lectures" / "data" / "internal-medicine-test-lecture.json").read_text())
+        self.assertEqual(stored["studyGuide"]["mcqs"][0]["answerIndex"], 1)
+        self.assertEqual(stored["studyGuide"]["explanation"][0]["sourcePage"], "Slide 3")
+
+    def test_study_guide_rejects_missing_page_and_bad_answer_index(self):
+        document = draft()
+        document["studyGuide"] = {
+            "mcqs": [{
+                "id": "test-mcq-1", "question": "Source-backed question?",
+                "options": ["A", "B", "C", "D"], "answerIndex": 5,
+                "rationale": "From source", "sourcePage": "Slide 4",
+            }],
+        }
+        save(self.root / "draft.json", document)
+        with self.assertRaisesRegex(SystemExit, "answerIndex"):
+            self.run_cli()
+        document["studyGuide"]["mcqs"][0]["answerIndex"] = 1
+        document["studyGuide"]["mcqs"][0].pop("sourcePage")
+        save(self.root / "draft.json", document)
+        with self.assertRaisesRegex(SystemExit, "sourcePage"):
+            self.run_cli()
+
+    def test_infographic_must_reference_a_valid_local_asset(self):
+        document = draft()
+        document["studyGuide"] = {
+            "infographic": {
+                "image": "https://untrusted.example/figure.png",
+                "alt": "Source-backed diagram", "sourcePage": "Slide 8",
+            }
+        }
+        save(self.root / "draft.json", document)
+        with self.assertRaisesRegex(SystemExit, "invalid image path"):
+            self.run_cli()
+        asset = self.root / "assets" / "lectures" / "figure.png"
+        asset.parent.mkdir(parents=True)
+        asset.write_bytes(b"test PNG placeholder")
+        document["studyGuide"]["infographic"]["image"] = "./assets/lectures/figure.png"
+        save(self.root / "draft.json", document)
+        self.run_cli()
+
     def test_write_failure_rolls_back_all_published_files(self):
         save(self.root / "draft.json", draft())
         before_catalog = self.catalog.read_bytes()
