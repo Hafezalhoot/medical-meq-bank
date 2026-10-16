@@ -57,10 +57,10 @@ Never add a dependency, global framework, external font, animation library, or g
 | --- | --- | --- | --- |
 | V2-0 Product + source audit | Route/feature inventory, risks, scope and new delivery branch | Exam facts and persistent ID boundaries explicit | Done |
 | V2-1 Course Library | Responsive expandable catalog-sourced course cards | All configured courses discoverable; switching works; empty future pack honest; no extra lecture-body fetch; keyboard operable | ✅ Code + full CI passed (run 38905559158); manual visual QA pending |
-| V2-2 Study Home | Compact course progress + Continue Studying using existing metadata/progress | No full-corpus fetch; empty/new user states correct; useful on desktop/mobile | Planned |
+| V2-2 Study Home | Compact course progress + Continue Studying using existing metadata/progress | No full-corpus fetch; empty/new user states correct; useful on desktop/mobile | 🟦 Continue Studying and course library complete; broader Home overview remains planned |
 | V2-3 Specialty / lecture organization | Unified lecture cards, outline and quiet reading workspace | Clear location, fewer competing controls, print and navigation unaffected | 🟦 Compact chrome + Focus Mode + Images quick view delivered; further reader organization planned |
-| V2-4 Study experiences | Consistent Practice, Recall, Images; optional source-backed Explanation/MCQ/Infographic modules | Optional formats do not alter or invent lecture facts; lecture-first validator contract | Planned — needs reviewed lecture data |
-| V2-5 Progress + review | Meaningful Review/Weak queue and cross-course progress | Existing IndexedDB v2 remains compatible; back up / restore round-trip works | Planned |
+| V2-4 Study experiences | Consistent Practice, Recall, Images; optional source-backed Explanation/MCQ/Infographic modules | Optional formats do not alter or invent lecture facts; lecture-first validator contract | 🟦 Optional renderer implemented, regression-tested; PR #24 authoring contract and real-PDF content review still require integrated release |
+| V2-5 Progress + review | Meaningful Review/Weak queue and cross-course progress | Existing IndexedDB v2 remains compatible; back up / restore round-trip works | ✅ My Review queue with lazy cross-subject metadata, saved Weak/Review counts and direct navigation passed browser checks; per-course dashboards optional later |
 | V2-6 Mobile / dark / accessible polish | 360, 390, 768, 1440 widths, keyboard, contrast, focus, reduced motion | No overflow, 44px controls, accessible dialogs, Chromium + WebKit passed | 🟦 Chromium+WebKit green; 390px light/dark and 1440px candidate screenshot review completed; 360px and real-device sign-off pending |
 | V2-7 Production release | Final regression matrix, PR review, rollback, deployment | Protected main + green CI; upload candidate then explicit Cloudflare promotion | Planned |
 
@@ -98,6 +98,16 @@ Never add a dependency, global framework, external font, animation library, or g
 ### Installed Impeccable critique and harden pass
 
 Applied Impeccable (ChatGPT adaptation v4.6.0) to the verified screenshots and current branch implementation: Operate for navigation, Read for case text. Kept source-backed medical content and progress stable; added Escape/focus behavior to mobile Study tools. See `UI_V2_AUDIT.md` for observed, fixed and pending items. The original standalone detector was not run.
+
+### V2 My Review and optional learning companions (2026-10-16)
+
+- Added a collapsed-by-default **My Review** panel between Course Library and study filters: no new persistent store or daily review schedule; counts come from existing saved Weak/Review status keys.
+- Opening the panel fetches **catalog metadata**, not the full medical lecture corpus; grouped cards show course/specialty/lecture and Weak/Review actions.
+- Selecting a group opens the existing course and lecture, applies the original review filter and focuses the matching case; no new way to mutate or rewrite saved progress.
+- Supports empty/no-content, partial catalog-loading errors, disabled/loading buttons, keyboard, long labels and 320px dark mode; excluded from Focus Mode and print.
+- The optional **studyGuide** viewer shows Explanation, 4-answer MCQs and Infographic only when medically approved data exists; older lectures render exactly their existing five formats.
+- Source-linked schemas, safe ingestion and standalone media packaging live separately in [PR #24](https://github.com/Hafezalhoot/medical-meq-bank/pull/24). Both branches require an integrated regression **after** review/merge; do not describe standalone tests as cross-branch integration proof.
+- Browser and static evidence: [V2 run 38935394450](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38935394450) all three jobs green, plus [new 320px test run 38935897409](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38935897409) with all three job conclusions successful. Production remains unchanged.
 
 ## Non-negotiable release checklist
 
