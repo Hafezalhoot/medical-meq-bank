@@ -45,6 +45,13 @@
 - Handwritten annotations and the embedded chat screenshot are visible on the supplied scan, but have **not** been promoted to independent exam facts. If the course instructor expects marginal notes to be examinable, a learner/lecturer must review these separately. The original scanned pages and clinical photographs remain absent from this public repository.
 - This is a **source-faithfulness review**, not external clinical guideline validation, professional medical sign-off, image legibility certification, copyright clearance, or authorization to publish. The diagrams still require rendered inspection and the user/instructor still controls final editorial sign-off.
 
+## Real-browser visual acceptance evidence — 2026-10-16
+
+- The source scan and the three original local SVG assets were visually examined; no source-book clinical photographs have been republished.
+- Manually inspected browser-captured **1440px desktop** and **390px mobile** screenshots of the actual Explanation and Infographic sections. The desktop card is readable. The previous shrunken mobile infographic is now displayed in a keyboard-focusable, horizontally pannable 720px canvas with a concise swipe hint and a safe **Open full-size infographic** link.
+- The dedicated automated 390px test confirms the SVG overflows **inside the controlled image scroller**, not the entire document; the [full run 38963528101](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38963528101) passes static, Chromium and WebKit gates on the last functional-code head.
+- **Still needed:** review every individual image-spot card in the real application at 320/390px and on an actual touch device where practical. This visual acceptance is not a substitute for learner/instructor exam-content sign-off or publication permission.
+
 ## Publication review checklist
 
 - [x] The source PDF was visually read page-by-page; image-only material wasn't OCR-derived or silently guessed.

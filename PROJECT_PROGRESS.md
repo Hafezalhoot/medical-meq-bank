@@ -6,7 +6,9 @@
 - 🧪 Added an accessible keyboard-focusable horizontal image scroller on screens <=700px, an explanatory swipe hint and a same-origin **Open full-size infographic** link that works with cached offline assets.
 - 🧪 Extended real-lecture Playwright coverage to assert scrollable image width, no document-wide overflow and functional full-size link; attached a targeted 390px evidence screenshot.
 - 🧪 First updated run [38962874110](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38962874110): `validate` and `webkit-quality` passed; Chromium's 72 other tests passed, but the new 390px test tried to select the **intentionally hidden mobile lecture filter** without first opening the mobile filter drawer. Corrected the test helper to open/close the actual mobile drawer. Re-run required; no product-code regression was established by this test setup failure.
-- ⏳ **Fresh CI and updated mobile screenshot review required** before this improvement is considered complete; learner/lecturer sign-off and publication gate remain unchanged.
+- ✅ **Validated release-candidate code:** [run 38963528101](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38963528101) passed all three quality jobs (`validate`, `chromium-quality`, `webkit-quality`) on `d5683a1cd2c3044e68f41063f18462b4b49df324` after correcting the mobile drawer test setup.
+- ✅ Manually inspected actual Playwright browser screenshots: 1440px desktop infographic remains readable; 390px mobile infographic renders at larger readable scale with a visible sideways-swipe hint and full-size image link. The dedicated mobile test checks inner horizontal scroll and no page-wide overflow.
+- ⚠️ Per-image-spot card legibility on physical mobile devices, handwritten annotations and learner/lecturer editorial and rights sign-off are still pending. No protected-main merge or Cloudflare promotion is authorized.
 
 ### 2026-10-16 — Continuation: original Dermatology scan reattached and draft source rechecked
 
