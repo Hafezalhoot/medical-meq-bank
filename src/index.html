@@ -30,10 +30,13 @@
       <p>Keep your medical courses in one focused workspace. Revise each lecture with clinical cases, image questions and rapid recall.</p>
       <div class="hero-tags" id="heroTags"></div>
       <div class="pwa-tools" aria-label="App and backup tools">
+        <button class="pwa-tools-toggle" id="pwaToolsToggle" type="button" aria-expanded="false" aria-controls="pwaToolsActions"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 5h14v14H5z"></path><path d="M9 10h6"></path><path d="M9 14h6"></path></svg></span> Study tools <span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+        <div class="pwa-tools-actions" id="pwaToolsActions">
         <button class="pwa-btn" id="installAppBtn" type="button" hidden><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Install App</span></button>
         <button class="pwa-btn" id="exportProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Backup Progress</span></button>
         <button class="pwa-btn" id="importProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21V9"></path><path d="m7 14 5-5 5 5"></path><path d="M5 3h14"></path></svg></span><span class="button-label">Restore Progress</span></button>
         <input id="importProgressFile" type="file" accept="application/json,.json" hidden>
+        </div>
         <span class="connection-pill" id="connectionPill" role="status" aria-live="polite"><span class="connection-dot" aria-hidden="true"></span><span id="connectionText">Online</span></span>
       </div>
     </div>
