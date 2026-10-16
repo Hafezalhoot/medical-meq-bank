@@ -120,3 +120,22 @@ Browser evidence: [GitHub Actions run 38909175547](https://github.com/Hafezalhoo
 - ⚠️ Impeccable skill is **not installed** in this environment. Applied available public critique/distill/polish concepts and UI/UX Pro Max patterns, not an Impeccable tool audit.
 - ⏳ Retain PR #23 as Draft until stakeholder visual acceptance and any remaining cross-course Study Home / My Review improvements are scoped into following increments. Production main and Worker remain untouched.
 
+## Impeccable installed-skill review — 2026-10-16
+
+**Skill now verified as installed:** `skills://impeccable`, ChatGPT-adapted methodology v4.6.0. Earlier references in this report to the skill being unavailable accurately describe the earlier tool state, **not** the present state. The adapted skill applies critique, distill, polish and harden playbooks, but does not claim to run the original 59-rule binary detector.
+
+**Operating modes:** **Operate** for navigation and study controls; **Read** for long bilingual medical scenarios.
+
+### Verified source/CI findings
+- **P1 resolved:** oversized landing-style header, overly prominent analytics and crowded sidebars addressed by compact workspace, collapsible progress and Focus Mode, using actual user screenshots and rendered Chromium evidence.
+- **P1 resolved:** first-action ambiguity addressed by `Start studying / Continue studying` with safe weak/review-item targeting, and disabled state on empty courses.
+- **P2 resolved:** mobile utilities reduced with disclosure, keeping offline/backup controls discoverable.
+- **P2 resolved:** keyboard users can dismiss expanded Study tools with `Escape` and return focus to the disclosure.
+- **P2 pending review:** Arabic/RTL medical text, very long lecture names and 200% browser zoom warrant continued visual testing on actual rendered branch snapshots; automated tests alone cannot certify the complete user experience.
+- **P2 planned:** Study Home and My Review cross-course information architecture remain V2 roadmap phases, not implemented in this PR.
+
+### Acceptance
+- All existing medical exam content, stable IDs, progress and backup implementation untouched by this accessibility refinement.
+- The exact `validate`, `chromium-quality`, and `webkit-quality` statuses must be checked on the final commit, not assumed from an earlier run.
+- Preserve Draft PR and production until source QA, screenshot review, and approval.
+
