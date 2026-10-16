@@ -218,6 +218,12 @@ test('mobile shows compact utilities and two-column medical study selectors', as
   await expect(page.locator('#exportProgressBtn')).toBeHidden();
   await expect(page.locator('#courseSelector')).toBeVisible();
   await expect(page.locator('#subjectSelector')).toBeVisible();
+  const navButtons = await page.evaluate(() => ['toggleLectures', 'toggleSubtopics', 'focusModeBtn', 'printCenterQuickBtn'].map(id => {
+    const box = document.getElementById(id).getBoundingClientRect();
+    return {top: box.top, right: box.right, left: box.left};
+  }));
+  expect(Math.max(...navButtons.map(box => box.top)) - Math.min(...navButtons.map(box => box.top))).toBeLessThan(2);
+  expect(Math.max(...navButtons.map(box => box.right))).toBeLessThanOrEqual(391);
   const rectangles = await page.evaluate(() => ['courseSelector', 'subjectSelector'].map(id => {
     const box = document.getElementById(id).getBoundingClientRect();
     return {left: box.left, right: box.right, height: box.height};
