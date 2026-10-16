@@ -59,3 +59,26 @@ test('newly rated questions appear in My Review and can be reopened without losi
   await target.locator('.status.review').click();
   await expect(page.locator('#myReviewCount')).toContainText('Nothing to revisit');
 });
+
+test('My Review actions fit narrow phones and remain keyboard-visible in dark mode', async ({page}) => {
+  await page.setViewportSize({width: 320, height: 700});
+  await page.addInitScript(() => {
+    localStorage.setItem('medicalBankStatusV2', JSON.stringify({
+      'neurosurgery-traumatic-brain-injury::case::tbi-m01': 'weak'
+    }));
+  });
+  await openBank(page);
+  await page.locator('#darkBtn').click();
+  await page.locator('#myReviewDisclosure summary').click();
+  const action=page.getByRole('button',{name:'Open 1 weak questions in Traumatic Brain Injury'});
+  await expect(action).toBeVisible();
+  const sizing=await page.evaluate(() => ({
+    docWidth: document.documentElement.scrollWidth,
+    viewportWidth: innerWidth
+  }));
+  expect(sizing.docWidth).toBeLessThanOrEqual(sizing.viewportWidth+1);
+  const size=await action.boundingBox();
+  expect(size.height).toBeGreaterThanOrEqual(44);
+  await action.focus();
+  await expect(action).toBeFocused();
+});
