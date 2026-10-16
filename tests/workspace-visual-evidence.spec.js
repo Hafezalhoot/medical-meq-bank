@@ -49,3 +49,22 @@ test('capture actual V2 reading surfaces across desktop, phone, and dark/focus s
   await expect(page.locator('body')).toHaveClass(/dark/);
   await attachScreenshot(page, testInfo, 'phone-dark-mode');
 });
+
+
+test('capture source-reviewed Dermatology pilot, explanation and infant reading surface', async ({page}, testInfo) => {
+  await openWorkspace(page, 1440, 900);
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+  await expect(page.locator('#lectureFilter option[value="internal-medicine-ii-dermatology-introduction"]')).toHaveCount(1, {timeout:15000});
+  await page.locator('#lectureFilter').selectOption('internal-medicine-ii-dermatology-introduction');
+  await expect(page.locator('.learning-companion')).toBeVisible();
+  await attachScreenshot(page, testInfo, 'dermatology-desktop');
+  await page.locator('.learning-companion summary').first().click();
+  await attachScreenshot(page, testInfo, 'dermatology-explanation');
+  await page.locator('.learning-companion summary').nth(2).click();
+  await page.locator('.study-guide-figure img').scrollIntoViewIfNeeded();
+  await expect.poll(()=>page.locator('.study-guide-figure img').evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
+  await attachScreenshot(page, testInfo, 'dermatology-infographic');
+  await page.setViewportSize({width:390,height:844});
+  await attachScreenshot(page, testInfo, 'dermatology-phone');
+});
