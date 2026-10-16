@@ -57,6 +57,8 @@ class LectureIntakeTests(unittest.TestCase):
         root = Path(self.temp.name)
         self.root = root
         save(root / "courses" / "catalog.json", {
+            "version": 1,
+            "schemaVersion": 2,
             "courses": [
                 {"id": "internal-medicine", "label": "Internal Medicine", "pack": "packs/internal-medicine.json"},
                 {"id": "surgery", "label": "Surgery", "pack": "packs/surgery.json"},
