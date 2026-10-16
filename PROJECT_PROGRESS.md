@@ -71,6 +71,15 @@
 - ⏳ Merge/release gates: code review, branch integration with V2 renderer from PR #23, source-reviewed real PDF pilot, combined regression and explicit Cloudflare deployment approval.
 - ⚠️ The `studyGuide` field is **optional and not live on production**. No scientific lecture claims were inserted in this workstream.
 
+## 2026-10-16 — Integrated full quality gate
+
+- ✅ Combined clinical Study V2 and reviewed lecture intake on Draft [PR #25](https://github.com/Hafezalhoot/medical-meq-bank/pull/25), targeting `main` for the complete required CI matrix.
+- ✅ [Integrated Actions run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) completed successfully: `validate`, `chromium-quality`, `webkit-quality`.
+- ✅ Verified combined PR diff does not edit any `lectures/data/*.json`, `lectures/catalog.json` or `src/progress-resilience.js`; existing exam materials and saved progress implementation are preserved.
+- ✅ Optional Explanation / MCQ / Infographic rendering is paired with the intake schema and media checks in the integration branch; older lectures remain unchanged.
+- ⏳ Still required: review real uploaded PDF contents and image permissions against original lecture; human visual sign-off (including RTL and zoom), then protected merge and controlled Cloudflare release.
+- ⛔ This green CI confirms code-level integration only. No actual new lecture has been medically approved or published, and neither `main` nor production was modified.
+
 ## Medical Study Workspace V2 (2026-10-16)
 
 **Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  

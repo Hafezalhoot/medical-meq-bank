@@ -17,13 +17,13 @@
 
 | Gate | How | Result |
 | --- | --- | --- |
-| Clean build / Python lecture and course tests | `bash build.sh` / `npm run quality:static` | Await combined integration CI |
-| Static structural, image-integrity and bundle validation | canonical static quality gate | Await combined integration CI |
-| Study, course switching and preserved progress | Chromium Playwright | Await combined integration CI |
-| My Review: cross-subject, 320px, dark, keyboard | Chromium Playwright | Await combined integration CI |
-| Optional studyGuide: plain text escaping and three content modes | Chromium Playwright | Await combined integration CI |
-| Offline, print and performance budgets | Chromium Playwright and static checks | Await combined integration CI |
-| Safari and iPhone WebKit regressions | WebKit Playwright | Await combined integration CI |
+| Clean build / Python lecture and course tests | `bash build.sh` / `npm run quality:static` | ✅ Full [run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) passed |
+| Static structural, image-integrity and bundle validation | canonical static quality gate | ✅ Full [run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) passed |
+| Study, course switching and preserved progress | Chromium Playwright | ✅ Full [run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) passed |
+| My Review: cross-subject, 320px, dark, keyboard | Chromium Playwright | ✅ Full [run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) passed |
+| Optional studyGuide: plain text escaping and three content modes | Chromium Playwright | ✅ Full [run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) passed |
+| Offline, print and performance budgets | Chromium Playwright and static checks | ✅ Full [run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) passed |
+| Safari and iPhone WebKit regressions | WebKit Playwright | ✅ Full [run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) passed |
 | Real PDF content coverage, clinical fact-check and source-page checks | manual human content review | Not run yet |
 | Visual inspection of screenshots at 320/390/768/1440, Arabic/RTL and 200% zoom | human UX sign-off | Not complete |
 | Production deployment to Cloudflare Workers | after approved green protected merge | Not authorized; unchanged |
@@ -37,3 +37,7 @@
 5. After explicit source review, use `--write --reviewed`, inspect changes, run the full CI matrix and deploy only via the protected release path.
 
 **No green CI badge certifies medical factual accuracy.** This document records code integration only.
+
+## 2026-10-16 integration result
+
+[run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) passed all three required jobs on code head `1c822c1f08067b69286fbdfb0103439badc06fbd`. A documentation-only log update follows; it does not change tested runtime behavior. The remaining human medical/visual review and Cloudflare deployment gates remain **open**.
