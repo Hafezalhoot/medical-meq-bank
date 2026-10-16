@@ -72,6 +72,10 @@ test('saved Dermatology lecture includes all local figures and remains readable 
     {timeout:60000, intervals:[500,1000,2000]}).toBe(true);
 
   const id='internal-medicine-ii-dermatology-introduction';
+  // The offline API uses catalog metadata, which the UI loads when selecting a course.
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+  await expect(page.locator('#lectureFilter option[value="'+id+'"]')).toHaveCount(1,{timeout:15000});
   await page.evaluate(async lectureId => {
     await globalThis.MEQOfflineCache.cacheLecture(lectureId);
   }, id);

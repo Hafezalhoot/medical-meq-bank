@@ -32,12 +32,6 @@
     return cache.delete(sameOriginUrl(value));
   };
 
-  const isUrlCached = async value => {
-    if (!('caches' in globalThis)) return false;
-    const cache = await caches.open(OFFLINE_CACHE_NAME);
-    return Boolean(await cache.match(sameOriginUrl(value)));
-  };
-
   const lectureUrl = lectureId => {
     const url = globalThis.MEQLectureLoader?.lectureUrl?.(lectureId);
     if (!url) throw new Error(`Unknown lecture: ${lectureId}`);
