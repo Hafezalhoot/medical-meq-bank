@@ -60,8 +60,8 @@ class LectureIntakeTests(unittest.TestCase):
             "version": 1,
             "schemaVersion": 2,
             "courses": [
-                {"id": "internal-medicine", "label": "Internal Medicine", "pack": "packs/internal-medicine.json"},
-                {"id": "surgery", "label": "Surgery", "pack": "packs/surgery.json"},
+                {"id": "internal-medicine", "label": "Internal Medicine", "order": 2, "pack": "packs/internal-medicine.json"},
+                {"id": "surgery", "label": "Surgery", "order": 1, "pack": "packs/surgery.json"},
             ]
         })
         save(root / "courses" / "packs" / "internal-medicine.json", {
@@ -267,7 +267,7 @@ class LectureIntakeTests(unittest.TestCase):
             }
         }
         save(self.root / "draft.json", document)
-        with self.assertRaisesRegex(SystemExit, "invalid image path"):
+        with self.assertRaisesRegex(SystemExit, "must reference a safe local asset"):
             self.run_cli()
         asset = self.root / "assets" / "lectures" / "figure.png"
         asset.parent.mkdir(parents=True)
