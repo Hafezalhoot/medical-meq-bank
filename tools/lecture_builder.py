@@ -439,24 +439,26 @@ def inline_study_guide_media(root: Path, lectures: list[dict]) -> None:
     mime_types = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
                   ".webp": "image/webp", ".avif": "image/avif", ".svg": "image/svg+xml"}
     for lecture in lectures:
-        info = lecture.get("studyGuide", {}).get("infographic")
-        if not info:
-            continue
-        image = info["image"]
-        if image.startswith("data:image/"):
-            continue
-        relative = image.removeprefix("./")
-        assets = (root / "assets").resolve()
-        candidate = (root / relative).resolve()
-        if not relative.startswith("assets/") or not candidate.is_relative_to(assets):
-            raise SystemExit(f"Unsafe offline companion media path in {lecture['id']}")
-        mime = mime_types.get(candidate.suffix.lower())
-        if not mime or not candidate.is_file():
-            raise SystemExit(f"Missing or unsupported offline companion image: {relative}")
-        raw = validate_safe_svg(candidate) if candidate.suffix.lower() == ".svg" else candidate.read_bytes()
-        if not raw or len(raw) > 15 * 1024 * 1024:
-            raise SystemExit(f"Offline companion image exceeds media budget: {relative}")
-        info["image"] = f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
+        entries = list(lecture.get("imageQuestions", []))
+        infographic = lecture.get("studyGuide", {}).get("infographic")
+        if infographic:
+            entries.append(infographic)
+        for info in entries:
+            image = info.get("image")
+            if not image or image.startswith("data:image/"):
+                continue
+            relative = image.removeprefix("./")
+            assets = (root / "assets").resolve()
+            candidate = (root / relative).resolve()
+            if not relative.startswith("assets/") or not candidate.is_relative_to(assets):
+                raise SystemExit(f"Unsafe offline lecture media path in {lecture['id']}")
+            mime = mime_types.get(candidate.suffix.lower())
+            if not mime or not candidate.is_file():
+                raise SystemExit(f"Missing or unsupported offline image: {relative}")
+            raw = validate_safe_svg(candidate) if candidate.suffix.lower() == ".svg" else candidate.read_bytes()
+            if not raw or len(raw) > 15 * 1024 * 1024:
+                raise SystemExit(f"Offline image exceeds media budget: {relative}")
+            info["image"] = f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
 
 
 def build_lecture_extensions(root: Path | str = Path(".")) -> str:
