@@ -27,6 +27,23 @@ v2::surgery::urology::urology-renal-tumors::core::rt-core-1
 
 Local subject names may repeat between courses. Lecture IDs remain globally unique in payload schema v1 for backward compatibility. Progress keys are course-scoped so existing ratings migrate without collisions.
 
+## Add a new medical course (only once per course)
+
+New courses should be registered as metadata first; do not duplicate the whole engine, frontend or offline/PWA code.
+
+~~~bash
+python3 tools/add_course.py --id pediatrics --label "Pediatrics" \
+  --subject "neonatology=Neonatology" \
+  --subject "pediatric-cardiology=Pediatric Cardiology"
+
+# Review the dry-run; register metadata only after confirming the structure:
+python3 tools/add_course.py --id pediatrics --label "Pediatrics" \
+  --subject "neonatology=Neonatology" \
+  --subject "pediatric-cardiology=Pediatric Cardiology" --write
+~~~
+
+A new course starts empty by design. The first approved lecture links it to the shared lecture catalog. Existing Surgery and Medicine packs, published IDs and progress are unchanged.
+
 ## Add a lecture
 
 Start from a draft for any course/subject that already exists in `courses/catalog.json`:
