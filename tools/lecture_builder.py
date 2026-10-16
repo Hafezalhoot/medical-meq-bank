@@ -18,7 +18,7 @@ VALID_PRIORITIES = {"High", "Core"}
 TOP_LEVEL_FIELDS = {
     "schemaVersion", "courseId", "canonicalId",
     "id", "order", "subjectKey", "subject", "title", "subtitle", "sourceNote",
-    "subtopics", "cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid",
+    "subtopics", "cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid", "studyGuide",
 }
 SUBTOPIC_FIELDS = {"id", "label"}
 ITEM_FIELDS = {
@@ -180,7 +180,75 @@ def validate_lecture(
                 if not _validate_answer(item.get("a")):
                     raise SystemExit(f"{label} {item_id} has an invalid answer")
 
+    if "studyGuide" in lecture:
+        validate_study_guide(lecture["studyGuide"], label=label, item_ids=all_item_ids)
+
     return lecture
+
+
+
+def validate_study_guide(guide: object, *, label: str, item_ids: set[str]) -> None:
+    """Validate approved, plain-text Explanation / MCQ / Infographic companions."""
+    if not isinstance(guide, dict):
+        raise SystemExit(f"{label} studyGuide must be an object")
+    _reject_unknown_fields(guide, {"explanation", "mcqs", "infographic"}, label=f"{label} studyGuide")
+    sections = guide.get("explanation", [])
+    mcqs = guide.get("mcqs", [])
+    infographic = guide.get("infographic")
+    if not isinstance(sections, list) or not isinstance(mcqs, list):
+        raise SystemExit(f"{label} explanation and mcqs must be arrays")
+    if not sections and not mcqs and not infographic:
+        raise SystemExit(f"{label} studyGuide has no approved content")
+
+    for number, section in enumerate(sections, 1):
+        marker = f"{label} explanation section {number}"
+        if not isinstance(section, dict):
+            raise SystemExit(f"{marker} must be an object")
+        _reject_unknown_fields(
+            section, {"heading", "paragraphs", "sourcePage", "understandingAids"},
+            label=marker,
+        )
+        for field in ("heading", "sourcePage"):
+            if not _non_empty_string(section.get(field)):
+                raise SystemExit(f"{marker} is missing {field}")
+        if not _string_list(section.get("paragraphs")):
+            raise SystemExit(f"{marker} requires non-empty paragraphs")
+        if "understandingAids" in section and not _string_list(section["understandingAids"], allow_empty=True):
+            raise SystemExit(f"{marker} has invalid understandingAids")
+
+    for number, item in enumerate(mcqs, 1):
+        marker = f"{label} MCQ {number}"
+        if not isinstance(item, dict):
+            raise SystemExit(f"{marker} must be an object")
+        _reject_unknown_fields(
+            item, {"id", "question", "options", "answerIndex", "rationale", "sourcePage"},
+            label=marker,
+        )
+        for field in ("id", "question", "rationale", "sourcePage"):
+            if not _non_empty_string(item.get(field)):
+                raise SystemExit(f"{marker} is missing {field}")
+        if item["id"] in item_ids:
+            raise SystemExit(f"{marker} reuses study item id: {item['id']}")
+        item_ids.add(item["id"])
+        options = item.get("options")
+        if not _string_list(options) or len(options) != 4:
+            raise SystemExit(f"{marker} requires exactly four non-empty options")
+        choice = item.get("answerIndex")
+        if type(choice) is not int or choice not in (0, 1, 2, 3):
+            raise SystemExit(f"{marker} has an invalid answerIndex")
+
+    if infographic is not None:
+        if not isinstance(infographic, dict):
+            raise SystemExit(f"{label} infographic must be an object")
+        _reject_unknown_fields(
+            infographic, {"image", "alt", "caption", "sourcePage"},
+            label=f"{label} infographic",
+        )
+        for field in ("image", "alt", "sourcePage"):
+            if not _non_empty_string(infographic.get(field)):
+                raise SystemExit(f"{label} infographic is missing {field}")
+        if "caption" in infographic and not _non_empty_string(infographic["caption"]):
+            raise SystemExit(f"{label} infographic caption cannot be blank")
 
 
 def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
