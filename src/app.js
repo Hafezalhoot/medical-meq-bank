@@ -308,14 +308,14 @@ function createStudyGuide(lecture) {
       const article=document.createElement('article');article.className='study-guide-explanation';
       const heading=document.createElement('h3');heading.textContent=part.heading;article.append(heading);
       for(const text of part.paragraphs){
-        const p=document.createElement('p');p.textContent=text;p.dir='auto';article.append(p);
+        const p=document.createElement('p');p.textContent=text;p.dir=/[\u0600-\u06FF]/.test(text)?'rtl':'ltr';article.append(p);
       }
       if(part.understandingAids?.length){
         const aid=document.createElement('aside');aid.className='study-guide-understanding';
         const title=document.createElement('strong');
         title.textContent='Understanding Aid — Not an additional exam fact';
         aid.append(title);
-        for(const text of part.understandingAids){const p=document.createElement('p');p.textContent=text;p.dir='auto';aid.append(p);}
+        for(const text of part.understandingAids){const p=document.createElement('p');p.textContent=text;p.dir=/[\u0600-\u06FF]/.test(text)?'rtl':'ltr';aid.append(p);}
         article.append(aid);
       }
       sourceLabel(article,part.sourcePage);
