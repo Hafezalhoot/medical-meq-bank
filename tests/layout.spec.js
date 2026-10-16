@@ -168,3 +168,38 @@ test('landscape phone preserves content and safe controls without horizontal ove
   expect(dimensions.documentWidth).toBeLessThanOrEqual(dimensions.innerWidth + 1);
   expect(dimensions.mainVisible).toBe(true);
 });
+
+test('study focus mode expands the reading area and restores the existing navigation', async ({page}) => {
+  await openBank(page, {width: 1440, height: 900});
+  const focus = page.locator('#focusModeBtn');
+  await expect(focus).toHaveAttribute('aria-pressed', 'false');
+  await focus.click();
+  await expect(focus).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.app')).toHaveClass(/study-focus/);
+  await expect(page.locator('.hero')).toBeHidden();
+  await expect(page.locator('.lecture-sidebar')).toBeHidden();
+  await expect(page.locator('.subtopic-sidebar')).toBeHidden();
+  await expect(page.locator('#mainContent')).toBeVisible();
+  await expect(page.locator('.study-item').first()).toBeAttached();
+
+  await page.reload({waitUntil: 'domcontentloaded'});
+  await expect(page.locator('#focusModeBtn')).toHaveAttribute('aria-pressed', 'true');
+  await focus.click();
+  await expect(focus).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('.hero')).toBeVisible();
+  await expect(page.locator('.lecture-sidebar')).toBeVisible();
+  await expect(page.locator('#mainContent')).toBeVisible();
+});
+
+test('study progress summary remains readable and all detailed metrics can be revealed', async ({page}) => {
+  await openBank(page, {width: 1440, height: 900});
+  const insights = page.locator('#studyInsights');
+  await expect(insights).not.toHaveAttribute('open', '');
+  await expect(page.locator('#insightsHeadline')).toContainText('overall practice');
+  await insights.locator('summary').click();
+  await expect(insights).toHaveAttribute('open', '');
+  await expect(page.locator('#lectureCount')).not.toBeEmpty();
+  await expect(page.locator('#coreProgressBar')).toHaveAttribute('role', 'progressbar');
+  await insights.locator('summary').click();
+  await expect(insights).not.toHaveAttribute('open', '');
+});
