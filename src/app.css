@@ -183,3 +183,43 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 }
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Medical Course Library: progressive disclosure keeps the study content first. */
+.course-library{margin:14px 0 0;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--shadow-sm);overflow:hidden}
+.course-library-toggle{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 16px;list-style:none;cursor:pointer}
+.course-library-toggle::-webkit-details-marker{display:none}
+.course-library-toggle:hover{background:var(--surface-soft)}
+.course-library-symbol{width:42px;height:42px;display:grid;place-items:center;flex:0 0 auto;border-radius:12px;background:var(--brand-soft);color:var(--brand)}
+.course-library-symbol svg,.course-library-chevron svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.course-library-heading{display:grid;gap:2px;flex:1;min-width:0}
+.course-library-heading strong{font-size:1rem;color:var(--text)}
+.course-library-heading span{font-size:.8rem;line-height:1.4;color:var(--muted)}
+.course-library-count{flex:0 0 auto;padding:5px 9px;border-radius:999px;background:var(--surface-subtle);color:var(--muted);font-size:.76rem;font-weight:750}
+.course-library-chevron{width:28px;height:28px;display:grid;place-items:center;flex:0 0 auto;color:var(--muted);transition:transform .18s ease}
+.course-library details[open] .course-library-chevron{transform:rotate(180deg)}
+.course-library-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px;padding:16px;border-top:1px solid var(--line)}
+.course-library-card{display:flex;flex-direction:column;align-items:flex-start;gap:9px;min-height:182px;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--surface-soft);color:var(--text);text-align:left;cursor:pointer;transition:border-color .16s ease,background-color .16s ease}
+.course-library-card:hover{border-color:var(--brand);background:var(--brand-soft)}
+.course-library-card:active{opacity:.82}
+.course-library-card.is-active{border-color:var(--brand);background:var(--brand-soft)}
+.course-library-index{font-size:.7rem;letter-spacing:.075em;font-weight:800;color:var(--brand)}
+.course-library-title{font-size:1.22rem;line-height:1.25}
+.course-library-description{font-size:.84rem;line-height:1.45;color:var(--muted);max-width:42ch}
+.course-library-card-footer{display:flex;flex-wrap:wrap;align-items:center;gap:7px;color:var(--muted);font-size:.75rem}
+.course-library-availability{display:inline-flex;align-items:center;padding:4px 7px;border-radius:999px;background:var(--surface-subtle);font-weight:750}
+.course-library-availability.is-published{background:#dcfae6;color:#05603a}
+.course-library-action{margin-top:auto;color:var(--brand);font-size:.84rem;font-weight:850}
+.dark .course-library-toggle:hover,.dark .course-library-card{background:#152138}
+.dark .course-library-card.is-active,.dark .course-library-card:hover{background:#172b4d}
+.dark .course-library-availability.is-published{background:#124331;color:#a9f0cd}
+@media(max-width:700px){
+ .course-library{margin-top:10px}
+ .course-library-toggle{min-height:66px;padding:11px 12px;gap:9px}
+ .course-library-symbol{width:38px;height:38px}
+ .course-library-heading span{font-size:.75rem}
+ .course-library-count{display:none}
+ .course-library-grid{padding:12px;grid-template-columns:1fr}
+ .course-library-card{min-height:156px;padding:14px}
+}
+@media(prefers-reduced-motion:reduce){.course-library-chevron,.course-library-card{transition:none}}
+@media print{.course-library{display:none!important}}
