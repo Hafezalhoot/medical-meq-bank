@@ -4,6 +4,10 @@
 **First candidate version:** `2026.10.16.1`  
 **Baseline:** `main`, release `2026.10.04.2`
 
+## Audit and architecture
+
+The source-backed product review, information architecture and prioritized usability findings are documented in [UI_V2_AUDIT.md](./UI_V2_AUDIT.md). UI/UX guidance is informed by UI/UX Pro Max and the existing Clinical Study Workspace design system; the implementation stays dependency-free.
+
 ## Product goal
 
 Evolve Medical MEQ Bank into a calm, accessible, offline-first study workspace that scales from Surgery to every medical course while preserving the reviewed exam content, existing question formats, stable IDs, and the learner's saved progress.
