@@ -460,3 +460,14 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 .study-focus-toggle:focus-visible{outline:3px solid #84adf4;outline-offset:-3px}
 .hero .theme-toggle:focus-visible{outline:3px solid #fff;outline-offset:2px}
 @media print{.pwa-tools-toggle{display:none!important}}
+
+/* One primary study action; secondary offline utilities remain available in Study tools. */
+.hero .study-resume-btn{grid-column:1/-1;grid-row:4;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;padding:9px 12px;border:1px solid #b8e0ff;border-radius:10px;background:#f2f8ff;color:#123c78;font:inherit;font-size:.85rem;font-weight:850;cursor:pointer}
+.hero .study-resume-btn:hover{background:#fff}
+.hero .study-resume-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.hero .study-resume-btn:disabled{opacity:.65;cursor:not-allowed}
+.hero .pwa-tools-actions .offline-subject-btn{width:auto;margin:0;min-height:44px;border-radius:10px;padding:7px 11px;font-size:.8rem}
+@media(max-width:700px){
+ .hero .study-resume-btn{grid-row:3;margin-top:4px}
+ .hero .pwa-tools-actions .offline-subject-btn{width:100%}
+}
