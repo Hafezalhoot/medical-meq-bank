@@ -29,7 +29,16 @@ Local subject names may repeat between courses. Lecture IDs remain globally uniq
 
 ## Add a lecture
 
-Prepare one canonical JSON file using the v1 content contract in `lectures/lecture.schema.json`.
+Start from a draft for any course/subject that already exists in `courses/catalog.json`:
+
+```bash
+python3 tools/new_lecture.py --course internal-medicine --subject cardiology \
+  --title "Heart Failure" --source "Heart-Failure-Lecture.pdf"
+```
+
+This creates an **unpublished, intentionally empty** `tmp/lecture-drafts/cardiology-heart-failure.json`. It does not extract PDF facts or publish placeholder content. Populate the medically reviewed `subtopics`, `cases`, `coreShorts`, `imageQuestions`, `detailedShorts`, and `rapid` using the lecture PDF only.
+
+The five existing practice modes are the **current production contract**; optional standalone Explanation/MCQ/Infographic companions are tracked separately as an additive content extension, and must not be claimed as working until their renderer and schema have been released.
 
 Run a safe dry-run:
 
@@ -42,15 +51,15 @@ The command validates the structure, item IDs, priorities, marks, subtopics, ans
 If the dry-run is correct, register it:
 
 ```bash
-python3 tools/add_lecture.py /path/to/new-lecture.json --course surgery --write
+python3 tools/add_lecture.py /path/to/new-lecture.json --course surgery --write --reviewed
 ```
 
 The write mode:
 
-1. stores the canonical reviewable JSON under `lectures/data/`;
-2. adds the versioned/scoped catalog entry;
-3. connects a course to the shared lecture catalog when it receives its first lecture;
-4. updates the Surgery compatibility baseline when applicable.
+1. requires an explicit medical content review acknowledgment (`--reviewed`);
+2. validates the entire payload, stable identifiers, available subject and local/embedded images **before mutating repository files**;
+3. stages canonical JSON + catalog (+ course-pack link for the first lecture), installs with rollback if a filesystem write fails;
+4. keeps the historical Surgery compatibility baseline **frozen**; new Surgery lectures are additive and cannot silently redefine the old protected fixtures.
 
 Then run the canonical static quality gate:
 
@@ -88,3 +97,21 @@ Do not introduce a new binary transport or lecture-specific repair path for ordi
 ## Release rule
 
 Adding content is not complete when JSON is merely committed. It is complete only after the full build, data validators, Chromium tests, WebKit tests, accessibility checks, offline tests, and performance budgets pass.
+
+## Chat-to-website lecture handoff (PDF → reviewed content → release)
+
+1. **Receive:** The learner uploads the original PDF here in ChatGPT and identifies the target course and specialty. Review source readability and slide/page numbering. Ask for missing source pages rather than making up clinical content.
+2. **Lecture-first content:** Explain the PDF in simple Arabic with the necessary English terms, keeping lecture classifications, numbers and management exactly as taught. Any out-of-source comprehension help is explicitly labeled **Understanding Aid — Not an additional exam fact**.
+3. **Practice content:** Generate MEQ cases, short and detailed questions, lecture-linked image/spot questions and Rapid Recall, each traceable to the supplied lecture. MCQs and infographic design should be prepared for the future optional companion format rather than injected into an unsupported field or silently treated as standard core shorts.
+4. **Review checkpoint:** Show a content coverage table (source pages → subtopics → questions → visual references), highlight unreadable diagrams/ambiguities and obtain content approval. Images should be licensed/permissioned or sourced from the user-supplied material; don't publish an entire copyrighted PDF just to serve one illustration.
+5. **Stage:** Generate the reviewable canonical JSON draft. Attach full media under the repository `assets/` directory with **safe local paths**, or use a supported inline image type. Do not invent a figure: page-only questions remain labeled page references, not displayed as an original figure.
+6. **Check:** Run `tools/add_lecture.py ... --course <id>` without `--write`. Check counts, source notes, media, duplicate IDs, subtopic mapping, and actual subject/lecture identity. Correct any error, then commit with `--write --reviewed` only after explicit medical review.
+7. **Release:** Run `bash build.sh`, Chromium, WebKit and the full protected PR checks. Do **not** edit `dist/` by hand; do **not** mutate past item IDs. GitHub merge and manual Cloudflare Worker promotion are separate controlled steps; smoke-test online/offline, images, search and saved progress.
+
+### Non-negotiable source and data rules
+
+- No external guideline or drug/procedure updates in an exam-facing lecture unless present in its PDF.
+- Neither the drafting tool nor the static site has an AI medical-fact extractor. ChatGPT's evidence-based content preparation happens *before* insertion and remains reviewable.
+- Don't rename a published lecture or question merely to reorder the UI; IndexedDB progress keys depend on stable IDs.
+- The website is public. Review redistribution permission and remove private student/patient details before pushing a lecture source or its illustrations to GitHub.
+- Drafts in `tmp/lecture-drafts/` are ignored by Git. Public content only comes from a reviewed commit and release.
