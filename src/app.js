@@ -370,6 +370,12 @@ function updateStatus(){
   const headline=$('insightsHeadline'),summaryFill=$('insightsOverallFill');
   if(headline)headline.textContent=op+'% overall practice • '+mastered+' mastered';
   if(summaryFill)summaryFill.style.width=op+'%';
+  const resume=$('resumeStudyBtn');
+  if(resume){
+    resume.disabled=scope.length===0;
+    resume.firstChild.textContent=overallDone?'Continue studying ':'Start studying ';
+    resume.title=scope.length?'Go to the next question or review item':'No lectures in this specialty yet';
+  }
   const subject=subjects.find(s=>s.id===activeSubject);
   $('heroTags').innerHTML=`<span class="hero-tag">${esc(subject?.label||'Subject')}</span><span class="hero-tag">${scope.length} Lecture${scope.length===1?'':'s'}</span><span class="hero-tag">${totals.cases} MEQ Cases</span><span class="hero-tag">${totals.coreShorts} Core Shorts</span><span class="hero-tag">Saved Progress</span>`;
   updateStudyBreadcrumb();
@@ -414,6 +420,26 @@ function setFocusMode(enabled){
   button.querySelector('[data-focus-label]').textContent=enabled?'Exit focus mode':'Focus on questions';
   storage.set('medicalBankFocusModeV1',enabled?'1':'0');
 }
+// Enter the real study flow; prefer items marked Review/Weak, then unrated items.
+const resumeStudy=$('resumeStudyBtn');
+resumeStudy?.addEventListener('click',()=>{
+  const items=[...document.querySelectorAll('#mainContent .study-item:not(.hidden)')];
+  const rating=item=>{
+    const key=item.querySelector('.status')?.dataset.key;
+    return key?state[key]||'':'';
+  };
+  const target=items.find(item=>['review','weak'].includes(rating(item)))
+    ||items.find(item=>!rating(item))
+    ||items[0]
+    ||document.querySelector('#mainContent .lecture-overview-card')
+    ||$('mainContent');
+  if(!target)return;
+  const parentDetails=target.closest('details');
+  if(parentDetails)parentDetails.open=true;
+  if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
+  target.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+  target.focus({preventScroll:true});
+});
 const pwaToolsToggle=$('pwaToolsToggle');
 if(pwaToolsToggle){
   pwaToolsToggle.addEventListener('click',()=>{
