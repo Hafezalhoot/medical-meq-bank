@@ -7,6 +7,7 @@ from pathlib import Path
 import json
 import base64
 import re
+import xml.etree.ElementTree as ET
 
 
 LECTURE_LIST_KEYS = (
@@ -396,10 +397,47 @@ def _batch_extension(lectures_to_add: list[dict]) -> str:
     )
 
 
+SVG_ALLOWED_ELEMENTS = {
+    "svg", "g", "rect", "circle", "ellipse", "path", "line", "polyline",
+    "polygon", "text", "tspan", "title", "desc",
+}
+SVG_ALLOWED_ATTRIBUTES = {
+    "xmlns", "viewBox", "width", "height", "x", "y", "x1", "x2", "y1", "y2",
+    "cx", "cy", "r", "rx", "ry", "points", "d", "fill", "stroke",
+    "stroke-width", "stroke-linecap", "stroke-linejoin", "opacity",
+    "font-family", "font-size", "font-weight", "text-anchor",
+    "letter-spacing", "transform", "role", "aria-label",
+}
+
+
+def validate_safe_svg(path: Path) -> bytes:
+    """Only permit small passive diagrams; never scripts, links or CSS in SVG."""
+    raw = path.read_bytes()
+    if not raw or len(raw) > 512 * 1024:
+        raise SystemExit(f"SVG exceeds 512 KB or is empty: {path.name}")
+    if re.search(rb"<!DOCTYPE|<!ENTITY|<\?xml-stylesheet|url\s*\(", raw, re.I):
+        raise SystemExit(f"SVG uses forbidden external or document resources: {path.name}")
+    try:
+        root = ET.fromstring(raw)
+    except ET.ParseError as error:
+        raise SystemExit(f"Invalid SVG diagram {path.name}: {error}")
+    namespace = "{http://www.w3.org/2000/svg}"
+    if root.tag != namespace + "svg":
+        raise SystemExit(f"SVG has an invalid root: {path.name}")
+    for element in root.iter():
+        if not element.tag.startswith(namespace) or element.tag[len(namespace):] not in SVG_ALLOWED_ELEMENTS:
+            raise SystemExit(f"SVG contains unsupported element in {path.name}")
+        for attribute in element.attrib:
+            field = attribute[len(namespace):] if attribute.startswith(namespace) else attribute
+            if field not in SVG_ALLOWED_ATTRIBUTES:
+                raise SystemExit(f"SVG contains unsupported attribute {field} in {path.name}")
+    return raw
+
+
 def inline_study_guide_media(root: Path, lectures: list[dict]) -> None:
     """Keep standalone offline HTML self-contained when companions use local images."""
     mime_types = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
-                  ".webp": "image/webp", ".avif": "image/avif"}
+                  ".webp": "image/webp", ".avif": "image/avif", ".svg": "image/svg+xml"}
     for lecture in lectures:
         info = lecture.get("studyGuide", {}).get("infographic")
         if not info:
@@ -415,7 +453,7 @@ def inline_study_guide_media(root: Path, lectures: list[dict]) -> None:
         mime = mime_types.get(candidate.suffix.lower())
         if not mime or not candidate.is_file():
             raise SystemExit(f"Missing or unsupported offline companion image: {relative}")
-        raw = candidate.read_bytes()
+        raw = validate_safe_svg(candidate) if candidate.suffix.lower() == ".svg" else candidate.read_bytes()
         if not raw or len(raw) > 15 * 1024 * 1024:
             raise SystemExit(f"Offline companion image exceeds media budget: {relative}")
         info["image"] = f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
