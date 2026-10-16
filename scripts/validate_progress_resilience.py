@@ -30,10 +30,15 @@ def main() -> None:
 
     for marker in (
         "const DB_NAME = 'medical-meq-bank';",
+        "const DB_VERSION = 2;",
+        "const ITEM_STORE = 'progress-items';",
         "medicalBankStatusV2",
         "indexedDB.open",
+        "exportAll",
+        "replaceAll",
         "snapshotNow",
         "location.reload()",
+        "MEQProgressStore",
         "MEQProgressResilience",
     ):
         if marker not in source:
@@ -41,8 +46,10 @@ def main() -> None:
 
     if not re.search(r"currentStatus\s*===\s*null\s*\|\|\s*isValidStatus\(currentStatus\)", source):
         fail("missing-status guard does not protect deliberate resets")
-    if not re.search(r"storage\.set\s*=\s*\(key, value\)", source):
-        fail("storage writes are not mirrored")
+    if "localStorage.removeItem(STATUS_KEY)" not in source:
+        fail("legacy progress is not removed after IndexedDB migration")
+    if "store.put({key, value, updatedAt" not in source or "store.delete(key)" not in source:
+        fail("progress changes are not written as individual IndexedDB records")
 
     ordered = (
         '<script src="./app.js"></script>',
@@ -66,7 +73,7 @@ def main() -> None:
     if "./progress-resilience.js" not in worker:
         fail("service worker does not pre-cache progress resilience")
 
-    print("Validated IndexedDB progress resilience integration")
+    print("Validated IndexedDB per-item progress store, legacy migration and backup integration")
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@ Never invent missing medical answers, marking schemes, classifications, drugs, d
 - `lectures/catalog.json`: published lecture registry and expected counts.
 - `lectures/data/*.json`: reviewable lecture content.
 - `lectures/*.schema.json`: declared content contracts.
-- Root extension files such as `mobile-filters.js` and `review-filter.js`: injected into the online and standalone builds.
+- Root extension files such as `mobile-filters.js` and `review-filter.js`: injected into the online and standalone builds. `src/print-manager.*` is the only reviewable Print Center source; do not create root-level duplicates.
 - `dist/`: generated output only. Never edit it manually.
 - `version.json`, `service-worker.js`, and `src/pwa-client.js`: release versions must agree.
 
@@ -32,20 +32,23 @@ Use the smallest relevant validation loop while developing, then run the full qu
 
 ## Required local commands
 
+Static build + complete source/data/repository gate:
+
 ```bash
-bash build.sh
-python3 scripts/validate_build.py
-python3 scripts/validate_mobile_filters.py
-python3 scripts/validate_runtime_extensions.py
-python3 scripts/validate_progress_resilience.py
-python3 scripts/audit_repository.py
-python3 scripts/validate_repository_hygiene.py
-npm ci --no-audit --no-fund
-npm run test:e2e
-npx playwright test --config=playwright.webkit.config.js
+npm run quality:static
 ```
 
-The final merge gate is the `Validate Medical MEQ Bank` workflow. A change is not ready when only one browser or only the static build has passed.
+Browser suites:
+
+```bash
+npm ci --no-audit --no-fund
+npm run test:e2e
+npm run test:webkit
+```
+
+For a new lecture, use `tools/add_lecture.py` in dry-run mode first and then `--write`; do not hand-maintain multiple registries for an ordinary content addition. See `CONTENT_AUTHORING.md`.
+
+The final merge gate is the `Validate Medical MEQ Bank` workflow. A change is not ready when only one browser or only the static build has passed. If GitHub Actions cannot provision a job, keep the PR draft and follow `ACTIONS_RECOVERY.md`; do not weaken the workflow to bypass the blocker.
 
 ## Repository hygiene
 

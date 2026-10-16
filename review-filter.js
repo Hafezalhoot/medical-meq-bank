@@ -16,6 +16,10 @@
   const reviewFilter = document.createElement('select');
   reviewFilter.id = 'reviewFilter';
   reviewFilter.className = 'control review-filter';
+  const reviewLabel = document.createElement('label');
+  reviewLabel.className = 'sr-only';
+  reviewLabel.htmlFor = 'reviewFilter';
+  reviewLabel.textContent = 'Review status';
   reviewFilter.setAttribute('aria-label', 'Review status filter');
   reviewFilter.title = 'Show questions by your saved revision rating';
   reviewFilter.innerHTML = `
@@ -30,6 +34,7 @@
     ? savedLevel
     : 'all';
   reviewFilter.dataset.level = reviewFilter.value;
+  toolbar.insertBefore(reviewLabel, document.getElementById('randomBtn'));
   toolbar.insertBefore(reviewFilter, document.getElementById('randomBtn'));
 
   const topicFilter = document.getElementById('topicFilter');

@@ -65,22 +65,22 @@ test('switching to a new course does not alter saved surgery progress', async ({
 
   await page.locator('#courseSelector').selectOption('surgery');
   await expect(page.locator('#subjectSelector')).toHaveValue('urology');
-  await expect(page.locator('#lecture-urology-renal-tumors')).toBeAttached();
+  await expect(page.locator('#lectureFilter option[value="urology-renal-tumors"]')).toHaveText('08. Renal Tumors');
 
-  const stored = await page.evaluate(key => {
-    const state = JSON.parse(localStorage.getItem('medicalBankStatusV2') || '{}');
-    return state[key];
+  const stored = await page.evaluate(async key => {
+    const progress = await globalThis.MEQProgressStore.exportAll();
+    return progress[key];
   }, protectedKey);
   expect(stored).toBe('mastered');
+  expect(await page.evaluate(() => localStorage.getItem('medicalBankStatusV2'))).toBeNull();
 });
 
 test('Renal Tumors loads as lecture 08 with verified content and images', async ({page}) => {
   await openBank(page);
-  await expect(page.locator('#lecture-urology-renal-tumors')).toBeAttached();
-
   await expect(page.locator('#lectureFilter option[value="urology-renal-tumors"]')).toHaveText('08. Renal Tumors');
   await page.locator('#lectureFilter').selectOption('urology-renal-tumors');
   await expect(page.locator('#lecture-urology-renal-tumors .lecture-title')).toHaveText('Renal Tumors');
+  await expect(page.locator('.lecture')).toHaveCount(1);
 
   const counts = await page.evaluate(() => {
     const lecture = lectures.find(item => item.id === 'urology-renal-tumors');
@@ -104,4 +104,24 @@ test('full-bank loading spans configured courses without failing empty future pa
   expect(result.lectureIds).toContain('urology-renal-tumors');
   expect(result.lectureIds).toContain('urology-bladder-cancer');
   expect(result.lectureIds).toContain('neurosurgery-traumatic-brain-injury');
+});
+
+
+test('lecture catalog metadata is available without loading inactive payloads', async ({page}) => {
+  const lectureRequests = [];
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (path.startsWith('/lectures/data/')) lectureRequests.push(path);
+  });
+
+  await openBank(page);
+
+  await expect(page.locator('#lectureFilter option')).toHaveCount(9);
+  expect([...new Set(lectureRequests)]).toHaveLength(1);
+  expect(await page.evaluate(() => globalThis.MEQLectureLoader.isLoaded('urology-renal-tumors'))).toBe(false);
+
+  await page.locator('#lectureFilter').selectOption('all');
+  await expect(page.locator('.lecture-overview-card')).toHaveCount(8);
+  await expect(page.locator('.study-item')).toHaveCount(0);
+  expect(await page.evaluate(() => globalThis.MEQLectureLoader.isLoaded('urology-renal-tumors'))).toBe(false);
 });

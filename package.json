@@ -4,10 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:e2e": "playwright test"
+    "quality:static": "bash build.sh",
+    "test:e2e": "playwright test",
+    "test:webkit": "playwright test --config=playwright.webkit.config.js"
   },
   "devDependencies": {
-    "@axe-core/playwright": "4.12.1",
-    "@playwright/test": "1.62.0"
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.62.1"
   }
 }

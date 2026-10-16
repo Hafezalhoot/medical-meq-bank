@@ -13,7 +13,7 @@ async function openBank(page, viewport) {
   await page.setViewportSize({width: viewport.width, height: viewport.height});
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
-    name: 'Medical MEQ & Short Question Review Bank'
+    name: 'Medical MEQ Review Bank'
   })).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
   await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
@@ -130,4 +130,41 @@ test('desktop content columns stay within the main layout', async ({page}) => {
     expect(child.right).toBeLessThanOrEqual(result.layout.right + 1);
     expect(child.width).toBeGreaterThan(0);
   }
+});
+
+
+test('primary mobile controls meet the 44px interaction target', async ({page}) => {
+  await openBank(page, {width: 390, height: 844});
+
+  const selectors = [
+    '#darkBtn',
+    '#exportProgressBtn',
+    '#importProgressBtn',
+    '#toggleLectures',
+    '#toggleSubtopics',
+    '#randomBtn',
+    '#revealBtn'
+  ];
+
+  for (const selector of selectors) {
+    const locator = page.locator(selector);
+    if (await locator.isVisible()) {
+      const box = await locator.boundingBox();
+      expect(box, selector).toBeTruthy();
+      expect(box.height, selector).toBeGreaterThanOrEqual(44);
+    }
+  }
+});
+
+test('landscape phone preserves content and safe controls without horizontal overflow', async ({page}) => {
+  await openBank(page, {width: 844, height: 390});
+
+  const dimensions = await page.evaluate(() => ({
+    innerWidth,
+    documentWidth: document.documentElement.scrollWidth,
+    mainVisible: Boolean(document.getElementById('mainContent')?.getBoundingClientRect().height)
+  }));
+
+  expect(dimensions.documentWidth).toBeLessThanOrEqual(dimensions.innerWidth + 1);
+  expect(dimensions.mainVisible).toBe(true);
 });

@@ -18,10 +18,15 @@ BUDGETS = {
     "lecture-loader.js": 100_000,
     "pwa-client.js": 150_000,
     "service-worker.js": 100_000,
-    "offline/Medical_MEQ_Review_Bank_Offline.html": 20_000_000,
+    "offline/Medical_MEQ_Review_Bank_Offline.html": 8_000_000,
 }
 MAX_LECTURE_JSON_BYTES = 4_000_000
 MAX_TOTAL_LECTURE_BYTES = 18_000_000
+MAX_SEARCH_CATALOG_BYTES = 100_000
+MAX_SEARCH_SHARD_BYTES = 2_000_000
+# The self-contained full-bank file is a bounded legacy convenience export.
+# Scalable offline use is provided by the PWA lecture/subject cache controls.
+MAX_LEGACY_OFFLINE_BYTES = 8_000_000
 MAX_TOTAL_DIST_BYTES = 30_000_000
 
 
@@ -42,6 +47,14 @@ def main() -> None:
         measured[relative] = actual
         if actual > budget:
             fail(f"{relative} is {actual:,} bytes; budget is {budget:,}")
+
+    legacy_offline = measured["offline/Medical_MEQ_Review_Bank_Offline.html"]
+    if legacy_offline > MAX_LEGACY_OFFLINE_BYTES:
+        fail(
+            f"legacy full-bank offline export is {legacy_offline:,} bytes; "
+            f"bounded legacy budget is {MAX_LEGACY_OFFLINE_BYTES:,}. "
+            "Use selective PWA offline packs for further corpus growth."
+        )
 
     catalog_path = DIST / "lectures" / "catalog.json"
     try:
@@ -72,6 +85,30 @@ def main() -> None:
             f"lecture assets total {total_lecture_bytes:,} bytes; "
             f"budget is {MAX_TOTAL_LECTURE_BYTES:,}"
         )
+
+    search_root = DIST / "lectures" / "search"
+    search_catalog_path = search_root / "catalog.json"
+    search_catalog_size = size(search_catalog_path)
+    if search_catalog_size > MAX_SEARCH_CATALOG_BYTES:
+        fail(
+            f"search catalog is {search_catalog_size:,} bytes; "
+            f"budget is {MAX_SEARCH_CATALOG_BYTES:,}"
+        )
+    try:
+        search_catalog = json.loads(search_catalog_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        fail(f"could not parse search catalog: {error}")
+    for subject in search_catalog.get("subjects", []):
+        if not isinstance(subject, dict) or not isinstance(subject.get("file"), str):
+            fail("search catalog contains an invalid subject entry")
+        shard = search_root / subject["file"]
+        actual = size(shard)
+        measured[f"lectures/search/{subject['file']}"] = actual
+        if actual > MAX_SEARCH_SHARD_BYTES:
+            fail(
+                f"search shard {subject['file']} is {actual:,} bytes; "
+                f"budget is {MAX_SEARCH_SHARD_BYTES:,}"
+            )
 
     total_dist_bytes = sum(
         path.stat().st_size

@@ -14,7 +14,9 @@
         "imageQuestions": 10,
         "detailedShorts": 58,
         "rapid": 40
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     },
     {
       "id": "urology-congenital-anomalies",
@@ -28,7 +30,9 @@
         "imageQuestions": 10,
         "detailedShorts": 57,
         "rapid": 26
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     },
     {
       "id": "urology-bph-prostate-carcinoma",
@@ -42,7 +46,9 @@
         "imageQuestions": 8,
         "detailedShorts": 42,
         "rapid": 26
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     },
     {
       "id": "urology-urological-emergencies",
@@ -56,7 +62,9 @@
         "imageQuestions": 10,
         "detailedShorts": 53,
         "rapid": 33
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     },
     {
       "id": "urology-scrotal-swelling",
@@ -70,7 +78,9 @@
         "imageQuestions": 10,
         "detailedShorts": 58,
         "rapid": 40
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     },
     {
       "id": "urology-urinary-tract-infection",
@@ -84,7 +94,9 @@
         "imageQuestions": 10,
         "detailedShorts": 58,
         "rapid": 40
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     },
     {
       "id": "urology-bladder-cancer",
@@ -98,7 +110,9 @@
         "imageQuestions": 8,
         "detailedShorts": 59,
         "rapid": 34
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     },
     {
       "id": "urology-urolithiasis",
@@ -112,7 +126,9 @@
         "imageQuestions": 10,
         "detailedShorts": 60,
         "rapid": 35
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     },
     {
       "id": "urology-renal-tumors",
@@ -126,7 +142,10 @@
         "imageQuestions": 6,
         "detailedShorts": 45,
         "rapid": 30
-      }
+      },
+      "courseId": "surgery",
+      "schemaVersion": 1
     }
-  ]
+  ],
+  "schemaVersion": 2
 }

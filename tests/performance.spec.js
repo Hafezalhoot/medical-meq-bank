@@ -5,7 +5,7 @@ test.use({serviceWorkers: 'block'});
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
-    name: 'Medical MEQ & Short Question Review Bank'
+    name: 'Medical MEQ Review Bank'
   })).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
   await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
@@ -19,9 +19,9 @@ test('initial active-subject load stays within a practical request budget', asyn
   await openBank(page);
 
   const lectureRequests = requested.filter(path => path.startsWith('/lectures/data/'));
-  const activeLectureCount = await page.locator('#lectureFilter option').count() - 1;
-  expect(new Set(lectureRequests).size).toBeLessThanOrEqual(Math.max(activeLectureCount, 1));
+  expect(new Set(lectureRequests).size).toBe(1);
   expect(lectureRequests.some(path => path.includes('neurosurgery-traumatic-brain-injury'))).toBe(false);
+  await expect(page.locator('.lecture')).toHaveCount(1);
 
   const metrics = await page.evaluate(() => ({
     studyItems: document.querySelectorAll('.study-item').length,
@@ -29,12 +29,11 @@ test('initial active-subject load stays within a practical request budget', asyn
     nodes: document.getElementsByTagName('*').length
   }));
   const shellNodeBudget = 2_000;
-  const perLectureNodeBudget = 2_600;
-  const nodeBudget = shellNodeBudget + Math.max(activeLectureCount, 1) * perLectureNodeBudget;
+  const singleLectureNodeBudget = 2_600;
 
-  expect(metrics.studyItems).toBeLessThan(2_500);
-  expect(metrics.rapidItems).toBeLessThan(1_000);
-  expect(metrics.nodes).toBeLessThan(nodeBudget);
+  expect(metrics.studyItems).toBeLessThan(500);
+  expect(metrics.rapidItems).toBeLessThan(100);
+  expect(metrics.nodes).toBeLessThan(shellNodeBudget + singleLectureNodeBudget);
 });
 
 test('debounced search filtering completes within the interaction budget and preserves listeners', async ({page}) => {
@@ -69,7 +68,7 @@ test('debounced search filtering completes within the interaction budget and pre
   expect(result.duration).toBeGreaterThanOrEqual(280);
   expect(result.duration).toBeLessThan(1_500);
   expect(result.observedInputEvents).toBe(1);
-  await expect(page.locator('.study-item:not(.hidden)').first()).toBeVisible();
+  await expect(page.locator('#globalSearchResults .global-search-result').first()).toBeVisible();
 });
 
 test('switching to an unloaded subject completes within the navigation budget', async ({page}) => {
@@ -82,4 +81,48 @@ test('switching to an unloaded subject completes within the navigation budget', 
 
   expect(duration).toBeLessThan(3_000);
   await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
+});
+
+
+test('switching lectures fetches only the selected payload and keeps one lecture in the DOM', async ({page}) => {
+  const requested = [];
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (path.startsWith('/lectures/data/')) requested.push(path);
+  });
+
+  await openBank(page);
+  const initial = [...new Set(requested)];
+  expect(initial).toHaveLength(1);
+
+  requested.length = 0;
+  await page.locator('#lectureFilter').selectOption('urology-renal-tumors');
+  await expect(page.locator('#lecture-urology-renal-tumors')).toBeVisible();
+  await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
+
+  expect([...new Set(requested)]).toEqual(['/lectures/data/urology-renal-tumors.json']);
+  await expect(page.locator('.lecture')).toHaveCount(1);
+  await expect(page.locator('#lecture-urology-congenital-anomalies')).toHaveCount(0);
+});
+
+
+test('global search finds an unloaded lecture without fetching it until the result is opened', async ({page}) => {
+  const requested = [];
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (path.startsWith('/lectures/data/')) requested.push(path);
+  });
+
+  await openBank(page);
+  requested.length = 0;
+
+  await page.locator('#search').fill('Renal Tumors');
+  const result = page.locator('#globalSearchResults .global-search-result[data-lecture="urology-renal-tumors"]').first();
+  await expect(result).toBeVisible({timeout: 10_000});
+  expect(requested.some(path => path.includes('urology-renal-tumors'))).toBe(false);
+
+  await result.click();
+  await expect(page.locator('#lecture-urology-renal-tumors')).toBeVisible({timeout: 10_000});
+  expect(requested.filter(path => path.includes('urology-renal-tumors')).length).toBe(1);
+  await expect(page.locator('.lecture')).toHaveCount(1);
 });

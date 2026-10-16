@@ -42,5 +42,6 @@
       "label": "Rheumatology",
       "order": 7
     }
-  ]
+  ],
+  "schemaVersion": 2
 }

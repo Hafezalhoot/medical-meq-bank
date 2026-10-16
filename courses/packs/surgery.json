@@ -28,5 +28,6 @@
       "label": "Neurosurgery",
       "order": 4
     }
-  ]
+  ],
+  "schemaVersion": 2
 }

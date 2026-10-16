@@ -160,9 +160,9 @@ def create_offline_copy(
 def patch_service_worker(output: Path, catalog_entries: list[dict]) -> None:
     worker_path = output / "service-worker.js"
     worker = worker_path.read_text(encoding="utf-8")
-    assets = ["./lectures/catalog.json"] + [
-        f"./lectures/{entry['file']}" for entry in catalog_entries
-    ]
+    # Keep mandatory PWA installation cost independent of corpus size.
+    # Lecture payloads are fetched and cached on demand by the runtime.
+    assets = ["./lectures/catalog.json", "./lectures/search/catalog.json"]
     replacement = json.dumps(assets, ensure_ascii=False, separators=(",", ":"))
     worker = replace_required(
         worker,

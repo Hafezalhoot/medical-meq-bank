@@ -17,36 +17,45 @@
 <link rel="stylesheet" href="./app.css">
 </head>
 <body>
+<a class="skip-link" href="#mainContent">Skip to study content</a>
 <div class="app">
 <section class="hero">
-  <button class="theme-toggle" id="darkBtn" type="button" aria-label="Toggle dark mode">◐ Dark mode</button>
+  <button class="theme-toggle" id="darkBtn" type="button" aria-label="Switch to dark mode"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"></path></svg></span><span class="button-label" data-theme-label>Dark mode</span></button>
   <div class="hero-grid">
     <div class="hero-copy">
-      <div class="eyebrow">Lecture-based • Expandable • Offline HTML</div>
-      <h1>Medical MEQ & Short Question Review Bank</h1>
-      <p>MEQ cases, high-yield short questions, image spots and saved self-assessment—organized by subject, lecture and subtopic.</p>
+      <div class="eyebrow">Focused study • Offline-ready • Progress saved</div>
+      <h1>Medical MEQ Review Bank</h1>
+      <p>Practice clinical cases, high-yield questions, image spots and rapid recall in one focused study workspace.</p>
       <div class="hero-tags" id="heroTags"></div>
       <div class="pwa-tools" aria-label="App and backup tools">
-        <button class="pwa-btn" id="installAppBtn" type="button" hidden>⬇ Install App</button>
-        <button class="pwa-btn" id="exportProgressBtn" type="button">⇩ Backup Progress</button>
-        <button class="pwa-btn" id="importProgressBtn" type="button">⇧ Restore Progress</button>
+        <button class="pwa-btn" id="installAppBtn" type="button" hidden><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Install App</span></button>
+        <button class="pwa-btn" id="exportProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Backup Progress</span></button>
+        <button class="pwa-btn" id="importProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21V9"></path><path d="m7 14 5-5 5 5"></path><path d="M5 3h14"></path></svg></span><span class="button-label">Restore Progress</span></button>
         <input id="importProgressFile" type="file" accept="application/json,.json" hidden>
-        <span class="connection-pill" id="connectionPill"><span class="connection-dot"></span><span id="connectionText">Online</span></span>
+        <span class="connection-pill" id="connectionPill" role="status" aria-live="polite"><span class="connection-dot" aria-hidden="true"></span><span id="connectionText">Online</span></span>
       </div>
     </div>
     <div class="hero-panel">
-      <label class="hero-panel-label" for="subjectSelector">Main surgical subject</label>
+      <div class="hero-panel-heading"><strong>Study path</strong><span>Choose the course and specialty you want to revise.</span></div>
+      <label class="hero-panel-label" for="subjectSelector">Subject / specialty</label>
       <select id="subjectSelector" class="subject-select"></select>
-      <span class="subject-hint">Choose a subject to display its lectures and study content.</span>
+      <span class="subject-hint">Choose a specialty to display its lectures and study content.</span>
     </div>
   </div>
 </section>
 
+<nav id="studyBreadcrumb" class="study-breadcrumb" aria-label="Study location"></nav>
+
 <section class="toolbar" aria-label="Study filters">
-  <input id="search" class="control" placeholder="Search lectures, cases, signs, questions..." aria-label="Search">
+  <label class="sr-only" for="search">Search this specialty</label>
+  <input id="search" class="control search-control" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Search this specialty..." aria-label="Search this specialty">
+  <label class="sr-only" for="lectureFilter">Lecture</label>
   <select id="lectureFilter" class="control" aria-label="Lecture filter"></select>
+  <label class="sr-only" for="typeFilter">Question type</label>
   <select id="typeFilter" class="control" aria-label="Question type filter"><option value="all">All study items</option><option value="case">MEQ cases</option><option value="core">High-yield shorts</option><option value="image">Image/spot questions</option><option value="extra">Detailed practice</option></select>
+  <label class="sr-only" for="topicFilter">Topic</label>
   <select id="topicFilter" class="control" aria-label="Topic filter"><option value="all">All topics</option></select>
+  <label class="sr-only" for="priorityFilter">Priority</label>
   <select id="priorityFilter" class="control" aria-label="Priority filter"><option value="all">All priorities</option><option value="High">High priority</option><option value="Core">Core</option></select>
   <button class="btn btn-primary" id="randomBtn" type="button">Random item</button>
   <button class="btn btn-soft" id="revealBtn" type="button">Reveal all</button>
@@ -58,42 +67,43 @@
 </div>
 
 
-<section class="stats">
-  <div class="stat"><strong id="lectureCount">0</strong><span>Lectures</span></div>
-  <div class="stat"><strong id="caseCount">0</strong><span>MEQ cases</span></div>
-  <div class="stat"><strong id="coreCount">0</strong><span>High-yield shorts</span></div>
-  <div class="stat"><strong id="imageCount">0</strong><span>Image questions</span></div>
-  <div class="stat"><strong id="masteredCount">0</strong><span>Mastered core items</span></div>
-  <div class="stat"><strong id="coreProgressText">0%</strong><span>Core rated progress</span><div class="progress-track"><div class="progress-fill" id="coreProgressFill"></div></div></div>
-  <div class="stat"><strong id="overallProgressText">0%</strong><span>Overall practice</span><div class="progress-track"><div class="progress-fill overall-fill" id="overallProgressFill"></div></div></div>
+<section class="stats" aria-labelledby="progressOverviewTitle">
+  <h2 id="progressOverviewTitle" class="sr-only">Study progress overview</h2>
+  <div class="stat metric-stat"><strong id="lectureCount">0</strong><span>Lectures</span></div>
+  <div class="stat metric-stat"><strong id="caseCount">0</strong><span>MEQ cases</span></div>
+  <div class="stat metric-stat"><strong id="coreCount">0</strong><span>High-yield shorts</span></div>
+  <div class="stat metric-stat"><strong id="imageCount">0</strong><span>Image questions</span></div>
+  <div class="stat metric-stat"><strong id="masteredCount">0</strong><span>Mastered core items</span></div>
+  <div class="stat progress-stat"><div class="stat-label">Core rated progress</div><strong id="coreProgressText">0%</strong><div class="progress-track" id="coreProgressBar" role="progressbar" aria-label="Core rated progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="coreProgressFill"></div></div></div>
+  <div class="stat progress-stat"><div class="stat-label">Overall practice</div><strong id="overallProgressText">0%</strong><div class="progress-track" id="overallProgressBar" role="progressbar" aria-label="Overall practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill overall-fill" id="overallProgressFill"></div></div></div>
 </section>
 
 <div class="nav-controls" aria-label="Navigation panels">
-  <button class="nav-toggle active" id="toggleLectures" type="button">☰ Lectures panel</button>
-  <button class="nav-toggle active" id="toggleSubtopics" type="button">☷ Subtopics panel</button>
+  <button class="nav-toggle active" id="toggleLectures" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M9 4v16"></path></svg></span><span>Lectures panel</span></button>
+  <button class="nav-toggle active" id="toggleSubtopics" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><circle cx="4" cy="6" r="1"></circle><circle cx="4" cy="12" r="1"></circle><circle cx="4" cy="18" r="1"></circle></svg></span><span>Subtopics panel</span></button>
 </div>
 
 <div class="layout" id="mainLayout">
   <aside class="sidebar lecture-sidebar">
-    <h3>Main topics</h3>
-    <div class="sidebar-caption">Lectures inside the selected subject</div>
+    <h2>Lectures</h2>
+    <div class="sidebar-caption">Choose a lecture or return to the subject overview.</div>
     <nav id="lectureNav"></nav>
-    <div class="side-note"><b>Best method:</b><br>Attempt first → reveal the answer → mark Mastered, Review, or Weak. Progress is saved locally.</div>
+    <div class="side-note"><b>How to study</b><br>Attempt first → reveal the answer → mark Mastered, Review, or Weak. Your progress is saved automatically.</div>
     <button class="btn btn-soft" style="width:100%;margin-top:12px">Print / Save as PDF</button>
   </aside>
 
   <aside class="sidebar subtopic-sidebar">
-    <h3>Subtopics</h3>
+    <h2>Subtopics</h2>
     <div class="sidebar-caption">Diseases and headings inside the selected lecture</div>
     <nav id="subtopicNav"></nav>
   </aside>
 
-  <main>
+  <main id="mainContent" tabindex="-1" aria-label="Study content">
     <div id="lectureContainer"></div>
-    <div class="empty" id="empty"><h2>No content found</h2><div id="emptyMessage">No study items match the current selection.</div></div>
+    <div class="empty" id="empty"><h2>No content found</h2><div id="emptyMessage">No study items match the current selection.</div><button class="btn btn-soft empty-reset" id="emptyResetBtn" type="button">Reset filters</button></div>
   </main>
 </div>
-<div class="footer">Lecture-first bank • Four main surgical subjects • Two-level navigation • Separate core and overall progress</div>
+<div class="footer">Medical course → specialty → lecture → subtopic • Saved progress • Offline-ready</div>
 </div>
 <div id="appToast" class="toast" role="status" aria-live="polite"></div>
 <script src="./app.js"></script>

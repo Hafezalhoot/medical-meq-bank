@@ -3,10 +3,18 @@
   "$id": "https://medical-meq-bank.local/schemas/lecture-catalog.schema.json",
   "title": "Medical MEQ Lecture Catalog",
   "type": "object",
-  "required": ["version", "lectures"],
+  "required": [
+    "schemaVersion",
+    "version",
+    "lectures"
+  ],
   "properties": {
-    "$schema": {"type": "string"},
-    "version": {"const": 1},
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": 1
+    },
     "lectures": {
       "type": "array",
       "minItems": 1,
@@ -18,32 +26,77 @@
           "subjectKey",
           "order",
           "file",
-          "expectedCounts"
+          "expectedCounts",
+          "courseId",
+          "schemaVersion"
         ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "title": {"type": "string", "minLength": 1},
-          "subjectKey": {"type": "string", "minLength": 1},
-          "order": {"type": "number"},
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "order": {
+            "type": "number"
+          },
           "file": {
             "type": "string",
             "pattern": "^data/[A-Za-z0-9._-]+\\.json$"
           },
           "expectedCounts": {
             "type": "object",
-            "required": ["cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid"],
+            "required": [
+              "cases",
+              "coreShorts",
+              "imageQuestions",
+              "detailedShorts",
+              "rapid"
+            ],
             "properties": {
-              "cases": {"type": "integer", "minimum": 0},
-              "coreShorts": {"type": "integer", "minimum": 0},
-              "imageQuestions": {"type": "integer", "minimum": 0},
-              "detailedShorts": {"type": "integer", "minimum": 0},
-              "rapid": {"type": "integer", "minimum": 0}
+              "cases": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "coreShorts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "imageQuestions": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "detailedShorts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "rapid": {
+                "type": "integer",
+                "minimum": 0
+              }
             },
             "additionalProperties": false
+          },
+          "courseId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1
           }
         },
         "additionalProperties": false
       }
+    },
+    "schemaVersion": {
+      "const": 2
     }
   },
   "additionalProperties": false

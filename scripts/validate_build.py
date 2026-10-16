@@ -61,15 +61,19 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
     require_file(LECTURE_DIR / "catalog.schema.json")
     require_file(LECTURE_DIR / "lecture.schema.json")
     catalog = read_json(LECTURE_DIR / "catalog.json")
-    if not isinstance(catalog, dict) or catalog.get("version") != 1:
-        fail("lectures/catalog.json must be an object with version 1")
+    if (
+        not isinstance(catalog, dict)
+        or catalog.get("version") != 1
+        or catalog.get("schemaVersion") != 2
+    ):
+        fail("lectures/catalog.json must be version 1 with metadata schemaVersion 2")
     entries = catalog.get("lectures")
     if not isinstance(entries, list) or not entries:
         fail("lecture catalog has no lectures")
 
     by_id: dict[str, dict] = {}
     referenced: set[Path] = set()
-    subject_orders: set[tuple[str, float]] = set()
+    subject_orders: set[tuple[str, str, float]] = set()
     lecture_root = LECTURE_DIR.resolve()
     data_root = (LECTURE_DIR / "data").resolve()
 
@@ -83,6 +87,8 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
         order = entry.get("order")
         relative_file = entry.get("file")
         counts = entry.get("expectedCounts")
+        course_id = entry.get("courseId")
+        payload_schema_version = entry.get("schemaVersion")
 
         if not isinstance(lecture_id, str) or not lecture_id.strip():
             fail(f"catalog entry {index} has no valid id")
@@ -94,11 +100,15 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
             fail(f"catalog entry {lecture_id} has no subjectKey")
         if not isinstance(order, (int, float)) or isinstance(order, bool):
             fail(f"catalog entry {lecture_id} has invalid order")
-        order_key = (subject_key, float(order))
+        order_key = (course_id, subject_key, float(order))
         if order_key in subject_orders:
-            fail(f"duplicate lecture order {order} in subject {subject_key}")
+            fail(f"duplicate lecture order {order} in {course_id}/{subject_key}")
         subject_orders.add(order_key)
 
+        if not isinstance(course_id, str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]*", course_id):
+            fail(f"catalog entry {lecture_id} has invalid courseId")
+        if payload_schema_version != 1:
+            fail(f"catalog entry {lecture_id} uses unsupported lecture payload schemaVersion")
         if not isinstance(relative_file, str) or not relative_file:
             fail(f"catalog entry {lecture_id} has no source file")
         if not isinstance(counts, dict) or set(counts) != set(COUNT_KEYS):
@@ -151,10 +161,14 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
                 fail(f"{lecture_id}/{visual_id} needs an embedded image or lecture-page reference")
 
         published = read_json(DIST / "lectures" / relative_file)
-        if published != lecture:
-            fail(f"published lecture differs from source: {lecture_id}")
+        expected_published = dict(lecture)
+        expected_published["schemaVersion"] = payload_schema_version
+        expected_published["courseId"] = course_id
+        expected_published["canonicalId"] = f"{course_id}/{subject_key}/{lecture_id}"
+        if published != expected_published:
+            fail(f"published lecture identity/content differs from validated source: {lecture_id}")
 
-        by_id[lecture_id] = lecture
+        by_id[lecture_id] = expected_published
         referenced.add(source_path)
 
     actual_files = {path.resolve() for path in (LECTURE_DIR / "data").glob("*.json")}
@@ -180,6 +194,40 @@ def validate_lecture_sources() -> tuple[dict[str, dict], list[dict]]:
         fail("legacy lecture sources remain: " + ", ".join(legacy))
 
     return by_id, entries
+
+
+def validate_materialization_contract() -> None:
+    manifest = read_json(LECTURE_DIR / "materialization.json")
+    if not isinstance(manifest, dict) or manifest.get("version") != 1:
+        fail("lecture materialization manifest must be version 1")
+    targets = manifest.get("targets")
+    if not isinstance(targets, list) or not targets:
+        fail("lecture materialization manifest has no targets")
+
+    tool = read_text(ROOT / "tools" / "materialize_lectures.py")
+    seen_ids: set[str] = set()
+    seen_outputs: set[str] = set()
+    for target in targets:
+        if not isinstance(target, dict):
+            fail("lecture materialization target is not an object")
+        lecture_id = target.get("lectureId")
+        output = target.get("output")
+        kind = target.get("kind")
+        if not isinstance(lecture_id, str) or not lecture_id:
+            fail("lecture materialization target has no lectureId")
+        if lecture_id in seen_ids:
+            fail(f"duplicate materialization lecture id: {lecture_id}")
+        seen_ids.add(lecture_id)
+        if lecture_id in tool:
+            fail(f"generic materializer hard-codes lecture id: {lecture_id}")
+        if not isinstance(output, str) or not re.fullmatch(r"data/[A-Za-z0-9._-]+\.json", output):
+            fail(f"materialization target {lecture_id} has invalid output")
+        if output in seen_outputs:
+            fail(f"duplicate materialization output: {output}")
+        seen_outputs.add(output)
+        if kind not in {"compressed-parts", "template-assets"}:
+            fail(f"materialization target {lecture_id} has unsupported kind: {kind}")
+        require_file(LECTURE_DIR / output)
 
 
 def validate_manifest() -> None:
@@ -245,15 +293,107 @@ def validate_service_worker(version: str, entries: list[dict]) -> None:
         "./app.js",
         "./lecture-loader.js",
         "./pwa-client.js",
-        "./offline/Medical_MEQ_Review_Bank_Offline.html",
         "./lectures/catalog.json",
+        "./lectures/search/catalog.json",
     ):
         if asset not in worker:
             fail(f"service worker does not pre-cache {asset}")
+    if "  OFFLINE_PAGE," in worker:
+        fail("service worker still pre-caches the monolithic standalone offline page")
     for entry in entries:
         asset = f"./lectures/{entry['file']}"
-        if asset not in worker:
-            fail(f"service worker does not pre-cache {asset}")
+        if f'"{asset}"' in worker or f"'{asset}'" in worker:
+            fail(f"service worker still pre-caches lecture payload: {asset}")
+    if "await cache.put(request, response.clone())" not in worker:
+        fail("service worker does not runtime-cache successful same-origin assets")
+
+
+def validate_search_index(source_lectures: dict[str, dict]) -> None:
+    catalog = read_json(DIST / "lectures" / "search" / "catalog.json")
+    if not isinstance(catalog, dict) or catalog.get("version") != 1:
+        fail("search catalog must be version 1")
+    subjects = catalog.get("subjects")
+    if not isinstance(subjects, list):
+        fail("search catalog has no subjects list")
+
+    expected_by_scope: dict[tuple[str, str], int] = {}
+    lectures_by_scope: dict[tuple[str, str], set[str]] = {}
+    for lecture_id, lecture in source_lectures.items():
+        course_id = lecture.get("courseId")
+        subject = lecture.get("subjectKey")
+        if not isinstance(course_id, str) or not isinstance(subject, str):
+            fail(f"lecture {lecture_id} has no scoped identity for search validation")
+        scope = (course_id, subject)
+        expected_by_scope[scope] = expected_by_scope.get(scope, 0) + sum(
+            len(lecture.get(key, []))
+            for key in ("cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid")
+        )
+        lectures_by_scope.setdefault(scope, set()).add(lecture_id)
+
+    seen_scopes: set[tuple[str, str]] = set()
+    for entry in subjects:
+        if not isinstance(entry, dict):
+            fail("search catalog contains an invalid subject entry")
+        course_id = entry.get("courseId")
+        subject = entry.get("subjectKey")
+        filename = entry.get("file")
+        if not isinstance(course_id, str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]*", course_id):
+            fail("search catalog contains an unsafe course id")
+        if not isinstance(subject, str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]*", subject):
+            fail("search catalog contains an unsafe subject key")
+        scope = (course_id, subject)
+        if scope in seen_scopes:
+            fail(f"duplicate search scope: {course_id}/{subject}")
+        seen_scopes.add(scope)
+        if filename != f"{course_id}--{subject}.json":
+            fail(f"search shard filename differs from scope: {course_id}/{subject}")
+
+        path = DIST / "lectures" / "search" / filename
+        if path.stat().st_size > 8_000_000:
+            fail(f"search shard is unexpectedly large: {filename}")
+        shard_text = read_text(path)
+        if "data:image/" in shard_text or ";base64," in shard_text:
+            fail(f"search shard embeds image payloads: {filename}")
+        shard = read_json(path)
+        if (
+            not isinstance(shard, dict)
+            or shard.get("version") != 1
+            or shard.get("courseId") != course_id
+            or shard.get("subjectKey") != subject
+        ):
+            fail(f"invalid search shard: {filename}")
+        items = shard.get("items")
+        if not isinstance(items, list):
+            fail(f"search shard has no item list: {filename}")
+        if len(items) != expected_by_scope.get(scope, 0):
+            fail(
+                f"search shard {course_id}/{subject} has {len(items)} items; "
+                f"expected {expected_by_scope.get(scope, 0)}"
+            )
+        if entry.get("items") != len(items):
+            fail(f"search catalog count differs for {course_id}/{subject}")
+
+        item_keys: set[tuple[str, str, str]] = set()
+        for item in items:
+            if not isinstance(item, dict):
+                fail(f"search shard {course_id}/{subject} contains a non-object item")
+            lecture_id = item.get("lectureId")
+            item_type = item.get("type")
+            item_id = item.get("id")
+            text_value = item.get("text")
+            if item.get("courseId") != course_id or item.get("subjectKey") != subject:
+                fail(f"search item has wrong scope: {lecture_id}")
+            if lecture_id not in lectures_by_scope.get(scope, set()):
+                fail(f"search item references lecture outside {course_id}/{subject}: {lecture_id}")
+            if not all(isinstance(value, str) and value for value in (item_type, item_id, text_value)):
+                fail(f"search shard {course_id}/{subject} contains an incomplete item")
+            key = (lecture_id, item_type, item_id)
+            if key in item_keys:
+                fail(f"duplicate search item: {'::'.join(key)}")
+            item_keys.add(key)
+
+    if seen_scopes != set(expected_by_scope):
+        fail("search catalog scopes differ from lecture course/subject scopes")
 
 
 def validate_split_sources(version: str) -> None:
@@ -266,8 +406,10 @@ def validate_split_sources(version: str) -> None:
     source_print_js = read_text(ROOT / "src" / "print-manager.js")
     if len(source_print_css) < 1_000 or len(source_print_js) < 5_000:
         fail("readable print-manager source is unexpectedly small")
-    if "MEQLectureLoader.loadAll" not in source_print_js:
-        fail("print manager does not load the complete lecture bank")
+    if "MEQLectureLoader.loadAll" in source_print_js:
+        fail("print manager still loads the complete lecture bank before every print")
+    if "getPrintableItems" not in source_print_js:
+        fail("print manager does not print the currently rendered selection")
 
     if len(source_css) < 10_000 or len(source_app) < 10_000 or len(source_loader) < 1_000 or len(source_pwa) < 1_000:
         fail("split application source is unexpectedly small")
@@ -306,7 +448,7 @@ def validate_split_sources(version: str) -> None:
     if "localStorage.removeItem(k)" not in generated_pwa:
         fail("backup restore does not remove stale progress keys")
 
-    for marker in ("loadCatalog", "loadSubject", "MEQLectureLoader", "meq:lectures-loaded", "aria-busy"):
+    for marker in ("loadCatalog", "loadSubject", "loadLecture", "loadSubjectMetadata", "MEQLectureLoader", "meq:lectures-loaded", "aria-busy"):
         if marker not in generated_loader:
             fail(f"lecture loader is missing marker: {marker}")
 
@@ -415,10 +557,12 @@ def validate_feature_sources() -> None:
 
 def main() -> int:
     version = validate_metadata()
+    validate_materialization_contract()
     source_lectures, entries = validate_lecture_sources()
     validate_manifest()
     validate_deployment_config()
     validate_service_worker(version, entries)
+    validate_search_index(source_lectures)
     validate_split_sources(version)
     validate_html(source_lectures)
     validate_feature_sources()

@@ -37,9 +37,9 @@ test('print center builds a complete worksheet document with saved pagination se
 
   await page.locator('#printCenterCreate').click();
   await expect.poll(
-    () => page.evaluate(() => Boolean(globalThis.__medicalBankLastPrintHTML)),
+    () => page.evaluate(() => globalThis.__medicalBankLastPaginationResult?.pages || 0),
     {timeout: 20_000}
-  ).toBe(true);
+  ).toBeGreaterThan(0);
 
   const generated = await page.evaluate(() => ({
     html: globalThis.__medicalBankLastPrintHTML,
@@ -60,6 +60,18 @@ test('print center builds a complete worksheet document with saved pagination se
   expect(generated.html).toContain('data-page-count=');
   expect(generated.pagination?.pages || 0).toBeGreaterThan(0);
 
+  const pdfPage = await context.newPage();
+  await pdfPage.setContent(generated.html, {waitUntil: 'load'});
+  await pdfPage.emulateMedia({media: 'print'});
+  const pdf = await pdfPage.pdf({
+    format: 'A4',
+    printBackground: true,
+    preferCSSPageSize: true
+  });
+  expect(pdf.subarray(0, 5).toString()).toBe('%PDF-');
+  expect(pdf.length).toBeGreaterThan(5_000);
+  await pdfPage.close();
+
   await expect.poll(
     () => page.evaluate(() => localStorage.getItem('medicalBankPrintSettingsV1'))
   ).not.toBeNull();
@@ -67,4 +79,14 @@ test('print center builds a complete worksheet document with saved pagination se
   for (const candidate of context.pages()) {
     if (candidate !== page) await candidate.close();
   }
+});
+
+
+test('print center close control meets the minimum interaction target', async ({page}) => {
+  await openBank(page);
+  await page.locator('#printCenterQuickBtn').click();
+  const box = await page.locator('#printCenterClose').boundingBox();
+  expect(box).toBeTruthy();
+  expect(box.width).toBeGreaterThanOrEqual(44);
+  expect(box.height).toBeGreaterThanOrEqual(44);
 });
