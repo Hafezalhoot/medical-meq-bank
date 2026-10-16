@@ -6,6 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 import json
 import base64
+import re
 
 
 LECTURE_LIST_KEYS = (
@@ -228,6 +229,8 @@ def validate_study_guide(guide: object, *, label: str, item_ids: set[str]) -> No
         for field in ("id", "question", "rationale", "sourcePage"):
             if not _non_empty_string(item.get(field)):
                 raise SystemExit(f"{marker} is missing {field}")
+        if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", item["id"]):
+            raise SystemExit(f"{marker} has an unsafe MCQ id")
         if item["id"] in item_ids:
             raise SystemExit(f"{marker} reuses study item id: {item['id']}")
         item_ids.add(item["id"])
@@ -250,6 +253,14 @@ def validate_study_guide(guide: object, *, label: str, item_ids: set[str]) -> No
                 raise SystemExit(f"{label} infographic is missing {field}")
         if "caption" in infographic and not _non_empty_string(infographic["caption"]):
             raise SystemExit(f"{label} infographic caption cannot be blank")
+        image = infographic["image"]
+        if image.startswith("data:"):
+            if not re.fullmatch(r"data:image/(?:png|jpeg|webp|avif);base64,[A-Za-z0-9+/=\\r\\n]+", image):
+                raise SystemExit(f"{label} infographic has unsupported inline media")
+        else:
+            relative = image.removeprefix("./")
+            if not relative.startswith("assets/") or ".." in Path(relative).parts or "\\" in relative:
+                raise SystemExit(f"{label} infographic must reference a safe local asset" )
 
 
 def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
