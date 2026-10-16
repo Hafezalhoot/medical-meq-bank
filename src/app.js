@@ -446,10 +446,16 @@ resumeStudy?.addEventListener('click',()=>{
 });
 const pwaToolsToggle=$('pwaToolsToggle');
 if(pwaToolsToggle){
-  pwaToolsToggle.addEventListener('click',()=>{
-    const next=pwaToolsToggle.getAttribute('aria-expanded')!=='true';
-    pwaToolsToggle.setAttribute('aria-expanded',String(next));
-    document.querySelector('.pwa-tools')?.classList.toggle('tools-open',next);
+  const setToolsOpen=open=>{
+    pwaToolsToggle.setAttribute('aria-expanded',String(open));
+    document.querySelector('.pwa-tools')?.classList.toggle('tools-open',open);
+  };
+  pwaToolsToggle.addEventListener('click',()=>setToolsOpen(pwaToolsToggle.getAttribute('aria-expanded')!=='true'));
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&pwaToolsToggle.getAttribute('aria-expanded')==='true'){
+      setToolsOpen(false);
+      pwaToolsToggle.focus();
+    }
   });
 }
 const focusButton=$('focusModeBtn');
