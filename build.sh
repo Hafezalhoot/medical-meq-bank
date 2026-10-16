@@ -41,6 +41,8 @@ required_files=(
   lectures/lecture.schema.json
   lectures/materialization.json
   tools/add_lecture.py
+  tools/add_course.py
+  tools/new_lecture.py
   tools/build_app.py
   tools/build_search_index.py
   tools/finalize_offline.py
@@ -75,6 +77,8 @@ fi
 
 python3 -m py_compile \
   tools/add_lecture.py \
+  tools/add_course.py \
+  tools/new_lecture.py \
   tools/build_app.py \
   tools/build_search_index.py \
   tools/finalize_offline.py \
