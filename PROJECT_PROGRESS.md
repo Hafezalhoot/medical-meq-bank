@@ -9,7 +9,7 @@
 
 - ✅ Reviewed the shipped course registry, loader, study UI, progress, PWA/print boundaries and existing tests; keep the current vanilla/offline-first architecture.
 - ✅ Applied the UI/UX Pro Max education dashboard/course-grid guidance to a low-noise expandable catalog-sourced Course Library, with consistent existing blue/teal tokens.
-- 🟦 V2-1 first UI increment is implemented with a functional course gallery, responsive styles, course switching and browser regression; the GitHub full matrix remains the merge gate.
+- ✅ V2-1 first UI increment implemented: responsive course gallery, course switching, empty-course recovery, dark mode and browser regression. The full `validate`, Chromium/axe and WebKit/iPhone matrix passed on run `38905559158`; subjective visual QA remains before merge.
 - ⏳ V2-2 through V2-7: Study Home, specialty/lecture reader organization, optional verified medical content modes, better review/progress navigation, cross-device polish and controlled release.
 - ⛔ No automatic promotion. Surgery/MEQ content and user progress IDs remain unchanged.
 
