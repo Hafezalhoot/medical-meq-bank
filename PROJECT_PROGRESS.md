@@ -57,6 +57,20 @@
 - ⏳ Remaining gates: integrate both branches, source-verified real PDF pilot, actual candidate screenshot sign-off, final locked merge and explicit Worker release approval.
 - ⛔ No actual lecture source contents, original progress store implementation, or deployed production site changed.
 
+## October 16, 2026 — Lecture intake development (PR #24)
+
+**Branch:** `feature/safe-lecture-intake-20261016` → `main`, Draft PR [#24](https://github.com/Hafezalhoot/medical-meq-bank/pull/24). Production has **not** been changed.
+
+- ✅ Added `tools/new_lecture.py`: safe, source-traceable blank lecture drafts; never invents medical facts or overwrites an existing draft.
+- ✅ Added `tools/add_course.py`: metadata-only dry-run and reviewed write for new medical courses and specialties, reusing the shared engine.
+- ✅ Hardened `tools/add_lecture.py`: explicit `--reviewed` acknowledgment, course/subject matching, stable IDs, safe images, complete preflight and staged writes with I/O rollback.
+- ✅ Kept the historical Surgery regression baseline frozen; new Surgery lectures are additive.
+- ✅ Added optional plain-text `studyGuide` schema and validation for source-page Explanation, four-choice MCQ, Infographic. Embedded images are checked and standalone HTML receives self-contained media.
+- ✅ Added Python unit tests for dry-run, review gate, missing/unsafe images, course registration, source-page validation, rollback and offline infographic packaging.
+- ✅ [GitHub Actions run 38934118197](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38934118197) — `validate`, `chromium-quality`, `webkit-quality` **all passed** on code commit `056042df09b5d38335a3969532405a93ea4e7f32`.
+- ⏳ Merge/release gates: code review, branch integration with V2 renderer from PR #23, source-reviewed real PDF pilot, combined regression and explicit Cloudflare deployment approval.
+- ⚠️ The `studyGuide` field is **optional and not live on production**. No scientific lecture claims were inserted in this workstream.
+
 ## Medical Study Workspace V2 (2026-10-16)
 
 **Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  

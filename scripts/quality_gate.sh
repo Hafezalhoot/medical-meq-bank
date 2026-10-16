@@ -29,6 +29,9 @@ for required in "${required_generated[@]}"; do
   }
 done
 
+# Validate the source-reviewed lecture intake tooling before publishing.
+python3 -m unittest discover -s tests -p 'test_lecture_intake.py'
+
 python3 scripts/validate_build.py
 python3 scripts/validate_mobile_filters.py
 python3 scripts/validate_runtime_extensions.py
