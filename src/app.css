@@ -380,3 +380,7 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 .app.study-focus .lecture-head{background:var(--card)}
 @media(prefers-reduced-motion:reduce){.insights-summary-track i,.insights-detail-action .ui-icon{transition:none}}
 @media print{.study-insights,.study-focus-toggle{display:none!important}}
+
+/* Keep compact visuals without shrinking real pointer targets. */
+.hero .theme-toggle,.hero .pwa-btn,.hero .subject-select,.nav-controls .nav-toggle,.lecture .quick-view-btn{min-height:44px}
+@media(max-width:700px){.hero .theme-toggle,.hero .pwa-btn,.hero .subject-select{min-height:44px}}
