@@ -509,3 +509,22 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 .dark .study-guide-part,.dark .learning-companion{background:var(--card)}
 @media(max-width:700px){.learning-companion{padding:10px;border-radius:12px}.study-guide-explanation,.study-guide-mcq{padding:12px}.study-guide-figure{padding:10px}}
 @media(prefers-reduced-motion:reduce){.study-guide-part>summary,.study-guide-reveal{scroll-behavior:auto}}
+
+
+/* My Review reuses the existing disclosure hierarchy, not a second dashboard. */
+.my-review{margin:8px 0 12px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.my-review-toggle{min-height:56px;padding:10px 15px;outline-offset:-3px}
+.my-review-toggle:focus-visible{outline:3px solid var(--brand)}
+.my-review-body{padding:0 15px 14px;border-top:1px solid var(--line)}
+.my-review-status{margin:12px 0;color:var(--muted);font-size:.84rem;line-height:1.5}
+.my-review-list{display:grid;gap:9px}
+.my-review-card{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface-soft)}
+.my-review-card-copy{display:grid;gap:4px;min-width:0;flex:1}
+.my-review-card-copy small{font-size:.76rem;color:var(--muted);overflow-wrap:anywhere}
+.my-review-card-copy h3{font-size:.97rem;color:var(--text);line-height:1.4;margin:0;overflow-wrap:anywhere}
+.my-review-card-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.my-review-open{min-height:44px;padding:8px 13px;border:1px solid var(--brand);border-radius:9px;background:var(--brand-soft);color:var(--brand);font-size:.82rem;font-weight:800;cursor:pointer}
+.my-review-open:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.my-review-open:hover{filter:brightness(.97)}
+.my-review-open:disabled{opacity:.6;cursor:wait}
+@media(max-width:700px){.my-review-toggle{min-height:54px}.my-review-heading span{font-size:.72rem}.my-review-count{font-size:.68rem}.my-review-card-actions{width:100%}.my-review-open{flex:1}}
