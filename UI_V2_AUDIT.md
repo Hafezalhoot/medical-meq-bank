@@ -91,3 +91,23 @@ Public Impeccable guidance was consulted for **critique**, **distill** and **pol
 
 Browser evidence: [GitHub Actions run 38909175547](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38909175547) completed successfully. A documentation-only follow-up may trigger another run.
 
+
+## V2 rendered browser screenshot review (2026-10-16)
+
+**Source:** actual Chromium screenshots attached to the successful [run 38912689508](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38912689508), artifact `playwright-report-chromium`. Six screenshots cover 1440px desktop study/course library/progress/focus and 390px light/dark mobile. This is rendered **candidate branch evidence**, unlike the owner's original production screenshots.
+
+### Findings after visual inspection
+
+- **Desktop:** Course and specialty controls now align on a compact row; the large decorative ring and oversized marketing header are gone. The lecture panel and study actions are visible substantially sooner in the viewport.
+- **Mobile:** Subject and course selectors share one row; utility buttons are available behind **Study tools**, while online status stays visible. Four navigation actions now share a compact row, and the lecture title starts within the phone viewport.
+- **Focus Mode:** Hidden navigation and summary chrome make the question content occupy the reading column. The exit action remains visible, and the browser test confirms that it persists and can be reversed.
+- **Dark mode:** The compact header and utility controls render in dark mode; automated axe/Chromium and Safari/WebKit checks passed.
+
+### Honest remaining limitations
+
+- These are screenshots from automated Chromium, visually reviewed here, **not** a genuine manual Safari/VoiceOver session or a signed-off production release.
+- A 360px viewport passes the layout tests, but no 360px screenshot has yet been attached; the evidence currently includes 390px mobile.
+- No real user's saved progress was modified or migrated in the V2 code, and the content database / lecture schemas remain unchanged.
+- The app remains a **MEQ-first** course workspace. A dedicated cross-course Study Home, review queue and source-backed Explanation/MCQ content views are separate roadmap milestones; they must not be described as already shipped.
+- The actual Impeccable installed CLI/skill is unavailable in this environment. Its public critique/polish principles were applied qualitatively; do not imply its deterministic detector passed.
+
