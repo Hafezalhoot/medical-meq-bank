@@ -36,6 +36,15 @@
 - **1** original primary/secondary-lesion infographic SVG.
 - **10** topic clusters; canonical new lecture ID `internal-medicine-ii-dermatology-introduction`.
 
+## Independent source re-check — 2026-10-16 (PDF reattached)
+
+- The original **10-page A4 image-only PDF** was supplied again in the continuation chat and visually inspected page by page. No selectable PDF text was assumed and no OCR was used as an authority.
+- The review compared the printed teaching claims to the 11 Explanation sections, 30 MCQs and their keys/rationales, 16 synthetic cases, 70 core shorts, 17 detailed shorts, 14 image-spot prompts/answers and 41 rapid cards on this PR. No clear contradiction with the printed lecture definitions, size thresholds, numerical values or named examples was identified in this pass.
+- Reconfirmed anchor points: **1/7 total body weight, 1.75 m²**, the three skin layers and four named keratinocyte layers, eccrine versus apocrine drainage/sites, eight skin functions, morphology distinctions using **<1 cm and >1 cm**, secondary pustule, cyst **wall**, erosion **without scar** versus ulcer **usually with scar**, and both forms of atrophy.
+- The source says **less than** or **more than** 1 cm, but does not state how to classify a lesion **exactly 1 cm**. The draft does not create an invented boundary rule.
+- Handwritten annotations and the embedded chat screenshot are visible on the supplied scan, but have **not** been promoted to independent exam facts. If the course instructor expects marginal notes to be examinable, a learner/lecturer must review these separately. The original scanned pages and clinical photographs remain absent from this public repository.
+- This is a **source-faithfulness review**, not external clinical guideline validation, professional medical sign-off, image legibility certification, copyright clearance, or authorization to publish. The diagrams still require rendered inspection and the user/instructor still controls final editorial sign-off.
+
 ## Publication review checklist
 
 - [x] The source PDF was visually read page-by-page; image-only material wasn't OCR-derived or silently guessed.
@@ -43,7 +52,7 @@
 - [x] The original PDF and clinical photos are not added to public GitHub.
 - [x] New course `internal-medicine-ii`, specialty `dermatology`, new lecture stable ID; all old content and progress schemas unchanged.
 - [x] Automated static, Chromium, WebKit and offline checks passed on the functional code head `3df879cd32d6e88ccfbdfcc9b64483b33d8d2d22` ([Actions #38951640866](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38951640866)); subsequent documentation-only commits are not clinical re-review.
-- [ ] Review rendered image spots and infographic on phone and desktop; fix any unreadable text or unsupported graphics.
+- [x] Reattached PDF was independently cross-checked against the draft's printed teaching facts and page-attributed answer content (2026-10-16; see audit above).\n- [ ] Review rendered image spots and infographic on phone and desktop; fix any unreadable text or unsupported graphics.
 - [ ] Learner/lecturer confirms the English and Arabic exam-facing content against the original PDF (including the scan's handwritten marginal notes).
 - [ ] Reviewer approves the branch and release scope before any merge to protected `main`.
 - [ ] After a successful merge, explicitly promote the new Cloudflare Worker version and smoke-test online, offline, source-linked MCQ and saved progress.
@@ -56,5 +65,5 @@
 - **Offline image completeness:** clicking Save lecture offline also caches the local SVG figures; the saved-state check catches missing figures and enables restoration before losing connectivity.
 - Playwright verifies the lecture JSON and all three SVG diagrams can be fetched with the browser explicitly offline. Latest functional-code run [38951640866](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38951640866) passed all three CI jobs.
 - Version synchronized to `2026.10.16.3` for future controlled promotion.
-- The PDF itself was not re-attached in this chat session, so **independent source-to-answer medical review and learner/lecturer approval are still required**.
+- The PDF was **reattached in the continuation chat** and its printed teaching text was independently compared with this draft on 2026-10-16 (audit above). **Learner/lecturer approval, handwritten-note interpretation, graphic legibility, rights clearance and controlled production promotion are still required.**
 
