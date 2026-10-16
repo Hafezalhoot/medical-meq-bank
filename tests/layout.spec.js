@@ -268,3 +268,27 @@ test('Impeccable: phone dark mode toggle shares header row with the title', asyn
   await page.locator('#darkBtn').click();
   await expect(page.locator('body')).toHaveClass(/dark/);
 });
+
+test('Impeccable: Start studying resumes a Review/Weak item without changing saved answers', async ({page}) => {
+  await openBank(page, {width: 1440, height: 900});
+  const resume=page.locator('#resumeStudyBtn');
+  await expect(resume).toBeVisible();
+  await expect(resume).toBeEnabled();
+  const cards=page.locator('#mainContent .study-item:not(.hidden)');
+  await expect.poll(()=>cards.count()).toBeGreaterThan(2);
+  const target=cards.nth(1);
+  await target.locator('.status.weak').click();
+  await expect(target.locator('.status.weak')).toHaveClass(/active/);
+  await resume.click();
+  await expect(resume).toContainText('Continue studying');
+  await expect(target).toBeFocused();
+  await expect(target.locator('.status.weak')).toHaveClass(/active/);
+});
+
+test('Impeccable: offline subject storage remains reachable through Study tools', async ({page}) => {
+  await openBank(page, {width: 390, height: 844});
+  await expect(page.locator('#offlineSubjectBtn')).toBeHidden();
+  await page.locator('#pwaToolsToggle').click();
+  await expect(page.locator('#offlineSubjectBtn')).toBeVisible();
+  await expect(page.locator('#offlineSubjectBtn')).toBeEnabled();
+});
