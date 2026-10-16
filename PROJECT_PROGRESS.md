@@ -46,6 +46,17 @@
 - ⏳ Next V2 milestones: course-wide Study Home/My Review, design-system CSS consolidation, 320px/200%-zoom/RTL checks and final visual sign-off.
 - ⛔ No PR has been merged or production Cloudflare changed in this audit pass.
 
+### 2026-10-16 — Saved My Review and medical companion delivery
+
+- ✅ Implemented new **My Review** progressive-disclosure panel, grouped across registered course/specialty metadata and existing `weak`/`review` ratings, without eager content fetching.
+- ✅ Clicking a group uses current course and lecture navigation, existing review filtering and matching-item keyboard focus.
+- ✅ Completed no-content and progress-change states, manual error recovery, 320px mobile/dark mode styling and Focus/Print exclusion.
+- ✅ Optional Explanation/MCQ/Infographic reader is authored as plain-text DOM with source notes and labeled Understanding Aid content; new media sections stay absent in old lectures.
+- ✅ [V2 CI run 38935394450](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38935394450) successful across validate, Chromium and WebKit. [320px CI run 38935897409](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38935897409) shows all three jobs passed.
+- ✅ [Lecture intake PR #24 CI 38935589777](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38935589777) separately passed all three jobs after safe course/lecture authoring and schema tests.
+- ⏳ Remaining gates: integrate both branches, source-verified real PDF pilot, actual candidate screenshot sign-off, final locked merge and explicit Worker release approval.
+- ⛔ No actual lecture source contents, original progress store implementation, or deployed production site changed.
+
 ## Medical Study Workspace V2 (2026-10-16)
 
 **Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  
