@@ -412,6 +412,14 @@ function setFocusMode(enabled){
   button.querySelector('[data-focus-label]').textContent=enabled?'Exit focus mode':'Focus on questions';
   storage.set('medicalBankFocusModeV1',enabled?'1':'0');
 }
+const pwaToolsToggle=$('pwaToolsToggle');
+if(pwaToolsToggle){
+  pwaToolsToggle.addEventListener('click',()=>{
+    const next=pwaToolsToggle.getAttribute('aria-expanded')!=='true';
+    pwaToolsToggle.setAttribute('aria-expanded',String(next));
+    document.querySelector('.pwa-tools')?.classList.toggle('tools-open',next);
+  });
+}
 const focusButton=$('focusModeBtn');
 if(focusButton){
   focusButton.addEventListener('click',()=>setFocusMode(!document.querySelector('.app')?.classList.contains('study-focus')));
