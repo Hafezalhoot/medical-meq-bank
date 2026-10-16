@@ -243,6 +243,20 @@ class LectureIntakeTests(unittest.TestCase):
         save(self.root / "draft.json", document)
         self.run_cli()
 
+    def test_standalone_guide_inlines_local_infographic_without_external_dependencies(self):
+        from lecture_builder import inline_study_guide_media
+        asset = self.root / "assets" / "lectures" / "test.png"
+        asset.parent.mkdir(parents=True)
+        asset.write_bytes(b"\\x89PNG fixture")
+        samples = [{
+            "id": "fixture-lecture", "studyGuide": {
+                "infographic": {"image": "./assets/lectures/test.png", "alt": "Diagram", "sourcePage": "Slide 4"},
+            },
+        }]
+        inline_study_guide_media(self.root, samples)
+        self.assertTrue(samples[0]["studyGuide"]["infographic"]["image"].startswith("data:image/png;base64,"))
+        self.assertNotIn("./assets/", samples[0]["studyGuide"]["infographic"]["image"])
+
     def test_write_failure_rolls_back_all_published_files(self):
         save(self.root / "draft.json", draft())
         before_catalog = self.catalog.read_bytes()
