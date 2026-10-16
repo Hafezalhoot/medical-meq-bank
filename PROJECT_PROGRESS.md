@@ -36,11 +36,11 @@
 | Content/catalog invariants | ✅ Pass | 9 unique lecture IDs; course/subject order is unique; every catalog entry has course + payload version metadata |
 | Surgery compatibility baseline | ✅ Pass | All 9 current Surgery lectures are protected by the common baseline, including Renal Tumors |
 | Dependency lock consistency | ✅ Pass | `package.json` and `package-lock.json` agree on Playwright 1.62.1 and axe-playwright 4.13.0 |
-| Full clean build | ✅ Pass | GitHub Actions run `37190596970` on `2026.10.04.2` completed successfully; `validate` built from clean sources and passed the canonical static quality gate |
-| Chromium + axe + performance + print + offline | ✅ Pass | `chromium-quality` passed in run `37190596970`, including accessibility, performance, print/PDF, offline, progress and regression coverage |
-| WebKit / iPhone | ✅ Pass | `webkit-quality` passed in run `37190596970` for Safari desktop and iPhone WebKit smoke coverage |
-| Main branch protection | ⚠️ External configuration | Repository is public and personal-account owned, but repository rulesets are currently empty; configure required PR/status checks on `main` per issue #21 |
-| Cloudflare production URL / Access / branch control | ⚠️ External verification | No Cloudflare connector is available; verify these settings in the Cloudflare dashboard before promotion |
+| Full clean build | ✅ Pass | GitHub Actions run `37232212679` on `2026.10.04.2` completed successfully; `validate` built from clean sources and passed the canonical static quality gate |
+| Chromium + axe + performance + print + offline | ✅ Pass | `chromium-quality` passed in run `37232212679`, including accessibility, performance, print/PDF, offline, progress and regression coverage |
+| WebKit / iPhone | ✅ Pass | `webkit-quality` passed in run `37232212679` for Safari desktop and iPhone WebKit smoke coverage |
+| Main branch protection | ⚠️ External configuration | The checked-in `.github/rulesets/main-protection.json` is ready for GitHub import; rulesets are **not active** until the owner imports/verifies them (issue #21) |
+| Cloudflare production URL / Access / branch control | ⚠️ External verification | Issue #22 tracks source connection after transfer, branch/deploy controls, hostname, Access policy and rollback; no Cloudflare connector is available |
 | Production merge/promotion | ⛔ Hold | Quality matrix is green; PR #19 remains draft until `main` protection and Cloudflare production controls are verified |
 
 Resolved runner recovery tracker: https://github.com/Hafezalhoot/medical-meq-bank/issues/20
@@ -285,6 +285,16 @@ Every phase should preserve or improve these checks:
 | Security | CSP/header audit and no unsafe runtime regressions |
 
 ## Change log
+
+### 2026-10-16 — Final release-gate preparation
+
+- ✅ Rechecked the repository on the personal `Hafezalhoot` account: PR #19 remains a mergeable draft; the production `main` branch has no protection and the repository has zero active rulesets.
+- ✅ Confirmed the last complete matrix (run `37232212679`, head `b9686d54f66cb5b4c73fa3d5f7360690c66a6dda`) passed `validate`, `chromium-quality`, and `webkit-quality`. New documentation/ruleset commits must pass the same CI before release.
+- ✅ Added the importable `.github/rulesets/main-protection.json` with mandatory PR, the three required checks, no branch deletion, no force pushes, and no bypass actors; single-maintainer human approvals remain zero.
+- ✅ Opened issue [#22](https://github.com/Hafezalhoot/medical-meq-bank/issues/22) for the separate Cloudflare dashboard validation and live-release/rollback acceptance criteria.
+- ⚠️ The ruleset file is **not active protection**. Admin configuration of GitHub Rulesets and Cloudflare dashboard verification require the repository/Cloudflare account owner; the connected GitHub application cannot write repository administration settings and no Cloudflare integration is connected.
+- ⛔ Preserve PR #19 as a draft and leave `main` untouched until issue #21 protection and issue #22 production safety checks are verified. Only then mark ready, merge the green PR and perform an explicit Cloudflare promotion/smoke test.
+
 
 ### 2026-10-04 — Personal-account migration and CI recovery
 - ✅ Final repository-side release audit confirmed the latest full GitHub Actions matrix is green on head `f5eaa43d9b08a3b0e2129685e344bc836bc9641a` (run `37191073031`), and corrected stale public-visibility/release-evidence documentation.
