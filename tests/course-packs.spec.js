@@ -62,6 +62,7 @@ test('switching to a new course does not alter saved surgery progress', async ({
   ]);
   await expect(page.locator('#empty')).toHaveClass(/show/);
   await expect(page.locator('#emptyMessage')).toContainText('No lectures have been added');
+  await expect(page.locator('#resumeStudyBtn')).toBeDisabled();
 
   await page.locator('#courseSelector').selectOption('surgery');
   await expect(page.locator('#subjectSelector')).toHaveValue('urology');
