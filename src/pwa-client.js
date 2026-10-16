@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.16.2';
+  const APP_VERSION = '2026.10.16.3';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -45,7 +45,31 @@
   };
 
   const cacheLecture = async lectureId => {
-    const url = await cacheUrl(lectureUrl(lectureId));
+    const url = sameOriginUrl(lectureUrl(lectureId));
+    const response = await fetch(url, {credentials: 'same-origin'});
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText} for ${url}`);
+
+    // Cache the visual assets with the lecture so a saved lesson works
+    // without requiring the learner to open each infographic online first.
+    const data = await response.clone().json();
+    const images = [
+      ...(data.imageQuestions || []).map(item => item?.image),
+      data.studyGuide?.infographic?.image
+    ];
+    const assetsRoot = new URL('./assets/', location.href).href;
+    for (const source of new Set(images)) {
+      if (!source || typeof source !== 'string' || source.startsWith('data:')) continue;
+      const imageUrl = sameOriginUrl(source);
+      if (!imageUrl.startsWith(assetsRoot)) {
+        throw new Error('Offline lecture image is not under local assets/');
+      }
+      await cacheUrl(imageUrl);
+    }
+
+    const cache = await caches.open(OFFLINE_CACHE_NAME);
+    await cache.put(url, response.clone());
+    // ponytail: keep shared image cache entries on removal; reclaim via
+    // reference counting only if offline media storage becomes a real issue.
     document.dispatchEvent(new CustomEvent('meq:offline-lecture-cached', {detail: {lectureId, url}}));
     return url;
   };
