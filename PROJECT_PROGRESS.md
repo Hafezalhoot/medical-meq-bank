@@ -1,5 +1,18 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-16 — Dermatology pilot PWA, Safari and source-review hardening
+
+- ✅ PR [#27](https://github.com/Hafezalhoot/medical-meq-bank/pull/27) contains the complete **Internal Medicine II → Dermatology → Introduction to Dermatology** draft, isolated from protected production.
+- ✅ Added dedicated Safari Desktop and iPhone coverage of the actual lecture, interactive MCQ, locally hosted SVG infographic and mobile layout.
+- ✅ Fixed the shared **Save lecture offline** path to cache a lecture's local visual assets alongside its JSON; the saved-state indicator now detects a missing SVG and permits a repeat save.
+- ✅ The Chromium offline regression deletes an infographic SVG from the device cache, verifies incomplete status, restores it, simulates no network and fetches all three schematics plus the lecture successfully.
+- ✅ **Final functional code run:** [38951640866](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38951640866) — `validate`, `chromium-quality`, `webkit-quality` all passed on commit `3df879cd32d6e88ccfbdfcc9b64483b33d8d2d22`. Candidate version `2026.10.16.3`.
+- ✅ Inspected ID uniqueness, valid topic references and source-page labels within the new structured lesson. This is **structural validation**, not independent medical factual verification.
+- ⚠️ [PR #26](https://github.com/Hafezalhoot/medical-meq-bank/pull/26) is an **alternative** unmerged draft for the same lecture with a different payload and a failing CI. Never merge both pilots.
+- ⏳ Medical sign-off against the original 10-page source PDF, original diagram readability/rights review and learner visual acceptance remain open. The prior scan could not be re-accessed in this chat session for an independent source comparison.
+- ⛔ No changes to protected `main` or the currently deployed Worker; this documentation update does not promote the course.
+
+
 
 
 ### 2026-10-16 — Screenshot-driven reader redesign

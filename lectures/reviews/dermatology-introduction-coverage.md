@@ -42,10 +42,19 @@
 - [x] Draft content mapped to all 10 supplied lecture pages and manually cross-compared with the printed text.
 - [x] The original PDF and clinical photos are not added to public GitHub.
 - [x] New course `internal-medicine-ii`, specialty `dermatology`, new lecture stable ID; all old content and progress schemas unchanged.
-- [ ] Automated static, Chromium, WebKit and offline checks pass on the final pilot branch SHA.
+- [x] Automated static, Chromium, WebKit and offline checks passed on the functional code head `3df879cd32d6e88ccfbdfcc9b64483b33d8d2d22` ([Actions #38951640866](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38951640866)); subsequent documentation-only commits are not clinical re-review.
 - [ ] Review rendered image spots and infographic on phone and desktop; fix any unreadable text or unsupported graphics.
 - [ ] Learner/lecturer confirms the English and Arabic exam-facing content against the original PDF (including the scan's handwritten marginal notes).
 - [ ] Reviewer approves the branch and release scope before any merge to protected `main`.
 - [ ] After a successful merge, explicitly promote the new Cloudflare Worker version and smoke-test online, offline, source-linked MCQ and saved progress.
 
 **Never claim the lesson is published or medically approved solely because CI passes.**
+
+## PWA and browser verification addendum — 2026-10-16
+
+- Dedicated iPhone and Desktop Safari smoke tests open the actual Dermatology lecture, answer a four-choice MCQ, display the source-linked SVG infographic and check for console errors and iPhone overflow.
+- **Offline image completeness:** clicking Save lecture offline also caches the local SVG figures; the saved-state check catches missing figures and enables restoration before losing connectivity.
+- Playwright verifies the lecture JSON and all three SVG diagrams can be fetched with the browser explicitly offline. Latest functional-code run [38951640866](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38951640866) passed all three CI jobs.
+- Version synchronized to `2026.10.16.3` for future controlled promotion.
+- The PDF itself was not re-attached in this chat session, so **independent source-to-answer medical review and learner/lecturer approval are still required**.
+
