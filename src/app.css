@@ -528,3 +528,6 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 .my-review-open:hover{filter:brightness(.97)}
 .my-review-open:disabled{opacity:.6;cursor:wait}
 @media(max-width:700px){.my-review-toggle{min-height:54px}.my-review-heading span{font-size:.72rem}.my-review-count{font-size:.68rem}.my-review-card-actions{width:100%}.my-review-open{flex:1}}
+
+/* Make mixed Arabic-English lecture explanation follow Arabic reading direction. */
+.study-guide-explanation p[dir="rtl"],.study-guide-understanding p[dir="rtl"]{text-align:right;direction:rtl;line-height:1.95}
