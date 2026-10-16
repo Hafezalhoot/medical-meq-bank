@@ -144,7 +144,9 @@ test('course library exposes configured courses and keeps lecture navigation int
   await expect(library).not.toHaveAttribute('open', '');
   await expect(page.locator('#emptyMessage')).toContainText('No lectures have been added');
 
-  await library.locator('summary').click();
+  // A useful next action is available rather than a dead-end empty state.
+  await page.locator('#emptyBrowseCoursesBtn').click();
+  await expect(library).toHaveAttribute('open', '');
   await page.locator('[data-course-id="surgery"]').click();
   await expect(page.locator('#courseSelector')).toHaveValue('surgery');
   await expect(page.locator('#subjectSelector')).toHaveValue('urology');
