@@ -371,7 +371,7 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 }
 
 /* In Focus Mode, questions occupy the complete reading workspace. */
-.app.study-focus .hero,.app.study-focus .course-library,.app.study-focus .study-insights,.app.study-focus .lecture-sidebar,.app.study-focus .subtopic-sidebar,.app.study-focus .footer{display:none!important}
+.app.study-focus .hero,.app.study-focus .course-library,.app.study-focus .my-review,.app.study-focus .study-insights,.app.study-focus .lecture-sidebar,.app.study-focus .subtopic-sidebar,.app.study-focus .footer{display:none!important}
 .app.study-focus #toggleLectures,.app.study-focus #toggleSubtopics{display:none!important}
 .app.study-focus .layout,.app.study-focus .layout.hide-lectures,.app.study-focus .layout.hide-subtopics,.app.study-focus .layout.hide-lectures.hide-subtopics{grid-template-columns:minmax(0,1fr)}
 .app.study-focus .layout main{grid-column:1;max-width:1060px;width:100%;justify-self:center}
@@ -379,7 +379,7 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 .app.study-focus .study-focus-toggle{flex:0 0 auto;margin-left:auto}
 .app.study-focus .lecture-head{background:var(--card)}
 @media(prefers-reduced-motion:reduce){.insights-summary-track i,.insights-detail-action .ui-icon{transition:none}}
-@media print{.study-insights,.study-focus-toggle{display:none!important}}
+@media print{.my-review,.study-insights,.study-focus-toggle{display:none!important}}
 
 /* Keep compact visuals without shrinking real pointer targets. */
 .hero .theme-toggle,.hero .pwa-btn,.hero .subject-select,.nav-controls .nav-toggle,.lecture .quick-view-btn{min-height:44px}
