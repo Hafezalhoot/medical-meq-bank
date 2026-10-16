@@ -38,7 +38,7 @@ python3 tools/new_lecture.py --course internal-medicine --subject cardiology \
 
 This creates an **unpublished, intentionally empty** `tmp/lecture-drafts/cardiology-heart-failure.json`. It does not extract PDF facts or publish placeholder content. Populate the medically reviewed `subtopics`, `cases`, `coreShorts`, `imageQuestions`, `detailedShorts`, and `rapid` using the lecture PDF only.
 
-The five existing practice modes are the **current production contract**; optional standalone Explanation/MCQ/Infographic companions are tracked separately as an additive content extension, and must not be claimed as working until their renderer and schema have been released.
+The five existing practice modes remain the **current production contract**. An optional **studyGuide** extension is now schema-validated in this authoring branch. Its browser renderer and tests are developed separately in V2 PR #23. A schema-only change does not make new modes live until both components are merged, quality-gated and promoted.
 
 Run a safe dry-run:
 
@@ -77,6 +77,44 @@ npm run test:e2e
 npm run test:webkit
 ```
 
+
+## Optional approved Study Guide (Explanation + MCQ + Infographic)
+
+New lectures may contain an additional **studyGuide** object. It does not change the five existing arrays, saved item IDs, course catalogs or progress keys. The field is omitted completely for old lectures.
+
+~~~json
+{
+  "studyGuide": {
+    "explanation": [{
+      "heading": "Verified lecture section heading",
+      "paragraphs": ["Arabic explanation with the exact English medical terms from the lecture."],
+      "sourcePage": "PDF slide 3",
+      "understandingAids": ["Clearly separated comprehension aid, not an exam fact."]
+    }],
+    "mcqs": [{
+      "id": "newlecture-mcq-01",
+      "question": "Question derived from the lecture?",
+      "options": ["Choice A", "Choice B", "Choice C", "Choice D"],
+      "answerIndex": 1,
+      "rationale": "Why the lecture supports choice B.",
+      "sourcePage": "PDF slide 4"
+    }],
+    "infographic": {
+      "image": "./assets/lectures/newlecture-summary.png",
+      "alt": "Precise textual summary of the lecture diagram",
+      "caption": "Reviewed illustration, not extra exam content",
+      "sourcePage": "PDF slide 5"
+    }
+  }
+}
+~~~
+
+This is **a structural placeholder example, not medical lecture content**. Replace the heading, page numbers, text, options and image with reviewed PDF-specific material. Explanation paragraphs, understanding aids, MCQ options/rationales and infographic alt text are plain text, not trusted HTML. Never place unreviewed source claims in these fields. Optional parts may be omitted individually; no empty guide may be published.
+
+Only approved PNG, JPEG, WebP or AVIF images are accepted as local assets or embedded base64. Missing media paths, attempts to escape the assets folder and unsupported URLs fail the registrar. The standalone offline exporter embeds local study-guide infographics so one-file study copies do not gain new external dependencies (subject to the existing 8 MB export budget).
+
+**Implementation sequence:** register optional guide after PDF content review in PR #24, merge the matching safe-render UI implementation in PR #23, confirm Chromium/WebKit, then promote explicitly. The MCQ answers remain separate from existing Mastered/Review/Weak counters until a future progress-schema design is reviewed.
+
 ## Payload and metadata versions
 
 Two versions are intentionally separate:
@@ -102,7 +140,7 @@ Adding content is not complete when JSON is merely committed. It is complete onl
 
 1. **Receive:** The learner uploads the original PDF here in ChatGPT and identifies the target course and specialty. Review source readability and slide/page numbering. Ask for missing source pages rather than making up clinical content.
 2. **Lecture-first content:** Explain the PDF in simple Arabic with the necessary English terms, keeping lecture classifications, numbers and management exactly as taught. Any out-of-source comprehension help is explicitly labeled **Understanding Aid — Not an additional exam fact**.
-3. **Practice content:** Generate MEQ cases, short and detailed questions, lecture-linked image/spot questions and Rapid Recall, each traceable to the supplied lecture. MCQs and infographic design should be prepared for the future optional companion format rather than injected into an unsupported field or silently treated as standard core shorts.
+3. **Practice content:** Generate MEQ cases, short and detailed questions, lecture-linked image/spot questions and Rapid Recall, each traceable to the supplied lecture. MCQs and infographic source figures belong to the new optional **studyGuide** contract (with mandatory source-page references), never silently relabeled as core shorts. Publish these modes only when the matching UI branch has passed its own tests.
 4. **Review checkpoint:** Show a content coverage table (source pages → subtopics → questions → visual references), highlight unreadable diagrams/ambiguities and obtain content approval. Images should be licensed/permissioned or sourced from the user-supplied material; don't publish an entire copyrighted PDF just to serve one illustration.
 5. **Stage:** Generate the reviewable canonical JSON draft. Attach full media under the repository `assets/` directory with **safe local paths**, or use a supported inline image type. Do not invent a figure: page-only questions remain labeled page references, not displayed as an original figure.
 6. **Check:** Run `tools/add_lecture.py ... --course <id>` without `--write`. Check counts, source notes, media, duplicate IDs, subtopic mapping, and actual subject/lecture identity. Correct any error, then commit with `--write --reviewed` only after explicit medical review.
