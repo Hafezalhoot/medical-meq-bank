@@ -79,6 +79,14 @@
   const courseLibraryGrid = document.getElementById('courseLibraryGrid');
   const courseLibraryCount = document.getElementById('courseLibraryCount');
 
+  document.getElementById('emptyBrowseCoursesBtn')?.addEventListener('click', () => {
+    if (!courseLibrary) return;
+    courseLibrary.open = true;
+    const summary = courseLibrary.querySelector('summary');
+    summary?.focus();
+    summary?.scrollIntoView({block: 'center', behavior: 'auto'});
+  });
+
   // Course cards use the existing registry; they never fetch full lecture payloads.
   const renderCourseLibrary = () => {
     if (!courseLibraryGrid) return;
