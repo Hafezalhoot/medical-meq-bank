@@ -97,8 +97,8 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
   await expect(page.locator('#lecture-'+lectureId)).toBeVisible({timeout:15000});
 
   if (testInfo.project.name === 'webkit-mobile') {
-    const toggle=page.locator('#mobileFiltersToggle');
-    if ((await toggle.getAttribute('aria-expanded')) === 'true') await toggle.click();
+    await page.locator('#closeMobileFiltersBtn').click();
+    await expect(page.locator('#mobileFiltersToggle')).toHaveAttribute('aria-expanded','false');
   }
   const guide=page.locator('#lecture-'+lectureId+' .learning-companion');
   await expect(guide).toBeVisible();
