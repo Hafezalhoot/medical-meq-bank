@@ -39,9 +39,9 @@
 | Full clean build | ✅ Pass | GitHub Actions run `37232212679` on `2026.10.04.2` completed successfully; `validate` built from clean sources and passed the canonical static quality gate |
 | Chromium + axe + performance + print + offline | ✅ Pass | `chromium-quality` passed in run `37232212679`, including accessibility, performance, print/PDF, offline, progress and regression coverage |
 | WebKit / iPhone | ✅ Pass | `webkit-quality` passed in run `37232212679` for Safari desktop and iPhone WebKit smoke coverage |
-| Main branch protection | ⚠️ External configuration | The checked-in `.github/rulesets/main-protection.json` is ready for GitHub import; rulesets are **not active** until the owner imports/verifies them (issue #21) |
+| Main branch protection | ✅ Active / final merge checks pending | GitHub ruleset #25237566 active, `main.protected=true`, PR-only/three required strict quality jobs/no bypass; negative test and protected merge remain pending in issue #21 |
 | Cloudflare production URL / Access / branch control | ⚠️ External verification | Issue #22 tracks source connection after transfer, branch/deploy controls, hostname, Access policy and rollback; no Cloudflare connector is available |
-| Production merge/promotion | ⛔ Hold | Quality matrix is green; PR #19 remains draft until `main` protection and Cloudflare production controls are verified |
+| Production merge/promotion | ⛔ Hold | Quality matrix and protection are verified; PR #19 remains draft pending Cloudflare release controls (issue #22) and protected-merge integration verification |
 
 Resolved runner recovery tracker: https://github.com/Hafezalhoot/medical-meq-bank/issues/20
 
@@ -66,7 +66,7 @@ Resolved runner recovery tracker: https://github.com/Hafezalhoot/medical-meq-ban
 | R-003 | ✅ Resolved in RC | Critical | Rendering | The DOM is bounded to the active lecture; All Lectures uses lightweight overview cards. |
 | R-004 | ✅ Controlled | Critical | Offline export | Full-bank standalone HTML remains only as a backward-compatible export with an 8 MB hard ceiling. |
 | R-005 | ✅ Resolved in RC | High | Progress | Progress is stored as per-item IndexedDB records with legacy migration and transactional backup/restore. |
-| R-006 | ⚠️ External configuration | High | Release safety | GitHub Actions is restored and the full matrix is green; `main` branch protection and Cloudflare production controls remain to be verified before promotion. |
+| R-006 | ⚠️ Final release validation | High | Release safety | GitHub Actions and active `main` ruleset are verified; protected-merge negative test plus Cloudflare production controls remain before promotion. |
 | R-007 | ✅ Resolved in RC | High | Identity model | Course/subject/lecture/item scoped identity and v2 progress keys prevent practical cross-course collisions. |
 | R-008 | ✅ Resolved | High | Content pipeline | Generic materialization/publishing and one-command authoring replace lecture-specific code. Verified legacy source transport inputs remain as reproducible data inputs, not lecture-specific build logic. |
 | R-009 | ✅ Resolved | High | Repository hygiene | Generated `dist/`, browser reports, caches and bytecode are not tracked and are rejected by hygiene checks. |
@@ -287,6 +287,8 @@ Every phase should preserve or improve these checks:
 ## Change log
 
 ### 2026-10-16 — Final release-gate preparation
+
+- ✅ GitHub `MEQ main release protection` ruleset #25237566 imported and activated by owner on 2026-10-16; GitHub API confirms `main.protected=true`, default-branch target, PR-only updates, no bypass actors, blocked deletion/non-fast-forward, and required strict green `validate`, `chromium-quality`, and `webkit-quality` jobs. Issue #21 updated; blocked-merge negative integration test and normal green protected merge are pending.
 
 - ✅ Rechecked the repository on the personal `Hafezalhoot` account: PR #19 remains a mergeable draft; the production `main` branch has no protection and the repository has zero active rulesets.
 - ✅ Confirmed the last complete matrix (run `37232212679`, head `b9686d54f66cb5b4c73fa3d5f7360690c66a6dda`) passed `validate`, `chromium-quality`, and `webkit-quality`. New documentation/ruleset commits must pass the same CI before release.
