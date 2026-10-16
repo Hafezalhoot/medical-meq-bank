@@ -16,7 +16,7 @@ test('course configuration is loaded above subjects and preserves the surgery ba
   await openBank(page);
 
   await expect(page.locator('#courseSelector')).toHaveValue('surgery');
-  await expect(page.locator('#courseSelector option')).toHaveText(['Surgery', 'Internal Medicine']);
+  await expect(page.locator('#courseSelector option')).toHaveText(['Surgery', 'Internal Medicine', 'Internal Medicine II']);
   await expect(page.locator('#subjectSelector option')).toHaveText([
     'Urology',
     'General Surgery',
@@ -133,8 +133,8 @@ test('course library exposes configured courses and keeps lecture navigation int
   const library = page.locator('#courseLibraryDisclosure');
   await expect(library).not.toHaveAttribute('open', '');
   await library.locator('summary').click();
-  await expect(page.locator('#courseLibraryGrid .course-library-card')).toHaveCount(2);
-  await expect(page.locator('#courseLibraryCount')).toHaveText('2 courses');
+  await expect(page.locator('#courseLibraryGrid .course-library-card')).toHaveCount(3);
+  await expect(page.locator('#courseLibraryCount')).toHaveText('3 courses');
   await expect(page.locator('[data-course-id="surgery"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-course-id="internal-medicine"]')).toContainText('7 specialties');
   await expect(page.locator('[data-course-id="internal-medicine"]')).toContainText('Ready for future lectures');
