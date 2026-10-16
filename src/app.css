@@ -384,3 +384,29 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 /* Keep compact visuals without shrinking real pointer targets. */
 .hero .theme-toggle,.hero .pwa-btn,.hero .subject-select,.nav-controls .nav-toggle,.lecture .quick-view-btn{min-height:44px}
 @media(max-width:700px){.hero .theme-toggle,.hero .pwa-btn,.hero .subject-select{min-height:44px}}
+
+/* Mobile utilities: preserve backup/install affordances without taking up the first viewport. */
+.pwa-tools-toggle{display:none}
+.pwa-tools-actions{display:contents}
+@media(max-width:700px){
+ .hero .eyebrow,.hero p,.hero .hero-tags{display:none}
+ .hero h1{margin:2px 0 8px}
+ .hero .pwa-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px;margin-top:4px}
+ .hero .pwa-tools-toggle{grid-column:1;display:inline-flex;align-items:center;justify-content:flex-start;gap:8px;min-height:44px;padding:8px 12px;border:1px solid rgba(255,255,255,.34);border-radius:10px;background:rgba(255,255,255,.11);color:#fff;font-size:.82rem;font-weight:750;cursor:pointer}
+ .hero .pwa-tools-toggle .ui-icon:last-child{margin-left:auto}
+ .hero .pwa-tools-toggle:active{opacity:.82}
+ .hero .pwa-tools-toggle[aria-expanded="true"]{background:rgba(255,255,255,.19)}
+ .hero .connection-pill{grid-column:2;min-height:44px;margin:0;padding:8px 12px;white-space:nowrap;min-width:0;width:auto;justify-content:center}
+ .hero .pwa-tools-actions{grid-column:1/-1;display:none;flex-direction:column;gap:7px;width:100%}
+ .hero .pwa-tools.tools-open .pwa-tools-actions{display:flex}
+ .hero .pwa-tools-actions .pwa-btn{width:100%;min-height:44px;justify-content:center}
+ .hero .hero-grid{gap:10px}
+ .hero .hero-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 8px;align-items:end;padding:10px}
+ .hero .hero-panel .course-panel-label{grid-column:1;grid-row:1}
+ .hero .hero-panel #courseSelector{grid-column:1;grid-row:2}
+ .hero .hero-panel label[for="subjectSelector"]{grid-column:2;grid-row:1}
+ .hero .hero-panel #subjectSelector{grid-column:2;grid-row:2}
+ .hero .hero-panel .offline-subject-btn{grid-column:1/-1;grid-row:3;margin-top:4px}
+ .hero .hero-panel-label{font-size:.61rem;letter-spacing:.015em}
+ .hero .subject-select{padding-left:9px;padding-right:24px;background-position:calc(100% - 14px) 17px,calc(100% - 9px) 17px;background-size:5px 5px,5px 5px;font-size:.83rem}
+}
