@@ -1,5 +1,12 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-16 — Exam source scope explicitly confirmed by learner
+
+- ✅ Learner confirmed that **printed teaching text only** in the reattached 10-page `Dermatology Department book 2022.pdf` is examinable; handwritten marginal notes and embedded chat screenshot were personal understanding annotations and **must not be treated as exam facts**.
+- ✅ Applied this source rule to the Dermatology review checklist, the lecture's own source metadata and the PR #27 handoff. Small explanations are permitted only as clearly labeled non-exam understanding aids.
+- 🧪 Stabilized intermittent iPhone/Safari MCQ smoke flow to verify the details panel is open and choose a visible **label** (normal user touch interaction), then assert that the associated radio input is checked. Previous docs-only run [38963924179](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38963924179) passed static/Chromium but intermittently failed the mobile WebKit MCQ check; test coverage remains mandatory rather than suppressed.
+- ⚠️ **Remaining gates:** latest commit validate/Chromium/WebKit run, manual individual image-spot legibility review, final bilingual editorial approval, source/publication rights and controlled Cloudflare promotion. PR #27 remains Draft; no merge or deployment has been approved.
+
 ### 2026-10-16 — Phone infographic reading improvement (PR #27)
 
 - 🧪 Desktop screenshots showed a clear original SVG infographic, but the legacy `max-width:100%` image scaling would shrink its detailed labels to unreadable sizes on narrow phones.
@@ -8,7 +15,7 @@
 - 🧪 First updated run [38962874110](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38962874110): `validate` and `webkit-quality` passed; Chromium's 72 other tests passed, but the new 390px test tried to select the **intentionally hidden mobile lecture filter** without first opening the mobile filter drawer. Corrected the test helper to open/close the actual mobile drawer. Re-run required; no product-code regression was established by this test setup failure.
 - ✅ **Validated release-candidate code:** [run 38963528101](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38963528101) passed all three quality jobs (`validate`, `chromium-quality`, `webkit-quality`) on `d5683a1cd2c3044e68f41063f18462b4b49df324` after correcting the mobile drawer test setup.
 - ✅ Manually inspected actual Playwright browser screenshots: 1440px desktop infographic remains readable; 390px mobile infographic renders at larger readable scale with a visible sideways-swipe hint and full-size image link. The dedicated mobile test checks inner horizontal scroll and no page-wide overflow.
-- ⚠️ Per-image-spot card legibility on physical mobile devices, handwritten annotations and learner/lecturer editorial and rights sign-off are still pending. No protected-main merge or Cloudflare promotion is authorized.
+- ⚠️ Per-image-spot card legibility on physical mobile devices and final learner/lecturer editorial and rights sign-off are still pending. Handwritten annotations are explicitly excluded from exam content by learner decision. No protected-main merge or Cloudflare promotion is authorized.
 
 ### 2026-10-16 — Continuation: original Dermatology scan reattached and draft source rechecked
 

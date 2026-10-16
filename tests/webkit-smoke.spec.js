@@ -104,10 +104,19 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
   await expect(guide).toBeVisible();
   await expect(guide.locator('.study-guide-part')).toHaveCount(3);
 
-  await guide.locator('summary').nth(1).click();
-  const mcq=guide.locator('.study-guide-mcq').first();
+  const mcqPanel=guide.locator('.study-guide-part').nth(1);
+  if(!(await mcqPanel.evaluate(el=>el.open))){
+    await mcqPanel.locator('summary').click();
+  }
+  await expect(mcqPanel).toHaveAttribute('open', '');
+  const mcq=mcqPanel.locator('.study-guide-mcq').first();
+  await expect(mcq).toBeVisible();
   await expect(mcq.locator('input[type="radio"]')).toHaveCount(4);
-  await mcq.locator('input[type="radio"]').nth(1).check();
+  // The visible label is what students actually tap on iPhone Safari.
+  const correctChoice=mcq.locator('.study-guide-choices label').nth(1);
+  await expect(correctChoice).toBeVisible();
+  await correctChoice.click();
+  await expect(mcq.locator('input[type="radio"]').nth(1)).toBeChecked();
   await mcq.getByRole('button',{name:'Reveal explanation'}).click();
   await expect(mcq.locator('.study-guide-answer')).toContainText('Your answer is correct');
 
