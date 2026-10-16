@@ -75,6 +75,66 @@
   );
   const allSubjectKeys = () => [...new Set(allSubjectScopes().map(scope => scope.subjectKey))];
 
+  const courseLibrary = document.getElementById('courseLibraryDisclosure');
+  const courseLibraryGrid = document.getElementById('courseLibraryGrid');
+  const courseLibraryCount = document.getElementById('courseLibraryCount');
+
+  // Course cards use the existing registry; they never fetch full lecture payloads.
+  const renderCourseLibrary = () => {
+    if (!courseLibraryGrid) return;
+    if (courseLibraryCount) {
+      courseLibraryCount.textContent = `${orderedCourses.length} course${orderedCourses.length === 1 ? '' : 's'}`;
+    }
+    const cards = orderedCourses.map((course, index) => {
+      const pack = packForCourse(course.id);
+      const active = course.id === activeCourse;
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = `course-library-card${active ? ' is-active' : ''}`;
+      card.dataset.courseId = course.id;
+      card.setAttribute('aria-pressed', String(active));
+
+      const number = document.createElement('span');
+      number.className = 'course-library-index';
+      number.textContent = `COURSE ${String(index + 1).padStart(2, '0')}`;
+
+      const title = document.createElement('strong');
+      title.className = 'course-library-title';
+      title.textContent = course.label;
+
+      const description = document.createElement('span');
+      description.className = 'course-library-description';
+      description.textContent = pack?.description || 'Browse subjects and lectures in this medical course.';
+
+      const footer = document.createElement('span');
+      footer.className = 'course-library-card-footer';
+      const count = document.createElement('span');
+      const specialtyCount = pack?.subjects?.length || 0;
+      count.textContent = `${specialtyCount} specialt${specialtyCount === 1 ? 'y' : 'ies'}`;
+      const availability = document.createElement('span');
+      availability.className = pack?.lectureCatalogUrl
+        ? 'course-library-availability is-published'
+        : 'course-library-availability';
+      availability.textContent = pack?.lectureCatalogUrl
+        ? 'Study content available'
+        : 'Ready for future lectures';
+      footer.append(count, availability);
+
+      const action = document.createElement('span');
+      action.className = 'course-library-action';
+      action.textContent = active ? 'Current course' : 'Open course →';
+
+      card.append(number, title, description, footer, action);
+      card.addEventListener('click', () => {
+        activateCourse(course.id, {preserveSubject: true});
+        if (courseLibrary) courseLibrary.open = false;
+        courseSelector?.focus();
+      });
+      return card;
+    });
+    courseLibraryGrid.replaceChildren(...cards);
+  };
+
   const refreshCourseView = () => {
     activeSubtopic = 'all';
     populateSubjectSelector();
@@ -84,6 +144,7 @@
     render();
     validateBank();
     setSidebarState();
+    renderCourseLibrary();
   };
 
   const activateCourse = (courseId, options = {}) => {
