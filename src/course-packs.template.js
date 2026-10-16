@@ -229,5 +229,164 @@
   const footer = document.querySelector('.footer');
   if (footer) footer.textContent = 'Medical course → specialty → lecture → subtopic • Independent content packs • Saved progress';
 
+  // The review hub works from already-saved progress keys; no lecture payloads
+  // are fetched just to display the queue. It is entirely optional to open.
+  const reviewPanel=document.getElementById('myReviewDisclosure');
+  const reviewCount=document.getElementById('myReviewCount');
+  const reviewStatus=document.getElementById('myReviewStatus');
+  const reviewList=document.getElementById('myReviewList');
+  let reviewRenderToken=0;
+
+  const savedReviewRecords=()=>{
+    const unique=new Map();
+    Object.entries(state).forEach(([statusKey,level])=>{
+      if(level!=='weak'&&level!=='review')return;
+      const item=progressKeyParts(statusKey);
+      if(!item.lectureId||!item.itemId||!['case','core','image','extra'].includes(item.type))return;
+      const identity=[item.lectureId,item.type,item.itemId].join('::');
+      if(!unique.has(identity)||item.version===2)unique.set(identity,{...item,level});
+    });
+    return [...unique.values()];
+  };
+
+  const updateSavedReviewCount=()=>{
+    if(!reviewCount)return;
+    const count=savedReviewRecords().length;
+    reviewCount.textContent=count===0?'Nothing to revisit':count+' to revisit';
+  };
+
+  const openSavedReview=async (lecture,level,button)=>{
+    if(!reviewStatus)return;
+    const loader=globalThis.MEQLectureLoader;
+    if(!loader){reviewStatus.textContent='Study content is still loading. Try again shortly.';return}
+    button.disabled=true;
+    reviewStatus.textContent='Opening '+lecture.title+'…';
+    try{
+      if(activeCourse!==lecture.courseId)activateCourse(lecture.courseId,{preserveSubject:false});
+      if(activeSubject!==lecture.subjectKey){
+        activeSubject=lecture.subjectKey;
+        subjectSelector.value=activeSubject;
+        storage.set('medicalBankSubjectV4',activeSubject);
+        storage.set('medicalBankSubjectV4:'+lecture.courseId,activeSubject);
+      }
+      activeSubtopic='all';
+      await loader.loadSubject(lecture.subjectKey,lecture.courseId);
+      await loader.loadLecture(lecture.id,{refresh:false,busy:false});
+      const search=document.getElementById('search');
+      const type=document.getElementById('typeFilter');
+      const priority=document.getElementById('priorityFilter');
+      const topic=document.getElementById('topicFilter');
+      if(search)search.value='';
+      if(type)type.value='all';
+      if(priority)priority.value='all';
+      if(topic)topic.value='all';
+      selectLecture(lecture.id,false);
+      const reviewFilter=document.getElementById('reviewFilter');
+      if(reviewFilter){
+        reviewFilter.value=level;
+        reviewFilter.dispatchEvent(new Event('change',{bubbles:true}));
+      }else applyFilters();
+      const matching=[...document.querySelectorAll('#mainContent .study-item:not(.hidden)')]
+        .find(item=>item.querySelector('.status[data-status="'+level+'"].active'));
+      if(!matching)throw new Error('No saved '+level+' items are visible in this lecture.');
+      reviewPanel.open=false;
+      matching.setAttribute('tabindex','-1');
+      requestAnimationFrame(()=>{
+        if(!matching.isConnected)return;
+        matching.focus({preventScroll:true});
+        matching.scrollIntoView({behavior:'auto',block:'start'});
+      });
+    }catch(error){
+      reviewStatus.textContent='Could not open this review group. '+String(error.message||error);
+    }finally{
+      if(button.isConnected)button.disabled=false;
+    }
+  };
+
+  const renderSavedReview=async()=>{
+    if(!reviewPanel?.open||!reviewStatus||!reviewList)return;
+    const token=++reviewRenderToken;
+    reviewStatus.textContent='Preparing saved review…';
+    reviewList.replaceChildren();
+    const loader=globalThis.MEQLectureLoader;
+    if(!loader){
+      reviewStatus.textContent='Lectures are still loading. Close and reopen My Review.';
+      return
+    }
+    const checks=await Promise.allSettled(
+      allSubjectScopes().map(scope=>loader.loadSubjectMetadata(scope.subjectKey,scope.courseId))
+    );
+    if(!reviewPanel.open||token!==reviewRenderToken)return;
+    const records=savedReviewRecords();
+    const groups=new Map();
+    for(const record of records){
+      const lecture=lectures.find(item=>item.id===record.lectureId);
+      if(!lecture)continue;
+      if(record.version===2&&(
+        record.courseId!==lecture.courseId||record.subjectKey!==lecture.subjectKey
+      ))continue;
+      if(!groups.has(lecture.id)){
+        groups.set(lecture.id,{lecture,weak:0,review:0});
+      }
+      groups.get(lecture.id)[record.level]++;
+    }
+    const sorted=[...groups.values()].sort((a,b)=>
+      b.weak-a.weak||b.review-a.review||
+      a.lecture.title.localeCompare(b.lecture.title)
+    );
+    for(const group of sorted){
+      const lecture=group.lecture;
+      const course=packForCourse(lecture.courseId);
+      const specialty=course?.subjects?.find(item=>item.id===lecture.subjectKey);
+      const card=document.createElement('article');card.className='my-review-card';
+      const description=document.createElement('div');description.className='my-review-card-copy';
+      const label=document.createElement('small');
+      label.textContent=(course?.label||lecture.courseId)+' / '+(specialty?.label||lecture.subject);
+      const title=document.createElement('h3');title.textContent=lecture.title;
+      description.append(label,title);
+      const actions=document.createElement('div');actions.className='my-review-card-actions';
+      for(const level of ['weak','review']){
+        if(!group[level])continue;
+        const button=document.createElement('button');
+        button.type='button';button.className='my-review-open';
+        button.textContent=(level==='weak'?'Weak':'Review')+' ('+group[level]+')';
+        button.setAttribute('aria-label','Open '+group[level]+' '+level+' questions in '+lecture.title);
+        button.addEventListener('click',()=>openSavedReview(lecture,level,button));
+        actions.append(button);
+      }
+      card.append(description,actions);
+      reviewList.append(card);
+    }
+    const total=sorted.reduce((sum,item)=>sum+item.weak+item.review,0);
+    if(total){
+      reviewStatus.textContent=total+' saved questions to revisit across '+sorted.length+
+        (sorted.length===1?' lecture.':' lectures.');
+    }else{
+      reviewStatus.textContent=records.length
+        ?'No matching published lectures found for the saved ratings.'
+        :'No questions are marked Weak or Review yet. Mark a question and it will appear here.';
+    }
+    if(checks.some(check=>check.status==='rejected')){
+      reviewStatus.textContent+=' Some course catalogs could not be loaded; reopen to retry.';
+    }
+  };
+
+  reviewPanel?.addEventListener('toggle',()=>{
+    if(reviewPanel.open)void renderSavedReview();
+    else reviewRenderToken++;
+  });
+  document.addEventListener('meq:progress-ready',()=>{
+    updateSavedReviewCount();
+    if(reviewPanel?.open)void renderSavedReview();
+  });
+  document.addEventListener('click',event=>{
+    if(!(event.target instanceof Element)||!event.target.closest('.status'))return;
+    queueMicrotask(()=>{
+      updateSavedReviewCount();
+      if(reviewPanel?.open)void renderSavedReview();
+    });
+  });
+  updateSavedReviewCount();
+
   activateCourse(initialCourse, {preserveSubject: true});
 })();
