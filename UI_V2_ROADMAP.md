@@ -6,6 +6,8 @@
 
 ## Audit and architecture
 
+Additional comprehensive feature/authoring assessment: [PROJECT_COMPREHENSIVE_AUDIT_2026-10-16.md](./PROJECT_COMPREHENSIVE_AUDIT_2026-10-16.md). Intake safety is independently implemented in PR #24 to protect the production release while V2 visual changes remain in Draft.
+
 The source-backed product review, information architecture and prioritized usability findings are documented in [UI_V2_AUDIT.md](./UI_V2_AUDIT.md). UI/UX guidance is informed by UI/UX Pro Max and the existing Clinical Study Workspace design system; the implementation stays dependency-free.
 
 ## Product goal
