@@ -139,3 +139,11 @@ Browser evidence: [GitHub Actions run 38909175547](https://github.com/Hafezalhoo
 - The exact `validate`, `chromium-quality`, and `webkit-quality` statuses must be checked on the final commit, not assumed from an earlier run.
 - Preserve Draft PR and production until source QA, screenshot review, and approval.
 
+## Verified My Review UX implementation (2026-10-16)
+
+My Review is now implemented in V2 PR #23 as a **closed-by-default** companion to Course Library. Existing study status keys supply Weak and Review counts, with course/specialty/lecture grouping based on metadata loaded only when opened. Clicking a group navigates to the existing filtered medical content and focuses the relevant question. Missing/empty states, partial catalog failure and keyboard/touch semantics were covered by automated Chromium and WebKit. The 320px dark mode regression was also added.
+
+The optional Explanation, MCQ and Infographic renderer uses plain text nodes for authored medical content and a strictly optional rendering path. The authoring validator and security rule changes remain isolated in PR #24; no production course has new companion claims until a source-reviewed PDF completes the combined pipeline.
+
+**Release note:** V2 and intake passes were **separately** green. A future integration candidate must re-run both suites together; no live Cloudflare update or external manual accessibility sign-off is implied.
+
