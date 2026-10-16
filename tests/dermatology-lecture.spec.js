@@ -83,3 +83,21 @@ test('Dermatology progress remains isolated from the original Surgery course', a
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
   await expect(page.locator('#dataAlert')).toBeHidden();
 });
+
+
+test('phone infographic is readable with accessible sideways scrolling, without page-wide overflow', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await openDermatology(page);
+  await page.locator('.learning-companion summary').nth(2).click();
+  const viewport=page.locator('.study-guide-image-scroller');
+  await expect(viewport).toBeVisible();
+  await expect(viewport).toHaveAttribute('role','region');
+  await expect(viewport).toHaveAttribute('tabindex','0');
+  const [scrollWidth,clientWidth]=await viewport.evaluate(el=>[el.scrollWidth,el.clientWidth]);
+  expect(scrollWidth).toBeGreaterThan(clientWidth+200);
+  await expect(page.locator('.study-guide-pan-hint')).toBeVisible();
+  await expect(page.locator('.study-guide-open-image')).toHaveAttribute('target','_blank');
+  await expect(page.locator('.study-guide-open-image')).toHaveAttribute('rel','noopener noreferrer');
+  const documentWidth=await page.evaluate(()=>document.documentElement.scrollWidth);
+  expect(documentWidth).toBeLessThanOrEqual(392);
+});

@@ -1,5 +1,12 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-16 — Phone infographic reading improvement (PR #27)
+
+- 🧪 Desktop screenshots showed a clear original SVG infographic, but the legacy `max-width:100%` image scaling would shrink its detailed labels to unreadable sizes on narrow phones.
+- 🧪 Added an accessible keyboard-focusable horizontal image scroller on screens <=700px, an explanatory swipe hint and a same-origin **Open full-size infographic** link that works with cached offline assets.
+- 🧪 Extended real-lecture Playwright coverage to assert scrollable image width, no document-wide overflow and functional full-size link; attached a targeted 390px evidence screenshot.
+- ⏳ **CI and updated mobile screenshot review required** before this improvement is considered complete; learner/lecturer sign-off and publication gate remain unchanged.
+
 ### 2026-10-16 — Continuation: original Dermatology scan reattached and draft source rechecked
 
 - ✅ The learner reattached `Dermatology Department book 2022.pdf` (10 image-only pages); a fresh page-by-page visual review compared printed claims with the drafted **Internal Medicine II → Dermatology → Introduction to Dermatology** lecture.

@@ -368,13 +368,30 @@ function createStudyGuide(lecture) {
     const image=document.createElement('img');
     image.src=guide.infographic.image;image.alt=guide.infographic.alt;
     image.loading='lazy';image.decoding='async';
+    const viewport=document.createElement('div');
+    viewport.className='study-guide-image-scroller';
+    viewport.tabIndex=0;
+    viewport.setAttribute('role','region');
+    viewport.setAttribute('aria-label','Scrollable infographic; swipe or use arrow keys on small screens');
+    const fullSizeLink=document.createElement('a');
+    fullSizeLink.className='study-guide-open-image';
+    fullSizeLink.href=guide.infographic.image;
+    fullSizeLink.target='_blank';
+    fullSizeLink.rel='noopener noreferrer';
+    fullSizeLink.textContent='Open full-size infographic';
     image.addEventListener('error',()=>{
       image.remove();
       const fallback=document.createElement('p');
       fallback.textContent='Infographic could not be displayed. Check the lecture source reference below.';
-      figure.prepend(fallback);
+      viewport.replaceWith(fallback);
+      fullSizeLink.remove();
     },{once:true});
-    figure.append(image);
+    viewport.append(image);
+    figure.append(viewport);
+    const panHint=document.createElement('p');
+    panHint.className='study-guide-pan-hint';
+    panHint.textContent='Swipe sideways to read the infographic at a larger size, or open the full image.';
+    figure.append(panHint,fullSizeLink);
     if(guide.infographic.caption){
       const caption=document.createElement('figcaption');
       caption.textContent=guide.infographic.caption;caption.dir='auto';figure.append(caption);

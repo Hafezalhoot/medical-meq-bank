@@ -504,10 +504,14 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 .study-guide-answer[hidden]{display:none}
 .study-guide-figure{margin:0;padding:16px;display:grid;gap:10px;justify-items:center}
 .study-guide-figure img{display:block;width:auto;max-width:100%;height:auto;max-height:640px;object-fit:contain;border-radius:12px}
+.study-guide-image-scroller{min-width:0;width:100%;max-width:100%;display:flex;justify-content:center;overflow-x:hidden}
+.study-guide-open-image{color:var(--brand);font-size:.86rem;font-weight:650;text-decoration:underline;text-underline-offset:3px;outline-offset:4px}
+.study-guide-pan-hint{display:none;margin:0;font-size:.83rem;line-height:1.55;color:var(--muted)}
 .study-guide-figure figcaption{max-width:70ch;color:var(--muted);line-height:1.7;font-size:.84rem}
 .study-guide-part>.study-guide-source{margin:0 16px 14px}
 .dark .study-guide-part,.dark .learning-companion{background:var(--card)}
 @media(max-width:700px){.learning-companion{padding:10px;border-radius:12px}.study-guide-explanation,.study-guide-mcq{padding:12px}.study-guide-figure{padding:10px}}
+@media(max-width:700px){.study-guide-image-scroller{display:block;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}.study-guide-image-scroller img{display:block;width:720px;max-width:none;max-height:none}.study-guide-pan-hint{display:block}}
 @media(prefers-reduced-motion:reduce){.study-guide-part>summary,.study-guide-reveal{scroll-behavior:auto}}
 
 
