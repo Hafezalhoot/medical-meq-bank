@@ -420,3 +420,19 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
  .app.study-focus .nav-controls{display:flex;justify-content:flex-end}
  .app.study-focus .study-focus-toggle{min-width:120px;width:auto;flex:0 0 auto}
 }
+
+/* Pair course/specialty selectors on desktop too: reduce the hero height by a full control row. */
+@media(min-width:701px){
+ .hero .hero-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 8px;align-content:center;padding:11px}
+ .hero .hero-panel-heading{grid-column:1/-1;grid-row:1;margin-bottom:2px}
+ .hero .hero-panel .course-panel-label{grid-column:1;grid-row:2}
+ .hero .hero-panel label[for="subjectSelector"]{grid-column:2;grid-row:2}
+ .hero .hero-panel #courseSelector{grid-column:1;grid-row:3}
+ .hero .hero-panel #subjectSelector{grid-column:2;grid-row:3}
+ .hero .hero-panel .offline-subject-btn{grid-column:1/-1;grid-row:4;margin-top:4px}
+ .hero .subject-select{min-width:0}
+}
+@media(min-width:981px){
+ .lecture .offline-lecture-btn{grid-column:1/3;grid-row:2;min-height:44px}
+ .lecture .quick-reset{grid-column:3;grid-row:2;min-height:44px;display:grid;place-items:center;padding:7px 4px;font-size:.74rem}
+}
