@@ -223,3 +223,6 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 }
 @media(prefers-reduced-motion:reduce){.course-library-chevron,.course-library-card{transition:none}}
 @media print{.course-library{display:none!important}}
+
+.dark .course-library-symbol{background:#172b4d;color:#c4dcff}
+.dark .course-library-count,.dark .course-library-availability{background:#26364d;color:#d1daec}
