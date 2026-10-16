@@ -78,7 +78,11 @@ def commit_checked_files(changes: dict[Path, str]) -> None:
 def validate_image_sources(lecture: dict) -> None:
     """Fail closed on missing/traversing assets and unsafe embedded media."""
     assets = (ROOT / "assets").resolve()
-    for image in lecture.get("imageQuestions", []):
+    sources = list(lecture.get("imageQuestions", []))
+    infographic = lecture.get("studyGuide", {}).get("infographic")
+    if infographic:
+        sources.append({"id": f"{lecture['id']}-infographic", "image": infographic["image"]})
+    for image in sources:
         source = image.get("image")
         if not isinstance(source, str) or not source.strip():
             continue  # A lecture-page reference may be the whole visual cue.
