@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.04.2';
+  const APP_VERSION = '2026.10.16.1';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -95,7 +95,8 @@
   });
 
   const heroPanel = document.querySelector('.hero-panel');
-  if (heroPanel && !document.getElementById('offlineSubjectBtn')) {
+  const studyUtilities = document.getElementById('pwaToolsActions');
+  if ((studyUtilities || heroPanel) && !document.getElementById('offlineSubjectBtn')) {
     const offlineSubjectBtn = document.createElement('button');
     offlineSubjectBtn.id = 'offlineSubjectBtn';
     offlineSubjectBtn.type = 'button';
@@ -126,7 +127,7 @@
         offlineSubjectBtn.removeAttribute('aria-busy');
       }
     });
-    heroPanel.appendChild(offlineSubjectBtn);
+    (studyUtilities || heroPanel).appendChild(offlineSubjectBtn);
   }
 
   const toast = message => {

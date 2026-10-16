@@ -1,5 +1,98 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+
+
+### 2026-10-16 — Screenshot-driven reader redesign
+
+- ✅ Reviewed owner's 3 production screenshots as visual evidence: oversized hero, dense toolbar/metrics, crowded dual sidebars, repeated elevated case cards.
+- ✅ Implemented compact, content-first header, progressive study metrics, narrower reader navigation and quieter question card chrome.
+- ✅ Implemented persistent `Focus on questions` / `Exit focus mode`, and direct Image quick view, preserving pre-existing progress keys and other study actions.
+- ✅ Added runnable regressions for focus restoration, status summary disclosure and Image quick view; full GitHub matrix successful in run `38909175547`.
+- ⚠️ Impeccable's installed tool is unavailable here; public critique/polish principles were consulted, with no fabricated detector output or numeric visual score.
+- ⏳ Manual branch-preview screenshots and cross-device visual sign-off are outstanding; no merge or production promotion yet.
+
+
+### 2026-10-16 — V2 final browser screenshot iteration
+
+- ✅ Ran real Chromium screenshots of candidate UI at 1440px desktop and 390px mobile, including Course Library, expanded progress, Focus Mode, and light/dark surfaces.
+- ✅ Based on the **rendered** phone evidence, replaced three stacked action rows with four compact nav actions and collapsed PWA/backup utilities into accessible Study tools.
+- ✅ Placed course and specialty selection side-by-side on phone and desktop, reducing hero height and using the available viewport for actual lecture content.
+- ✅ Captured final screenshot artifact `playwright-report-chromium` in run `38912689508`; `validate`, `chromium-quality` and `webkit-quality` all green.
+- ⚠️ PR #23 remains Draft; 360px screenshots and real-device visual approval are pending. Site production and reviewed content remain unchanged.
+- ⏳ Next product milestone: Study Home / continue learning / review queue built on existing course, lecture and progress data.
+
+## V2 browser visual evidence — 2026-10-16
+
+- ✅ Final current-head app/navigation layout and course selector browser run [38912689508](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38912689508) passed all **validate / chromium-quality / webkit-quality** jobs on `8b141de972b3048d78ec19cf3af5240a79381be6`.
+- ✅ Inspected genuine Chromium Playwright screenshot artifacts at desktop 1440×900, phone 390×844, expanded Course Library, expanded Stats and desktop Focus Mode.
+- ✅ After screenshot-driven iteration: mobile utilities folded into Study tools; two-column Course/Specialty picker on mobile and desktop; one-row mobile Lectures/Topics/Focus/Print actions; concise header and calm reading surfaces; focus mode remains reversible.
+- ✅ Exported human-review screenshots from the CI build (not synthetic mockups); attached to conversation for product design review.
+- ⚠️ Impeccable skill is **not installed** in this environment. Applied available public critique/distill/polish concepts and UI/UX Pro Max patterns, not an Impeccable tool audit.
+- ⏳ Retain PR #23 as Draft until stakeholder visual acceptance and any remaining cross-course Study Home / My Review improvements are scoped into following increments. Production main and Worker remain untouched.
+
+### 2026-10-16 — Connection recovery and installed Impeccable pass
+
+- ✅ Confirmed `skills://impeccable` is now installed, read its Operate/Read, critique, distill, polish, harden and verification rules.
+- ✅ Reconciled 13 intervening commits on PR #23 rather than overwriting completed resume-study, selector, theme and keyboard improvements.
+- ✅ Improved Study tools keyboard exit using `Escape` and focus restoration, with browser regression.
+- ⏳ Validate final source SHA via CI and inspect visual evidence. PR #23 remains Draft; production is unchanged.
+
+### 2026-10-16 — Full multi-course UX and lecture-intake audit
+
+- ✅ Comprehensive source-backed audit completed: [PROJECT_COMPREHENSIVE_AUDIT_2026-10-16.md](./PROJECT_COMPREHENSIVE_AUDIT_2026-10-16.md), including 12 severity-ranked findings and feature-preservation inventory.
+- ✅ Confirmed nine published lecture catalog entries across two course packs; old progress keys/data, the five established study types and offline/PWA/print capabilities are protected design constraints.
+- 🟦 Separate [PR #24](https://github.com/Hafezalhoot/medical-meq-bank/pull/24) implements reviewed lecture draft scaffolding, safer registration and tests on an independent branch; it cannot be reported as released until review/merge.
+- 🟦 Workstream R2: plan optional lecture-first Explanation/MCQ/Infographic data companions without changing existing five-mode lecture payloads or learner ratings.
+- ⏳ Next V2 milestones: course-wide Study Home/My Review, design-system CSS consolidation, 320px/200%-zoom/RTL checks and final visual sign-off.
+- ⛔ No PR has been merged or production Cloudflare changed in this audit pass.
+
+### 2026-10-16 — Saved My Review and medical companion delivery
+
+- ✅ Implemented new **My Review** progressive-disclosure panel, grouped across registered course/specialty metadata and existing `weak`/`review` ratings, without eager content fetching.
+- ✅ Clicking a group uses current course and lecture navigation, existing review filtering and matching-item keyboard focus.
+- ✅ Completed no-content and progress-change states, manual error recovery, 320px mobile/dark mode styling and Focus/Print exclusion.
+- ✅ Optional Explanation/MCQ/Infographic reader is authored as plain-text DOM with source notes and labeled Understanding Aid content; new media sections stay absent in old lectures.
+- ✅ [V2 CI run 38935394450](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38935394450) successful across validate, Chromium and WebKit. [320px CI run 38935897409](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38935897409) shows all three jobs passed.
+- ✅ [Lecture intake PR #24 CI 38935589777](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38935589777) separately passed all three jobs after safe course/lecture authoring and schema tests.
+- ⏳ Remaining gates: integrate both branches, source-verified real PDF pilot, actual candidate screenshot sign-off, final locked merge and explicit Worker release approval.
+- ⛔ No actual lecture source contents, original progress store implementation, or deployed production site changed.
+
+## October 16, 2026 — Lecture intake development (PR #24)
+
+**Branch:** `feature/safe-lecture-intake-20261016` → `main`, Draft PR [#24](https://github.com/Hafezalhoot/medical-meq-bank/pull/24). Production has **not** been changed.
+
+- ✅ Added `tools/new_lecture.py`: safe, source-traceable blank lecture drafts; never invents medical facts or overwrites an existing draft.
+- ✅ Added `tools/add_course.py`: metadata-only dry-run and reviewed write for new medical courses and specialties, reusing the shared engine.
+- ✅ Hardened `tools/add_lecture.py`: explicit `--reviewed` acknowledgment, course/subject matching, stable IDs, safe images, complete preflight and staged writes with I/O rollback.
+- ✅ Kept the historical Surgery regression baseline frozen; new Surgery lectures are additive.
+- ✅ Added optional plain-text `studyGuide` schema and validation for source-page Explanation, four-choice MCQ, Infographic. Embedded images are checked and standalone HTML receives self-contained media.
+- ✅ Added Python unit tests for dry-run, review gate, missing/unsafe images, course registration, source-page validation, rollback and offline infographic packaging.
+- ✅ [GitHub Actions run 38934118197](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38934118197) — `validate`, `chromium-quality`, `webkit-quality` **all passed** on code commit `056042df09b5d38335a3969532405a93ea4e7f32`.
+- ⏳ Merge/release gates: code review, branch integration with V2 renderer from PR #23, source-reviewed real PDF pilot, combined regression and explicit Cloudflare deployment approval.
+- ⚠️ The `studyGuide` field is **optional and not live on production**. No scientific lecture claims were inserted in this workstream.
+
+## 2026-10-16 — Integrated full quality gate
+
+- ✅ Combined clinical Study V2 and reviewed lecture intake on Draft [PR #25](https://github.com/Hafezalhoot/medical-meq-bank/pull/25), targeting `main` for the complete required CI matrix.
+- ✅ [Integrated Actions run 38936963089](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38936963089) completed successfully: `validate`, `chromium-quality`, `webkit-quality`.
+- ✅ Verified combined PR diff does not edit any `lectures/data/*.json`, `lectures/catalog.json` or `src/progress-resilience.js`; existing exam materials and saved progress implementation are preserved.
+- ✅ Optional Explanation / MCQ / Infographic rendering is paired with the intake schema and media checks in the integration branch; older lectures remain unchanged.
+- ⏳ Still required: review real uploaded PDF contents and image permissions against original lecture; human visual sign-off (including RTL and zoom), then protected merge and controlled Cloudflare release.
+- ⛔ This green CI confirms code-level integration only. No actual new lecture has been medically approved or published, and neither `main` nor production was modified.
+
+## Medical Study Workspace V2 (2026-10-16)
+
+**Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  
+**Candidate:** `2026.10.16.1`.  
+**Plan and acceptance checks:** [`UI_V2_ROADMAP.md`](./UI_V2_ROADMAP.md).
+
+- ✅ Reviewed the shipped course registry, loader, study UI, progress, PWA/print boundaries and existing tests; keep the current vanilla/offline-first architecture.
+- ✅ Applied the UI/UX Pro Max education dashboard/course-grid guidance to a low-noise expandable catalog-sourced Course Library, with consistent existing blue/teal tokens.
+- ✅ V2-1 first UI increment implemented: responsive course gallery, course switching, empty-course recovery, dark mode and browser regression. The full `validate`, Chromium/axe and WebKit/iPhone matrix passed on run `38905559158`; subjective visual QA remains before merge.
+- ⏳ V2-2 through V2-7: Study Home, specialty/lecture reader organization, optional verified medical content modes, better review/progress navigation, cross-device polish and controlled release.
+- ⛔ No automatic promotion. Surgery/MEQ content and user progress IDs remain unchanged.
+
+
 > **Single source of truth for the modernization program.**
 >
 > Update this file in the same branch/PR whenever a task is completed, blocked, re-scoped, or newly discovered. Do not mark an item complete until its acceptance criteria are satisfied and the relevant automated checks pass.
