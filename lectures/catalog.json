@@ -3,6 +3,22 @@
   "version": 1,
   "lectures": [
     {
+      "id": "internal-medicine-ii-dermatology-introduction",
+      "title": "Introduction to Dermatology",
+      "subjectKey": "dermatology",
+      "order": 1,
+      "file": "data/internal-medicine-ii-dermatology-introduction.json",
+      "expectedCounts": {
+        "cases": 16,
+        "coreShorts": 70,
+        "imageQuestions": 14,
+        "detailedShorts": 17,
+        "rapid": 41
+      },
+      "courseId": "internal-medicine-ii",
+      "schemaVersion": 1
+    },
+    {
       "id": "neurosurgery-traumatic-brain-injury",
       "title": "Traumatic Brain Injury",
       "subjectKey": "neurosurgery",
