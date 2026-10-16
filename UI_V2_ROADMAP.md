@@ -59,7 +59,7 @@ Never add a dependency, global framework, external font, animation library, or g
 | V2-3 Specialty / lecture organization | Unified lecture cards, outline and quiet reading workspace | Clear location, fewer competing controls, print and navigation unaffected | 🟦 Compact chrome + Focus Mode + Images quick view delivered; further reader organization planned |
 | V2-4 Study experiences | Consistent Practice, Recall, Images; optional source-backed Explanation/MCQ/Infographic modules | Optional formats do not alter or invent lecture facts; lecture-first validator contract | Planned — needs reviewed lecture data |
 | V2-5 Progress + review | Meaningful Review/Weak queue and cross-course progress | Existing IndexedDB v2 remains compatible; back up / restore round-trip works | Planned |
-| V2-6 Mobile / dark / accessible polish | 360, 390, 768, 1440 widths, keyboard, contrast, focus, reduced motion | No overflow, 44px controls, accessible dialogs, Chromium + WebKit passed | 🟦 First regression pass successful; candidate visual screenshot review outstanding |
+| V2-6 Mobile / dark / accessible polish | 360, 390, 768, 1440 widths, keyboard, contrast, focus, reduced motion | No overflow, 44px controls, accessible dialogs, Chromium + WebKit passed | 🟦 Chromium+WebKit green; 390px light/dark and 1440px candidate screenshot review completed; 360px and real-device sign-off pending |
 | V2-7 Production release | Final regression matrix, PR review, rollback, deployment | Protected main + green CI; upload candidate then explicit Cloudflare promotion | Planned |
 
 ## Current implementation — V2-1 and first reading-workspace pass
@@ -82,6 +82,16 @@ Never add a dependency, global framework, external font, animation library, or g
 - Added browser regressions for Focus Mode persistence, progress disclosure, and Image Quick View.
 - The final full matrix passed on run [38909175547](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38909175547).
 - The current PR is still draft; **no source lecture/answer data was edited**, and preview release isn't promoted.
+
+
+### V2 visual evidence and mobile density correction
+
+- The first V2 browser images exposed an overly tall phone header and a stacked three-row mobile navigation, even though the original runtime tests were green.
+- Fixed both problems: Study tools expands on demand without hiding the online badge, two selectors share one row, and all four main reading actions share a single row.
+- Reworked the desktop header selector pair and lecture quick actions to reduce before-content scroll.
+- Added an automatic Playwright screenshot evidence suite (desktop study, course library, detailed progress, focus mode, light mobile, dark mobile) attached to the existing Chromium report.
+- Reviewed the final six actual browser screenshots and confirmed the intended visual changes. Full matrix green: [run 38912689508](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38912689508).
+- Next phase: cross-course Study Home and meaningful learner review destinations, implemented with existing progress metadata and no speculative medical facts.
 
 ## Non-negotiable release checklist
 
