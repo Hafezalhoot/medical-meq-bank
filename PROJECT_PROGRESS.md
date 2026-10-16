@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-16 — Continuation: original Dermatology scan reattached and draft source rechecked
+
+- ✅ The learner reattached `Dermatology Department book 2022.pdf` (10 image-only pages); a fresh page-by-page visual review compared printed claims with the drafted **Internal Medicine II → Dermatology → Introduction to Dermatology** lecture.
+- ✅ Cross-checked 11 source-page Explanation sections, 30 four-choice MCQ answers/rationales, 16 morphology vignettes, 70 Core Shorts, 17 Detailed Shorts, 14 original-schematic image prompts and 41 Rapid cards against the supplied printed text. No clear printed-content contradiction was found in this pass.
+- ✅ Preserved the lecture's figures and wording: 1/7 body weight; 1.75 m²; its <1 cm versus >1 cm classifications (no invented exactly-1-cm boundary); original skin-layer and skin-function lists and disease examples; erosion/ulcer scarring contrast.
+- ✅ Existing course/subject/lecture metadata registration, unique question IDs, local diagram links, stable Surgery content IDs and optional study-guide schema were checked; no exam updates/guidelines were introduced.
+- ✅ Wrote the source re-review notes and limitations into `lectures/reviews/dermatology-introduction-coverage.md`; the scan and clinical photographs remain outside the public repository.
+- 🧪 The latest revision is documentation-only; required GitHub Actions must still confirm this branch head before release. Previous green validate/Chromium/WebKit runs are retained as evidence of the underlying unchanged code.
+- ⚠️ Pending: learner/lecturer confirmation of handwritten annotations and exam-facing content, manual visual legibility sign-off for infographic and spot SVGs, publication rights and explicit Cloudflare deployment approval. **PR #27 stays Draft; do not merge the incompatible PR #26.**
+
 ### 2026-10-16 — Dermatology pilot PWA, Safari and source-review hardening
 
 - ✅ PR [#27](https://github.com/Hafezalhoot/medical-meq-bank/pull/27) contains the complete **Internal Medicine II → Dermatology → Introduction to Dermatology** draft, isolated from protected production.
