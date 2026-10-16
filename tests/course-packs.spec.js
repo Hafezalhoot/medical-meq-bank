@@ -125,3 +125,28 @@ test('lecture catalog metadata is available without loading inactive payloads', 
   await expect(page.locator('.study-item')).toHaveCount(0);
   expect(await page.evaluate(() => globalThis.MEQLectureLoader.isLoaded('urology-renal-tumors'))).toBe(false);
 });
+
+test('course library exposes configured courses and keeps lecture navigation intact', async ({page}) => {
+  await openBank(page);
+
+  const library = page.locator('#courseLibraryDisclosure');
+  await expect(library).not.toHaveAttribute('open', '');
+  await library.locator('summary').click();
+  await expect(page.locator('#courseLibraryGrid .course-library-card')).toHaveCount(2);
+  await expect(page.locator('#courseLibraryCount')).toHaveText('2 courses');
+  await expect(page.locator('[data-course-id="surgery"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('[data-course-id="internal-medicine"]')).toContainText('7 specialties');
+  await expect(page.locator('[data-course-id="internal-medicine"]')).toContainText('Ready for future lectures');
+
+  await page.locator('[data-course-id="internal-medicine"]').click();
+  await expect(page.locator('#courseSelector')).toHaveValue('internal-medicine');
+  await expect(page.locator('#subjectSelector')).toHaveValue('cardiology');
+  await expect(library).not.toHaveAttribute('open', '');
+  await expect(page.locator('#emptyMessage')).toContainText('No lectures have been added');
+
+  await library.locator('summary').click();
+  await page.locator('[data-course-id="surgery"]').click();
+  await expect(page.locator('#courseSelector')).toHaveValue('surgery');
+  await expect(page.locator('#subjectSelector')).toHaveValue('urology');
+  await expect(page.locator('#lectureFilter option[value="urology-renal-tumors"]')).toHaveText('08. Renal Tumors');
+});
