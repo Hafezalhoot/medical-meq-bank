@@ -437,8 +437,12 @@ resumeStudy?.addEventListener('click',()=>{
   const parentDetails=target.closest('details');
   if(parentDetails)parentDetails.open=true;
   if(!target.matches('button,a,input,select,textarea,[tabindex]'))target.setAttribute('tabindex','-1');
-  target.scrollIntoView({behavior:scrollBehavior(),block:'start'});
-  target.focus({preventScroll:true});
+  // Run after the button click's native focus behavior so it cannot restore the old scroll position.
+  requestAnimationFrame(()=>{
+    if(!target.isConnected)return;
+    target.focus({preventScroll:true});
+    target.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+  });
 });
 const pwaToolsToggle=$('pwaToolsToggle');
 if(pwaToolsToggle){
