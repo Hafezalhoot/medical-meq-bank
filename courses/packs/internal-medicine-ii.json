@@ -1,0 +1,18 @@
+{
+  "$schema": "../course-pack.schema.json",
+  "version": 1,
+  "id": "internal-medicine-ii",
+  "label": "Internal Medicine II",
+  "order": 3,
+  "description": "Independent Internal Medicine II lecture-based study pack; first specialty: Dermatology.",
+  "defaultSubject": "dermatology",
+  "subjects": [
+    {
+      "id": "dermatology",
+      "label": "Dermatology",
+      "order": 1
+    }
+  ],
+  "lectureCatalog": "../../lectures/catalog.json",
+  "schemaVersion": 2
+}
