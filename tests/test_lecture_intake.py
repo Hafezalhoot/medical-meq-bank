@@ -94,6 +94,37 @@ class LectureIntakeTests(unittest.TestCase):
             with redirect_stdout(StringIO()):
                 intake.main()
 
+    def test_create_course_dry_run_then_register_without_touching_existing_packs(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "add_course_test_module", ROOT_SOURCE / "tools" / "add_course.py"
+        )
+        course = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(course)
+        course.COURSES = self.root / "courses"
+        before = (self.root / "courses" / "packs" / "surgery.json").read_bytes()
+        command = [
+            "add_course.py", "--id", "pediatrics", "--label", "Pediatrics",
+            "--subject", "neonatology=Neonatology",
+            "--subject", "pediatric-cardiology=Pediatric Cardiology",
+        ]
+        with patch.object(sys, "argv", command):
+            with redirect_stdout(StringIO()):
+                course.main()
+        self.assertFalse((self.root / "courses" / "packs" / "pediatrics.json").exists())
+        with patch.object(sys, "argv", command + ["--write"]):
+            with redirect_stdout(StringIO()):
+                course.main()
+        saved = json.loads((self.root / "courses" / "packs" / "pediatrics.json").read_text())
+        self.assertEqual(saved["defaultSubject"], "neonatology")
+        self.assertEqual(len(saved["subjects"]), 2)
+        self.assertEqual((self.root / "courses" / "packs" / "surgery.json").read_bytes(), before)
+        catalog = json.loads((self.root / "courses" / "catalog.json").read_text())
+        self.assertTrue(any(item["id"] == "pediatrics" for item in catalog["courses"]))
+        with patch.object(sys, "argv", command + ["--write"]):
+            with self.assertRaisesRegex(SystemExit, "course already registered"):
+                course.main()
+
     def test_new_draft_scaffolds_empty_reviewable_course_lecture(self):
         import importlib.util
         spec = importlib.util.spec_from_file_location(
