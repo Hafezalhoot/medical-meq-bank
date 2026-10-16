@@ -75,3 +75,57 @@ test('iPhone WebKit can expand, search and reset mobile filters', async ({page},
   await expect(page.locator('#globalSearchResults')).toBeHidden();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 });
+
+
+test('Safari desktop and iPhone study the new Dermatology lecture with source-linked MCQ and infographic', async ({page}, testInfo) => {
+  const lectureId = 'internal-medicine-ii-dermatology-introduction';
+  const pageErrors = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+
+  await page.goto('/', {waitUntil:'domcontentloaded'});
+  await expect(page.locator('#courseSelector')).toBeVisible();
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+
+  if (testInfo.project.name === 'webkit-mobile') {
+    await page.locator('#mobileFiltersToggle').click();
+    await expect(page.locator('#mobileFilterBackdrop')).toBeVisible();
+  }
+  const lectureFilter = page.locator('#lectureFilter');
+  await expect(lectureFilter.locator('option[value="'+lectureId+'"]')).toHaveCount(1,{timeout:15000});
+  await lectureFilter.selectOption(lectureId);
+  await expect(page.locator('#lecture-'+lectureId)).toBeVisible({timeout:15000});
+
+  if (testInfo.project.name === 'webkit-mobile') {
+    const toggle=page.locator('#mobileFiltersToggle');
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') await toggle.click();
+  }
+  const guide=page.locator('#lecture-'+lectureId+' .learning-companion');
+  await expect(guide).toBeVisible();
+  await expect(guide.locator('.study-guide-part')).toHaveCount(3);
+
+  await guide.locator('summary').nth(1).click();
+  const mcq=guide.locator('.study-guide-mcq').first();
+  await expect(mcq.locator('input[type="radio"]')).toHaveCount(4);
+  await mcq.locator('input[type="radio"]').nth(1).check();
+  await mcq.getByRole('button',{name:'Reveal explanation'}).click();
+  await expect(mcq.locator('.study-guide-answer')).toContainText('Your answer is correct');
+
+  await guide.locator('summary').nth(2).click();
+  const image=guide.locator('.study-guide-figure img');
+  await image.scrollIntoViewIfNeeded();
+  await expect.poll(()=>image.evaluate(img=>img.complete && img.naturalWidth>0)).toBe(true);
+
+  if (testInfo.project.name === 'webkit-mobile') {
+    const sizes=await page.evaluate(()=>({
+      page:document.documentElement.scrollWidth,
+      viewport:document.documentElement.clientWidth
+    }));
+    expect(sizes.page).toBeLessThanOrEqual(sizes.viewport + 1);
+  }
+  expect(pageErrors).toEqual([]);
+  await testInfo.attach('dermatology-'+testInfo.project.name,{
+    body:await page.screenshot({animations:'disabled'}),
+    contentType:'image/png'
+  });
+});
