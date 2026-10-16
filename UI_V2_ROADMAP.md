@@ -104,6 +104,15 @@ Never add a dependency, global framework, external font, animation library, or g
 - [ ] No break in IndexedDB stored progress, backup, and offline pages.
 - [ ] Protected PR green before merging; Cloudflare promotion only after approval.
 
+## V2 browser visual evidence — 2026-10-16
+
+- ✅ Final current-head app/navigation layout and course selector browser run [38912689508](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38912689508) passed all **validate / chromium-quality / webkit-quality** jobs on `8b141de972b3048d78ec19cf3af5240a79381be6`.
+- ✅ Inspected genuine Chromium Playwright screenshot artifacts at desktop 1440×900, phone 390×844, expanded Course Library, expanded Stats and desktop Focus Mode.
+- ✅ After screenshot-driven iteration: mobile utilities folded into Study tools; two-column Course/Specialty picker on mobile and desktop; one-row mobile Lectures/Topics/Focus/Print actions; concise header and calm reading surfaces; focus mode remains reversible.
+- ✅ Exported human-review screenshots from the CI build (not synthetic mockups); attached to conversation for product design review.
+- ⚠️ Impeccable skill is **not installed** in this environment. Applied available public critique/distill/polish concepts and UI/UX Pro Max patterns, not an Impeccable tool audit.
+- ⏳ Retain PR #23 as Draft until stakeholder visual acceptance and any remaining cross-course Study Home / My Review improvements are scoped into following increments. Production main and Worker remain untouched.
+
 ## Rollout
 
 Keep the existing `2026.10.04.2` production Worker intact until V2 has been visually reviewed and automated tests pass. Each phase may have its own small PR; do not combine unrelated data migrations with visual changes. Save browser screenshots for desktop, small phone, dark mode, and expanded course library before final merge.
