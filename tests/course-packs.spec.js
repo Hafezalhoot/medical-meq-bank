@@ -152,3 +152,15 @@ test('course library exposes configured courses and keeps lecture navigation int
   await expect(page.locator('#subjectSelector')).toHaveValue('urology');
   await expect(page.locator('#lectureFilter option[value="urology-renal-tumors"]')).toHaveText('08. Renal Tumors');
 });
+
+test('image spot quick view is available directly from lecture header', async ({page}) => {
+  await openBank(page);
+  const imageQuickView = page.locator('.quick-view-btn[data-view="image"]').first();
+  await expect(imageQuickView).toBeVisible();
+  await imageQuickView.click();
+  await expect(page.locator('#typeFilter')).toHaveValue('image');
+  await expect(page.locator('.image-card:not(.hidden)')).toHaveCount(10);
+  await expect(imageQuickView).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('.quick-reset[data-view="all"]').first().click();
+  await expect(page.locator('#typeFilter')).toHaveValue('all');
+});
