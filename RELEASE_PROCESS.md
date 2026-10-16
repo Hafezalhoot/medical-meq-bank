@@ -65,7 +65,7 @@ Generated `dist/` and Playwright reports are CI artifacts, not source-controlled
 
 The 2026-10-03 synthetic `BuildFailed/startup_failure` incident was operationally resolved on 2026-10-04 by transferring the same public repository from the `Hafez-Alhoot` organization to the personal `Hafezalhoot` account. The repository ID and history were preserved. The exact organization-side policy/provisioning cause was not identified.
 
-The current release gate is healthy. On PR #19 head `f5eaa43d9b08a3b0e2129685e344bc836bc9641a`, GitHub Actions run `37191073031` passed:
+The current release gate is healthy. On PR #19 head `b9686d54f66cb5b4c73fa3d5f7360690c66a6dda`, GitHub Actions run `37232212679` passed:
 
 - `validate`;
 - `chromium-quality` including axe, performance, Print/PDF and offline coverage;
@@ -87,6 +87,14 @@ npm run test:e2e
 npx playwright test --config=playwright.webkit.config.js
 ```
 
+## Importable `main` branch protection
+
+The repository includes [`.github/rulesets/main-protection.json`](./.github/rulesets/main-protection.json) as the **reviewed import template** for GitHub branch rules. **Committing this file does not activate branch protection.** The repository owner must import it in GitHub **Settings → Rules → Rulesets → New ruleset → Import a ruleset**, review it, and create it with **Active** enforcement.
+
+The ruleset targets the default branch, requires pull requests, disallows branch deletion and force pushes, and requires successful `validate`, `chromium-quality`, and `webkit-quality` checks with an up-to-date branch. It intentionally requires **zero human approvals** for the current single-maintainer repository; CI, PR-only merges, and resolved review threads are still required. Do not raise that count without an independent reviewer who can approve PRs. No bypass actors are configured.
+
+After import, verify via GitHub Settings / ruleset API that `main` is protected and all three checks are required. Verify a failing check prevents normal merge; do not bypass the rule during the test. Issue [#21](https://github.com/Hafezalhoot/medical-meq-bank/issues/21) remains open until that behavior is confirmed.
+
 ## Production promotion
 
 The intended production flow is:
@@ -100,7 +108,7 @@ feature branch
   -> explicit production promotion
 ```
 
-Cloudflare branch/deployment control is an external setting and cannot be guaranteed by repository code. Verify it in the Cloudflare dashboard before promotion.
+Cloudflare branch/deployment control is an external setting and cannot be guaranteed by repository code. Verify the existing Worker's connected repository, production branch, deploy behavior, live hostname, access policy, and rollback in the Cloudflare dashboard (issue [#22](https://github.com/Hafezalhoot/medical-meq-bank/issues/22)) before promotion. Do not mark PR #19 ready or merge until issues #21 and #22 meet their exit criteria.
 
 ## Rollback
 
