@@ -436,7 +436,7 @@ resumeStudy?.addEventListener('click',()=>{
   if(!target)return;
   const parentDetails=target.closest('details');
   if(parentDetails)parentDetails.open=true;
-  if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
+  if(!target.matches('button,a,input,select,textarea,[tabindex]'))target.setAttribute('tabindex','-1');
   target.scrollIntoView({behavior:scrollBehavior(),block:'start'});
   target.focus({preventScroll:true});
 });
