@@ -1,6 +1,16 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
 
+
+### 2026-10-16 — Screenshot-driven reader redesign
+
+- ✅ Reviewed owner's 3 production screenshots as visual evidence: oversized hero, dense toolbar/metrics, crowded dual sidebars, repeated elevated case cards.
+- ✅ Implemented compact, content-first header, progressive study metrics, narrower reader navigation and quieter question card chrome.
+- ✅ Implemented persistent `Focus on questions` / `Exit focus mode`, and direct Image quick view, preserving pre-existing progress keys and other study actions.
+- ✅ Added runnable regressions for focus restoration, status summary disclosure and Image quick view; full GitHub matrix successful in run `38909175547`.
+- ⚠️ Impeccable's installed tool is unavailable here; public critique/polish principles were consulted, with no fabricated detector output or numeric visual score.
+- ⏳ Manual branch-preview screenshots and cross-device visual sign-off are outstanding; no merge or production promotion yet.
+
 ## Medical Study Workspace V2 (2026-10-16)
 
 **Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  
