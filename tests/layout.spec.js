@@ -3,6 +3,7 @@ import {test, expect} from '@playwright/test';
 test.use({serviceWorkers: 'block'});
 
 const viewports = [
+  {name: 'compact phone', width: 320, height: 700},
   {name: 'small phone', width: 360, height: 800},
   {name: 'phone', width: 390, height: 844},
   {name: 'tablet', width: 768, height: 1024},
@@ -167,4 +168,139 @@ test('landscape phone preserves content and safe controls without horizontal ove
 
   expect(dimensions.documentWidth).toBeLessThanOrEqual(dimensions.innerWidth + 1);
   expect(dimensions.mainVisible).toBe(true);
+});
+
+test('study focus mode expands the reading area and restores the existing navigation', async ({page}) => {
+  await openBank(page, {width: 1440, height: 900});
+  const focus = page.locator('#focusModeBtn');
+  await expect(focus).toHaveAttribute('aria-pressed', 'false');
+  await focus.click();
+  await expect(focus).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.app')).toHaveClass(/study-focus/);
+  await expect(page.locator('.hero')).toBeHidden();
+  await expect(page.locator('.lecture-sidebar')).toBeHidden();
+  await expect(page.locator('.subtopic-sidebar')).toBeHidden();
+  await expect(page.locator('#mainContent')).toBeVisible();
+  await expect(page.locator('.study-item').first()).toBeAttached();
+
+  await page.reload({waitUntil: 'domcontentloaded'});
+  await expect(page.locator('#focusModeBtn')).toHaveAttribute('aria-pressed', 'true');
+  await focus.click();
+  await expect(focus).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('.hero')).toBeVisible();
+  await expect(page.locator('.lecture-sidebar')).toBeVisible();
+  await expect(page.locator('#mainContent')).toBeVisible();
+});
+
+test('study progress summary remains readable and all detailed metrics can be revealed', async ({page}) => {
+  await openBank(page, {width: 1440, height: 900});
+  const insights = page.locator('#studyInsights');
+  await expect(insights).not.toHaveAttribute('open', '');
+  await expect(page.locator('#insightsHeadline')).toContainText('overall practice');
+  await insights.locator('summary').click();
+  await expect(insights).toHaveAttribute('open', '');
+  await expect(page.locator('#lectureCount')).not.toBeEmpty();
+  await expect(page.locator('#coreProgressBar')).toHaveAttribute('role', 'progressbar');
+  await insights.locator('summary').click();
+  await expect(insights).not.toHaveAttribute('open', '');
+});
+
+test('mobile shows compact utilities and two-column medical study selectors', async ({page}) => {
+  await openBank(page, {width: 390, height: 844});
+  const tools = page.locator('#pwaToolsToggle');
+  await expect(tools).toBeVisible();
+  await expect(tools).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#exportProgressBtn')).toBeHidden();
+  await tools.click();
+  await expect(tools).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#exportProgressBtn')).toBeVisible();
+  await expect(page.locator('#importProgressBtn')).toBeVisible();
+  await tools.click();
+  await expect(page.locator('#exportProgressBtn')).toBeHidden();
+  await expect(page.locator('#courseSelector')).toBeVisible();
+  await expect(page.locator('#subjectSelector')).toBeVisible();
+  const navButtons = await page.evaluate(() => ['toggleLectures', 'toggleSubtopics', 'focusModeBtn', 'printCenterQuickBtn'].map(id => {
+    const box = document.getElementById(id).getBoundingClientRect();
+    return {top: box.top, right: box.right, left: box.left};
+  }));
+  expect(Math.max(...navButtons.map(box => box.top)) - Math.min(...navButtons.map(box => box.top))).toBeLessThan(2);
+  expect(Math.max(...navButtons.map(box => box.right))).toBeLessThanOrEqual(391);
+  const rectangles = await page.evaluate(() => ['courseSelector', 'subjectSelector'].map(id => {
+    const box = document.getElementById(id).getBoundingClientRect();
+    return {left: box.left, right: box.right, height: box.height};
+  }));
+  expect(rectangles[0].right).toBeLessThanOrEqual(rectangles[1].left + 1);
+  expect(rectangles[0].height).toBeGreaterThanOrEqual(44);
+  expect(rectangles[1].height).toBeGreaterThanOrEqual(44);
+});
+
+test('Impeccable: desktop chrome is compact while lecture and utility controls remain accessible', async ({page}) => {
+  await openBank(page, {width: 1440, height: 900});
+  const toolbarLecture = page.locator('#lectureFilter');
+  await expect(toolbarLecture).toHaveAttribute('title', /Congenital Anomalies/);
+  const lectureWidth = await toolbarLecture.evaluate(el => el.getBoundingClientRect().width);
+  expect(lectureWidth).toBeGreaterThanOrEqual(205);
+
+  const heroHeight = await page.locator('.hero').evaluate(el => el.getBoundingClientRect().height);
+  expect(heroHeight).toBeLessThanOrEqual(225);
+
+  const utilities = page.locator('#pwaToolsToggle');
+  await expect(utilities).toBeVisible();
+  await expect(utilities).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#exportProgressBtn')).toBeHidden();
+  await utilities.click();
+  await expect(utilities).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#exportProgressBtn')).toBeVisible();
+  await expect(page.locator('#importProgressBtn')).toBeVisible();
+  await utilities.click();
+  await expect(page.locator('#exportProgressBtn')).toBeHidden();
+});
+
+test('Impeccable: phone dark mode toggle shares header row with the title', async ({page}) => {
+  await openBank(page, {width: 390, height: 844});
+  const layout = await page.evaluate(() => {
+    const title = document.querySelector('.hero h1').getBoundingClientRect();
+    const theme = document.getElementById('darkBtn').getBoundingClientRect();
+    return {titleY: title.top, themeY: theme.top, themeHeight: theme.height};
+  });
+  expect(Math.abs(layout.titleY - layout.themeY)).toBeLessThan(35);
+  expect(layout.themeHeight).toBeGreaterThanOrEqual(44);
+  await page.locator('#darkBtn').click();
+  await expect(page.locator('body')).toHaveClass(/dark/);
+});
+
+test('Impeccable: Start studying resumes a Review/Weak item without changing saved answers', async ({page}) => {
+  await openBank(page, {width: 1440, height: 900});
+  const resume=page.locator('#resumeStudyBtn');
+  await expect(resume).toBeVisible();
+  await expect(resume).toBeEnabled();
+  const cards=page.locator('#mainContent .study-item:not(.hidden)');
+  await expect.poll(()=>cards.count()).toBeGreaterThan(2);
+  const target=cards.nth(1);
+  await target.locator('.status.weak').click();
+  await expect(target.locator('.status.weak')).toHaveClass(/active/);
+  await resume.click();
+  await expect(resume).toContainText('Continue studying');
+  await expect(target).toBeFocused();
+  await expect(target.locator('.status.weak')).toHaveClass(/active/);
+});
+
+test('Impeccable: offline subject storage remains reachable through Study tools', async ({page}) => {
+  await openBank(page, {width: 390, height: 844});
+  await expect(page.locator('#offlineSubjectBtn')).toBeHidden();
+  await page.locator('#pwaToolsToggle').click();
+  await expect(page.locator('#offlineSubjectBtn')).toBeVisible();
+  await expect(page.locator('#offlineSubjectBtn')).toBeEnabled();
+});
+
+test('Impeccable: Escape closes mobile study utilities and restores focus safely', async ({page}) => {
+  await openBank(page, {width: 390, height: 844});
+  const toggle = page.locator('#pwaToolsToggle');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await page.locator('#exportProgressBtn').focus();
+  await page.keyboard.press('Escape');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(toggle).toBeFocused();
+  await expect(page.locator('#exportProgressBtn')).toBeHidden();
 });

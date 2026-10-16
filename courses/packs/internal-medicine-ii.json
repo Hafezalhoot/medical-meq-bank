@@ -1,0 +1,18 @@
+{
+  "$schema": "../course-pack.schema.json",
+  "version": 1,
+  "id": "internal-medicine-ii",
+  "label": "Internal Medicine II",
+  "order": 3,
+  "description": "Lecture-first clinical medicine study pack; Dermatology is the first published subject.",
+  "defaultSubject": "dermatology",
+  "subjects": [
+    {
+      "id": "dermatology",
+      "label": "Dermatology",
+      "order": 1
+    }
+  ],
+  "lectureCatalog": "../../lectures/catalog.json",
+  "schemaVersion": 2
+}

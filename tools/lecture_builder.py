@@ -5,6 +5,8 @@ from __future__ import annotations
 
 from pathlib import Path
 import json
+import base64
+import re
 
 
 LECTURE_LIST_KEYS = (
@@ -18,7 +20,7 @@ VALID_PRIORITIES = {"High", "Core"}
 TOP_LEVEL_FIELDS = {
     "schemaVersion", "courseId", "canonicalId",
     "id", "order", "subjectKey", "subject", "title", "subtitle", "sourceNote",
-    "subtopics", "cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid",
+    "subtopics", "cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid", "studyGuide",
 }
 SUBTOPIC_FIELDS = {"id", "label"}
 ITEM_FIELDS = {
@@ -180,7 +182,85 @@ def validate_lecture(
                 if not _validate_answer(item.get("a")):
                     raise SystemExit(f"{label} {item_id} has an invalid answer")
 
+    if "studyGuide" in lecture:
+        validate_study_guide(lecture["studyGuide"], label=label, item_ids=all_item_ids)
+
     return lecture
+
+
+
+def validate_study_guide(guide: object, *, label: str, item_ids: set[str]) -> None:
+    """Validate approved, plain-text Explanation / MCQ / Infographic companions."""
+    if not isinstance(guide, dict):
+        raise SystemExit(f"{label} studyGuide must be an object")
+    _reject_unknown_fields(guide, {"explanation", "mcqs", "infographic"}, label=f"{label} studyGuide")
+    sections = guide.get("explanation", [])
+    mcqs = guide.get("mcqs", [])
+    infographic = guide.get("infographic")
+    if not isinstance(sections, list) or not isinstance(mcqs, list):
+        raise SystemExit(f"{label} explanation and mcqs must be arrays")
+    if not sections and not mcqs and not infographic:
+        raise SystemExit(f"{label} studyGuide has no approved content")
+
+    for number, section in enumerate(sections, 1):
+        marker = f"{label} explanation section {number}"
+        if not isinstance(section, dict):
+            raise SystemExit(f"{marker} must be an object")
+        _reject_unknown_fields(
+            section, {"heading", "paragraphs", "sourcePage", "understandingAids"},
+            label=marker,
+        )
+        for field in ("heading", "sourcePage"):
+            if not _non_empty_string(section.get(field)):
+                raise SystemExit(f"{marker} is missing {field}")
+        if not _string_list(section.get("paragraphs")):
+            raise SystemExit(f"{marker} requires non-empty paragraphs")
+        if "understandingAids" in section and not _string_list(section["understandingAids"], allow_empty=True):
+            raise SystemExit(f"{marker} has invalid understandingAids")
+
+    for number, item in enumerate(mcqs, 1):
+        marker = f"{label} MCQ {number}"
+        if not isinstance(item, dict):
+            raise SystemExit(f"{marker} must be an object")
+        _reject_unknown_fields(
+            item, {"id", "question", "options", "answerIndex", "rationale", "sourcePage"},
+            label=marker,
+        )
+        for field in ("id", "question", "rationale", "sourcePage"):
+            if not _non_empty_string(item.get(field)):
+                raise SystemExit(f"{marker} is missing {field}")
+        if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", item["id"]):
+            raise SystemExit(f"{marker} has an unsafe MCQ id")
+        if item["id"] in item_ids:
+            raise SystemExit(f"{marker} reuses study item id: {item['id']}")
+        item_ids.add(item["id"])
+        options = item.get("options")
+        if not _string_list(options) or len(options) != 4:
+            raise SystemExit(f"{marker} requires exactly four non-empty options")
+        choice = item.get("answerIndex")
+        if type(choice) is not int or choice not in (0, 1, 2, 3):
+            raise SystemExit(f"{marker} has an invalid answerIndex")
+
+    if infographic is not None:
+        if not isinstance(infographic, dict):
+            raise SystemExit(f"{label} infographic must be an object")
+        _reject_unknown_fields(
+            infographic, {"image", "alt", "caption", "sourcePage"},
+            label=f"{label} infographic",
+        )
+        for field in ("image", "alt", "sourcePage"):
+            if not _non_empty_string(infographic.get(field)):
+                raise SystemExit(f"{label} infographic is missing {field}")
+        if "caption" in infographic and not _non_empty_string(infographic["caption"]):
+            raise SystemExit(f"{label} infographic caption cannot be blank")
+        image = infographic["image"]
+        if image.startswith("data:"):
+            if not re.fullmatch(r"data:image/(?:png|jpeg|webp|avif);base64,[A-Za-z0-9+/=\\r\\n]+", image):
+                raise SystemExit(f"{label} infographic has unsupported inline media")
+        else:
+            relative = image.removeprefix("./")
+            if not relative.startswith("assets/") or ".." in Path(relative).parts or "\\" in relative:
+                raise SystemExit(f"{label} infographic must reference a safe local asset" )
 
 
 def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
@@ -316,8 +396,36 @@ def _batch_extension(lectures_to_add: list[dict]) -> str:
     )
 
 
+def inline_study_guide_media(root: Path, lectures: list[dict]) -> None:
+    """Keep standalone offline HTML self-contained when companions use local images."""
+    mime_types = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+                  ".webp": "image/webp", ".avif": "image/avif"}
+    for lecture in lectures:
+        info = lecture.get("studyGuide", {}).get("infographic")
+        if not info:
+            continue
+        image = info["image"]
+        if image.startswith("data:image/"):
+            continue
+        relative = image.removeprefix("./")
+        assets = (root / "assets").resolve()
+        candidate = (root / relative).resolve()
+        if not relative.startswith("assets/") or not candidate.is_relative_to(assets):
+            raise SystemExit(f"Unsafe offline companion media path in {lecture['id']}")
+        mime = mime_types.get(candidate.suffix.lower())
+        if not mime or not candidate.is_file():
+            raise SystemExit(f"Missing or unsupported offline companion image: {relative}")
+        raw = candidate.read_bytes()
+        if not raw or len(raw) > 15 * 1024 * 1024:
+            raise SystemExit(f"Offline companion image exceeds media budget: {relative}")
+        info["image"] = f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
+
+
 def build_lecture_extensions(root: Path | str = Path(".")) -> str:
-    return _batch_extension(load_json_lectures(root))
+    root = Path(root)
+    lectures = load_json_lectures(root)
+    inline_study_guide_media(root, lectures)
+    return _batch_extension(lectures)
 
 
 if __name__ == "__main__":
