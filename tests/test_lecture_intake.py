@@ -290,6 +290,34 @@ class LectureIntakeTests(unittest.TestCase):
         self.assertTrue(samples[0]["studyGuide"]["infographic"]["image"].startswith("data:image/png;base64,"))
         self.assertNotIn("./assets/", samples[0]["studyGuide"]["infographic"]["image"])
 
+    def test_source_authored_svg_media_is_passive_and_offline_safe(self):
+        from lecture_builder import validate_safe_svg, inline_study_guide_media
+        assets = self.root / "assets" / "lectures"
+        assets.mkdir(parents=True)
+        diagram = assets / "safe.svg"
+        diagram.write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40">'
+                           '<rect x="3" y="3" width="20" height="20" fill="#123456"/>'
+                           '<text x="30" y="18">Skin</text></svg>', encoding="utf-8")
+        self.assertGreater(len(validate_safe_svg(diagram)), 10)
+        lecture = {"id": "safe-source", "imageQuestions": [{"image": "./assets/lectures/safe.svg"}],
+                   "studyGuide": {"infographic": {"image": "./assets/lectures/safe.svg"}}}
+        inline_study_guide_media(self.root, [lecture])
+        self.assertTrue(lecture["imageQuestions"][0]["image"].startswith("data:image/svg+xml;base64,"))
+        self.assertTrue(lecture["studyGuide"]["infographic"]["image"].startswith("data:image/svg+xml;base64,"))
+        diagram.write_text('<svg xmlns="http://www.w3.org/2000/svg"><script>bad()</script></svg>',
+                           encoding="utf-8")
+        with self.assertRaisesRegex(SystemExit, "unsupported element"):
+            validate_safe_svg(diagram)
+        diagram.write_text('<!DOCTYPE svg><svg xmlns="http://www.w3.org/2000/svg"/>',
+                           encoding="utf-8")
+        with self.assertRaisesRegex(SystemExit, "forbidden"):
+            validate_safe_svg(diagram)
+        diagram.write_text('<svg xmlns="http://www.w3.org/2000/svg">'
+                           '<image href="https://example.com/x.png"/></svg>',
+                           encoding="utf-8")
+        with self.assertRaisesRegex(SystemExit, "unsupported element"):
+            validate_safe_svg(diagram)
+
     def test_write_failure_rolls_back_all_published_files(self):
         save(self.root / "draft.json", draft())
         before_catalog = self.catalog.read_bytes()
