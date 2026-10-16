@@ -9,8 +9,15 @@ async function openDermatology(page) {
   await expect(page.locator('#courseSelector')).toBeVisible();
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+  const mobileToggle=page.locator('#mobileFiltersToggle');
+  if(await mobileToggle.isVisible()){
+    await mobileToggle.click();
+    await expect(page.locator('#mobileFilterBackdrop')).toBeVisible();
+  }
   await expect(page.locator('#lectureFilter option[value="'+lectureId+'"]')).toHaveCount(1, {timeout:15000});
   await page.locator('#lectureFilter').selectOption(lectureId);
+  const closeMobileFilters=page.locator('#closeMobileFiltersBtn');
+  if(await closeMobileFilters.isVisible()) await closeMobileFilters.click();
   await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15000});
   await expect(page.locator('#lecture-'+lectureId)).toBeVisible();
   await expect(page.locator('#dataAlert')).toBeHidden();

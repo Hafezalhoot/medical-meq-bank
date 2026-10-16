@@ -5,7 +5,8 @@
 - 🧪 Desktop screenshots showed a clear original SVG infographic, but the legacy `max-width:100%` image scaling would shrink its detailed labels to unreadable sizes on narrow phones.
 - 🧪 Added an accessible keyboard-focusable horizontal image scroller on screens <=700px, an explanatory swipe hint and a same-origin **Open full-size infographic** link that works with cached offline assets.
 - 🧪 Extended real-lecture Playwright coverage to assert scrollable image width, no document-wide overflow and functional full-size link; attached a targeted 390px evidence screenshot.
-- ⏳ **CI and updated mobile screenshot review required** before this improvement is considered complete; learner/lecturer sign-off and publication gate remain unchanged.
+- 🧪 First updated run [38962874110](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38962874110): `validate` and `webkit-quality` passed; Chromium's 72 other tests passed, but the new 390px test tried to select the **intentionally hidden mobile lecture filter** without first opening the mobile filter drawer. Corrected the test helper to open/close the actual mobile drawer. Re-run required; no product-code regression was established by this test setup failure.
+- ⏳ **Fresh CI and updated mobile screenshot review required** before this improvement is considered complete; learner/lecturer sign-off and publication gate remain unchanged.
 
 ### 2026-10-16 — Continuation: original Dermatology scan reattached and draft source rechecked
 
