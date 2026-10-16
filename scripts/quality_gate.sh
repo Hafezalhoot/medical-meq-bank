@@ -69,6 +69,8 @@ javascript_files=(
   tests/course-packs.spec.js
   tests/hardening.spec.js
   tests/layout.spec.js
+  tests/my-review.spec.js
+  tests/study-guide.spec.js
   tests/mobile-filters.spec.js
   tests/performance.spec.js
   tests/print.spec.js
