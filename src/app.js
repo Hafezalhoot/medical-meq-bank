@@ -372,7 +372,9 @@ function updateStatus(){
   if(summaryFill)summaryFill.style.width=op+'%';
   const subject=subjects.find(s=>s.id===activeSubject);
   $('heroTags').innerHTML=`<span class="hero-tag">${esc(subject?.label||'Subject')}</span><span class="hero-tag">${scope.length} Lecture${scope.length===1?'':'s'}</span><span class="hero-tag">${totals.cases} MEQ Cases</span><span class="hero-tag">${totals.coreShorts} Core Shorts</span><span class="hero-tag">Saved Progress</span>`;
-  updateStudyBreadcrumb()
+  updateStudyBreadcrumb();
+  const lectureSelect=$('lectureFilter');
+  if(lectureSelect)lectureSelect.title=lectureSelect.selectedOptions?.[0]?.textContent?.trim()||'';
 }
 function updateTopicOptions(){const lecture=currentLecture();const list=lecture?[lecture]:[];const topics=[...new Set(list.flatMap(l=>[...l.cases.map(c=>c.topic),...l.coreShorts.map(q=>q.topic),...l.imageQuestions.map(q=>q.topic),...l.detailedShorts.map(q=>q.topic)]))].sort();const old=$('topicFilter').value;$('topicFilter').innerHTML='<option value="all">All topics</option>'+topics.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');$('topicFilter').value=topics.includes(old)?old:'all'}
 function applyFilters(){
