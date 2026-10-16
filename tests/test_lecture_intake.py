@@ -94,6 +94,36 @@ class LectureIntakeTests(unittest.TestCase):
             with redirect_stdout(StringIO()):
                 intake.main()
 
+    def test_new_draft_scaffolds_empty_reviewable_course_lecture(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "draft_generator_test_module", ROOT_SOURCE / "tools" / "new_lecture.py"
+        )
+        generator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(generator)
+        generator.ROOT, generator.LECTURES = self.root, self.root / "lectures"
+        generator.course_pack = intake.course_pack
+        generator.read_json = intake.read_json
+        with patch.object(sys, "argv", [
+            "new_lecture.py", "--course", "internal-medicine", "--subject", "cardiology",
+            "--title", "Cardiac Pharmacology", "--source", "Lecture.pdf",
+        ]):
+            with redirect_stdout(StringIO()):
+                generator.main()
+        path = self.root / "tmp" / "lecture-drafts" / "cardiology-cardiac-pharmacology.json"
+        self.assertTrue(path.is_file())
+        content = json.loads(path.read_text())
+        self.assertEqual(content["order"], 1)
+        self.assertEqual(content["sourceNote"].split(";")[0], "PDF source: Lecture.pdf")
+        self.assertEqual(content["subject"], "Cardiology")
+        self.assertEqual(content["coreShorts"], [])
+        with patch.object(sys, "argv", [
+            "new_lecture.py", "--course", "internal-medicine", "--subject", "cardiology",
+            "--title", "Cardiac Pharmacology", "--source", "Lecture.pdf",
+        ]):
+            with self.assertRaisesRegex(SystemExit, "draft already exists"):
+                generator.main()
+
     def test_dry_run_does_not_change_sources(self):
         save(self.root / "draft.json", draft())
         before = self.catalog.read_bytes()
