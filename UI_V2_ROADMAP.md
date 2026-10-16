@@ -93,6 +93,10 @@ Never add a dependency, global framework, external font, animation library, or g
 - Reviewed the final six actual browser screenshots and confirmed the intended visual changes. Full matrix green: [run 38912689508](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38912689508).
 - Next phase: cross-course Study Home and meaningful learner review destinations, implemented with existing progress metadata and no speculative medical facts.
 
+### Installed Impeccable critique and harden pass
+
+Applied Impeccable (ChatGPT adaptation v4.6.0) to the verified screenshots and current branch implementation: Operate for navigation, Read for case text. Kept source-backed medical content and progress stable; added Escape/focus behavior to mobile Study tools. See `UI_V2_AUDIT.md` for observed, fixed and pending items. The original standalone detector was not run.
+
 ## Non-negotiable release checklist
 
 - [x] New `2026.10.16.1` version matches service worker and PWA client.
