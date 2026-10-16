@@ -13,6 +13,7 @@ async function openDermatology(page) {
   await page.locator('#lectureFilter').selectOption(lectureId);
   await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15000});
   await expect(page.locator('#lecture-'+lectureId)).toBeVisible();
+  await expect(page.locator('#dataAlert')).toBeHidden();
 }
 
 test('Internal Medicine II / Dermatology loads the complete 10-page source-based lecture', async ({page}) => {
@@ -76,4 +77,8 @@ test('Dermatology progress remains isolated from the original Surgery course', a
     return data['urology-bladder-cancer::case::bc-c01'];
   });
   expect(preserved).toBe('mastered');
+  await expect(page.locator('#dataAlert')).toBeHidden();
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+  await expect(page.locator('#dataAlert')).toBeHidden();
 });
