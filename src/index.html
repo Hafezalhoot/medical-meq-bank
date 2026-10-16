@@ -23,9 +23,9 @@
   <button class="theme-toggle" id="darkBtn" type="button" aria-label="Switch to dark mode"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"></path></svg></span><span class="button-label" data-theme-label>Dark mode</span></button>
   <div class="hero-grid">
     <div class="hero-copy">
-      <div class="eyebrow">Focused study • Offline-ready • Progress saved</div>
+      <div class="eyebrow">Your medical study workspace • Offline-ready • Progress saved</div>
       <h1>Medical MEQ Review Bank</h1>
-      <p>Practice clinical cases, high-yield questions, image spots and rapid recall in one focused study workspace.</p>
+      <p>Keep your medical courses in one focused workspace. Revise each lecture with clinical cases, image questions and rapid recall.</p>
       <div class="hero-tags" id="heroTags"></div>
       <div class="pwa-tools" aria-label="App and backup tools">
         <button class="pwa-btn" id="installAppBtn" type="button" hidden><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Install App</span></button>
@@ -42,6 +42,20 @@
       <span class="subject-hint">Choose a specialty to display its lectures and study content.</span>
     </div>
   </div>
+</section>
+
+<section class="course-library" aria-label="Medical courses">
+  <details id="courseLibraryDisclosure">
+    <summary class="course-library-toggle">
+      <span class="course-library-symbol" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="4" width="8" height="7" rx="1.5"></rect><rect x="13" y="4" width="8" height="7" rx="1.5"></rect><rect x="3" y="13" width="8" height="7" rx="1.5"></rect><rect x="13" y="13" width="8" height="7" rx="1.5"></rect></svg>
+      </span>
+      <span class="course-library-heading"><strong>Explore your courses</strong><span>Switch between medical courses without losing your place or study progress.</span></span>
+      <span id="courseLibraryCount" class="course-library-count">Courses</span>
+      <span class="course-library-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span>
+    </summary>
+    <div id="courseLibraryGrid" class="course-library-grid" aria-label="Available medical courses"></div>
+  </details>
 </section>
 
 <nav id="studyBreadcrumb" class="study-breadcrumb" aria-label="Study location"></nav>
