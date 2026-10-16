@@ -13,7 +13,7 @@ import binascii
 import math
 import tempfile
 
-from lecture_builder import LECTURE_LIST_KEYS, validate_lecture
+from lecture_builder import LECTURE_LIST_KEYS, validate_lecture, validate_safe_svg
 
 ROOT = Path(__file__).resolve().parents[1]
 LECTURES = ROOT / "lectures"
@@ -106,8 +106,10 @@ def validate_image_sources(lecture: dict) -> None:
         target = (ROOT / relative).resolve()
         if not target.is_relative_to(assets) or not target.is_file():
             fail(f"{image['id']}: referenced image does not exist under assets/")
-        if target.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp", ".avif"}:
+        if target.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp", ".avif", ".svg"}:
             fail(f"{image['id']}: unsupported image extension")
+        if target.suffix.lower() == ".svg":
+            validate_safe_svg(target)
 
 
 def course_pack(course_id: str) -> tuple[Path, dict]:
