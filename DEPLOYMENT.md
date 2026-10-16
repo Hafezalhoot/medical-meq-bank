@@ -32,13 +32,13 @@ The Worker serves `dist/` through the `assets.directory` setting in `wrangler.js
 
 ## Cloudflare Workers Builds
 
-Connect the GitHub repository from Cloudflare Dashboard → Workers & Pages → the `medical-meq-bank` Worker → Settings → Builds.
+Open the existing `medical-meq-bank` Worker in the Cloudflare dashboard → **Settings → Build**. The repository was transferred from an organization to the personal GitHub account, so verify the integration still points to the **new personal owner**; do not create another production Worker.
 
 Recommended settings:
 
 - Git provider: GitHub
 - Repository: `Hafezalhoot/medical-meq-bank`
-- Production branch: `main`
+- Production branch: `main` (**Settings → Build → Branch control**)
 - Build command: `bash build.sh`
 - Production deploy command: use the release policy below
 - Preview builds: enabled for pull-request branches when available
@@ -69,7 +69,7 @@ Promote a version only after the same commit has passed the project validation m
 
 Alternatively, temporarily disable automatic production-branch deployments in Cloudflare Branch control and deploy an approved build manually.
 
-> Repository code cannot enforce the Cloudflare Dashboard branch-control setting. Treat this as an operational release control and verify it before a production release.
+> Repository code cannot enforce the Cloudflare Dashboard branch-control or the active production deployment command. Treat both as operational release controls and verify them before a production release. [Cloudflare verification issue #22](https://github.com/Hafezalhoot/medical-meq-bank/issues/22) contains the operator acceptance checklist.
 
 ## Restrict access with Cloudflare Access
 
@@ -94,7 +94,7 @@ Student progress remains local to the browser unless the user explicitly exports
 Before promoting a production version:
 
 - `bash build.sh` succeeds, including the canonical static quality gate.
-- GitHub PR quality checks are green and `main` branch protection requires them.
+- GitHub PR quality checks are green and `main` branch protection requires them (import [the prepared ruleset](./.github/rulesets/main-protection.json) and verify enforcement; issue #21).
 - All Python validators/repository audits and performance budgets succeed.
 - JavaScript syntax checks succeed.
 - Chromium/Playwright checks succeed.
@@ -103,7 +103,10 @@ Before promoting a production version:
 - Offline/service-worker checks succeed.
 - `version.json`, `service-worker.js`, and the generated PWA version agree.
 - No medical content count or image-integrity regression is present.
+- The existing Cloudflare Worker is connected to `Hafezalhoot/medical-meq-bank`, its production branch is `main`, and the actual deploy command is verified.
+- Automatic production promotion cannot bypass the approved GitHub PR/CI process.
 - The exact production URL and Cloudflare Access policy are verified.
+- The last approved Worker version is available for rollback.
 - `PROJECT_PROGRESS.md` is updated for the release.
 
 ## Rollback
