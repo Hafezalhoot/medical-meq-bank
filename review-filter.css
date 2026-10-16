@@ -1,5 +1,6 @@
 /* Review-level and Rapid Recall filter extension */
-.toolbar{grid-template-columns:minmax(250px,2fr) repeat(5,minmax(124px,1fr)) auto auto}
+/* Give the current lecture its full readable title before secondary filters. */
+.toolbar{grid-template-columns:minmax(200px,1.4fr) minmax(225px,1.25fr) repeat(3,minmax(106px,.75fr)) minmax(182px,.9fr) auto auto}
 .review-filter{font-weight:850;transition:.18s;min-width:182px}
 .review-filter[data-level="unrated"]{background:#f8fafc;border-color:#cbd5e1;color:#475467}
 .review-filter[data-level="mastered"]{background:#ecfdf3;border-color:#75e0a7;color:#05603a}
