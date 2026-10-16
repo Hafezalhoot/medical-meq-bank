@@ -44,6 +44,20 @@
     return url;
   };
 
+  const lectureMediaUrls = data => {
+    const entries = Array.isArray(data?.imageQuestions) ? data.imageQuestions : [];
+    const root = new URL('./assets/', location.href).href;
+    const sources = [...entries.map(item => item?.image), data?.studyGuide?.infographic?.image];
+    const media = new Set();
+    for (const source of sources) {
+      if (!source || typeof source !== 'string' || source.startsWith('data:')) continue;
+      const url = sameOriginUrl(source);
+      if (!url.startsWith(root)) throw new Error('Offline lecture image is not under local assets/');
+      media.add(url);
+    }
+    return [...media];
+  };
+
   const cacheLecture = async lectureId => {
     const url = sameOriginUrl(lectureUrl(lectureId));
     const response = await fetch(url, {credentials: 'same-origin'});
@@ -52,19 +66,7 @@
     // Cache the visual assets with the lecture so a saved lesson works
     // without requiring the learner to open each infographic online first.
     const data = await response.clone().json();
-    const images = [
-      ...(data.imageQuestions || []).map(item => item?.image),
-      data.studyGuide?.infographic?.image
-    ];
-    const assetsRoot = new URL('./assets/', location.href).href;
-    for (const source of new Set(images)) {
-      if (!source || typeof source !== 'string' || source.startsWith('data:')) continue;
-      const imageUrl = sameOriginUrl(source);
-      if (!imageUrl.startsWith(assetsRoot)) {
-        throw new Error('Offline lecture image is not under local assets/');
-      }
-      await cacheUrl(imageUrl);
-    }
+    for (const imageUrl of lectureMediaUrls(data)) await cacheUrl(imageUrl);
 
     const cache = await caches.open(OFFLINE_CACHE_NAME);
     await cache.put(url, response.clone());
@@ -80,7 +82,20 @@
     return removed;
   };
 
-  const isLectureCached = lectureId => isUrlCached(lectureUrl(lectureId));
+  const isLectureCached = async lectureId => {
+    if (!('caches' in globalThis)) return false;
+    const cache = await caches.open(OFFLINE_CACHE_NAME);
+    const response = await cache.match(sameOriginUrl(lectureUrl(lectureId)));
+    if (!response) return false;
+    let urls;
+    try {
+      urls = lectureMediaUrls(await response.json());
+    } catch (error) {
+      return false;
+    }
+    for (const url of urls) if (!(await cache.match(url))) return false;
+    return true;
+  };
   const describeError = error =>
     error?.name === 'QuotaExceededError'
       ? 'Device storage is full. Remove an offline lecture and try again.'

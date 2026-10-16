@@ -77,6 +77,18 @@ test('saved Dermatology lecture includes all local figures and remains readable 
   }, id);
   await expect.poll(() => page.evaluate(lectureId =>
     globalThis.MEQOfflineCache.isLectureCached(lectureId), id)).toBe(true);
+  // A missing local infographic must make the saved-status check fail.
+  const wasCompleteAfterLoss = await page.evaluate(async lectureId => {
+    const cache=await caches.open('medical-meq-bank-2026.10.16.3');
+    await cache.delete(new URL('/assets/lectures/dermatology-intro/lesions-classification.svg',location.href).href);
+    return globalThis.MEQOfflineCache.isLectureCached(lectureId);
+  }, id);
+  expect(wasCompleteAfterLoss).toBe(false);
+  await page.evaluate(async lectureId => {
+    await globalThis.MEQOfflineCache.cacheLecture(lectureId);
+  }, id);
+  await expect.poll(()=>page.evaluate(lectureId =>
+    globalThis.MEQOfflineCache.isLectureCached(lectureId),id)).toBe(true);
   const paths=[
     '/lectures/data/internal-medicine-ii-dermatology-introduction.json',
     '/assets/lectures/dermatology-intro/skin-layers.svg',
