@@ -124,11 +124,19 @@ function setSubtopicData(el,item){el.dataset.subtopics=itemSubtopics(item).join(
 
 function validateBank(){
   const errors=[];
-  const subjectIds=new Set(subjects.map(s=>s.id));
+  const scopes=globalThis.MEQCourseRegistry?.allSubjectScopes?.() || [];
+  const scopedSubjects=new Set(scopes.map(s=>s.courseId+'::'+s.subjectKey));
+  const allSubjectIds=new Set(scopes.map(s=>s.subjectKey));
+  // Validate each published lecture against its own course. The active
+  // course's 'subjects' array is a UI selection, not a global schema.
+  const subjectIds=scopes.length?allSubjectIds:new Set(subjects.map(s=>s.id));
   const lectureIds=new Set();
   lectures.forEach(l=>{
     if(lectureIds.has(l.id))errors.push(`Duplicate lecture id: ${l.id}`);lectureIds.add(l.id);
-    if(!subjectIds.has(l.subjectKey))errors.push(`Unknown subjectKey in ${l.title}: ${l.subjectKey}`);
+    const validSubject=l.courseId&&scopes.length
+      ?scopedSubjects.has(l.courseId+'::'+l.subjectKey)
+      :subjectIds.has(l.subjectKey);
+    if(!validSubject)errors.push(`Unknown subjectKey in ${l.title}: ${l.subjectKey}`);
     const validSubtopics=new Set(l.subtopics.map(s=>s.id));
     if(validSubtopics.size!==l.subtopics.length)errors.push(`Duplicate subtopic id in ${l.title}`);
     const seen=new Set();
