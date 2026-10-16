@@ -264,6 +264,119 @@ function renderLectureOverview(container,list){
   });
   container.appendChild(section)
 }
+function createStudyGuide(lecture) {
+  const guide=lecture.studyGuide;
+  if(!guide||(!guide.explanation?.length&&!guide.mcqs?.length&&!guide.infographic))return null;
+  const section=document.createElement('section');
+  section.className='learning-companion';
+  section.id=lecture.id+'-guide';
+  const heading=document.createElement('div');
+  heading.className='section-head';
+  const title=document.createElement('h2');title.textContent='Lecture study guide';
+  const description=document.createElement('p');
+  description.textContent='Source-linked explanation, MCQs and visual revision. Existing MEQ practice remains below.';
+  heading.append(title,description);
+  section.appendChild(heading);
+
+  const disclosure=(name,count)=>{
+    const details=document.createElement('details');
+    details.className='study-guide-part';
+    const summary=document.createElement('summary');
+    summary.textContent=name+(count?' ('+count+')':'');
+    details.append(summary);
+    section.append(details);
+    return details;
+  };
+  const sourceLabel=(parent,page)=>{
+    const label=document.createElement('small');
+    label.className='study-guide-source';
+    label.textContent='Lecture source: '+page;
+    parent.append(label);
+  };
+
+  if(guide.explanation?.length){
+    const details=disclosure('Explanation',guide.explanation.length);
+    guide.explanation.forEach(part=>{
+      const article=document.createElement('article');article.className='study-guide-explanation';
+      const heading=document.createElement('h3');heading.textContent=part.heading;article.append(heading);
+      for(const text of part.paragraphs){
+        const p=document.createElement('p');p.textContent=text;p.dir='auto';article.append(p);
+      }
+      if(part.understandingAids?.length){
+        const aid=document.createElement('aside');aid.className='study-guide-understanding';
+        const title=document.createElement('strong');
+        title.textContent='Understanding Aid — Not an additional exam fact';
+        aid.append(title);
+        for(const text of part.understandingAids){const p=document.createElement('p');p.textContent=text;p.dir='auto';aid.append(p);}
+        article.append(aid);
+      }
+      sourceLabel(article,part.sourcePage);
+      details.append(article);
+    });
+  }
+
+  if(guide.mcqs?.length){
+    const details=disclosure('MCQ practice',guide.mcqs.length);
+    guide.mcqs.forEach((item,index)=>{
+      const article=document.createElement('article');article.className='study-guide-mcq';
+      const question=document.createElement('h3');question.textContent=(index+1)+'. '+item.question;question.dir='auto';
+      article.append(question);
+      const fieldset=document.createElement('fieldset');fieldset.className='study-guide-choices';
+      const legend=document.createElement('legend');legend.textContent='Choose one answer';fieldset.append(legend);
+      item.options.forEach((option,choice)=>{
+        const label=document.createElement('label');
+        const radio=document.createElement('input');radio.type='radio';radio.value=String(choice);
+        radio.name='study-mcq-'+lecture.id+'-'+item.id;
+        const span=document.createElement('span');span.textContent=option;span.dir='auto';
+        label.append(radio,span);fieldset.append(label);
+      });
+      article.append(fieldset);
+      const reveal=document.createElement('button');reveal.type='button';reveal.className='study-guide-reveal';
+      reveal.setAttribute('aria-expanded','false');reveal.textContent='Reveal explanation';
+      const feedback=document.createElement('p');feedback.className='study-guide-answer';feedback.hidden=true;
+      feedback.setAttribute('role','status');
+      reveal.addEventListener('click',()=>{
+        const open=feedback.hidden;
+        feedback.hidden=!open;
+        reveal.setAttribute('aria-expanded',String(open));
+        reveal.textContent=open?'Hide explanation':'Reveal explanation';
+        if(open){
+          const selected=fieldset.querySelector('input:checked');
+          const result=selected
+            ?(Number(selected.value)===item.answerIndex?'Your answer is correct. ':'Your answer needs review. ')
+            :'';
+          feedback.textContent=result+'Correct answer: '+item.options[item.answerIndex]+'. '+item.rationale;
+        }
+      });
+      article.append(reveal,feedback);
+      sourceLabel(article,item.sourcePage);
+      details.append(article);
+    });
+  }
+
+  if(guide.infographic){
+    const details=disclosure('Infographic');
+    const figure=document.createElement('figure');figure.className='study-guide-figure';
+    const image=document.createElement('img');
+    image.src=guide.infographic.image;image.alt=guide.infographic.alt;
+    image.loading='lazy';image.decoding='async';
+    image.addEventListener('error',()=>{
+      image.remove();
+      const fallback=document.createElement('p');
+      fallback.textContent='Infographic could not be displayed. Check the lecture source reference below.';
+      figure.prepend(fallback);
+    },{once:true});
+    figure.append(image);
+    if(guide.infographic.caption){
+      const caption=document.createElement('figcaption');
+      caption.textContent=guide.infographic.caption;caption.dir='auto';figure.append(caption);
+    }
+    details.append(figure);
+    sourceLabel(details,guide.infographic.sourcePage);
+  }
+  return section;
+}
+
 function render(){
   const container=$('lectureContainer');container.innerHTML='';const list=visibleLectures();
   if(!list.length){renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();return}
@@ -293,6 +406,19 @@ function render(){
   <div class="content-section extra-section" data-section-type="extra"><div class="section-head"><div><h2>Detailed Practice</h2><p>The original direct questions are preserved for deeper repetition.</p></div></div><details class="practice-details"><summary>Open detailed practice questions (${l.detailedShorts.length})</summary><div class="practice-body"><div class="study-grid shorts extra-grid"></div></div></details></div>
   <div class="content-section rapid-section" data-section-type="rapid"><div class="section-head" id="${l.id}-rapid"><div><h2>Rapid Recall</h2><p>Click each card to reveal the one-line answer.</p></div></div><section class="rapid"><div class="rapid-grid"></div></section></div>`;
   container.appendChild(sec);
+  const studyGuide=createStudyGuide(l);
+  if(studyGuide){
+    sec.querySelector('.cases-section').before(studyGuide);
+    const jump=document.createElement('button');jump.type='button';
+    jump.className='study-guide-jump';jump.textContent='Explanation / MCQ / Infographic';
+    jump.addEventListener('click',()=>{
+      const first=studyGuide.querySelector('details');
+      if(first)first.open=true;
+      studyGuide.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+      first?.querySelector('summary')?.focus({preventScroll:true});
+    });
+    sec.querySelector('.quick-views').append(jump);
+  }
   l.cases.forEach((c,i)=>sec.querySelector('.cases-grid').appendChild(caseCard(l,c,i)));
   l.coreShorts.forEach((q,i)=>sec.querySelector('.core-grid').appendChild(shortCard(l,q,i,'core','High-Yield Short')));
   l.imageQuestions.forEach((q,i)=>sec.querySelector('.image-grid').appendChild(imageCard(l,q,i)));
