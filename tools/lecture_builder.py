@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import json
+import base64
 
 
 LECTURE_LIST_KEYS = (
@@ -384,8 +385,36 @@ def _batch_extension(lectures_to_add: list[dict]) -> str:
     )
 
 
+def inline_study_guide_media(root: Path, lectures: list[dict]) -> None:
+    """Keep standalone offline HTML self-contained when companions use local images."""
+    mime_types = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+                  ".webp": "image/webp", ".avif": "image/avif"}
+    for lecture in lectures:
+        info = lecture.get("studyGuide", {}).get("infographic")
+        if not info:
+            continue
+        image = info["image"]
+        if image.startswith("data:image/"):
+            continue
+        relative = image.removeprefix("./")
+        assets = (root / "assets").resolve()
+        candidate = (root / relative).resolve()
+        if not relative.startswith("assets/") or not candidate.is_relative_to(assets):
+            raise SystemExit(f"Unsafe offline companion media path in {lecture['id']}")
+        mime = mime_types.get(candidate.suffix.lower())
+        if not mime or not candidate.is_file():
+            raise SystemExit(f"Missing or unsupported offline companion image: {relative}")
+        raw = candidate.read_bytes()
+        if not raw or len(raw) > 15 * 1024 * 1024:
+            raise SystemExit(f"Offline companion image exceeds media budget: {relative}")
+        info["image"] = f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
+
+
 def build_lecture_extensions(root: Path | str = Path(".")) -> str:
-    return _batch_extension(load_json_lectures(root))
+    root = Path(root)
+    lectures = load_json_lectures(root)
+    inline_study_guide_media(root, lectures)
+    return _batch_extension(lectures)
 
 
 if __name__ == "__main__":
