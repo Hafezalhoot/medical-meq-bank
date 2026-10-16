@@ -1,5 +1,19 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+
+## Medical Study Workspace V2 (2026-10-16)
+
+**Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  
+**Candidate:** `2026.10.16.1`.  
+**Plan and acceptance checks:** [`UI_V2_ROADMAP.md`](./UI_V2_ROADMAP.md).
+
+- ✅ Reviewed the shipped course registry, loader, study UI, progress, PWA/print boundaries and existing tests; keep the current vanilla/offline-first architecture.
+- ✅ Applied the UI/UX Pro Max education dashboard/course-grid guidance to a low-noise expandable catalog-sourced Course Library, with consistent existing blue/teal tokens.
+- 🟦 V2-1 first UI increment is implemented with a functional course gallery, responsive styles, course switching and browser regression; the GitHub full matrix remains the merge gate.
+- ⏳ V2-2 through V2-7: Study Home, specialty/lecture reader organization, optional verified medical content modes, better review/progress navigation, cross-device polish and controlled release.
+- ⛔ No automatic promotion. Surgery/MEQ content and user progress IDs remain unchanged.
+
+
 > **Single source of truth for the modernization program.**
 >
 > Update this file in the same branch/PR whenever a task is completed, blocked, re-scoped, or newly discovered. Do not mark an item complete until its acceptance criteria are satisfied and the relevant automated checks pass.
