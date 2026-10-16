@@ -54,7 +54,7 @@ Never add a dependency, global framework, external font, animation library, or g
 | Phase | Output | Acceptance criteria | Status |
 | --- | --- | --- | --- |
 | V2-0 Product + source audit | Route/feature inventory, risks, scope and new delivery branch | Exam facts and persistent ID boundaries explicit | Done |
-| V2-1 Course Library | Responsive expandable catalog-sourced course cards | All configured courses discoverable; switching works; empty future pack honest; no extra lecture-body fetch; keyboard operable | Implemented; CI pending |
+| V2-1 Course Library | Responsive expandable catalog-sourced course cards | All configured courses discoverable; switching works; empty future pack honest; no extra lecture-body fetch; keyboard operable | ✅ Code + full CI passed (run 38905559158); manual visual QA pending |
 | V2-2 Study Home | Compact course progress + Continue Studying using existing metadata/progress | No full-corpus fetch; empty/new user states correct; useful on desktop/mobile | Planned |
 | V2-3 Specialty / lecture organization | Unified lecture cards, outline and quiet reading workspace | Clear location, fewer competing controls, print and navigation unaffected | Planned |
 | V2-4 Study experiences | Consistent Practice, Recall, Images; optional source-backed Explanation/MCQ/Infographic modules | Optional formats do not alter or invent lecture facts; lecture-first validator contract | Planned — needs reviewed lecture data |
@@ -67,15 +67,15 @@ Never add a dependency, global framework, external font, animation library, or g
 - Added a collapsible **Explore your courses** section under the header, closed by default so it does not delay a returning learner.
 - It is generated from `MEQCourseRegistry`: course title, description, specialty count, and a status based on an attached published lecture catalog.
 - Clicking a course activates the existing `activateCourse` path, preserves its remembered specialty, updates selected/pressed state, closes the library and returns focus to specialty selection.
-- Added a Playwright end-to-end check for Surgery → Internal Medicine → Surgery navigation and empty future-course states.
+- Added a Playwright end-to-end check for Surgery → Internal Medicine → Surgery navigation, empty future-course states, and the direct Browse Courses recovery action.
 - Aimed to leave all existing question rendering, search, progress, backups, PWA, and Print Center untouched.
 
 ## Non-negotiable release checklist
 
-- [ ] New `2026.10.16.1` version matches service worker and PWA client.
-- [ ] Full static build/source data validation passes.
-- [ ] Chromium, axe, layout, course-pack and mobile regressions pass.
-- [ ] WebKit/iPhone smoke suite passes.
+- [x] New `2026.10.16.1` version matches service worker and PWA client.
+- [x] Full static build/source data validation passes (GitHub Actions `validate`).
+- [x] Chromium, axe, layout, course-pack and mobile regressions pass.
+- [x] WebKit/iPhone smoke suite passes.
 - [ ] No new external resource requirement or injected executable code.
 - [ ] No medical answer/question/content edits in UI-only PR.
 - [ ] No break in IndexedDB stored progress, backup, and offline pages.
