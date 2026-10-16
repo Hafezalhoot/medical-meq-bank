@@ -37,6 +37,12 @@ test('capture actual V2 reading surfaces across desktop, phone, and dark/focus s
   await attachScreenshot(page, testInfo, 'desktop-focus-questions');
   await page.locator('#focusModeBtn').click();
 
+  await openWorkspace(page, 768, 1024);
+  await attachScreenshot(page, testInfo, 'tablet-study');
+
+  await openWorkspace(page, 320, 700);
+  await attachScreenshot(page, testInfo, 'compact-phone-study');
+
   await openWorkspace(page, 390, 844);
   await attachScreenshot(page, testInfo, 'phone-study');
   await page.locator('#darkBtn').click();
