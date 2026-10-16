@@ -61,3 +61,33 @@ Start on the last active course when returning. Highlight the next meaningful ac
 5. Test coverage ensures moving between a populated Surgery course and an empty Internal Medicine course does not break the lecture selector.
 
 See `UI_V2_ROADMAP.md` for the phased feature backlog and `PROJECT_PROGRESS.md` for completion status.
+
+## Actual production screenshots — targeted review (2026-10-16)
+
+The owner supplied **three real desktop screenshots** of the running original app: (1) initial workspace/header, (2) lecture/case reading, and (3) continuous medical case revision. These are production visual references, **not** screenshots of the unreleased V2 branch. The visual text in those images differs slightly from current `main` sources; a prior browser/PWA cache or earlier release is possible but unverified.
+
+Priority ranking follows usability severity rather than decorative taste:
+
+| Priority | Observed screenshot finding | Learner impact | V2 change |
+| --- | --- | --- | --- |
+| P1 | Large promotional-style hero takes a substantial fraction of the first viewport; the first real question starts below several layers of chrome. | Slower arrival at the clinical questions. | Compact hero with smaller title, restrained background, inline appearance control and reduced repeated marketing text. |
+| P1 | Two always-visible, information-dense sidebars compete with case reading width. | Long case scenarios and Arabic annotations become harder to scan, especially on narrower displays. | Slimmer sidebars plus a persistent, reversible **Focus on questions** mode to dedicate available width to reading. |
+| P2 | Seven equally prominent metric cards appear between filters and lecture content. | Redundant counts interrupt the main study task. | One-line **Study progress** summary, optional expanded counters and preserved accessible progressbar semantics. |
+| P2 | Quick jump controls only expose Cases and Shorts despite images being a core question type. | Learner must navigate more steps for Image Spots. | Direct Image quick view using existing type filtering and lecture scrolling. |
+| P2 | Nested borders, shadows and colored surfaces repeat on every question/subtopic card. | Visual fatigue during multi-hour case review. | Quieter borders, fewer elevation layers, tighter spacing and clear hierarchy of scenario/questions/answer. |
+| P2 | The reader's workspace initially looks like a bank of controls rather than a single medical study task. | Cognitive load when switching subjects or studying at speed. | Existing registry-powered Course Library, collapsible progress overview, simpler nav and focus controls. |
+
+### Impeccable-inspired qualitative pass
+
+Public Impeccable guidance was consulted for **critique**, **distill** and **polish** priorities: prioritizing navigation clarity, progressive disclosure, recovery actions, meaningful visual hierarchy and final cross-device states. The dedicated `impeccable` installed skill / browser detector is **not available** in this tool environment, so **no Impeccable detector scan or score is claimed**. UI/UX Pro Max guidance, the owner's screenshots, source review and CI browser checks are the verified bases for this pass.
+
+### Verifiable quality gates after visual changes
+
+- [x] `validate` — static/source/corpus checks.
+- [x] `chromium-quality` — course switching, image quick view, focus persistence, expanded stats, responsive/accessibility/print/performance.
+- [x] `webkit-quality` — desktop Safari/iPhone browser regressions.
+- [ ] Direct **screenshots of the V2 candidate itself** at 360px, 390px and 1440px in both light/dark modes; original user screenshots cannot substitute.
+- [ ] Live Cloudflare Worker preview visual sign-off after branch Preview is configured, or production-controlled roll out.
+
+Browser evidence: [GitHub Actions run 38909175547](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38909175547) completed successfully. A documentation-only follow-up may trigger another run.
+
