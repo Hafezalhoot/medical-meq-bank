@@ -3,6 +3,7 @@ import {test, expect} from '@playwright/test';
 test.use({serviceWorkers: 'block'});
 
 const viewports = [
+  {name: 'compact phone', width: 320, height: 700},
   {name: 'small phone', width: 360, height: 800},
   {name: 'phone', width: 390, height: 844},
   {name: 'tablet', width: 768, height: 1024},
@@ -231,4 +232,39 @@ test('mobile shows compact utilities and two-column medical study selectors', as
   expect(rectangles[0].right).toBeLessThanOrEqual(rectangles[1].left + 1);
   expect(rectangles[0].height).toBeGreaterThanOrEqual(44);
   expect(rectangles[1].height).toBeGreaterThanOrEqual(44);
+});
+
+test('Impeccable: desktop chrome is compact while lecture and utility controls remain accessible', async ({page}) => {
+  await openBank(page, {width: 1440, height: 900});
+  const toolbarLecture = page.locator('#lectureFilter');
+  await expect(toolbarLecture).toHaveAttribute('title', /Congenital Anomalies/);
+  const lectureWidth = await toolbarLecture.evaluate(el => el.getBoundingClientRect().width);
+  expect(lectureWidth).toBeGreaterThanOrEqual(205);
+
+  const heroHeight = await page.locator('.hero').evaluate(el => el.getBoundingClientRect().height);
+  expect(heroHeight).toBeLessThanOrEqual(225);
+
+  const utilities = page.locator('#pwaToolsToggle');
+  await expect(utilities).toBeVisible();
+  await expect(utilities).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#exportProgressBtn')).toBeHidden();
+  await utilities.click();
+  await expect(utilities).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#exportProgressBtn')).toBeVisible();
+  await expect(page.locator('#importProgressBtn')).toBeVisible();
+  await utilities.click();
+  await expect(page.locator('#exportProgressBtn')).toBeHidden();
+});
+
+test('Impeccable: phone dark mode toggle shares header row with the title', async ({page}) => {
+  await openBank(page, {width: 390, height: 844});
+  const layout = await page.evaluate(() => {
+    const title = document.querySelector('.hero h1').getBoundingClientRect();
+    const theme = document.getElementById('darkBtn').getBoundingClientRect();
+    return {titleY: title.top, themeY: theme.top, themeHeight: theme.height};
+  });
+  expect(Math.abs(layout.titleY - layout.themeY)).toBeLessThan(35);
+  expect(layout.themeHeight).toBeGreaterThanOrEqual(44);
+  await page.locator('#darkBtn').click();
+  await expect(page.locator('body')).toHaveClass(/dark/);
 });
