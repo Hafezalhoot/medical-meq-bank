@@ -11,6 +11,16 @@
 - ⚠️ Impeccable's installed tool is unavailable here; public critique/polish principles were consulted, with no fabricated detector output or numeric visual score.
 - ⏳ Manual branch-preview screenshots and cross-device visual sign-off are outstanding; no merge or production promotion yet.
 
+
+### 2026-10-16 — V2 final browser screenshot iteration
+
+- ✅ Ran real Chromium screenshots of candidate UI at 1440px desktop and 390px mobile, including Course Library, expanded progress, Focus Mode, and light/dark surfaces.
+- ✅ Based on the **rendered** phone evidence, replaced three stacked action rows with four compact nav actions and collapsed PWA/backup utilities into accessible Study tools.
+- ✅ Placed course and specialty selection side-by-side on phone and desktop, reducing hero height and using the available viewport for actual lecture content.
+- ✅ Captured final screenshot artifact `playwright-report-chromium` in run `38912689508`; `validate`, `chromium-quality` and `webkit-quality` all green.
+- ⚠️ PR #23 remains Draft; 360px screenshots and real-device visual approval are pending. Site production and reviewed content remain unchanged.
+- ⏳ Next product milestone: Study Home / continue learning / review queue built on existing course, lecture and progress data.
+
 ## Medical Study Workspace V2 (2026-10-16)
 
 **Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  
