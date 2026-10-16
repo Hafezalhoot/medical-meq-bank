@@ -386,8 +386,10 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
 @media(max-width:700px){.hero .theme-toggle,.hero .pwa-btn,.hero .subject-select{min-height:44px}}
 
 /* Mobile utilities: preserve backup/install affordances without taking up the first viewport. */
-.pwa-tools-toggle{display:none}
-.pwa-tools-actions{display:contents}
+/* Utilities stay accessible without competing with the reading task. */
+.pwa-tools-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:7px 12px;border:1px solid rgba(255,255,255,.35);border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font:inherit;font-size:.8rem;font-weight:750;cursor:pointer}
+.pwa-tools-actions{display:none;align-items:center;flex-wrap:wrap;gap:7px}
+.pwa-tools.tools-open .pwa-tools-actions{display:flex}
 @media(max-width:700px){
  .hero .eyebrow,.hero p,.hero .hero-tags{display:none}
  .hero h1{margin:2px 0 8px}
@@ -436,3 +438,25 @@ main,.lecture,.content-section,.study-item,[id$="-cases"],[id$="-core"],[id$="-i
  .lecture .offline-lecture-btn{grid-column:1/3;grid-row:2;min-height:44px}
  .lecture .quick-reset{grid-column:3;grid-row:2;min-height:44px;display:grid;place-items:center;padding:7px 4px;font-size:.74rem}
 }
+
+/* Impeccable: Operate for navigation and Read for medical questions.
+   Compact the first viewport without hiding a primary task or reducing hit areas. */
+@media(min-width:981px){
+  .hero{padding:13px 17px}
+  .hero .hero-tags{display:none}
+  .hero .hero-panel{align-self:center}
+  .hero .hero-copy h1{margin:5px 0}
+  .hero .pwa-tools{margin-top:10px}
+}
+@media(max-width:700px){
+  .workspace-brandline{height:0;min-height:0}
+  .hero .theme-toggle{position:absolute;top:12px;right:12px;z-index:4;width:44px;min-width:44px;height:44px;display:inline-flex;justify-content:center}
+  .hero .theme-toggle .button-label{display:none}
+  .hero .hero-copy h1{padding-right:52px;min-height:44px;display:flex;align-items:center;margin:0 0 4px}
+}
+.course-library-toggle:focus-visible,
+.insights-summary:focus-visible,
+.pwa-tools-toggle:focus-visible,
+.study-focus-toggle:focus-visible{outline:3px solid #84adf4;outline-offset:-3px}
+.hero .theme-toggle:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media print{.pwa-tools-toggle{display:none!important}}
