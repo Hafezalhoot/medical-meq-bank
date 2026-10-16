@@ -37,6 +37,15 @@
 - ✅ Improved Study tools keyboard exit using `Escape` and focus restoration, with browser regression.
 - ⏳ Validate final source SHA via CI and inspect visual evidence. PR #23 remains Draft; production is unchanged.
 
+### 2026-10-16 — Full multi-course UX and lecture-intake audit
+
+- ✅ Comprehensive source-backed audit completed: [PROJECT_COMPREHENSIVE_AUDIT_2026-10-16.md](./PROJECT_COMPREHENSIVE_AUDIT_2026-10-16.md), including 12 severity-ranked findings and feature-preservation inventory.
+- ✅ Confirmed nine published lecture catalog entries across two course packs; old progress keys/data, the five established study types and offline/PWA/print capabilities are protected design constraints.
+- 🟦 Separate [PR #24](https://github.com/Hafezalhoot/medical-meq-bank/pull/24) implements reviewed lecture draft scaffolding, safer registration and tests on an independent branch; it cannot be reported as released until review/merge.
+- 🟦 Workstream R2: plan optional lecture-first Explanation/MCQ/Infographic data companions without changing existing five-mode lecture payloads or learner ratings.
+- ⏳ Next V2 milestones: course-wide Study Home/My Review, design-system CSS consolidation, 320px/200%-zoom/RTL checks and final visual sign-off.
+- ⛔ No PR has been merged or production Cloudflare changed in this audit pass.
+
 ## Medical Study Workspace V2 (2026-10-16)
 
 **Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  
