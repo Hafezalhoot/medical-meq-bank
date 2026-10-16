@@ -30,6 +30,13 @@
 - ⚠️ Impeccable skill is **not installed** in this environment. Applied available public critique/distill/polish concepts and UI/UX Pro Max patterns, not an Impeccable tool audit.
 - ⏳ Retain PR #23 as Draft until stakeholder visual acceptance and any remaining cross-course Study Home / My Review improvements are scoped into following increments. Production main and Worker remain untouched.
 
+### 2026-10-16 — Connection recovery and installed Impeccable pass
+
+- ✅ Confirmed `skills://impeccable` is now installed, read its Operate/Read, critique, distill, polish, harden and verification rules.
+- ✅ Reconciled 13 intervening commits on PR #23 rather than overwriting completed resume-study, selector, theme and keyboard improvements.
+- ✅ Improved Study tools keyboard exit using `Escape` and focus restoration, with browser regression.
+- ⏳ Validate final source SHA via CI and inspect visual evidence. PR #23 remains Draft; production is unchanged.
+
 ## Medical Study Workspace V2 (2026-10-16)
 
 **Delivery branch:** `design/medical-study-workspace-v2-20261016` (isolated from production).  
