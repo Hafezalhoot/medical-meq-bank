@@ -56,19 +56,32 @@ Never add a dependency, global framework, external font, animation library, or g
 | V2-0 Product + source audit | Route/feature inventory, risks, scope and new delivery branch | Exam facts and persistent ID boundaries explicit | Done |
 | V2-1 Course Library | Responsive expandable catalog-sourced course cards | All configured courses discoverable; switching works; empty future pack honest; no extra lecture-body fetch; keyboard operable | ✅ Code + full CI passed (run 38905559158); manual visual QA pending |
 | V2-2 Study Home | Compact course progress + Continue Studying using existing metadata/progress | No full-corpus fetch; empty/new user states correct; useful on desktop/mobile | Planned |
-| V2-3 Specialty / lecture organization | Unified lecture cards, outline and quiet reading workspace | Clear location, fewer competing controls, print and navigation unaffected | Planned |
+| V2-3 Specialty / lecture organization | Unified lecture cards, outline and quiet reading workspace | Clear location, fewer competing controls, print and navigation unaffected | 🟦 Compact chrome + Focus Mode + Images quick view delivered; further reader organization planned |
 | V2-4 Study experiences | Consistent Practice, Recall, Images; optional source-backed Explanation/MCQ/Infographic modules | Optional formats do not alter or invent lecture facts; lecture-first validator contract | Planned — needs reviewed lecture data |
 | V2-5 Progress + review | Meaningful Review/Weak queue and cross-course progress | Existing IndexedDB v2 remains compatible; back up / restore round-trip works | Planned |
-| V2-6 Mobile / dark / accessible polish | 360, 390, 768, 1440 widths, keyboard, contrast, focus, reduced motion | No overflow, 44px controls, accessible dialogs, Chromium + WebKit passed | Planned |
+| V2-6 Mobile / dark / accessible polish | 360, 390, 768, 1440 widths, keyboard, contrast, focus, reduced motion | No overflow, 44px controls, accessible dialogs, Chromium + WebKit passed | 🟦 First regression pass successful; candidate visual screenshot review outstanding |
 | V2-7 Production release | Final regression matrix, PR review, rollback, deployment | Protected main + green CI; upload candidate then explicit Cloudflare promotion | Planned |
 
-## Current implementation — V2-1
+## Current implementation — V2-1 and first reading-workspace pass
 
 - Added a collapsible **Explore your courses** section under the header, closed by default so it does not delay a returning learner.
 - It is generated from `MEQCourseRegistry`: course title, description, specialty count, and a status based on an attached published lecture catalog.
 - Clicking a course activates the existing `activateCourse` path, preserves its remembered specialty, updates selected/pressed state, closes the library and returns focus to specialty selection.
 - Added a Playwright end-to-end check for Surgery → Internal Medicine → Surgery navigation, empty future-course states, and the direct Browse Courses recovery action.
 - Aimed to leave all existing question rendering, search, progress, backups, PWA, and Print Center untouched.
+
+
+### V2 reading workspace improvements (2026-10-16)
+
+- Production screenshot review found excessive hero height, competing sidebars, all-seven-metrics prominence, and repeated decorated question surfaces.
+- Reduced the promotional hero area and repeated metadata, without removing the existing course/specialty controls, Install App, backups or dark mode.
+- Added an expandable study progress summary; the existing seven counters and progressbar semantics remain inside it.
+- Added **Focus on questions** with the `medicalBankFocusModeV1` key (UI preference only) and an always-visible Exit focus action.
+- Added **Images** to the existing lecture Quick Views beside Cases and Short Questions.
+- Tightened desktop navigation widths, contrast-safe borders, screen hierarchy, mobile touch sizes and reading card density.
+- Added browser regressions for Focus Mode persistence, progress disclosure, and Image Quick View.
+- The final full matrix passed on run [38909175547](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38909175547).
+- The current PR is still draft; **no source lecture/answer data was edited**, and preview release isn't promoted.
 
 ## Non-negotiable release checklist
 
