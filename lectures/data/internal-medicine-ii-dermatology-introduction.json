@@ -5,7 +5,7 @@
   "subject": "Dermatology",
   "title": "Introduction to Dermatology",
   "subtitle": "Basic skin structure, function and morphology of primary and secondary lesions",
-  "sourceNote": "Lecture-first exam source: user-supplied Dermatology Department book 2022.pdf, Introduction to Dermatology, pp. 1-10 (printed teaching text ONLY; handwritten annotations and the embedded chat screenshot are personal notes, not exam facts). Explanations, examples and self-test marks are study aids, not additional university facts or official marks. Prepared as a draft for learner/lecturer verification; original source scan and clinical photographs are not published.",
+  "sourceNote": "Lecture-first exam source: user-supplied Dermatology Department book 2022.pdf, Introduction to Dermatology, pp. 1-10 (printed teaching text ONLY; handwritten annotations and the embedded chat screenshot are personal notes, not exam facts). Explanations, examples and self-test marks are study aids, not additional university facts or official marks. Prepared as a draft for learner/lecturer verification; original source scan and clinical photographs are not published. Original-image policy: only figures cropped from the learner-supplied printed PDF may appear with Dermatology image-spot questions; no external or generated substitute image. Personal figures are imported and stored privately on the learner's device.",
   "subtopics": [
     {
       "id": "clinical-links",
@@ -1340,9 +1340,8 @@
       "subtopics": [
         "epidermis"
       ],
-      "image": "./assets/lectures/dermatology-intro/skin-layers.svg",
       "page": "Lecture PDF p. 2",
-      "prompt": "Original illustrative schematic. A layered section is shown. Identify the outermost skin layer.",
+      "prompt": "Use the original printed skin-layer figure from PDF p. 2 to identify the outermost layer.",
       "questions": [
         "A layered section is shown. Identify the outermost skin layer."
       ],
@@ -1360,9 +1359,8 @@
       "subtopics": [
         "dermis-hypodermis"
       ],
-      "image": "./assets/lectures/dermatology-intro/skin-layers.svg",
-      "page": "Lecture PDF p. 3",
-      "prompt": "Original illustrative schematic. Which illustrated layer contains fat-cell lobules and fibrous septa?",
+      "page": "Lecture PDF pp. 2-3",
+      "prompt": "Use the original printed skin-layer figure from PDF p. 2 and the description on p. 3 to identify the fat-containing subcutaneous layer.",
       "questions": [
         "Which illustrated layer contains fat-cell lobules and fibrous septa?"
       ],
@@ -1379,9 +1377,8 @@
       "subtopics": [
         "flat-solid-lesions"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 4",
-      "prompt": "Original illustrative schematic. Identify panel A using palpability and size. The source-style vignette specifies a diameter of 0.6 cm; the schematic is not to scale.",
+      "prompt": "Using the original macule photograph on printed PDF p. 4 and the stated definition, identify a flat lesion less than 1 cm.",
       "questions": [
         "Original illustrative schematic. Identify panel A using palpability and size. The source-style vignette specifies a diameter of 0.6 cm; the schematic is not to scale."
       ],
@@ -1398,9 +1395,8 @@
       "subtopics": [
         "flat-solid-lesions"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 4",
-      "prompt": "Original illustrative schematic. Identify panel B using size and surface shape. The source-style vignette specifies a diameter of 2 cm; the schematic is not to scale.",
+      "prompt": "Using the original patch photograph on printed PDF p. 4 and the stated definition, identify a flat lesion greater than 1 cm.",
       "questions": [
         "Original illustrative schematic. Identify panel B using size and surface shape. The source-style vignette specifies a diameter of 2 cm; the schematic is not to scale."
       ],
@@ -1417,9 +1413,8 @@
       "subtopics": [
         "flat-solid-lesions"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 5",
-      "prompt": "Original illustrative schematic. Identify lesion in panel C. The source-style vignette specifies a diameter of 0.5 cm; the schematic is not to scale.",
+      "prompt": "Using the original papule photograph on printed PDF p. 5, identify the solid palpable lesion described as less than 1 cm.",
       "questions": [
         "Original illustrative schematic. Identify lesion in panel C. The source-style vignette specifies a diameter of 0.5 cm; the schematic is not to scale."
       ],
@@ -1436,9 +1431,8 @@
       "subtopics": [
         "flat-solid-lesions"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 5",
-      "prompt": "Original illustrative schematic. Identify lesion in panel D. The source-style vignette specifies a diameter of 3 cm; the schematic is not to scale.",
+      "prompt": "Using the original plaque photograph on printed PDF p. 5, identify the solid palpable lesion described as greater than 1 cm.",
       "questions": [
         "Original illustrative schematic. Identify lesion in panel D. The source-style vignette specifies a diameter of 3 cm; the schematic is not to scale."
       ],
@@ -1455,9 +1449,8 @@
       "subtopics": [
         "nodule-blisters"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 6",
-      "prompt": "Original illustrative schematic. Identify panel E; give its lecture example. The source-style vignette specifies a diameter of 0.5 cm; the schematic is not to scale.",
+      "prompt": "Using the original vesicle photograph on printed PDF p. 6, identify the clear-fluid lesion less than 1 cm and give the printed lecture example.",
       "questions": [
         "Original illustrative schematic. Identify panel E; give its lecture example. The source-style vignette specifies a diameter of 0.5 cm; the schematic is not to scale."
       ],
@@ -1475,9 +1468,8 @@
       "subtopics": [
         "nodule-blisters"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 6",
-      "prompt": "Original illustrative schematic. Identify panel F; give its lecture example. The source-style vignette specifies a diameter of 2 cm; the schematic is not to scale.",
+      "prompt": "Using the original bulla photograph on printed PDF p. 6, identify the clear-fluid lesion greater than 1 cm and give the printed lecture example.",
       "questions": [
         "Original illustrative schematic. Identify panel F; give its lecture example. The source-style vignette specifies a diameter of 2 cm; the schematic is not to scale."
       ],
@@ -1495,9 +1487,8 @@
       "subtopics": [
         "other-primary"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 7",
-      "prompt": "Original illustrative schematic. Identify panel G and the type of content inside. The source-style vignette specifies a diameter of 0.6 cm; the schematic is not to scale.",
+      "prompt": "Identify the purulent elevation shown in the original photograph on printed PDF p. 7.",
       "questions": [
         "Original illustrative schematic. Identify panel G and the type of content inside. The source-style vignette specifies a diameter of 0.6 cm; the schematic is not to scale."
       ],
@@ -1514,9 +1505,8 @@
       "subtopics": [
         "other-primary"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 7",
-      "prompt": "Original illustrative schematic. Identify panel H, assuming the elevation is transient and edematous.",
+      "prompt": "Identify the transient edematous elevation shown in the original photograph on printed PDF p. 7.",
       "questions": [
         "Identify panel H, assuming the elevation is transient and edematous."
       ],
@@ -1533,9 +1523,8 @@
       "subtopics": [
         "other-primary"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 7",
-      "prompt": "Original illustrative schematic. Identify panel I if its follicular orifice is open.",
+      "prompt": "Identify the open-comedo photograph on printed PDF p. 7 using the described follicular orifice.",
       "questions": [
         "Identify panel I if its follicular orifice is open."
       ],
@@ -1552,9 +1541,8 @@
       "subtopics": [
         "other-primary"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 8",
-      "prompt": "Original illustrative schematic. Identify panel J and the source organism.",
+      "prompt": "Identify the burrow shown in the original photograph on printed PDF p. 8 and the printed source organism.",
       "questions": [
         "Identify panel J and the source organism."
       ],
@@ -1571,9 +1559,8 @@
       "subtopics": [
         "secondary-surface"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 8",
-      "prompt": "Original illustrative schematic. Identify panel K given that the material on the surface is dried serum, blood or pus.",
+      "prompt": "Identify the dried surface material in the original crust photograph on printed PDF p. 8.",
       "questions": [
         "Identify panel K given that the material on the surface is dried serum, blood or pus."
       ],
@@ -1590,9 +1577,8 @@
       "subtopics": [
         "secondary-surface"
       ],
-      "image": "./assets/lectures/dermatology-intro/lesion-atlas.svg",
       "page": "Lecture PDF p. 9",
-      "prompt": "Original illustrative schematic. Identify panel L.",
+      "prompt": "Identify the original scale photograph on printed PDF p. 9 and define the underlying accumulation.",
       "questions": [
         "Identify panel L."
       ],
@@ -2550,12 +2536,6 @@
         "rationale": "Lichenification is increased epidermal thickness and accentuated normal skin lines.",
         "sourcePage": "PDF p. 10"
       }
-    ],
-    "infographic": {
-      "image": "./assets/lectures/dermatology-intro/lesions-classification.svg",
-      "alt": "Original lecture-based contrast chart: macule versus patch, papule versus plaque, vesicle versus bulla, pustule versus wheal; key secondary lesion definitions.",
-      "caption": "Study-only schematic infographic summarizing the morphology definitions and one-centimetre cutoffs explicitly printed in the uploaded lecture.",
-      "sourcePage": "PDF pp. 4-10"
-    }
+    ]
   }
 }

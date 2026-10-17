@@ -50,6 +50,7 @@
   </div>
 </section>
 
+<div class="study-launch-row" aria-label="Study workspace shortcuts">
 <section class="course-library" aria-label="Medical courses">
   <details id="courseLibraryDisclosure">
     <summary class="course-library-toggle">
@@ -76,6 +77,7 @@
     </div>
   </details>
 </section>
+</div>
 
 <nav id="studyBreadcrumb" class="study-breadcrumb" aria-label="Study location"></nav>
 
@@ -147,6 +149,19 @@
   </aside>
 
   <main id="mainContent" tabindex="-1" aria-label="Study content">
+    <section class="original-figure-tools" id="originalFigureTools" aria-label="Original images from the lecture" hidden>
+      <div class="original-figure-intro">
+        <span class="original-figure-eyebrow">ORIGINAL SOURCE FIGURES · PRIVATE DEVICE</span>
+        <h2>Original dermatology lecture photographs</h2>
+        <p>Only the printed figures from your PDF are accepted. Extract and select the 14 JPEG photographs named <strong>derm-image-001.jpg</strong> through <strong>derm-image-014.jpg</strong>. No images leave this browser.</p>
+        <small id="originalFigureStatus" role="status" aria-live="polite">Checking locally saved source images…</small>
+      </div>
+      <div class="original-figure-actions">
+        <button type="button" class="btn btn-primary" id="originalFigureImportBtn">Import original figures</button>
+        <input id="originalFigureFiles" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple hidden aria-label="Select original Dermatology lecture figures">
+        <span>Stored offline on this device. No server uploads. Progress backup remains independent.</span>
+      </div>
+    </section>
     <div id="lectureContainer"></div>
     <div class="empty" id="empty"><h2>No content found</h2><div id="emptyMessage">No study items match the current selection.</div><button class="btn btn-soft empty-reset" id="emptyResetBtn" type="button">Reset filters</button><button class="btn btn-soft empty-reset" id="emptyBrowseCoursesBtn" type="button">Browse courses</button></div>
   </main>
