@@ -700,3 +700,47 @@ body{background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Tahoma,
   background:#26494b;color:#d6eeeb;
 }
 @media(min-width:981px){.hero{padding-block:13px}}
+
+
+/* V3 information architecture: one restrained navigator rail, not two
+   competing full-width sidebar columns. Preserve both sidebar controls/IDs. */
+@media(min-width:981px){
+  .layout,.layout.hide-lectures,.layout.hide-subtopics{
+    display:grid;grid-template-columns:minmax(215px,248px) minmax(0,1fr);
+    gap:16px;align-items:start;
+  }
+  .study-navigation-column{
+    grid-column:1;display:flex;flex-direction:column;gap:12px;
+    position:sticky;top:92px;align-self:start;
+    max-height:calc(100vh - 110px);min-height:0;overflow-y:auto;
+    overscroll-behavior:contain;scrollbar-width:thin;
+  }
+  .study-navigation-column .sidebar{
+    position:static;max-height:none;overflow:visible;
+    border-radius:12px;padding:14px;box-shadow:none;
+  }
+  .layout main{grid-column:2;min-width:0}
+  .layout.hide-lectures.hide-subtopics{grid-template-columns:minmax(0,1fr)}
+  .layout.hide-lectures.hide-subtopics .study-navigation-column{display:none}
+  .layout.hide-lectures.hide-subtopics main{grid-column:1}
+}
+@media(min-width:701px) and (max-width:980px){
+  .layout,.layout.hide-lectures,.layout.hide-subtopics{
+    display:grid;grid-template-columns:minmax(0,1fr);align-items:start;
+  }
+  .study-navigation-column{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;min-width:0;position:static;max-height:none;
+  }
+  .study-navigation-column .sidebar{position:static;max-height:none;min-width:0}
+  .layout main{grid-column:1;min-width:0}
+  .layout.hide-lectures.hide-subtopics .study-navigation-column{display:none}
+}
+@media(max-width:700px){
+  .study-navigation-column{display:flex;flex-direction:column;gap:10px;max-width:100%}
+  .study-navigation-column .sidebar{position:static;max-height:none;overflow:visible;min-width:0}
+  .layout.hide-lectures.hide-subtopics .study-navigation-column{display:none}
+  .layout main{grid-column:1;min-width:0}
+}
+.app.study-focus .study-navigation-column{display:none!important}
+@media print{.study-navigation-column{display:none!important}}
