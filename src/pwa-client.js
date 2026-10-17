@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.17.1';
+  const APP_VERSION = '2026.10.17.2';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
