@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {readFileSync} from 'node:fs';
 
 // One actual source-grounded lecture pilot: no remote source scan is hosted.
 test.use({serviceWorkers: 'block'});
@@ -35,7 +36,7 @@ test('Internal Medicine II / Dermatology loads the complete 10-page source-based
   },lectureId);
   expect(info).toEqual({course:'internal-medicine-ii',subject:'dermatology',
     counts:{cases:16,core:70,image:14,detailed:17,rapid:41},
-    guide:{explanation:11,mcqs:30,infographic:true}});
+    guide:{explanation:11,mcqs:30,infographic:false}});
   await expect(page.locator('.learning-companion .study-guide-part')).toHaveCount(3);
   await page.locator('.learning-companion summary').first().click();
   await expect(page.getByText('Dermatology هو فرع الطب',{exact:false})).toBeVisible();
@@ -51,25 +52,21 @@ test('Internal Medicine II / Dermatology loads the complete 10-page source-based
   await expect(firstMCQ.locator('.study-guide-answer')).toContainText('Your answer is correct.');
 });
 
-test('original lecture visuals are served locally and avoid reproducing source clinical photos', async ({page}) => {
+test('Dermatology uses only source figures and never substituted clinical graphics', async ({page}) => {
   await openDermatology(page);
-  const sources=[
-    '/assets/lectures/dermatology-intro/skin-layers.svg',
-    '/assets/lectures/dermatology-intro/lesion-atlas.svg',
-    '/assets/lectures/dermatology-intro/lesions-classification.svg'
-  ];
-  for(const url of sources){
-    const res=await page.request.get(url);
-    expect(res.ok(),url).toBe(true);
-    const markup=await res.text();
-    expect(markup).toContain('<svg');
-    expect(markup).not.toMatch(/<script|<foreignObject|<!DOCTYPE|url\(/i);
-  }
-  await page.locator('.learning-companion summary').nth(2).click();
-  const infographic=page.locator('.study-guide-figure img');
-  await expect(infographic).toBeVisible();
-  await expect.poll(()=>infographic.evaluate(el=>el.complete && el.naturalWidth>0)).toBe(true);
   await expect(page.locator('#lecture-'+lectureId+' .image-card')).toHaveCount(14);
+  await expect(page.locator('#lecture-'+lectureId+' .image-card[data-original-figure-id]')).toHaveCount(14);
+  await expect(page.locator('#originalFigureTools')).toBeVisible();
+  await expect(page.locator('.learning-companion .study-guide-part')).toHaveCount(3);
+  await page.locator('.learning-companion summary').nth(2).click();
+  await expect(page.locator('.original-guide-link')).toBeVisible();
+  await expect(page.locator('.study-guide-figure img')).toHaveCount(0);
+  const status=await page.evaluate(id=>{
+    const l=lectures.find(item=>item.id===id);
+    return {images:l.imageQuestions.map(q=>q.image??null),infographic:Boolean(l.studyGuide.infographic)};
+  },lectureId);
+  expect(status.images.every(img=>img===null)).toBe(true);
+  expect(status.infographic).toBe(false);
 });
 
 test('Dermatology progress remains isolated from the original Surgery course', async ({page}) => {
@@ -92,19 +89,23 @@ test('Dermatology progress remains isolated from the original Surgery course', a
 });
 
 
-test('phone infographic is readable with accessible sideways scrolling, without page-wide overflow', async ({page}) => {
+test('original-source import works on phone and persists without changing progress', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   await openDermatology(page);
-  await page.locator('.learning-companion summary').nth(2).click();
-  const viewport=page.locator('.study-guide-image-scroller');
-  await expect(viewport).toBeVisible();
-  await expect(viewport).toHaveAttribute('role','region');
-  await expect(viewport).toHaveAttribute('tabindex','0');
-  const [scrollWidth,clientWidth]=await viewport.evaluate(el=>[el.scrollWidth,el.clientWidth]);
-  expect(scrollWidth).toBeGreaterThan(clientWidth+200);
-  await expect(page.locator('.study-guide-pan-hint')).toBeVisible();
-  await expect(page.locator('.study-guide-open-image')).toHaveAttribute('target','_blank');
-  await expect(page.locator('.study-guide-open-image')).toHaveAttribute('rel','noopener noreferrer');
-  const documentWidth=await page.evaluate(()=>document.documentElement.scrollWidth);
-  expect(documentWidth).toBeLessThanOrEqual(392);
+  const photo=page.locator('.image-card[data-original-figure-id="derm-image-003"]');
+  await expect(photo.locator('.original-source-placeholder')).toHaveCount(1);
+  // A bundled app icon is a harmless binary fixture for file-import plumbing,
+  // never presented in a medical test as an authentic clinical photograph.
+  await page.locator('#originalFigureFiles').setInputFiles({
+    name:'derm-image-003.png',mimeType:'image/png',buffer:readFileSync('icons/icon-192.png')
+  });
+  await expect(photo.locator('.source-figure-full img')).toBeVisible();
+  await expect(photo).toHaveAttribute('data-visual-source','original-pdf');
+  await expect(page.locator('#originalFigureStatus')).toContainText('1/14');
+  await page.reload();
+  await openDermatology(page);
+  await expect(page.locator('.image-card[data-original-figure-id="derm-image-003"] .source-figure-full img')).toBeVisible();
+  await expect(page.locator('#originalFigureStatus')).toContainText('1/14');
+  await expect(page.locator('.image-card[data-original-figure-id="derm-image-004"] .original-source-placeholder')).toHaveCount(1);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(392);
 });

@@ -62,12 +62,11 @@ test('capture source-reviewed Dermatology pilot, explanation and infant reading 
   await page.locator('.learning-companion summary').first().click();
   await attachScreenshot(page, testInfo, 'dermatology-explanation');
   await page.locator('.learning-companion summary').nth(2).click();
-  await page.locator('.study-guide-figure img').scrollIntoViewIfNeeded();
-  await expect.poll(()=>page.locator('.study-guide-figure img').evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
-  await attachScreenshot(page, testInfo, 'dermatology-infographic');
+  await expect(page.locator('.original-guide-link')).toBeVisible();
+  await attachScreenshot(page, testInfo, 'dermatology-original-source-gallery');
   await page.setViewportSize({width:390,height:844});
-  await page.locator('.study-guide-image-scroller').scrollIntoViewIfNeeded();
-  await attachScreenshot(page, testInfo, 'dermatology-phone-zoomable-infographic');
+  await page.locator('#originalFigureTools').scrollIntoViewIfNeeded();
+  await attachScreenshot(page, testInfo, 'dermatology-phone-original-source-import');
   await page.locator('.study-guide-explanation').first().scrollIntoViewIfNeeded();
   await attachScreenshot(page, testInfo, 'dermatology-phone');
 });

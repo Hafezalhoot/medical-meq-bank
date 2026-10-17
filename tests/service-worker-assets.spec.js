@@ -65,52 +65,21 @@ test('explicit offline cache stores only the requested lecture', async ({page}) 
 });
 
 
-test('saved Dermatology lecture includes all local figures and remains readable offline', async ({page}) => {
-  await page.goto('/', {waitUntil:'domcontentloaded'});
+test('saved Dermatology source study remains available offline without invented graphics', async ({page}) => {
+  await page.goto('/',{waitUntil:'domcontentloaded'});
   await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15000});
-  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)),
-    {timeout:60000, intervals:[500,1000,2000]}).toBe(true);
-
+  await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller)),{timeout:60000}).toBe(true);
   const id='internal-medicine-ii-dermatology-introduction';
-  // The offline API uses catalog metadata, which the UI loads when selecting a course.
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
   await expect(page.locator('#lectureFilter option[value="'+id+'"]')).toHaveCount(1,{timeout:15000});
-  await page.evaluate(async lectureId => {
-    await globalThis.MEQOfflineCache.cacheLecture(lectureId);
-  }, id);
-  await expect.poll(() => page.evaluate(lectureId =>
-    globalThis.MEQOfflineCache.isLectureCached(lectureId), id)).toBe(true);
-  // A missing local infographic must make the saved-status check fail.
-  const wasCompleteAfterLoss = await page.evaluate(async lectureId => {
-    const cache=await caches.open('medical-meq-bank-'+(await (await fetch('/version.json')).json()).version);
-    await cache.delete(new URL('/assets/lectures/dermatology-intro/lesions-classification.svg',location.href).href);
-    return globalThis.MEQOfflineCache.isLectureCached(lectureId);
-  }, id);
-  expect(wasCompleteAfterLoss).toBe(false);
-  await page.evaluate(async lectureId => {
-    await globalThis.MEQOfflineCache.cacheLecture(lectureId);
-  }, id);
-  await expect.poll(()=>page.evaluate(lectureId =>
-    globalThis.MEQOfflineCache.isLectureCached(lectureId),id)).toBe(true);
-  const paths=[
-    '/lectures/data/internal-medicine-ii-dermatology-introduction.json',
-    '/assets/lectures/dermatology-intro/skin-layers.svg',
-    '/assets/lectures/dermatology-intro/lesion-atlas.svg',
-    '/assets/lectures/dermatology-intro/lesions-classification.svg'
-  ];
-  const saved=await page.evaluate(async required => {
-    const cache=await caches.open('medical-meq-bank-'+(await (await fetch('/version.json')).json()).version);
-    const keys=(await cache.keys()).map(request=>new URL(request.url).pathname);
-    return required.map(path=>({path,cached:keys.includes(path)}));
-  },paths);
-  expect(saved.every(item=>item.cached),JSON.stringify(saved)).toBe(true);
-
+  await page.evaluate(async x=>globalThis.MEQOfflineCache.cacheLecture(x),id);
+  await expect.poll(()=>page.evaluate(x=>globalThis.MEQOfflineCache.isLectureCached(x),id)).toBe(true);
+  const source=await page.evaluate(x=>lectures.find(item=>item.id===x),id);
+  expect(source.imageQuestions).toHaveLength(14);
+  expect(source.imageQuestions.every(q=>!q.image)).toBe(true);
+  expect(Boolean(source.studyGuide.infographic)).toBe(false);
   await page.context().setOffline(true);
-  const statuses=await page.evaluate(async required =>
-    Promise.all(required.map(async path=>{
-      const response=await fetch(path);
-      return {path,ok:response.ok};
-    })),paths);
-  expect(statuses.every(item=>item.ok),JSON.stringify(statuses)).toBe(true);
+  const ok=await page.evaluate(async()=>{const r=await fetch('/lectures/data/internal-medicine-ii-dermatology-introduction.json');return r.ok;});
+  expect(ok).toBe(true);
 });
