@@ -1,5 +1,11 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-17 — Release candidate CI cache-version test repair
+
+- ✅ [run 39031460721](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39031460721): `validate` and iPhone/Safari `webkit-quality` passed after fixing the obstructed accordion tap. Chromium completed 72/73 tests; the remaining failure was in a test still opening a hardcoded **old app-version cache** (`2026.10.16.3`) after the intentional PWA bump to `2026.10.17.1`.
+- 🧪 Replaced both hardcoded versioned-cache references in the test with a read of the built `/version.json`; the source/PWA cache behavior is unchanged. Await latest-head clean validate, Chromium and WebKit before merge.
+- ⚠️ Production promotion stays independent from GitHub merge because Cloudflare currently uploads Worker versions without automatically promoting them.
+
 ### 2026-10-17 — Requested release: fix iPhone sticky header and verify before merge
 
 - ✅ User requested publication of the V2 workspace and Dermatology lecture. No source PDF or copyrighted clinical photos are included.
