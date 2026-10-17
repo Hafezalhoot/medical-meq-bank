@@ -448,7 +448,7 @@ function render(){
   if(studyGuide){
     sec.querySelector('.cases-section').before(studyGuide);
     const jump=document.createElement('button');jump.type='button';
-    jump.className='study-guide-jump';jump.textContent='Explanation / MCQ / Infographic';
+    jump.className='study-guide-jump';jump.textContent=l.id==='internal-medicine-ii-dermatology-introduction'?'Explanation / MCQ / Original Photos':'Explanation / MCQ / Infographic';
     jump.addEventListener('click',()=>{
       const first=studyGuide.querySelector('details');
       if(first)first.open=true;
