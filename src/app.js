@@ -409,7 +409,28 @@ function createStudyGuide(lecture) {
     copy.textContent='Study the original images from the printed lecture, not redrawn substitutes. Import the 14 source crops on this device, then study the source-linked image questions below.';
     const jump=document.createElement('a');jump.className='original-guide-link';
     jump.href='#'+lecture.id+'-images';jump.textContent='Open original figure questions';
-    details.append(copy,jump);
+    const atlas=document.createElement('div');
+    atlas.className='original-atlas-grid';
+    atlas.setAttribute('aria-label','Original lecture photograph atlas');
+    lecture.imageQuestions.forEach((item,index)=>{
+      const entry=document.createElement('figure');
+      entry.className='original-atlas-item';
+      entry.dataset.originalFigureId=item.id;
+      const media=document.createElement('div');
+      media.className='original-atlas-frame';
+      const missing=document.createElement('div');
+      missing.className='original-atlas-missing';
+      missing.textContent='Original source photo not imported';
+      media.append(missing);
+      const label=document.createElement('figcaption');
+      const heading=document.createElement('strong');
+      heading.textContent=String(index+1).padStart(2,'0')+' · '+item.title;
+      const source=document.createElement('small');
+      source.textContent=item.page||'Printed lecture source';
+      label.append(heading,source);
+      entry.append(media,label);atlas.append(entry);
+    });
+    details.append(copy,atlas,jump);
   }
   return section;
 }
@@ -645,90 +666,211 @@ $('emptyResetBtn').onclick=()=>{
 if(storage.get('medicalBankDarkV4')==='1'||storage.get('medicalBankDarkV3')==='1')document.body.classList.add('dark');
 syncThemeButton();
 
-/* Original printed medical photographs only. Never upload or synthesize images.
-   IndexedDB is independent of question progress and remains offline. */
+/* Original lecture medical photographs ONLY.
+   Copyrighted PDF images are never uploaded to MEQ or stored in the public code.
+   SHA-256 fingerprints pin imported figures to the 14 owner-supplied source crops.
+   IndexedDB does not share the student's question-progress store.
+   A compressed source ZIP is read entirely in this browser (no network). */
 ;(function setupOriginalFigures(){
   const lecture='internal-medicine-ii-dermatology-introduction';
-  const known=/^derm-image-(?:00[1-9]|01[0-4])\.(?:jpe?g|png|webp)$/i;
+  const expected=Object.freeze({
+    'derm-image-001':'998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19',
+    'derm-image-002':'998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19',
+    'derm-image-003':'7a39b761ba35056277ef9e7dae5b61c42458ecb605b4c67242e43cfce69dd416',
+    'derm-image-004':'1b99cb590d8bea51ecf9cb0adcca39b45f88260e2ff1ee8e66338d1e960dc705',
+    'derm-image-005':'719e39f5c6d36b3ad37025f630eb32c0bab09aa24c821fdceffca1c81b141170',
+    'derm-image-006':'d8833fe0fd52e871edb0ad3462a569114a466020c735b0c1b93db7504c3d798a',
+    'derm-image-007':'a8220f517d651e6025fb05508a6b6b9a04bab372dbd7e95d5bb6978123c0a2aa',
+    'derm-image-008':'8e6c3ca25519a026e8196dfde48d695afbf2b962617965d483d43e426c42ba26',
+    'derm-image-009':'ddbf61f80bf174f952e1599e9e7e119c0781fcd69a3b626ca12e042c581723be',
+    'derm-image-010':'0aded058007aa4bb3768eb16e53e8d45a52a482e000128c6867a5086396feaae',
+    'derm-image-011':'f86286d2907490c429d023a7d25d35b861cf91b49d9fe0549e386d1434eca2fb',
+    'derm-image-012':'0009cc34c1dc28cb98197c017c6fc6fbd4445a8b1f981a92679cae6c5c457131',
+    'derm-image-013':'da6d296e5d781a716c20a733b4adac73e04f1ccfe664785ba143333a7001b7fa',
+    'derm-image-014':'447dca35f5be16ab5001ea99735c662e6270c818389378122c83108ab8c6a2ef'
+  });
+  const filePattern=/^(derm-image-(?:00[1-9]|01[0-4]))\.jpe?g$/i;
   const root=document.getElementById('lectureContainer');
   const section=document.getElementById('originalFigureTools');
   const input=document.getElementById('originalFigureFiles');
   const button=document.getElementById('originalFigureImportBtn');
   const status=document.getElementById('originalFigureStatus');
   if(!root||!section||!input||!button||!status)return;
-  let queued=false;
-  const urls=new Map();
+  const urls=new Map(), approved=new Map();
+  let pending=false,activeHydration=0;
+
   const openDb=()=>new Promise((resolve,reject)=>{
-    if(!globalThis.indexedDB){reject(new Error('Device image storage is unavailable'));return;}
+    if(!globalThis.indexedDB){reject(new Error('Local original-image storage is not available'));return;}
     const request=indexedDB.open('medical-meq-original-figures-v1',1);
-    request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains('figures'))request.result.createObjectStore('figures');};
+    request.onupgradeneeded=()=>{
+      if(!request.result.objectStoreNames.contains('figures'))request.result.createObjectStore('figures');
+    };
     request.onsuccess=()=>resolve(request.result);
-    request.onerror=()=>reject(request.error||new Error('Cannot open original-image storage'));
+    request.onerror=()=>reject(request.error||new Error('Local image storage failed'));
   });
-  const stored=async(type,apply)=>{
+  const withStore=async(mode,apply)=>{
     const db=await openDb();
     try{return await new Promise((resolve,reject)=>{
-      const tx=db.transaction('figures',type);
-      const req=apply(tx.objectStore('figures'));
-      req.onsuccess=()=>resolve(req.result);
-      req.onerror=()=>reject(req.error||new Error('Cannot access original image'));
-      tx.onerror=()=>reject(tx.error||new Error('Image transaction failed'));
+      const transaction=db.transaction('figures',mode);
+      const request=apply(transaction.objectStore('figures'));
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error||new Error('Original image storage failed'));
+      transaction.onerror=()=>reject(transaction.error||new Error('Local storage transaction failed'));
     });}finally{db.close();}
   };
   const key=id=>lecture+'::'+id;
-  const get=id=>stored('readonly',store=>store.get(key(id)));
-  const put=(id,blob)=>stored('readwrite',store=>store.put(blob,key(id)));
-  const updateCount=async()=>{
+  const get=id=>withStore('readonly',store=>store.get(key(id)));
+  const put=(id,blob)=>withStore('readwrite',store=>store.put(blob,key(id)));
+  const digest=async blob=>{
+    if(!globalThis.crypto?.subtle)throw new Error('Secure source verification is unavailable; images were not imported');
+    const hash=await crypto.subtle.digest('SHA-256',await blob.arrayBuffer());
+    return Array.from(new Uint8Array(hash),byte=>byte.toString(16).padStart(2,'0')).join('');
+  };
+  const validOriginal=async(id,blob)=>{
+    if(!blob||!expected[id]||blob.size>5*1024*1024||blob.size<300)return false;
+    const head=new Uint8Array(await blob.slice(0,3).arrayBuffer());
+    if(head[0]!==0xff||head[1]!==0xd8||head[2]!==0xff)return false;
+    return (await digest(blob))===expected[id];
+  };
+  const sourceId=name=>filePattern.exec(name)?.[1]?.toLowerCase()||'';
+
+  // Supports ZIP local headers and a central-directory index: no remote parser,
+  // scripts, filenames from outside the 14 originals, or archive extraction paths.
+  async function unpackZip(file){
+    if(file.size>12*1024*1024)throw new Error('ZIP pack exceeds the 12 MB safety limit');
+    const buffer=await file.arrayBuffer();
+    const bytes=new Uint8Array(buffer),view=new DataView(buffer);
+    const u16=(offset)=>view.getUint16(offset,true);
+    const u32=(offset)=>view.getUint32(offset,true);
+    let end=-1;
+    for(let cursor=bytes.length-22;cursor>=Math.max(0,bytes.length-65557);cursor--){
+      if(u32(cursor)===0x06054b50){end=cursor;break;}
+    }
+    if(end<0)throw new Error('Invalid ZIP: missing directory record');
+    const count=u16(end+10),start=u32(end+16);
+    if(count>36||start>=bytes.length)throw new Error('ZIP entries are invalid or excessive');
+    const decoder=new TextDecoder(),files=[];
+    let pos=start;
+    for(let index=0;index<count;index++){
+      if(pos+46>bytes.length||u32(pos)!==0x02014b50)throw new Error('Malformed ZIP file index');
+      const method=u16(pos+10),compressed=u32(pos+20),original=u32(pos+24);
+      const nameLen=u16(pos+28),extraLen=u16(pos+30),commentLen=u16(pos+32),offset=u32(pos+42);
+      const endName=pos+46+nameLen;
+      if(endName>bytes.length)throw new Error('Malformed ZIP entry name');
+      const filename=decoder.decode(bytes.subarray(pos+46,endName)).replace(/\\/g,'/');
+      pos=endName+extraLen+commentLen;
+      const name=filename.split('/').pop();
+      const id=sourceId(name);
+      if(!id)continue;
+      if(![0,8].includes(method)||original>5*1024*1024||compressed>5*1024*1024)
+        throw new Error('Unsupported or excessive source-photo entry in ZIP');
+      if(offset+30>bytes.length||u32(offset)!==0x04034b50)throw new Error('Broken ZIP local header');
+      const from=offset+30+u16(offset+26)+u16(offset+28),to=from+compressed;
+      if(to>bytes.length)throw new Error('Incomplete ZIP source photo');
+      const packed=bytes.slice(from,to);
+      let raw;
+      if(method===0){raw=packed;}
+      else{
+        if(typeof DecompressionStream!=='function')throw new Error('This browser cannot unpack ZIP files; extract the archive and import its JPEGs instead');
+        let stream;
+        try{stream=new Blob([packed]).stream().pipeThrough(new DecompressionStream('deflate-raw'));}
+        catch(e){throw new Error('ZIP unpacking unavailable; extract the archive and select the JPEG photos instead');}
+        const reader=stream.getReader(),chunks=[];
+        let total=0;
+        try{
+          while(true){
+            const {value,done}=await reader.read();if(done)break;
+            total+=value.byteLength;
+            if(total>5*1024*1024)throw new Error('Uncompressed source photo is too large');
+            chunks.push(value);
+          }
+        }catch(e){await reader.cancel().catch(()=>{});throw e;}
+        raw=new Uint8Array(total);let i=0;
+        for(const chunk of chunks){raw.set(chunk,i);i+=chunk.length;}
+      }
+      if(raw.length!==original)throw new Error('ZIP photo size mismatch');
+      files.push({name,blob:new Blob([raw],{type:'image/jpeg'})});
+    }
+    if(!files.length)throw new Error('ZIP contains no named original Dermatology figures');
+    return files;
+  }
+  const syncStatus=async()=>{
     try{
-      let items=await Promise.all(Array.from({length:14},(_,n)=>get('derm-image-'+String(n+1).padStart(3,'0'))));
-      status.textContent=items.filter(Boolean).length+'/14 original figures stored privately on this device. Question progress is saved separately.';
-    }catch(e){status.textContent='Image storage is unavailable. The text and questions still work.';}
+      const ids=Object.keys(expected);
+      const all=await Promise.all(ids.map(async id=>{
+        let blob=approved.get(id)||await get(id);
+        if(!blob||!(await validOriginal(id,blob)))return false;
+        approved.set(id,blob);return true;
+      }));
+      status.textContent=all.filter(Boolean).length+'/14 verified original PDF figures saved on this device. Progress backups do not include private photos.';
+    }catch(e){status.textContent='Original-photo storage or SHA-256 verification unavailable. Text and questions still work.';}
   };
   const hydrate=async()=>{
-    const cards=[...root.querySelectorAll('.image-card[data-original-figure-id]')];
+    const cards=[...root.querySelectorAll('[data-original-figure-id]')];
+    const requested=new Set(cards.map(card=>card.dataset.originalFigureId));
     section.hidden=!cards.length;
     if(!cards.length)return;
-    await Promise.all(cards.map(async card=>{
-      if(card.dataset.originalHydrated==='true')return;
-      const id=card.dataset.originalFigureId;
-      let blob;
-      try{blob=await get(id)}catch(e){return;}
-      if(!blob||!card.isConnected)return;
-      const visual=card.querySelector('.visual');if(!visual)return;
-      const old=urls.get(id);if(old)URL.revokeObjectURL(old);
-      const src=URL.createObjectURL(blob);urls.set(id,src);
-      const link=document.createElement('a');
-      link.className='source-figure-full';link.href=src;link.target='_blank';link.rel='noopener noreferrer';
-      link.setAttribute('aria-label','Open original lecture photograph in full resolution');
+    const current=++activeHydration;
+    const blobs=new Map();
+    await Promise.all([...requested].map(async id=>{
+      try{
+        const blob=approved.get(id)||await get(id);
+        if(blob&&await validOriginal(id,blob)){approved.set(id,blob);blobs.set(id,blob);}
+      }catch(e){/* Honest missing-photo state; never show an unverified image. */}
+    }));
+    if(current!==activeHydration)return;
+    for(const card of cards){
+      const id=card.dataset.originalFigureId,blob=blobs.get(id);
+      if(!blob||!card.isConnected||card.dataset.originalHydrated==='true')continue;
+      const visual=card.classList.contains('original-atlas-item')
+        ?card.querySelector('.original-atlas-frame'):card.querySelector('.visual');
+      if(!visual)continue;
+      let src=urls.get(id);
+      if(!src){src=URL.createObjectURL(blob);urls.set(id,src);}
+      const link=document.createElement('a');link.className='source-figure-full';
+      link.href=src;link.target='_blank';link.rel='noopener noreferrer';
+      link.setAttribute('aria-label','Open verified original PDF figure '+id+' in full size');
       const image=document.createElement('img');image.src=src;image.loading='lazy';image.decoding='async';
-      image.alt='Original printed figure from '+card.querySelector('.pill.page')?.textContent;
+      image.alt='Verified original lecture figure for '+(card.querySelector('.case-title')?.textContent||card.querySelector('figcaption')?.textContent||id);
       const caption=document.createElement('span');caption.className='source-figure-caption';
-      caption.textContent='Original figure from the uploaded lecture · saved on this device · open full size';
+      caption.textContent='Verified original PDF · local only · tap for full resolution';
       link.append(image,caption);visual.replaceChildren(link);
       card.dataset.originalHydrated='true';card.dataset.visualSource='original-pdf';
-    }));
+    }
   };
-  const refresh=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;hydrate();});};
+  const refresh=()=>{
+    if(pending)return;
+    pending=true;
+    requestAnimationFrame(()=>{pending=false;hydrate().catch(()=>{});});
+  };
   button.addEventListener('click',()=>input.click());
   input.addEventListener('change',async()=>{
-    const files=[...input.files];if(!files.length)return;
-    button.disabled=true;status.textContent='Importing original images to device storage…';
-    let imported=0,skipped=0;
+    const picks=[...input.files];if(!picks.length)return;
+    button.disabled=true;status.textContent='Checking original-source fingerprints…';
+    let accepted=0,rejected=0;
     try{
-      for(const file of files){
-        if(!known.test(file.name)||!/^image\/(?:jpeg|png|webp)$/.test(file.type)||file.size>5*1024*1024){skipped++;continue;}
-        const id=file.name.toLowerCase().replace(/\.(?:jpe?g|png|webp)$/,'');
-        await put(id,file);imported++;
+      const expanded=[];
+      for(const pick of picks){
+        if(/\.zip$/i.test(pick.name)||pick.type==='application/zip'){
+          expanded.push(...await unpackZip(pick));continue;
+        }
+        expanded.push({name:pick.name,blob:pick});
       }
-      root.querySelectorAll('.image-card[data-original-figure-id]').forEach(card=>{card.dataset.originalHydrated='';});
-      await hydrate();await updateCount();
-      if(!imported)status.textContent='No recognized photos. Select derm-image-001.jpg to derm-image-014.jpg.';
-      else if(skipped)status.textContent+=' '+skipped+' unsupported file(s) ignored.';
-    }catch(e){status.textContent='Could not save originals: '+(e?.message||'storage error');}
+      for(const item of expanded){
+        const id=sourceId(item.name);
+        if(!id||!(await validOriginal(id,item.blob))){rejected++;continue;}
+        await put(id,item.blob);approved.set(id,item.blob);accepted++;
+        const oldUrl=urls.get(id);if(oldUrl){URL.revokeObjectURL(oldUrl);urls.delete(id);}
+      }
+      root.querySelectorAll('[data-original-figure-id]').forEach(card=>{card.dataset.originalHydrated='';});
+      await hydrate();await syncStatus();
+      if(rejected)status.textContent+=' '+rejected+' unverified/unmatched file(s) rejected.';
+      if(!accepted)status.textContent='No original source files were accepted. Use the exact JPEGs or original ZIP pack supplied with this lecture.';
+    }catch(e){status.textContent='Unable to import: '+(e?.message||'unsupported ZIP or storage');}
     finally{input.value='';button.disabled=false;}
   });
   new MutationObserver(()=>refresh()).observe(root,{childList:true});
-  addEventListener('beforeunload',()=>{for(const url of urls.values())URL.revokeObjectURL(url);});
+  addEventListener('beforeunload',()=>{for(const src of urls.values())URL.revokeObjectURL(src);});
   globalThis.MEQOriginalFigures={refresh};
-  refresh();updateCount();
+  refresh();syncStatus();
 })();
