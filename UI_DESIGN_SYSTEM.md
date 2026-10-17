@@ -230,3 +230,17 @@ Before creating a new component, check whether an existing:
 - empty state
 
 already solves the problem. Reuse before adding another visual language.
+
+## V2 refined presentation contract
+
+The owner-provided production screenshots demonstrated that prolonged case revision needs **less vertical setup UI and more reading area**, not a feature-grid landing page.
+
+- Header: restrained 18px-scale internal padding, a bounded study identity and compact course/specialty controls. Keep installation, backups, online status and appearance reachable.
+- Progress: one-line semantic summary with an optional expanded metrics grid. Do not discard existing raw counts or change the meaning of rated progress.
+- Navigation: keep the original independent lecture/subtopic controls; reduce their default width and maintain responsive collapse.
+- Focus: optional persistent `medicalBankFocusModeV1` class on the app root. Hide secondary navigation/hero/stats while preserving breadcrumb, search, lecture filter, question content and an obvious Exit action. Must never mutate medical or progress data.
+- Quick study modes: Cases, Short Questions and Images link to the corresponding existing filter states. All content remains accessible.
+- Content density: light borders before heavy shadows, visibly separate scenario, numbered questions, model answer and progress actions; readable Arabic/English lines.
+- Touch targets remain at least 44px for primary actions; avoid icon-only navigation without accessible labels.
+- Accessibility and performance remain the merge gate, while subjective visual sign-off requires the actual V2 rendered candidate at small/mobile/desktop widths.
+

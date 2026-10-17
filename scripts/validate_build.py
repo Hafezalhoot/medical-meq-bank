@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from copy import deepcopy
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -512,8 +513,16 @@ def validate_html(source_lectures: dict[str, dict]) -> None:
         if marker in html:
             fail(f"compressed runtime loader leaked into HTML: {marker}")
 
-    if extract_offline_lectures(offline) != source_lectures:
-        fail("offline lecture content differs from cataloged JSON sources")
+    # Compare the exact built offline representation to the same reviewed
+    # source material after deterministic local image embedding. This catches
+    # altered text or assets without rejecting legitimate data: URIs.
+    sys.path.insert(0, str(ROOT / "tools"))
+    from lecture_builder import inline_study_guide_media
+    expected_offline = deepcopy(list(source_lectures.values()))
+    inline_study_guide_media(ROOT, expected_offline)
+    expected_by_id = {item["id"]: item for item in expected_offline}
+    if extract_offline_lectures(offline) != expected_by_id:
+        fail("offline lecture content differs from source after exact media embedding")
 
     for marker in (
         'id="app-source-styles"',

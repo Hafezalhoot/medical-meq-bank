@@ -124,11 +124,19 @@ function setSubtopicData(el,item){el.dataset.subtopics=itemSubtopics(item).join(
 
 function validateBank(){
   const errors=[];
-  const subjectIds=new Set(subjects.map(s=>s.id));
+  const scopes=globalThis.MEQCourseRegistry?.allSubjectScopes?.() || [];
+  const scopedSubjects=new Set(scopes.map(s=>s.courseId+'::'+s.subjectKey));
+  const allSubjectIds=new Set(scopes.map(s=>s.subjectKey));
+  // Validate each published lecture against its own course. The active
+  // course's 'subjects' array is a UI selection, not a global schema.
+  const subjectIds=scopes.length?allSubjectIds:new Set(subjects.map(s=>s.id));
   const lectureIds=new Set();
   lectures.forEach(l=>{
     if(lectureIds.has(l.id))errors.push(`Duplicate lecture id: ${l.id}`);lectureIds.add(l.id);
-    if(!subjectIds.has(l.subjectKey))errors.push(`Unknown subjectKey in ${l.title}: ${l.subjectKey}`);
+    const validSubject=l.courseId&&scopes.length
+      ?scopedSubjects.has(l.courseId+'::'+l.subjectKey)
+      :subjectIds.has(l.subjectKey);
+    if(!validSubject)errors.push(`Unknown subjectKey in ${l.title}: ${l.subjectKey}`);
     const validSubtopics=new Set(l.subtopics.map(s=>s.id));
     if(validSubtopics.size!==l.subtopics.length)errors.push(`Duplicate subtopic id in ${l.title}`);
     const seen=new Set();
@@ -264,6 +272,136 @@ function renderLectureOverview(container,list){
   });
   container.appendChild(section)
 }
+function createStudyGuide(lecture) {
+  const guide=lecture.studyGuide;
+  if(!guide||(!guide.explanation?.length&&!guide.mcqs?.length&&!guide.infographic))return null;
+  const section=document.createElement('section');
+  section.className='learning-companion';
+  section.id=lecture.id+'-guide';
+  const heading=document.createElement('div');
+  heading.className='section-head';
+  const title=document.createElement('h2');title.textContent='Lecture study guide';
+  const description=document.createElement('p');
+  description.textContent='Source-linked explanation, MCQs and visual revision. Existing MEQ practice remains below.';
+  heading.append(title,description);
+  section.appendChild(heading);
+
+  const disclosure=(name,count)=>{
+    const details=document.createElement('details');
+    details.className='study-guide-part';
+    const summary=document.createElement('summary');
+    summary.textContent=name+(count?' ('+count+')':'');
+    details.append(summary);
+    section.append(details);
+    return details;
+  };
+  const sourceLabel=(parent,page)=>{
+    const label=document.createElement('small');
+    label.className='study-guide-source';
+    label.textContent='Lecture source: '+page;
+    parent.append(label);
+  };
+
+  if(guide.explanation?.length){
+    const details=disclosure('Explanation',guide.explanation.length);
+    guide.explanation.forEach(part=>{
+      const article=document.createElement('article');article.className='study-guide-explanation';
+      const heading=document.createElement('h3');heading.textContent=part.heading;article.append(heading);
+      for(const text of part.paragraphs){
+        const p=document.createElement('p');p.textContent=text;p.dir=/[\u0600-\u06FF]/.test(text)?'rtl':'ltr';article.append(p);
+      }
+      if(part.understandingAids?.length){
+        const aid=document.createElement('aside');aid.className='study-guide-understanding';
+        const title=document.createElement('strong');
+        title.textContent='Understanding Aid — Not an additional exam fact';
+        aid.append(title);
+        for(const text of part.understandingAids){const p=document.createElement('p');p.textContent=text;p.dir=/[\u0600-\u06FF]/.test(text)?'rtl':'ltr';aid.append(p);}
+        article.append(aid);
+      }
+      sourceLabel(article,part.sourcePage);
+      details.append(article);
+    });
+  }
+
+  if(guide.mcqs?.length){
+    const details=disclosure('MCQ practice',guide.mcqs.length);
+    guide.mcqs.forEach((item,index)=>{
+      const article=document.createElement('article');article.className='study-guide-mcq';
+      const question=document.createElement('h3');question.textContent=(index+1)+'. '+item.question;question.dir='auto';
+      article.append(question);
+      const fieldset=document.createElement('fieldset');fieldset.className='study-guide-choices';
+      const legend=document.createElement('legend');legend.textContent='Choose one answer';fieldset.append(legend);
+      item.options.forEach((option,choice)=>{
+        const label=document.createElement('label');
+        const radio=document.createElement('input');radio.type='radio';radio.value=String(choice);
+        radio.name='study-mcq-'+lecture.id+'-'+item.id;
+        const span=document.createElement('span');span.textContent=option;span.dir='auto';
+        label.append(radio,span);fieldset.append(label);
+      });
+      article.append(fieldset);
+      const reveal=document.createElement('button');reveal.type='button';reveal.className='study-guide-reveal';
+      reveal.setAttribute('aria-expanded','false');reveal.textContent='Reveal explanation';
+      const feedback=document.createElement('p');feedback.className='study-guide-answer';feedback.hidden=true;
+      feedback.setAttribute('role','status');
+      reveal.addEventListener('click',()=>{
+        const open=feedback.hidden;
+        feedback.hidden=!open;
+        reveal.setAttribute('aria-expanded',String(open));
+        reveal.textContent=open?'Hide explanation':'Reveal explanation';
+        if(open){
+          const selected=fieldset.querySelector('input:checked');
+          const result=selected
+            ?(Number(selected.value)===item.answerIndex?'Your answer is correct. ':'Your answer needs review. ')
+            :'';
+          feedback.textContent=result+'Correct answer: '+item.options[item.answerIndex]+'. '+item.rationale;
+        }
+      });
+      article.append(reveal,feedback);
+      sourceLabel(article,item.sourcePage);
+      details.append(article);
+    });
+  }
+
+  if(guide.infographic){
+    const details=disclosure('Infographic');
+    const figure=document.createElement('figure');figure.className='study-guide-figure';
+    const image=document.createElement('img');
+    image.src=guide.infographic.image;image.alt=guide.infographic.alt;
+    image.loading='lazy';image.decoding='async';
+    const viewport=document.createElement('div');
+    viewport.className='study-guide-image-scroller';
+    viewport.tabIndex=0;
+    viewport.setAttribute('role','region');
+    viewport.setAttribute('aria-label','Scrollable infographic; swipe or use arrow keys on small screens');
+    const fullSizeLink=document.createElement('a');
+    fullSizeLink.className='study-guide-open-image';
+    fullSizeLink.href=guide.infographic.image;
+    fullSizeLink.target='_blank';
+    fullSizeLink.rel='noopener noreferrer';
+    fullSizeLink.textContent='Open full-size infographic';
+    image.addEventListener('error',()=>{
+      image.remove();
+      const fallback=document.createElement('p');
+      fallback.textContent='Infographic could not be displayed. Check the lecture source reference below.';
+      viewport.replaceWith(fallback);
+      fullSizeLink.remove();
+    },{once:true});
+    viewport.append(image);
+    figure.append(viewport);
+    const panHint=document.createElement('p');
+    panHint.className='study-guide-pan-hint';
+    panHint.textContent='Swipe sideways to read the infographic at a larger size, or open the full image.';
+    figure.append(panHint,fullSizeLink);
+    if(guide.infographic.caption){
+      const caption=document.createElement('figcaption');
+      caption.textContent=guide.infographic.caption;caption.dir='auto';figure.append(caption);
+    }
+    details.append(figure);
+    sourceLabel(details,guide.infographic.sourcePage);
+  }
+  return section;
+}
+
 function render(){
   const container=$('lectureContainer');container.innerHTML='';const list=visibleLectures();
   if(!list.length){renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();return}
@@ -286,13 +424,26 @@ function render(){
     return
   }
   const sec=document.createElement('section');sec.className='lecture';sec.id='lecture-'+l.id;sec.dataset.lecture=l.id;
-  sec.innerHTML=`<header class="lecture-head"><div><div class="lecture-kicker">Lecture ${String(l.order).padStart(2,'0')} • ${esc(l.subject)}</div><h2 class="lecture-title">${esc(l.title)}</h2><div class="lecture-summary">${esc(l.subtitle)}</div><details class="source-boundary"><summary>Lecture source boundary</summary><div>${esc(l.sourceNote)}</div></details></div><div class="lecture-side"><div class="lecture-counts"><span class="count-pill">${l.cases.length} MEQ cases</span><span class="count-pill">${l.coreShorts.length} high-yield shorts</span><span class="count-pill">${l.imageQuestions.length} image questions</span><span class="count-pill">${l.detailedShorts.length} detailed practice</span></div><div class="quick-views"><button class="quick-view-btn" data-view="case" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="M4 10h16"></path><path d="M10 5v14"></path></svg></span><span>Cases</span></button><button class="quick-view-btn" data-view="core" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span><span>Short Questions</span></button><button class="offline-lecture-btn" type="button" data-lecture="${l.id}">Save lecture offline</button><button class="quick-reset" data-view="all" data-lecture="${l.id}">Show all content</button></div></div></header>
+  sec.innerHTML=`<header class="lecture-head"><div><div class="lecture-kicker">Lecture ${String(l.order).padStart(2,'0')} • ${esc(l.subject)}</div><h2 class="lecture-title">${esc(l.title)}</h2><div class="lecture-summary">${esc(l.subtitle)}</div><details class="source-boundary"><summary>Lecture source boundary</summary><div>${esc(l.sourceNote)}</div></details></div><div class="lecture-side"><div class="lecture-counts"><span class="count-pill">${l.cases.length} MEQ cases</span><span class="count-pill">${l.coreShorts.length} high-yield shorts</span><span class="count-pill">${l.imageQuestions.length} image questions</span><span class="count-pill">${l.detailedShorts.length} detailed practice</span></div><div class="quick-views"><button class="quick-view-btn" data-view="case" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="M4 10h16"></path><path d="M10 5v14"></path></svg></span><span>Cases</span></button><button class="quick-view-btn" data-view="core" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span><span>Short Questions</span></button><button class="quick-view-btn" data-view="image" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.2"></circle><path d="m5 17 5-5 3 3 2-2 4 4"></path></svg></span><span>Images</span></button><button class="offline-lecture-btn" type="button" data-lecture="${l.id}">Save lecture offline</button><button class="quick-reset" data-view="all" data-lecture="${l.id}">Show all content</button></div></div></header>
   <div class="content-section cases-section" data-section-type="case"><div class="section-head" id="${l.id}-cases"><div><h2>MEQ Cases</h2><p>Progressive scenarios, model answers, marking schemes and exam traps.</p></div><span class="section-badge">Start here for application</span></div><div class="study-grid cases-grid"></div></div>
   <div class="content-section core-section" data-section-type="core"><div class="section-head" id="${l.id}-core"><div><h2>High-Yield Short Questions</h2><p>The essential short notes, enumerations and comparisons.</p></div><span class="section-badge">Core exam list</span></div><div class="study-grid shorts core-grid"></div></div>
   <div class="content-section image-section" data-section-type="image"><div class="section-head" id="${l.id}-images"><div><h2>Image & Spot Questions</h2><p>Original lecture figures embedded inside the bank.</p></div><span class="section-badge">Visual revision</span></div><div class="study-grid images image-grid"></div></div>
   <div class="content-section extra-section" data-section-type="extra"><div class="section-head"><div><h2>Detailed Practice</h2><p>The original direct questions are preserved for deeper repetition.</p></div></div><details class="practice-details"><summary>Open detailed practice questions (${l.detailedShorts.length})</summary><div class="practice-body"><div class="study-grid shorts extra-grid"></div></div></details></div>
   <div class="content-section rapid-section" data-section-type="rapid"><div class="section-head" id="${l.id}-rapid"><div><h2>Rapid Recall</h2><p>Click each card to reveal the one-line answer.</p></div></div><section class="rapid"><div class="rapid-grid"></div></section></div>`;
   container.appendChild(sec);
+  const studyGuide=createStudyGuide(l);
+  if(studyGuide){
+    sec.querySelector('.cases-section').before(studyGuide);
+    const jump=document.createElement('button');jump.type='button';
+    jump.className='study-guide-jump';jump.textContent='Explanation / MCQ / Infographic';
+    jump.addEventListener('click',()=>{
+      const first=studyGuide.querySelector('details');
+      if(first)first.open=true;
+      studyGuide.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+      first?.querySelector('summary')?.focus({preventScroll:true});
+    });
+    sec.querySelector('.quick-views').append(jump);
+  }
   l.cases.forEach((c,i)=>sec.querySelector('.cases-grid').appendChild(caseCard(l,c,i)));
   l.coreShorts.forEach((q,i)=>sec.querySelector('.core-grid').appendChild(shortCard(l,q,i,'core','High-Yield Short')));
   l.imageQuestions.forEach((q,i)=>sec.querySelector('.image-grid').appendChild(imageCard(l,q,i)));
@@ -304,7 +455,7 @@ function render(){
 function bind(){
   document.querySelectorAll('.toggle').forEach(b=>b.onclick=()=>{const item=b.closest('.study-item');item.classList.toggle('open');b.textContent=item.classList.contains('open')?'Hide answer':(item.dataset.type==='case'?'Show model answer':'Show answer')});
   document.querySelectorAll('.status').forEach(b=>b.onclick=()=>{const k=b.dataset.key,s=b.dataset.status,next=state[k]===s?'':s;if(next)state[k]=next;else delete state[k];const progressStore=globalThis.MEQProgressStore;if(progressStore?.set)progressStore.set(k,next).catch(error=>{console.warn('Could not save progress item in IndexedDB; using legacy fallback:',error);storage.set('medicalBankStatusV2',JSON.stringify(state))});else storage.set('medicalBankStatusV2',JSON.stringify(state));updateStatus()});
-  document.querySelectorAll('.quick-view-btn,.quick-reset').forEach(b=>b.onclick=()=>{const view=b.dataset.view;$('typeFilter').value=view;activeSubtopic='all';renderSubtopicNav();applyFilters();const suffix=view==='case'?'cases':view==='core'?'core':'';if(suffix)document.getElementById(b.dataset.lecture+'-'+suffix)?.scrollIntoView({behavior:scrollBehavior(),block:'start'});else document.getElementById('lecture-'+b.dataset.lecture)?.scrollIntoView({behavior:scrollBehavior(),block:'start'})});
+  document.querySelectorAll('.quick-view-btn,.quick-reset').forEach(b=>b.onclick=()=>{const view=b.dataset.view;$('typeFilter').value=view;activeSubtopic='all';renderSubtopicNav();applyFilters();const suffix=view==='case'?'cases':view==='core'?'core':view==='image'?'images':'';if(suffix)document.getElementById(b.dataset.lecture+'-'+suffix)?.scrollIntoView({behavior:scrollBehavior(),block:'start'});else document.getElementById('lecture-'+b.dataset.lecture)?.scrollIntoView({behavior:scrollBehavior(),block:'start'})});
   document.querySelectorAll('.offline-lecture-btn').forEach(button=>{
     const lectureId=button.dataset.lecture;
     const api=globalThis.MEQOfflineCache;
@@ -367,9 +518,20 @@ function updateStatus(){
   const cp=coreTotal?Math.round(coreDone/coreTotal*100):0,op=overallTotal?Math.round(overallDone/overallTotal*100):0;
   $('coreProgressText').textContent=cp+'%';$('coreProgressFill').style.width=cp+'%';$('coreProgressBar')?.setAttribute('aria-valuenow',String(cp));
   $('overallProgressText').textContent=op+'%';$('overallProgressFill').style.width=op+'%';$('overallProgressBar')?.setAttribute('aria-valuenow',String(op));
+  const headline=$('insightsHeadline'),summaryFill=$('insightsOverallFill');
+  if(headline)headline.textContent=op+'% overall practice • '+mastered+' mastered';
+  if(summaryFill)summaryFill.style.width=op+'%';
+  const resume=$('resumeStudyBtn');
+  if(resume){
+    resume.disabled=scope.length===0;
+    resume.firstChild.textContent=overallDone?'Continue studying ':'Start studying ';
+    resume.title=scope.length?'Go to the next question or review item':'No lectures in this specialty yet';
+  }
   const subject=subjects.find(s=>s.id===activeSubject);
   $('heroTags').innerHTML=`<span class="hero-tag">${esc(subject?.label||'Subject')}</span><span class="hero-tag">${scope.length} Lecture${scope.length===1?'':'s'}</span><span class="hero-tag">${totals.cases} MEQ Cases</span><span class="hero-tag">${totals.coreShorts} Core Shorts</span><span class="hero-tag">Saved Progress</span>`;
-  updateStudyBreadcrumb()
+  updateStudyBreadcrumb();
+  const lectureSelect=$('lectureFilter');
+  if(lectureSelect)lectureSelect.title=lectureSelect.selectedOptions?.[0]?.textContent?.trim()||'';
 }
 function updateTopicOptions(){const lecture=currentLecture();const list=lecture?[lecture]:[];const topics=[...new Set(list.flatMap(l=>[...l.cases.map(c=>c.topic),...l.coreShorts.map(q=>q.topic),...l.imageQuestions.map(q=>q.topic),...l.detailedShorts.map(q=>q.topic)]))].sort();const old=$('topicFilter').value;$('topicFilter').innerHTML='<option value="all">All topics</option>'+topics.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');$('topicFilter').value=topics.includes(old)?old:'all'}
 function applyFilters(){
@@ -400,6 +562,58 @@ function syncThemeButton(){
 }
 $('darkBtn').onclick=()=>{document.body.classList.toggle('dark');storage.set('medicalBankDarkV4',document.body.classList.contains('dark')?'1':'0');syncThemeButton()};
 $('toggleLectures').onclick=()=>toggleSidebar('lectures');$('toggleSubtopics').onclick=()=>toggleSidebar('subtopics');
+function setFocusMode(enabled){
+  const app=document.querySelector('.app'),button=$('focusModeBtn');
+  if(!app||!button)return;
+  app.classList.toggle('study-focus',enabled);
+  button.classList.toggle('active',enabled);
+  button.setAttribute('aria-pressed',String(enabled));
+  button.querySelector('[data-focus-label]').textContent=enabled?'Exit focus mode':'Focus on questions';
+  storage.set('medicalBankFocusModeV1',enabled?'1':'0');
+}
+// Enter the real study flow; prefer items marked Review/Weak, then unrated items.
+const resumeStudy=$('resumeStudyBtn');
+resumeStudy?.addEventListener('click',()=>{
+  const items=[...document.querySelectorAll('#mainContent .study-item:not(.hidden)')];
+  const rating=item=>{
+    const key=item.querySelector('.status')?.dataset.key;
+    return key?state[key]||'':'';
+  };
+  const target=items.find(item=>['review','weak'].includes(rating(item)))
+    ||items.find(item=>!rating(item))
+    ||items[0]
+    ||document.querySelector('#mainContent .lecture-overview-card')
+    ||$('mainContent');
+  if(!target)return;
+  const parentDetails=target.closest('details');
+  if(parentDetails)parentDetails.open=true;
+  if(!target.matches('button,a,input,select,textarea,[tabindex]'))target.setAttribute('tabindex','-1');
+  // Run after the button click's native focus behavior so it cannot restore the old scroll position.
+  requestAnimationFrame(()=>{
+    if(!target.isConnected)return;
+    target.focus({preventScroll:true});
+    target.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+  });
+});
+const pwaToolsToggle=$('pwaToolsToggle');
+if(pwaToolsToggle){
+  const setToolsOpen=open=>{
+    pwaToolsToggle.setAttribute('aria-expanded',String(open));
+    document.querySelector('.pwa-tools')?.classList.toggle('tools-open',open);
+  };
+  pwaToolsToggle.addEventListener('click',()=>setToolsOpen(pwaToolsToggle.getAttribute('aria-expanded')!=='true'));
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&pwaToolsToggle.getAttribute('aria-expanded')==='true'){
+      setToolsOpen(false);
+      pwaToolsToggle.focus();
+    }
+  });
+}
+const focusButton=$('focusModeBtn');
+if(focusButton){
+  focusButton.addEventListener('click',()=>setFocusMode(!document.querySelector('.app')?.classList.contains('study-focus')));
+  setFocusMode(storage.get('medicalBankFocusModeV1')==='1');
+}
 $('emptyResetBtn').onclick=()=>{
   const reset=document.getElementById('resetFiltersBtn');
   if(reset){reset.click();return}

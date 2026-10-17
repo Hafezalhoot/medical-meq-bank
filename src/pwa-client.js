@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.04.2';
+  const APP_VERSION = '2026.10.17.1';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -32,20 +32,40 @@
     return cache.delete(sameOriginUrl(value));
   };
 
-  const isUrlCached = async value => {
-    if (!('caches' in globalThis)) return false;
-    const cache = await caches.open(OFFLINE_CACHE_NAME);
-    return Boolean(await cache.match(sameOriginUrl(value)));
-  };
-
   const lectureUrl = lectureId => {
     const url = globalThis.MEQLectureLoader?.lectureUrl?.(lectureId);
     if (!url) throw new Error(`Unknown lecture: ${lectureId}`);
     return url;
   };
 
+  const lectureMediaUrls = data => {
+    const entries = Array.isArray(data?.imageQuestions) ? data.imageQuestions : [];
+    const root = new URL('./assets/', location.href).href;
+    const sources = [...entries.map(item => item?.image), data?.studyGuide?.infographic?.image];
+    const media = new Set();
+    for (const source of sources) {
+      if (!source || typeof source !== 'string' || source.startsWith('data:')) continue;
+      const url = sameOriginUrl(source);
+      if (!url.startsWith(root)) throw new Error('Offline lecture image is not under local assets/');
+      media.add(url);
+    }
+    return [...media];
+  };
+
   const cacheLecture = async lectureId => {
-    const url = await cacheUrl(lectureUrl(lectureId));
+    const url = sameOriginUrl(lectureUrl(lectureId));
+    const response = await fetch(url, {credentials: 'same-origin'});
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText} for ${url}`);
+
+    // Cache the visual assets with the lecture so a saved lesson works
+    // without requiring the learner to open each infographic online first.
+    const data = await response.clone().json();
+    for (const imageUrl of lectureMediaUrls(data)) await cacheUrl(imageUrl);
+
+    const cache = await caches.open(OFFLINE_CACHE_NAME);
+    await cache.put(url, response.clone());
+    // ponytail: keep shared image cache entries on removal; reclaim via
+    // reference counting only if offline media storage becomes a real issue.
     document.dispatchEvent(new CustomEvent('meq:offline-lecture-cached', {detail: {lectureId, url}}));
     return url;
   };
@@ -56,7 +76,20 @@
     return removed;
   };
 
-  const isLectureCached = lectureId => isUrlCached(lectureUrl(lectureId));
+  const isLectureCached = async lectureId => {
+    if (!('caches' in globalThis)) return false;
+    const cache = await caches.open(OFFLINE_CACHE_NAME);
+    const response = await cache.match(sameOriginUrl(lectureUrl(lectureId)));
+    if (!response) return false;
+    let urls;
+    try {
+      urls = lectureMediaUrls(await response.json());
+    } catch (error) {
+      return false;
+    }
+    for (const url of urls) if (!(await cache.match(url))) return false;
+    return true;
+  };
   const describeError = error =>
     error?.name === 'QuotaExceededError'
       ? 'Device storage is full. Remove an offline lecture and try again.'
@@ -95,7 +128,8 @@
   });
 
   const heroPanel = document.querySelector('.hero-panel');
-  if (heroPanel && !document.getElementById('offlineSubjectBtn')) {
+  const studyUtilities = document.getElementById('pwaToolsActions');
+  if ((studyUtilities || heroPanel) && !document.getElementById('offlineSubjectBtn')) {
     const offlineSubjectBtn = document.createElement('button');
     offlineSubjectBtn.id = 'offlineSubjectBtn';
     offlineSubjectBtn.type = 'button';
@@ -126,7 +160,7 @@
         offlineSubjectBtn.removeAttribute('aria-busy');
       }
     });
-    heroPanel.appendChild(offlineSubjectBtn);
+    (studyUtilities || heroPanel).appendChild(offlineSubjectBtn);
   }
 
   const toast = message => {

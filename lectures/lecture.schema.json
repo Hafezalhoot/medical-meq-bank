@@ -8,6 +8,8 @@
     "order",
     "subjectKey",
     "subject",
+    "sourceNote",
+    "subtitle",
     "title",
     "subtopics",
     "cases",
@@ -85,6 +87,123 @@
       "items": {
         "$ref": "#/$defs/rapid"
       }
+    },
+    "studyGuide": {
+      "type": "object",
+      "properties": {
+        "explanation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "heading",
+              "paragraphs",
+              "sourcePage"
+            ],
+            "properties": {
+              "heading": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "paragraphs": {
+                "$ref": "#/$defs/stringList"
+              },
+              "sourcePage": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "understandingAids": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/nonEmptyString"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "mcqs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "question",
+              "options",
+              "answerIndex",
+              "rationale",
+              "sourcePage"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "question": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "options": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "$ref": "#/$defs/nonEmptyString"
+                }
+              },
+              "answerIndex": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "rationale": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "sourcePage": {
+                "$ref": "#/$defs/nonEmptyString"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "infographic": {
+          "type": "object",
+          "required": [
+            "image",
+            "alt",
+            "sourcePage"
+          ],
+          "properties": {
+            "image": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "alt": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "caption": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "sourcePage": {
+              "$ref": "#/$defs/nonEmptyString"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "explanation"
+          ]
+        },
+        {
+          "required": [
+            "mcqs"
+          ]
+        },
+        {
+          "required": [
+            "infographic"
+          ]
+        }
+      ]
     }
   },
   "$defs": {

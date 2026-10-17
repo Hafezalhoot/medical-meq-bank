@@ -5,6 +5,9 @@ from __future__ import annotations
 
 from pathlib import Path
 import json
+import base64
+import re
+import xml.etree.ElementTree as ET
 
 
 LECTURE_LIST_KEYS = (
@@ -18,7 +21,7 @@ VALID_PRIORITIES = {"High", "Core"}
 TOP_LEVEL_FIELDS = {
     "schemaVersion", "courseId", "canonicalId",
     "id", "order", "subjectKey", "subject", "title", "subtitle", "sourceNote",
-    "subtopics", "cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid",
+    "subtopics", "cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid", "studyGuide",
 }
 SUBTOPIC_FIELDS = {"id", "label"}
 ITEM_FIELDS = {
@@ -180,7 +183,85 @@ def validate_lecture(
                 if not _validate_answer(item.get("a")):
                     raise SystemExit(f"{label} {item_id} has an invalid answer")
 
+    if "studyGuide" in lecture:
+        validate_study_guide(lecture["studyGuide"], label=label, item_ids=all_item_ids)
+
     return lecture
+
+
+
+def validate_study_guide(guide: object, *, label: str, item_ids: set[str]) -> None:
+    """Validate approved, plain-text Explanation / MCQ / Infographic companions."""
+    if not isinstance(guide, dict):
+        raise SystemExit(f"{label} studyGuide must be an object")
+    _reject_unknown_fields(guide, {"explanation", "mcqs", "infographic"}, label=f"{label} studyGuide")
+    sections = guide.get("explanation", [])
+    mcqs = guide.get("mcqs", [])
+    infographic = guide.get("infographic")
+    if not isinstance(sections, list) or not isinstance(mcqs, list):
+        raise SystemExit(f"{label} explanation and mcqs must be arrays")
+    if not sections and not mcqs and not infographic:
+        raise SystemExit(f"{label} studyGuide has no approved content")
+
+    for number, section in enumerate(sections, 1):
+        marker = f"{label} explanation section {number}"
+        if not isinstance(section, dict):
+            raise SystemExit(f"{marker} must be an object")
+        _reject_unknown_fields(
+            section, {"heading", "paragraphs", "sourcePage", "understandingAids"},
+            label=marker,
+        )
+        for field in ("heading", "sourcePage"):
+            if not _non_empty_string(section.get(field)):
+                raise SystemExit(f"{marker} is missing {field}")
+        if not _string_list(section.get("paragraphs")):
+            raise SystemExit(f"{marker} requires non-empty paragraphs")
+        if "understandingAids" in section and not _string_list(section["understandingAids"], allow_empty=True):
+            raise SystemExit(f"{marker} has invalid understandingAids")
+
+    for number, item in enumerate(mcqs, 1):
+        marker = f"{label} MCQ {number}"
+        if not isinstance(item, dict):
+            raise SystemExit(f"{marker} must be an object")
+        _reject_unknown_fields(
+            item, {"id", "question", "options", "answerIndex", "rationale", "sourcePage"},
+            label=marker,
+        )
+        for field in ("id", "question", "rationale", "sourcePage"):
+            if not _non_empty_string(item.get(field)):
+                raise SystemExit(f"{marker} is missing {field}")
+        if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", item["id"]):
+            raise SystemExit(f"{marker} has an unsafe MCQ id")
+        if item["id"] in item_ids:
+            raise SystemExit(f"{marker} reuses study item id: {item['id']}")
+        item_ids.add(item["id"])
+        options = item.get("options")
+        if not _string_list(options) or len(options) != 4:
+            raise SystemExit(f"{marker} requires exactly four non-empty options")
+        choice = item.get("answerIndex")
+        if type(choice) is not int or choice not in (0, 1, 2, 3):
+            raise SystemExit(f"{marker} has an invalid answerIndex")
+
+    if infographic is not None:
+        if not isinstance(infographic, dict):
+            raise SystemExit(f"{label} infographic must be an object")
+        _reject_unknown_fields(
+            infographic, {"image", "alt", "caption", "sourcePage"},
+            label=f"{label} infographic",
+        )
+        for field in ("image", "alt", "sourcePage"):
+            if not _non_empty_string(infographic.get(field)):
+                raise SystemExit(f"{label} infographic is missing {field}")
+        if "caption" in infographic and not _non_empty_string(infographic["caption"]):
+            raise SystemExit(f"{label} infographic caption cannot be blank")
+        image = infographic["image"]
+        if image.startswith("data:"):
+            if not re.fullmatch(r"data:image/(?:png|jpeg|webp|avif);base64,[A-Za-z0-9+/=\\r\\n]+", image):
+                raise SystemExit(f"{label} infographic has unsupported inline media")
+        else:
+            relative = image.removeprefix("./")
+            if not relative.startswith("assets/") or ".." in Path(relative).parts or "\\" in relative:
+                raise SystemExit(f"{label} infographic must reference a safe local asset" )
 
 
 def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
@@ -316,8 +397,75 @@ def _batch_extension(lectures_to_add: list[dict]) -> str:
     )
 
 
+SVG_ALLOWED_ELEMENTS = {
+    "svg", "g", "rect", "circle", "ellipse", "path", "line", "polyline",
+    "polygon", "text", "tspan", "title", "desc",
+}
+SVG_ALLOWED_ATTRIBUTES = {
+    "xmlns", "viewBox", "width", "height", "x", "y", "x1", "x2", "y1", "y2",
+    "cx", "cy", "r", "rx", "ry", "points", "d", "fill", "stroke",
+    "stroke-width", "stroke-linecap", "stroke-linejoin", "opacity",
+    "font-family", "font-size", "font-weight", "text-anchor",
+    "letter-spacing", "transform", "role", "aria-label",
+}
+
+
+def validate_safe_svg(path: Path) -> bytes:
+    """Only permit small passive diagrams; never scripts, links or CSS in SVG."""
+    raw = path.read_bytes()
+    if not raw or len(raw) > 512 * 1024:
+        raise SystemExit(f"SVG exceeds 512 KB or is empty: {path.name}")
+    if re.search(rb"<!DOCTYPE|<!ENTITY|<\?xml-stylesheet|url\s*\(", raw, re.I):
+        raise SystemExit(f"SVG uses forbidden external or document resources: {path.name}")
+    try:
+        root = ET.fromstring(raw)
+    except ET.ParseError as error:
+        raise SystemExit(f"Invalid SVG diagram {path.name}: {error}")
+    namespace = "{http://www.w3.org/2000/svg}"
+    if root.tag != namespace + "svg":
+        raise SystemExit(f"SVG has an invalid root: {path.name}")
+    for element in root.iter():
+        if not element.tag.startswith(namespace) or element.tag[len(namespace):] not in SVG_ALLOWED_ELEMENTS:
+            raise SystemExit(f"SVG contains unsupported element in {path.name}")
+        for attribute in element.attrib:
+            field = attribute[len(namespace):] if attribute.startswith(namespace) else attribute
+            if field not in SVG_ALLOWED_ATTRIBUTES:
+                raise SystemExit(f"SVG contains unsupported attribute {field} in {path.name}")
+    return raw
+
+
+def inline_study_guide_media(root: Path, lectures: list[dict]) -> None:
+    """Keep standalone offline HTML self-contained when companions use local images."""
+    mime_types = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+                  ".webp": "image/webp", ".avif": "image/avif", ".svg": "image/svg+xml"}
+    for lecture in lectures:
+        entries = list(lecture.get("imageQuestions", []))
+        infographic = lecture.get("studyGuide", {}).get("infographic")
+        if infographic:
+            entries.append(infographic)
+        for info in entries:
+            image = info.get("image")
+            if not image or image.startswith("data:image/"):
+                continue
+            relative = image.removeprefix("./")
+            assets = (root / "assets").resolve()
+            candidate = (root / relative).resolve()
+            if not relative.startswith("assets/") or not candidate.is_relative_to(assets):
+                raise SystemExit(f"Unsafe offline lecture media path in {lecture['id']}")
+            mime = mime_types.get(candidate.suffix.lower())
+            if not mime or not candidate.is_file():
+                raise SystemExit(f"Missing or unsupported offline image: {relative}")
+            raw = validate_safe_svg(candidate) if candidate.suffix.lower() == ".svg" else candidate.read_bytes()
+            if not raw or len(raw) > 15 * 1024 * 1024:
+                raise SystemExit(f"Offline image exceeds media budget: {relative}")
+            info["image"] = f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
+
+
 def build_lecture_extensions(root: Path | str = Path(".")) -> str:
-    return _batch_extension(load_json_lectures(root))
+    root = Path(root)
+    lectures = load_json_lectures(root)
+    inline_study_guide_media(root, lectures)
+    return _batch_extension(lectures)
 
 
 if __name__ == "__main__":
