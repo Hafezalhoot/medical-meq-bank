@@ -2,6 +2,17 @@
 
 This is the contributor workflow for adding new Medical MEQ Bank content without creating lecture-specific build code.
 
+## Medical visual provenance policy — owner request (2026-10-17)
+
+**Only figures and clinical photographs actually present in the learner-provided PDF may appear as medical lecture images.** The repository must not manufacture new clinical visuals, depict invented lesions, borrow photographs from external sources, or replace original source photographs with AI-generated diagrams.
+
+- Every question's visual must have an identifiable **source lecture, printed PDF page and crop/figure identity**. Explanatory text remains governed by **Lecture-First Policy**; handwritten margin notes belong to the learner and are not extra examinable facts.
+- Do not silently substitute an invented figure when an original photo is missing. Display a clear **original source image not yet available** state with its page and a private import workflow.
+- Confirm reuse/public distribution rights before publishing the original source scans or individual photographs in a **public** GitHub repo, Worker static assets or shared HTML. Private, user-chosen source-only local imports can remain in IndexedDB on the learner's device without transmitting originals to the app backend.
+- The Dermatology pilot uses stable file names `derm-image-001.jpg` through `derm-image-014.jpg`, with all originals cropped from the user's PDF printed layers. Users import these locally, and the source-package manifest maps each ID to original page, bounding box and file hash. Keep the image ID stable through redesigned UI and progress migration.
+- Generic infographic functionality remains available for legacy lectures that already include source-authorized figures, but **do not generate a synthetic infographic/clinical image** for future lectures unless the user explicitly changes the original-only medical imagery rule. A text-only comparison or HTML/CSS table can summarize printed definitions without pretending to be source photography.
+- Visual provenance and user understanding are different from medical factual approval; a full published exam-facing question still needs printed-source answer review.
+
 ## Source of truth
 
 - Human-reviewable lecture content belongs in `lectures/data/<lecture-id>.json`.

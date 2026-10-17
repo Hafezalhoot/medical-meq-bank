@@ -2,6 +2,17 @@
 
 **Status:** Editorial-review Draft. Source: the user's 10-page scanned `Dermatology Department book 2022.pdf` (Introduction to Dermatology pp. 1–10). The uploaded scan is **not** committed to this public repository.
 
+## V3 source-photo replacement — 2026-10-17
+
+**Current active Draft PR #28 policy:** The learner explicitly requires *only the original printed lecture photographs* and forbids generated/third-party medical image substitutes.
+
+- The previous V2 SVG atlas, skin-layer schematic, and classification infographic were educational redrawings, **not the supplied source photographs**; they are superseded and removed from V3's Dermatology lecture delivery.
+- The 14 reviewed image questions preserve their IDs, marks, answers and printed-page references. Every original-only source photo was extracted from the actual original printed page background; handwritten marginal overlay annotations are excluded. The original photo package (14 JPEGs plus page-map manifest) is delivered separately for use on the owner's device, not committed into the public repository.
+- In V3 the learner imports matching `derm-image-001.jpg`–`derm-image-014.jpg` files into their own browser. Files persist in IndexedDB separate from student progress, are viewable at full resolution and remain on the same device when offline.
+- **Publication limitation:** no explicit rights to publicly redistribute third-party printed-book photographs have been established. Do not commit/copy the source photos into public GitHub or Cloudflare assets; if those permissions are provided later, redesign the licensed-media ingestion pipeline rather than bypassing review.
+- The V2 review notes below describe the historical SVG pilot and earlier tests; their old SVG inventory is **not** the current V3 media contract. The source-fidelity notes for printed definitions and handwritten exclusion still apply.
+- Current V3 media inventory: **14 PDF-photo slots**, **0 generated Dermatology schematics rendered**, **0 generated infographic images**, **11 Explanation sections / 30 MCQs / 16 Cases / 70 Shorts / 17 Detailed / 41 Rapid** unchanged.
+
 ## Scope and lecture-first source map
 
 | Supplied PDF page | Printed teaching topics | Study content |

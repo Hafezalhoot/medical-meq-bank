@@ -1,5 +1,16 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-17 — V3 redesign / original-only lecture figures (DRAFT PR #28)
+
+- ✅ The learner requested a **substantial visual and information-architecture redesign**, not a superficial style pass, while preserving all previously implemented study capabilities and stored answers/progress.
+- ✅ Applied Impeccable critique/audit and UI/UX Pro Max principles to choose a **reader-first clinical editorial** experience: compact working header, paired Course Library / My Review, restrained teal/ink surfaces, typography with generous medical reading rhythm, mobile/dark treatment, and reduced card/chrome noise.
+- ✅ Kept the existing registered courses/subjects, lecture IDs, progress key format, surgery payloads, MEQ cases, core/detailed questions, source-linked explanation, 4-choice MCQ, image spots, rapid recall, offline, search, print, and backup. A renamed or rewritten medical answer requires a new medical review and is outside this design iteration.
+- ✅ Confirmed all 14 Dermatology image questions formerly pointed to three **assistant-authored schematic SVGs**. Removed **all 14** figure URLs and the V2 synthetic SVG infographic reference from the Dermatology payload; retained 14 item IDs and answer content, and restored authentic printed-PDF page-linked figure prompts. No outside photographs or generated diagrams are supplied.
+- ✅ The original **10-page scanned PDF** contains embedded printed-page background JPEGs distinct from personal handwritten overlay annotations. Cropped **14 figures from the actual printed textbook background images** (skin layers, macule, patch, papule, plaque, vesicle, bulla, pustule, wheal, open comedo, burrow, crust, scale); created a separately delivered personal original-photo ZIP with per-figure source page/coordinates/SHA-256. The ZIP is **not committed to the public repository**.
+- 🧪 Added a local-only, IndexedDB-backed original-figure import for `derm-image-001.jpg` through `derm-image-014.jpg`, a missing-photo message, page provenance and full-size view. Original medical images remain private to the student's browser until the owner proves redistribution rights and explicitly requests public hosting. The underlying lecture JSON and progress records are separate.
+- 🧪 Release-candidate version `2026.10.17.2`; draft [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28) is isolated from protected production. **No production merge/deploy** until latest-head static/Chromium/WebKit CI, visual browser QA, offline import regression and owner sign-off.
+- ⚠️ Ongoing: stabilize any test failures from replacing schematic media, perform real 320/390/768/1440 screenshot review (light/dark/RTL), and ensure source-only-media policy is test-enforced. Do not confuse a bundled personal ZIP with a licensed/publicly redistributable scan.
+
 ### 2026-10-17 — Release candidate CI cache-version test repair
 
 - ✅ [run 39031460721](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39031460721): `validate` and iPhone/Safari `webkit-quality` passed after fixing the obstructed accordion tap. Chromium completed 72/73 tests; the remaining failure was in a test still opening a hardcoded **old app-version cache** (`2026.10.16.3`) after the intentional PWA bump to `2026.10.17.1`.
