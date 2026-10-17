@@ -161,8 +161,12 @@ function imageSource(item){return typeof item?.image==='string'?item.image.trim(
 function imagePage(item){const value=item?.page;return value===0?'0':(value==null?'':String(value).trim())}
 function hasImageVisual(item){return Boolean(imageSource(item)||imagePage(item))}
 function imagePlaceholderHtml(q){const page=imagePage(q);const reference=page?`Lecture page ${page}`:'Lecture source';return `<div class="visual-placeholder" role="img" aria-label="${esc(q.title)} figure reference"><span class="visual-placeholder-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m5 17 4.5-4.5 3 3 2-2L19 18"></path></svg></span><strong>${esc(q.title)}</strong><span>${esc(reference)} is referenced for this spot question; the figure is not embedded in the bank.</span></div>`}
-function imageVisualHtml(q){const source=imageSource(q);return source?`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`:imagePlaceholderHtml(q)}
-function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
+function imageVisualHtml(q){
+  if(/^derm-image-\\d{3}$/.test(q.id))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
+  const source=imageSource(q);
+  return source?`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`:imagePlaceholderHtml(q);
+}
+function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';if(/^derm-image-\\d{3}$/.test(q.id))a.dataset.originalFigureId=q.id;a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
 
 function populateSubjectSelector(){const s=$('subjectSelector');s.innerHTML=subjects.map(x=>`<option value="${x.id}">${esc(x.label)}</option>`).join('');if(!subjects.some(x=>x.id===activeSubject))activeSubject='urology';s.value=activeSubject}
 function populateLectureFilter(){
@@ -399,6 +403,14 @@ function createStudyGuide(lecture) {
     details.append(figure);
     sourceLabel(details,guide.infographic.sourcePage);
   }
+  if(lecture.id==='internal-medicine-ii-dermatology-introduction'){
+    const details=disclosure('Original lecture figures',lecture.imageQuestions.length);
+    const copy=document.createElement('p');copy.className='original-guide-copy';
+    copy.textContent='Study the original images from the printed lecture, not redrawn substitutes. Import the 14 source crops on this device, then study the source-linked image questions below.';
+    const jump=document.createElement('a');jump.className='original-guide-link';
+    jump.href='#'+lecture.id+'-images';jump.textContent='Open original figure questions';
+    details.append(copy,jump);
+  }
   return section;
 }
 
@@ -427,10 +439,11 @@ function render(){
   sec.innerHTML=`<header class="lecture-head"><div><div class="lecture-kicker">Lecture ${String(l.order).padStart(2,'0')} • ${esc(l.subject)}</div><h2 class="lecture-title">${esc(l.title)}</h2><div class="lecture-summary">${esc(l.subtitle)}</div><details class="source-boundary"><summary>Lecture source boundary</summary><div>${esc(l.sourceNote)}</div></details></div><div class="lecture-side"><div class="lecture-counts"><span class="count-pill">${l.cases.length} MEQ cases</span><span class="count-pill">${l.coreShorts.length} high-yield shorts</span><span class="count-pill">${l.imageQuestions.length} image questions</span><span class="count-pill">${l.detailedShorts.length} detailed practice</span></div><div class="quick-views"><button class="quick-view-btn" data-view="case" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="M4 10h16"></path><path d="M10 5v14"></path></svg></span><span>Cases</span></button><button class="quick-view-btn" data-view="core" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span><span>Short Questions</span></button><button class="quick-view-btn" data-view="image" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.2"></circle><path d="m5 17 5-5 3 3 2-2 4 4"></path></svg></span><span>Images</span></button><button class="offline-lecture-btn" type="button" data-lecture="${l.id}">Save lecture offline</button><button class="quick-reset" data-view="all" data-lecture="${l.id}">Show all content</button></div></div></header>
   <div class="content-section cases-section" data-section-type="case"><div class="section-head" id="${l.id}-cases"><div><h2>MEQ Cases</h2><p>Progressive scenarios, model answers, marking schemes and exam traps.</p></div><span class="section-badge">Start here for application</span></div><div class="study-grid cases-grid"></div></div>
   <div class="content-section core-section" data-section-type="core"><div class="section-head" id="${l.id}-core"><div><h2>High-Yield Short Questions</h2><p>The essential short notes, enumerations and comparisons.</p></div><span class="section-badge">Core exam list</span></div><div class="study-grid shorts core-grid"></div></div>
-  <div class="content-section image-section" data-section-type="image"><div class="section-head" id="${l.id}-images"><div><h2>Image & Spot Questions</h2><p>Original lecture figures embedded inside the bank.</p></div><span class="section-badge">Visual revision</span></div><div class="study-grid images image-grid"></div></div>
+  <div class="content-section image-section" data-section-type="image"><div class="section-head" id="${l.id}-images"><div><h2>Image & Spot Questions</h2><p>${l.id==='internal-medicine-ii-dermatology-introduction'?'Printed original figures only. Import them privately for offline study.':'Original lecture figures embedded inside the bank.'}</p></div><span class="section-badge">Visual revision</span></div><div class="study-grid images image-grid"></div></div>
   <div class="content-section extra-section" data-section-type="extra"><div class="section-head"><div><h2>Detailed Practice</h2><p>The original direct questions are preserved for deeper repetition.</p></div></div><details class="practice-details"><summary>Open detailed practice questions (${l.detailedShorts.length})</summary><div class="practice-body"><div class="study-grid shorts extra-grid"></div></div></details></div>
   <div class="content-section rapid-section" data-section-type="rapid"><div class="section-head" id="${l.id}-rapid"><div><h2>Rapid Recall</h2><p>Click each card to reveal the one-line answer.</p></div></div><section class="rapid"><div class="rapid-grid"></div></section></div>`;
   container.appendChild(sec);
+  requestAnimationFrame(()=>globalThis.MEQOriginalFigures?.refresh?.());
   const studyGuide=createStudyGuide(l);
   if(studyGuide){
     sec.querySelector('.cases-section').before(studyGuide);
@@ -631,3 +644,91 @@ $('emptyResetBtn').onclick=()=>{
 };
 if(storage.get('medicalBankDarkV4')==='1'||storage.get('medicalBankDarkV3')==='1')document.body.classList.add('dark');
 syncThemeButton()
+
+/* Original printed medical photographs only. Never upload or synthesize images.
+   IndexedDB is independent of question progress and remains offline. */
+(function setupOriginalFigures(){
+  const lecture='internal-medicine-ii-dermatology-introduction';
+  const known=/^derm-image-(?:00[1-9]|01[0-4])\.(?:jpe?g|png|webp)$/i;
+  const root=document.getElementById('lectureContainer');
+  const section=document.getElementById('originalFigureTools');
+  const input=document.getElementById('originalFigureFiles');
+  const button=document.getElementById('originalFigureImportBtn');
+  const status=document.getElementById('originalFigureStatus');
+  if(!root||!section||!input||!button||!status)return;
+  let queued=false;
+  const urls=new Map();
+  const openDb=()=>new Promise((resolve,reject)=>{
+    if(!globalThis.indexedDB){reject(new Error('Device image storage is unavailable'));return;}
+    const request=indexedDB.open('medical-meq-original-figures-v1',1);
+    request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains('figures'))request.result.createObjectStore('figures');};
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error||new Error('Cannot open original-image storage'));
+  });
+  const stored=async(type,apply)=>{
+    const db=await openDb();
+    try{return await new Promise((resolve,reject)=>{
+      const tx=db.transaction('figures',type);
+      const req=apply(tx.objectStore('figures'));
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(req.error||new Error('Cannot access original image'));
+      tx.onerror=()=>reject(tx.error||new Error('Image transaction failed'));
+    });}finally{db.close();}
+  };
+  const key=id=>lecture+'::'+id;
+  const get=id=>stored('readonly',store=>store.get(key(id)));
+  const put=(id,blob)=>stored('readwrite',store=>store.put(blob,key(id)));
+  const updateCount=async()=>{
+    try{
+      let items=await Promise.all(Array.from({length:14},(_,n)=>get('derm-image-'+String(n+1).padStart(3,'0'))));
+      status.textContent=items.filter(Boolean).length+'/14 original figures stored privately on this device. Question progress is saved separately.';
+    }catch(e){status.textContent='Image storage is unavailable. The text and questions still work.';}
+  };
+  const hydrate=async()=>{
+    const cards=[...root.querySelectorAll('.image-card[data-original-figure-id]')];
+    section.hidden=!cards.length;
+    if(!cards.length)return;
+    await Promise.all(cards.map(async card=>{
+      if(card.dataset.originalHydrated==='true')return;
+      const id=card.dataset.originalFigureId;
+      let blob;
+      try{blob=await get(id)}catch(e){return;}
+      if(!blob||!card.isConnected)return;
+      const visual=card.querySelector('.visual');if(!visual)return;
+      const old=urls.get(id);if(old)URL.revokeObjectURL(old);
+      const src=URL.createObjectURL(blob);urls.set(id,src);
+      const link=document.createElement('a');
+      link.className='source-figure-full';link.href=src;link.target='_blank';link.rel='noopener noreferrer';
+      link.setAttribute('aria-label','Open original lecture photograph in full resolution');
+      const image=document.createElement('img');image.src=src;image.loading='lazy';image.decoding='async';
+      image.alt='Original printed figure from '+card.querySelector('.pill.page')?.textContent;
+      const caption=document.createElement('span');caption.className='source-figure-caption';
+      caption.textContent='Original figure from the uploaded lecture · saved on this device · open full size';
+      link.append(image,caption);visual.replaceChildren(link);
+      card.dataset.originalHydrated='true';card.dataset.visualSource='original-pdf';
+    }));
+  };
+  const refresh=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;hydrate();});};
+  button.addEventListener('click',()=>input.click());
+  input.addEventListener('change',async()=>{
+    const files=[...input.files];if(!files.length)return;
+    button.disabled=true;status.textContent='Importing original images to device storage…';
+    let imported=0,skipped=0;
+    try{
+      for(const file of files){
+        if(!known.test(file.name)||!/^image\/(?:jpeg|png|webp)$/.test(file.type)||file.size>5*1024*1024){skipped++;continue;}
+        const id=file.name.toLowerCase().replace(/\.(?:jpe?g|png|webp)$/,'');
+        await put(id,file);imported++;
+      }
+      root.querySelectorAll('.image-card[data-original-figure-id]').forEach(card=>{card.dataset.originalHydrated='';});
+      await hydrate();await updateCount();
+      if(!imported)status.textContent='No recognized photos. Select derm-image-001.jpg to derm-image-014.jpg.';
+      else if(skipped)status.textContent+=' '+skipped+' unsupported file(s) ignored.';
+    }catch(e){status.textContent='Could not save originals: '+(e?.message||'storage error');}
+    finally{input.value='';button.disabled=false;}
+  });
+  new MutationObserver(()=>refresh()).observe(root,{childList:true});
+  addEventListener('beforeunload',()=>{for(const url of urls.values())URL.revokeObjectURL(url);});
+  globalThis.MEQOriginalFigures={refresh};
+  refresh();updateCount();
+})();
