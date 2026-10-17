@@ -643,11 +643,11 @@ $('emptyResetBtn').onclick=()=>{
   applyFilters()
 };
 if(storage.get('medicalBankDarkV4')==='1'||storage.get('medicalBankDarkV3')==='1')document.body.classList.add('dark');
-syncThemeButton()
+syncThemeButton();
 
 /* Original printed medical photographs only. Never upload or synthesize images.
    IndexedDB is independent of question progress and remains offline. */
-(function setupOriginalFigures(){
+;(function setupOriginalFigures(){
   const lecture='internal-medicine-ii-dermatology-introduction';
   const known=/^derm-image-(?:00[1-9]|01[0-4])\.(?:jpe?g|png|webp)$/i;
   const root=document.getElementById('lectureContainer');
