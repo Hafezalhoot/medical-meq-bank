@@ -1,5 +1,6 @@
 import {test, expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
+import {deflateRawSync} from 'node:zlib';
 
 // One actual source-grounded lecture pilot: no remote source scan is hosted.
 test.use({serviceWorkers: 'block'});
@@ -89,23 +90,72 @@ test('Dermatology progress remains isolated from the original Surgery course', a
 });
 
 
-test('original-source import works on phone and persists without changing progress', async ({page}) => {
+
+test('source-only gallery has 14 printed-PDF slots and explains authenticity', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   await openDermatology(page);
-  const photo=page.locator('.image-card[data-original-figure-id="derm-image-003"]');
-  await expect(photo.locator('.original-source-placeholder')).toHaveCount(1);
-  // A bundled app icon is a harmless binary fixture for file-import plumbing,
-  // never presented in a medical test as an authentic clinical photograph.
+  await expect(page.locator('#originalFigureTools')).toBeVisible();
+  await expect(page.locator('#originalFigureImportBtn')).toContainText('ZIP');
+  await page.locator('.learning-companion summary').nth(2).click();
+  const gallery=page.locator('.original-atlas-grid');
+  await expect(gallery).toBeVisible();
+  await expect(gallery.locator('.original-atlas-item')).toHaveCount(14);
+  await expect(gallery.locator('.original-atlas-missing')).toHaveCount(14);
+  await expect(page.locator('.image-card[data-original-figure-id]')).toHaveCount(14);
+  await expect(page.locator('.study-guide-figure img')).toHaveCount(0);
+  const size=await page.evaluate(()=>document.documentElement.scrollWidth);
+  expect(size).toBeLessThanOrEqual(392);
+});
+
+test('rejects renamed non-source images and never incorrectly calls them original', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await openDermatology(page);
+  const figure=page.locator('.image-card[data-original-figure-id="derm-image-003"]');
+  await expect(figure.locator('.original-source-placeholder')).toHaveCount(1);
   await page.locator('#originalFigureFiles').setInputFiles({
-    name:'derm-image-003.png',mimeType:'image/png',buffer:readFileSync('icons/icon-192.png')
+    name:'derm-image-003.jpg',mimeType:'image/jpeg',buffer:readFileSync('icons/icon-192.png')
   });
-  await expect(photo.locator('.source-figure-full img')).toBeVisible();
-  await expect(photo).toHaveAttribute('data-visual-source','original-pdf');
-  await expect(page.locator('#originalFigureStatus')).toContainText('1/14');
+  await expect(page.locator('#originalFigureStatus')).toContainText('No original source files were accepted');
+  await expect(figure.locator('.source-figure-full img')).toHaveCount(0);
   await page.reload();
   await openDermatology(page);
-  await expect(page.locator('.image-card[data-original-figure-id="derm-image-003"] .source-figure-full img')).toBeVisible();
-  await expect(page.locator('#originalFigureStatus')).toContainText('1/14');
-  await expect(page.locator('.image-card[data-original-figure-id="derm-image-004"] .original-source-placeholder')).toHaveCount(1);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(392);
+  await expect(page.locator('.image-card[data-original-figure-id="derm-image-003"] .original-source-placeholder')).toHaveCount(1);
+  await expect(page.locator('#originalFigureStatus')).toContainText('0/14 verified');
+});
+
+test('unpacks ZIP locally but rejects substituted photo bytes by SHA-256', async ({page}) => {
+  await openDermatology(page);
+  const filename=Buffer.from('original-figures/derm-image-003.jpg');
+  // A fake JPEG envelope is used to exercise ZIP decompression. Its checksum
+  // must NOT match the genuine book photograph; copyrighted photos are not in CI.
+  const original=Buffer.concat([Buffer.from([0xff,0xd8,0xff]),Buffer.alloc(600,0x45)]);
+  const payload=deflateRawSync(original);
+  const local=Buffer.alloc(30);
+  local.writeUInt32LE(0x04034b50,0);
+  local.writeUInt16LE(20,4);
+  local.writeUInt16LE(8,8);
+  local.writeUInt32LE(payload.length,18);
+  local.writeUInt32LE(original.length,22);
+  local.writeUInt16LE(filename.length,26);
+  const central=Buffer.alloc(46);
+  central.writeUInt32LE(0x02014b50,0);
+  central.writeUInt16LE(20,4);
+  central.writeUInt16LE(20,6);
+  central.writeUInt16LE(8,10);
+  central.writeUInt32LE(payload.length,20);
+  central.writeUInt32LE(original.length,24);
+  central.writeUInt16LE(filename.length,28);
+  const centralOffset=local.length+filename.length+payload.length;
+  const ending=Buffer.alloc(22);
+  ending.writeUInt32LE(0x06054b50,0);
+  ending.writeUInt16LE(1,8);
+  ending.writeUInt16LE(1,10);
+  ending.writeUInt32LE(central.length+filename.length,12);
+  ending.writeUInt32LE(centralOffset,16);
+  const zip=Buffer.concat([local,filename,payload,central,filename,ending]);
+  await page.locator('#originalFigureFiles').setInputFiles({
+    name:'source-photos.zip',mimeType:'application/zip',buffer:zip
+  });
+  await expect(page.locator('#originalFigureStatus')).toContainText('No original source files were accepted');
+  await expect(page.locator('.image-card[data-original-figure-id="derm-image-003"] .source-figure-full')).toHaveCount(0);
 });

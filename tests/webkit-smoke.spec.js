@@ -135,6 +135,8 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
 
   await openStudyPart(guide.locator('.study-guide-part').nth(2));
   await expect(guide.locator('.original-guide-copy')).toContainText('original images');
+  await expect(guide.locator('.original-atlas-item')).toHaveCount(14);
+  await expect(page.locator('#originalFigureImportBtn')).toContainText('ZIP');
   await expect(page.locator('#originalFigureTools')).toBeVisible();
   await expect(guide.locator('.study-guide-figure img')).toHaveCount(0);
 
