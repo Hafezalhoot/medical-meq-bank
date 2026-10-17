@@ -744,3 +744,31 @@ body{background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Tahoma,
 }
 .app.study-focus .study-navigation-column{display:none!important}
 @media print{.study-navigation-column{display:none!important}}
+
+
+/* V3 source-verified figure atlas: native, permission-safe photographs only. */
+.original-atlas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(174px,1fr));gap:12px;margin:16px 18px 23px}
+.original-atlas-item{margin:0;min-width:0;overflow:hidden;display:grid;grid-template-rows:auto 1fr;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.original-atlas-frame{display:grid;min-height:160px;aspect-ratio:4/3;overflow:hidden;place-content:center;text-align:center;background:var(--surface-soft)}
+.original-atlas-missing{max-width:22ch;padding:15px;color:var(--muted);font-size:.8rem;line-height:1.6}
+.original-atlas-item>figcaption{display:grid;align-content:start;gap:3px;padding:11px 12px}
+.original-atlas-item>figcaption strong{font-size:.84rem;line-height:1.4;color:var(--text)}
+.original-atlas-item>figcaption small{font-size:.73rem;color:var(--muted)}
+.original-atlas-frame .source-figure-full{display:grid;grid-template-rows:minmax(0,1fr) auto;align-items:center;width:100%;height:100%;max-width:none;margin:0;padding:6px;text-decoration:none}
+.original-atlas-frame .source-figure-full img{display:block;max-height:150px;max-width:100%;height:auto;width:auto;margin:auto;object-fit:contain;border:0}
+.original-atlas-frame .source-figure-caption{line-height:1.45;font-size:.68rem;margin:6px 0 0;padding:0 4px;color:var(--muted)}
+.original-atlas-frame .source-figure-full:hover{background:var(--brand-soft)}
+.original-atlas-frame .source-figure-full:focus-visible{outline:3px solid var(--brand);outline-offset:-3px}
+.original-figure-tools .original-figure-actions{min-width:230px}
+.original-figure-tools .original-figure-actions button{white-space:normal;line-height:1.5}
+.dark .original-atlas-item{border-color:var(--line);background:var(--card)}
+@media(max-width:700px){
+  .original-atlas-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px}
+  .original-atlas-frame{min-height:128px}
+  .original-atlas-item>figcaption{padding:9px}
+  .original-atlas-item>figcaption strong{font-size:.77rem}
+  .original-atlas-frame .source-figure-full img{max-height:110px}
+  .original-atlas-frame .source-figure-caption{font-size:.64rem}
+  .original-figure-tools .original-figure-actions{min-width:0}
+}
+@media(max-width:350px){.original-atlas-grid{grid-template-columns:1fr}.original-atlas-frame{min-height:170px}.original-atlas-frame .source-figure-full img{max-height:155px}}
