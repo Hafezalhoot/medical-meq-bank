@@ -685,3 +685,18 @@ body{background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Tahoma,
 }
 @media(prefers-reduced-motion:reduce){.original-guide-link,.source-figure-full img{transition:none}}
 @media print{.study-launch-row,.original-figure-tools{display:none!important}}
+
+
+/* V3 measured WCAG/layout corrections from actual Chromium axe and geometry.
+   Opaque, high-contrast lecture subnav tags must remain readable on all rails. */
+.sidebar .subnav{opacity:1}
+.sidebar .lecture-link .subnav span{
+  background:#e4f1ed;color:#17444b;
+  border-radius:6px;font-weight:750;
+}
+.sidebar .lecture-link.active .subnav span{background:#d6ece7;color:#163e46}
+.dark .sidebar .lecture-link .subnav span,
+.dark .sidebar .lecture-link.active .subnav span{
+  background:#26494b;color:#d6eeeb;
+}
+@media(min-width:981px){.hero{padding-block:13px}}
