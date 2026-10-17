@@ -104,10 +104,23 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
   await expect(guide).toBeVisible();
   await expect(guide.locator('.study-guide-part')).toHaveCount(3);
 
+  // Verify mobile sticky filters do not obstruct the real tap target.
+  const openStudyPart=async part=>{
+    if(await part.evaluate(el=>el.open))return;
+    const summary=part.locator('summary');
+    if(testInfo.project.name==='webkit-mobile'){
+      await summary.evaluate(el=>el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
+      await expect.poll(()=>summary.evaluate(el=>{
+        const r=el.getBoundingClientRect();
+        if(!r.width||!r.height||r.top<0||r.bottom>innerHeight)return false;
+        const hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+        return hit===el||el.contains(hit);
+      }),{timeout:10000}).toBe(true);
+    }
+    await summary.click();
+  };
   const mcqPanel=guide.locator('.study-guide-part').nth(1);
-  if(!(await mcqPanel.evaluate(el=>el.open))){
-    await mcqPanel.locator('summary').click();
-  }
+  await openStudyPart(mcqPanel);
   await expect(mcqPanel).toHaveAttribute('open', '');
   const mcq=mcqPanel.locator('.study-guide-mcq').first();
   await expect(mcq).toBeVisible();
@@ -120,7 +133,7 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
   await mcq.getByRole('button',{name:'Reveal explanation'}).click();
   await expect(mcq.locator('.study-guide-answer')).toContainText('Your answer is correct');
 
-  await guide.locator('summary').nth(2).click();
+  await openStudyPart(guide.locator('.study-guide-part').nth(2));
   const image=guide.locator('.study-guide-figure img');
   await image.scrollIntoViewIfNeeded();
   await expect.poll(()=>image.evaluate(img=>img.complete && img.naturalWidth>0)).toBe(true);

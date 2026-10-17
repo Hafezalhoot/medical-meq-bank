@@ -24,6 +24,8 @@
 
 @media(max-width:700px){
   .mobile-filter-shell{position:sticky;top:max(6px,env(safe-area-inset-top));z-index:40;margin:12px 0}
+  html{scroll-padding-top:calc(100px + env(safe-area-inset-top))}
+  .learning-companion .study-guide-part>summary{scroll-margin-top:calc(100px + env(safe-area-inset-top))}
   body.mobile-filters-open .mobile-filter-shell{z-index:1002}
   .mobile-filter-shell .toolbar{position:static;top:auto;margin:0;padding:8px;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;border-radius:16px}
   .mobile-filter-shell .toolbar:not(.mobile-filters-expanded) .mobile-sheet-control,

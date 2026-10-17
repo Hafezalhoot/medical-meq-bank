@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-17 — Requested release: fix iPhone sticky header and verify before merge
+
+- ✅ User requested publication of the V2 workspace and Dermatology lecture. No source PDF or copyrighted clinical photos are included.
+- ✅ Inspected full WebKit trace for failed run [38971747357](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/38971747357): the sticky mobile search field repeatedly intercepted clicks on the MCQ disclosure summary after automatic scrolling; this was a real hit-target issue, not a wrong exam answer.
+- 🧪 Added mobile scroll padding and summary scroll margin, plus a WebKit test checking the normal summary's hit point is unobstructed before clicking, including infographic. No test disabled or force-clicked.
+- 🧪 Version bumped from 2026.10.16.3 to **2026.10.17.1** in version.json, service worker and PWA client. Await full three-job CI matrix on this commit before merging protected main.
+- ⚠️ Cloudflare Worker release currently uses version-upload-only, requiring manual promotion and live-version verification. Production is not confirmed merely by GitHub merge. Preserve rollback and progress data.
+
 ### 2026-10-16 — Exam source scope explicitly confirmed by learner
 
 - ✅ Learner confirmed that **printed teaching text only** in the reattached 10-page `Dermatology Department book 2022.pdf` is examinable; handwritten marginal notes and embedded chat screenshot were personal understanding annotations and **must not be treated as exam facts**.
