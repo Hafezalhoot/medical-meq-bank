@@ -1,5 +1,17 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-17 — V3 image-source integrity, verified ZIP import, original-photo atlas
+
+- ✅ Implemented **SHA-256 pinned original medical figure imports**: the 14 exact source crops, mapped to `derm-image-001` through `derm-image-014`, are accepted only if their file contents match the lecture-provenance hashes. Renaming arbitrary or generated images cannot make them appear as authentic medical source material.
+- ✅ Added **single ZIP selection** of the private `MEQ_Dermatology_Original_Photos_Pack.zip` as well as multi-select JPEG fallback. Browser-local ZIP decompression reads only matching filenames, enforces entry/size limits, verifies each decoded JPEG, and does **not transmit source content to any server**. On browsers without supported archive decompression, learners can extract the package and import JPEGs.
+- ✅ Added a responsive **Original lecture photographs atlas** to the third study-guide panel, with all 14 printed-source page references; imported originals appear in both atlas and Image/Spot cards. Missing and rejected images display an honest source-not-available state. Source content and review answers are unchanged.
+- ✅ Added test cases for 14 atlas slots, no synthetic infographic, mobile layout, counterfeit renamed image rejection, fake ZIP image rejection and no false persisted original-image labeling.
+- ✅ [Actions run #39042336478](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39042336478) passed **all three** quality gates (validate, Chromium, desktop/iPhone WebKit) on `01e15130040fc6afc040dc00c5fc5b2a04934f2c`. No test was force-clicked, skipped, or weakened to claim source fidelity.
+- ✅ Independently ran the **actual built app's ZIP-unpacking routine** in Node 22 against the private 14-JPEG package: **14/14 decoded correctly and matched SHA-256**. Verified the manifest itself maps all files to the proper printed PDF pages; the skin-structure photo intentionally appears in both slots 001/002.
+- ✅ Prepared a **self-contained personal-use offline HTML preview** of V3 version `2026.10.17.3` with exactly those original 14 JPEGs embedded, and an associated private review ZIP/README. Confirmed private HTML structural integrity, embedded source SHA-256 and zero external CSS/script dependencies. **This preview has not been tested interactively in a local browser**, due to environment browser restrictions; use it to review presentation privately.
+- ⚠️ Existing Surgery lecture payloads contain source-attributed base64 figures. Their complete publication-provenance records cannot be established from code alone; **preserve them** until their originals are checked, and apply original-only policy to all *new* intake.
+- ⚠️ No permissions to publicly redistribute the Dermatology book's clinical photos were supplied. Only the **private user's downloaded copy** contains those files. PR #28 remains Draft and production/main remains unchanged pending the learner's visual approval, original-image licensing clarification, and final merge/deployment authorization.
+
 ### 2026-10-17 — V3 redesign / original-only lecture figures (DRAFT PR #28)
 
 - ✅ The learner requested a **substantial visual and information-architecture redesign**, not a superficial style pass, while preserving all previously implemented study capabilities and stored answers/progress.

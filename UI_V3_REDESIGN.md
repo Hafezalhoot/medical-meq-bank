@@ -56,3 +56,17 @@ Visual tokens: soft off-white page, ink-teal text `#17343e`, clinical teal `#0d6
 ## Evidence limits
 
 The PR is **implementation under review**, not a claimed visually complete result. GitHub CI checks are necessary but insufficient; mobile/desktop snapshots and clinical crop accuracy require manual approval. No source images are published to public GitHub at this stage.
+
+
+## Latest implementation and evidence (2026-10-17)
+
+The current draft V3 browser prototype is now a **source-verifying original-photo reader**, not just a restyled bank:
+
+1. Derm source-only JPEG pack: **14 images, all matched by SHA-256** to the private pack's PDF-page manifest; no source-book photographs committed to public GitHub.
+2. Image import: named photos or a ZIP bundle, local secure fingerprint check, fixed per-entry bounds, IndexedDB persistence and controlled refusal of mismatched images. The student can access the same photo in **the visual atlas and source-referenced Image/Spot answer card**.
+3. Medical content kept in place: **11 Explanation sections, 30 MCQ, 16 Cases, 70 Core, 17 Detailed, 14 Image/Spot, 41 Rapid**; no new external clinical facts.
+4. Test: [full green latest code run #39042336478](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39042336478) for validate/Chromium/iPhone-Safari. Node test of actual extracted ZIP function against all 14 original photos: 14/14 fingerprints match.
+5. Owner preview: separate self-contained **personal offline HTML** bundling the original photos, excluded from the public repository; generated from the proven V3 build. It does not mean the Worker has been promoted.
+
+**Pending before completion:** 320/390/768/1440px final human review of the *verified photo-filled atlas* on actual target browsers, rights approval if hosting medical photos publicly, generic course-agnostic source-media authoring (the current importer is an explicit pilot for the Dermatology course), and further CSS consolidation and visual simplification if the learner requests a stronger direction. Do not merge while Draft.
+

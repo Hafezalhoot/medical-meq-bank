@@ -181,3 +181,15 @@ Adding content is not complete when JSON is merely committed. It is complete onl
 - Don't rename a published lecture or question merely to reorder the UI; IndexedDB progress keys depend on stable IDs.
 - The website is public. Review redistribution permission and remove private student/patient details before pushing a lecture source or its illustrations to GitHub.
 - Drafts in `tmp/lecture-drafts/` are ignored by Git. Public content only comes from a reviewed commit and release.
+
+
+### Source-original photo packaging & verification (V3 pilot)
+
+For a lecture where the source file has real clinical photographs, extract **only** its printed original photographs from the learner-supplied PDF, not synthetic clinical drawings, online replacements or generated visuals. Preserve a private pack manifest with stable item ID, printed page, crop coordinates and SHA-256 of each JPEG. The Dermatology V3 pilot is pinned to 14 JPEGs from `Dermatology Department book 2022.pdf`.
+
+- **Public repo:** lecture text/questions + page attribution + approved SHA-256 fingerprints and import controls are allowed. Do not publish the source-book PDF, crops, handwritten annotations, or clinical photos without the copyright holder's permission.
+- **Private learner import:** the V3 prototype accepts the owner-provided ZIP or extracted exact JPEGs, verifies source hashes locally and persists the files in IndexedDB. A wrong image with a correct filename is rejected and never relabeled as original.
+- **Offline:** imported photos persist only in the current browser/device storage and are not included in normal question-progress backup JSON; a separate **personal offline review HTML** may bundle the originals for the original PDF owner. A local photo pack is not automatically a licensed public asset.
+- **New lectures:** add a generic provenance-first intake/manifest pipeline before expanding beyond the Dermatology pilot; never simply copy hard-coded image arrays or invent medical diagrams when a lecture is missing figures.
+- **Study Guide:** source-photo atlas displays authentic originals when verified, and a clear source-not-imported message otherwise. Printed text remains the only exam authority; handwritten notes are solely personal understanding aids.
+
