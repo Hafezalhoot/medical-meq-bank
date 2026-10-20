@@ -218,6 +218,64 @@ class LectureIntakeTests(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, "referenced image does not exist"):
             self.run_cli()
 
+    def test_private_original_photo_intake_preserves_source_hash_and_progress_identity(self):
+        document = draft()
+        fingerprint = "a" * 64
+        document["imageQuestions"] = [{
+            "id": "original-image-1", "title": "Printed lecture photograph",
+            "topic": "Overview", "priority": "Core", "marks": 1,
+            "subtopics": ["overview"], "questions": ["What is shown?"],
+            "answer": ["Exactly the term in the printed source"],
+            "page": "Lecture PDF p. 4", "prompt": "Identify the original image from p. 4.",
+            "imageSha256": fingerprint, "imageBytes": 12844,
+        }]
+        save(self.root / "draft.json", document)
+        # Dry-run and verified write must both work WITHOUT requiring any
+        # copyrighted medical image to be checked into this public repo.
+        self.run_cli()
+        self.run_cli(flags=("--write", "--reviewed"))
+        result = json.loads(
+            (self.root / "lectures" / "data" / "internal-medicine-test-lecture.json").read_text()
+        )
+        self.assertEqual(result["imageQuestions"][0]["imageSha256"], fingerprint)
+        self.assertEqual(result["imageQuestions"][0]["page"], "Lecture PDF p. 4")
+        self.assertNotIn("image", result["imageQuestions"][0])
+        self.assertEqual(result["imageQuestions"][0]["id"], "original-image-1")
+
+    def test_intake_rejects_inconsistent_or_unreviewed_private_source_image_metadata(self):
+        original = {
+            "id": "original-image-1", "title": "Source image",
+            "topic": "Overview", "priority": "Core", "marks": 1,
+            "subtopics": ["overview"], "questions": ["Name the lesion"],
+            "answer": ["Printed lecture term"], "page": "Lecture PDF p. 4",
+            "prompt": "Use the source photo.", "imageSha256": "f" * 64,
+        }
+        cases = [
+            ({"imageSha256": "0" * 63}, "invalid original PDF imageSha256"),
+            ({"imageSha256": "F" * 64}, "invalid original PDF imageSha256"),
+            ({"page": ""}, "printed source page"),
+            ({"prompt": ""}, "source-linked prompt"),
+            ({"imageBytes": 1}, "private original-image byte count"),
+            ({"imageBytes": True}, "private original-image byte count"),
+            ({"imageBytes": 5 * 1024 * 1024 + 1}, "private original-image byte count"),
+        ]
+        for changes, reason in cases:
+            with self.subTest(changes=changes):
+                doc = draft()
+                doc["imageQuestions"] = [dict(original, **changes)]
+                save(self.root / "draft.json", doc)
+                with self.assertRaisesRegex(SystemExit, reason):
+                    self.run_cli()
+                self.assertEqual(json.loads(self.catalog.read_text())["lectures"], [])
+        missing = dict(original)
+        missing.pop("imageSha256")
+        missing["imageBytes"] = 1400
+        doc = draft()
+        doc["imageQuestions"] = [missing]
+        save(self.root / "draft.json", doc)
+        with self.assertRaisesRegex(SystemExit, "imageBytes requires an image source"):
+            self.run_cli()
+
     def test_optional_study_guide_is_source_traced_and_schema_checked(self):
         document = draft()
         document["studyGuide"] = {
