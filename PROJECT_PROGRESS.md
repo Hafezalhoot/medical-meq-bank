@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-20 — Continue V3: generic source-only media pipeline and P0 CI repair
+
+- ✅ Source-photo SHA-256 fingerprints moved into each Dermatology image-question record (existing `imageSha256` field) with unchanged question IDs, printed page mappings, teaching answers and course placement. Both lecture gallery and spot cards detect source photos from metadata, not a Dermatology-only hardcoded condition.
+- ✅ Replaced fixed-ID/fixed-course original-photo importer with one using each selected, loaded lecture's **image-question IDs, SHA-256 and page metadata**. IndexedDB keys remain per-lecture, preserving existing Dermatology saved images after upgrade.
+- ✅ Original-only media is still private: no source JPEG from the textbook is committed or sent to a server; renamed substitutes fail the hash verification.
+- ✅ Found an actual build P0 when existing `scripts/validate_lecture_images.py` misinterpreted source-only JPEG hash metadata as embedded AVIF. Updated validation to enforce the embedded AVIF byte-count contract **and** independently validate nonembedded, page-attributed, source-photo SHA-256 (without permitting a fake image URL).
+- ✅ New private `tools/prepare_original_figure_pack.py` supports review-controlled crop maps and original JPEG background extraction from the user's source PDF. It packs verified-page crop JPEGs privately and may update lecture source hashes only through explicit review flags. No medical answers are generated or modified.
+- 🧪 CI workflow compiles the authoring tool on every build, and source-image tests include an arbitrary image ID with a safe **test-only, nonclinical** JPEG fixture to verify that future lectures don't need dedicated frontend code.
+- ⚠️ This code change is pending final latest-head validation and browser evidence; don't merge or promote to Cloudflare if any gate fails. Original book redistribution rights remain unverified, so production would require private local image import.
+
 ### 2026-10-17 — V3 image-source integrity, verified ZIP import, original-photo atlas
 
 - ✅ Implemented **SHA-256 pinned original medical figure imports**: the 14 exact source crops, mapped to `derm-image-001` through `derm-image-014`, are accepted only if their file contents match the lecture-provenance hashes. Renaming arbitrary or generated images cannot make them appear as authentic medical source material.

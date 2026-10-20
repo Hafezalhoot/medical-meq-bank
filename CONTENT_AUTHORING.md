@@ -193,3 +193,57 @@ For a lecture where the source file has real clinical photographs, extract **onl
 - **New lectures:** add a generic provenance-first intake/manifest pipeline before expanding beyond the Dermatology pilot; never simply copy hard-coded image arrays or invent medical diagrams when a lecture is missing figures.
 - **Study Guide:** source-photo atlas displays authentic originals when verified, and a clear source-not-imported message otherwise. Printed text remains the only exam authority; handwritten notes are solely personal understanding aids.
 
+
+
+## Reusable original-PDF photo intake (all subjects, no synthetic images)
+
+The source-image importer is now metadata-driven. **You no longer edit src/app.js or copy a Dermatology-specific array to add another lecture.** Each reviewed image-spot question has:
+
+- A stable `id` such as `some-lecture-image-001`, and source `page` from the printed PDF.
+- No public `image` URL if reuse rights are unconfirmed.
+- `imageSha256` (64 lowercase hexadecimal characters) pinning the actual source JPEG crop; optional `imageBytes` provides its size.
+- The exact original JPEG, private to the student, named `<image-question-id>.jpg`. The renderer discovers the source images by these fields regardless of course/specialty/lecture ID.
+
+For reliable authoring, crop from the original uploaded PDF's **printed full-page JPEG layer**, never a fabricated redraw, web stock image, screenshot containing personal handwritten annotations, or up-to-date external textbook figure. If a PDF is vector-based rather than a printed JPEG background, the automatic extractor refuses to guess and a reviewer must manually extract and verify the true original. Medical facts and answer keys still obey Lecture-First Policy.
+
+### One command to prepare a private photo ZIP
+
+The crop map is a locally reviewed JSON file outside the public repo, with entries like:
+
+```json
+{
+  "items": [
+    {
+      "id": "some-lecture-image-001",
+      "sourcePage": 4,
+      "cropNormalized": [0.21, 0.34, 0.50, 0.56],
+      "description": "Review against the printed source image"
+    }
+  ]
+}
+```
+
+Map **every** source image question, verify each coordinate visually, and keep the original PDF in a private folder. This illustrative coordinate example is *not* a medical figure or an exam fact.
+
+```bash
+python3 -m pip install -r tools/requirements-original-figures.txt
+
+python3 tools/prepare_original_figure_pack.py \
+  --source-pdf "/private/Lecture.pdf" \
+  --lecture "/private/lecture-draft.json" \
+  --crop-map "/private/reviewed-crop-map.json" \
+  --private-zip "/private/Lecture_Original_Figures.zip"
+
+# Only after verifying every printed PDF crop and page label:
+python3 tools/prepare_original_figure_pack.py \
+  --source-pdf "/private/Lecture.pdf" \
+  --lecture "/private/lecture-draft.json" \
+  --crop-map "/private/reviewed-crop-map.json" \
+  --private-zip "/private/Lecture_Original_Figures_REVIEWED.zip" \
+  --write-reviewed-hashes
+```
+
+For an existing reviewed lecture, changed crop output intentionally fails a hash check; an explicit `--replace-existing-hashes` (combined with `--write-reviewed-hashes`) is required after a second medical/source-photo review. The packaging tool writes its ZIP **outside the public repo** and does not upload it or publish the source PDF.
+
+The browser reads the JPEG file hashes from each lecture automatically, accepts the matching private ZIP or multiple JPEGs, saves them in IndexedDB, displays them in the source-image atlas and exam spots, and preserves text/MCQ/case progress separately. Private photos are device-local and **not** in a normal study-progress backup; the user should retain the source ZIP to restore photos on another device.
+

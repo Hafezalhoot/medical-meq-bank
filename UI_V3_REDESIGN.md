@@ -70,3 +70,16 @@ The current draft V3 browser prototype is now a **source-verifying original-phot
 
 **Pending before completion:** 320/390/768/1440px final human review of the *verified photo-filled atlas* on actual target browsers, rights approval if hosting medical photos publicly, generic course-agnostic source-media authoring (the current importer is an explicit pilot for the Dermatology course), and further CSS consolidation and visual simplification if the learner requests a stronger direction. Do not merge while Draft.
 
+
+
+### 2026-10-20 — Course-agnostic source-figure pipeline
+
+The verified photo workflow was generalized beyond the first Dermatology pilot:
+
+- Source fingerprints now live in `imageQuestions[].imageSha256`, already supported by the source lecture schema, rather than in a hardcoded runtime dictionary.
+- Study-guide original-photo atlas and spot cards are generated from lecture metadata; current course/lecture IDs drive device-private storage keys.
+- The importer identifies accepted JPEG files from each reviewed lecture's own image-question IDs, validates the exact SHA-256, and refuses unsupported/incorrect photographs. Printed PDF pages remain explicit metadata.
+- Static validators now distinguish **source-only private JPEG fingerprints** from existing legacy **embedded AVIF** integrity contracts, without weakening the latter.
+- Added `tools/prepare_original_figure_pack.py`, a private-only crop/ZIP packager using actual full-page JPEG image layers in a supplied PDF, optional dependencies and a human-reviewed crop map. No remote or AI-generated figures are introduced.
+- **Release criteria:** schema/static + Chromium/WebKit pass on new head; real source-crop mapping remains human-reviewed; Cloudflare promotion remains a separate step. The repository never hosts copyrighted clinical photos without permission.
+
