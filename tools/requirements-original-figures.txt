@@ -1,0 +1,3 @@
+# Optional private authoring tools only; not required by the MEQ web app or CI.
+PyMuPDF>=1.24,<2
+Pillow>=10,<13
