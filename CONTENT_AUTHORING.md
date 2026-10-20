@@ -254,3 +254,18 @@ The user-facing source-photo gallery and device-local photo importer are **not p
 
 Run `bash build.sh` and the Chromium/WebKit quality matrix after changing source hashes or lecture IDs. Legacy published AVIF images continue under a separate, strict embedded-media integrity rule. A successful source-image hash check **does not confer copyright permission**.
 
+
+
+### Verify the complete PRIVATE image pack before lecture registration
+
+The prep step produces a ZIP and JSON provenance manifest; before delivering a source-photo pack, check **every** original crop is present, its JPEG hash matches the source-question metadata, the printed PDF page is consistent, and there are no renamed or extra files:
+
+```bash
+python3 tools/check_original_figure_pack.py \
+  --lecture "/private/reviewed-lecture.json" \
+  --private-zip "/private/Lecture_Original_Figures_REVIEWED.zip"
+```
+
+A successful check prints `VERIFIED: N original PDF figures`. An incomplete pack, wrong fingerprint, unexpected path or mismatched page fails with a nonzero exit code and must **not** be distributed. The command reads privately; it does not extract a JPEG to disk, upload a book photograph, or permit publishing copyrighted source photos publicly. It does not replace the human check of what the photographed lesion depicts.
+
+Tests in `tests/test_original_figure_pack.py` use nonclinical fixture bytes only to prove invalid filenames, missing photos and forged manifests fail. They are included in the regular `bash build.sh` quality gate, along with the existing clinical/lecture intake integration tests.
