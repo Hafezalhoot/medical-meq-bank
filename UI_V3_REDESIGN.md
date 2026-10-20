@@ -1,6 +1,6 @@
 # Medical MEQ Workspace V3 — Reader-first design and original-only imagery
 
-**Status:** Draft UX and source-image trial in [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28), not deployed. Baseline production source is `main` at `d7f3c0b`, candidate preview version `2026.10.20.1`. 
+**Status:** Draft UX and source-image trial in [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28), not deployed. Baseline production source is `main` at `d7f3c0b`, candidate preview version `2026.10.20.2`. 
 **User direction:** A stronger, potentially complete redesign of the UI and ordering without losing any old features. ONLY photographs from the original uploaded lecture PDFs may be used. Do not create or source replacement medical visuals.
 
 ## Current verified architecture and constraints
@@ -86,7 +86,7 @@ The verified photo workflow was generalized beyond the first Dermatology pilot:
 
 ## 2026-10-20 — Reader-first V3 release candidate, accessibility and design QA
 
-**Functional candidate:** `2026.10.20.1` on protected-main proposal [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28).
+**Functional candidate:** `2026.10.20.2` on protected-main proposal [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28).
 
 - Design audit from real Playwright screenshots (320, 390, 768, **1280**, 1440px): the V3 teal/ink clinical visual system is calmer, but the first version of the source photo importer occupied excessive space above the lesson. It was redesigned as a **single compact `<details>` disclosure** with visible status, keyboard-operable summary, and optional expanded import controls.
 - All source-image lecture content is now **metadata-first**: `imageQuestions[].imageSha256` and printed PDF `page` determine whether a source JPEG slot exists. Source image names must match item IDs; no visual hallucination, external photo search, or synthetic SVG assets.
@@ -98,3 +98,11 @@ The verified photo workflow was generalized beyond the first Dermatology pilot:
 
 **Open release approvals:** source book's public reuse rights, learner approval of screenshot/reading experience and manual physical-device verification. These gates are not waived by passing automated checks.
 
+
+### Additional release safety gates — 2026-10-20
+
+Source-only image ingestion now has two independent stop points: reviewed lecture registration refuses malformed photo metadata, and a new private ZIP verifier fails if even one original source JPEG is missing, renamed, modified or attributed to a wrong source page. The PDF extraction tool audits the completed ZIP **before writing any canonical source hashes**.
+
+The reader displays the source-photo atlas even if optional Explanation/MCQs have not yet been authored. It reclaims temporary object URLs when leaving a course but retains originals offline in IndexedDB. These paths have new regression tests. Candidate cache version **2026.10.20.2** must pass the final protected-branch CI before promotion.
+
+This closes engineering verification gaps, **not** clinical source-editorial review, book-photo publishing permissions or physical-device approval. Source images remain private and absent on a new visitor's device until imported.

@@ -269,3 +269,13 @@ python3 tools/check_original_figure_pack.py \
 A successful check prints `VERIFIED: N original PDF figures`. An incomplete pack, wrong fingerprint, unexpected path or mismatched page fails with a nonzero exit code and must **not** be distributed. The command reads privately; it does not extract a JPEG to disk, upload a book photograph, or permit publishing copyrighted source photos publicly. It does not replace the human check of what the photographed lesion depicts.
 
 Tests in `tests/test_original_figure_pack.py` use nonclinical fixture bytes only to prove invalid filenames, missing photos and forged manifests fail. They are included in the regular `bash build.sh` quality gate, along with the existing clinical/lecture intake integration tests.
+
+### Additional source-only publication safeguards
+
+1. Run a dry-run of `tools/add_lecture.py` on the medically reviewed JSON first. Source-photo SHA-256, printed page, source prompt and optional size are checked before registration.
+2. Prepare the reviewed source ZIP **outside GitHub**. The packager now runs the exact pack checker against the staged archive before modifying the reviewed JSON.
+3. Independently run `python3 tools/check_original_figure_pack.py --lecture /private/lecture.json --private-zip /private/Original_Figures.zip`. An error means **do not register or distribute** that photo pack.
+4. Publish source-only JSON and course catalog *only* after human content/page review; source JPEGs stay private, importable on each student's device, unless reuse permission to distribute them has been explicitly confirmed.
+5. Every future lecture with `imageSha256` automatically receives its source-image atlas, including a lecture with no optional Explanation or MCQs yet. Keep every `imageQuestions[].id` unchanged after publishing to preserve saved study state.
+
+These checks are in the repository's standard Python quality gate; do not bypass them in a direct GitHub or Cloudflare deployment.

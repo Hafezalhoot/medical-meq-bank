@@ -1,5 +1,16 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-20 — V3 release candidate hardening: original-source media authoring and memory
+
+- ✅ Closed the lecture-intake validation gap: `tools/add_lecture.py` now checks the source-image SHA-256, page, caption/prompt and optional byte count **before writing reviewed lecture records**. Invalid images fail a dry run; existing Surgery lecture sources and progress IDs remain untouched.
+- ✅ Added `tools/check_original_figure_pack.py` to check an entire **private** original-photo ZIP against reviewed lecture JSON: expected IDs/count, manifest, printed page, JPEG header, byte count and exact SHA-256. It reads ZIP entries without extracting images, uploading or redistributing scans. Tests cover falsified fingerprints, missing files, unsafe paths and wrong pages. The quality gate runs all `test_*.py` Python tests.
+- ✅ Integrated private ZIP checking into the staged `prepare_original_figure_pack.py` workflow so package integrity is checked **before** touching canonical metadata. Original book scans are never committed publicly.
+- ✅ Verified Dermatology's 14 original JPEG crops against all 14 source-question SHA-256 fingerprints using the user's private source pack in the working environment.
+- ✅ The source-image atlas no longer depends on the optional studyGuide: a new course containing only source-photo Image Spots renders its gallery and source-only wording immediately.
+- ✅ Imported picture Blobs and object URLs are reclaimed from runtime memory when leaving a lecture, while original photos remain device-private in IndexedDB for later offline review. Browser test covers switching to Surgery and returning to Dermatology with the same verified source image.
+- 🧪 Version `2026.10.20.2` in app metadata, service worker and PWA client; latest-head validate/Chromium/Safari-WebKit still required after release-version bump.
+- ⚠️ PR #28 remains a **Draft**, with the current Cloudflare production version unchanged. The learner must approve public publication rights before the source-book JPEGs could be placed on publicly accessible infrastructure; this branch intentionally uses local-only imports.
+
 ### 2026-10-20 — Clinical reader layout review and latest full CI green
 
 - ✅ Audited real Chromium desktop/tablet/390px/320px screenshots of the revised reader. Found original-photo onboarding occupying excessive pre-lecture space and interrupting the start of explanation. Replaced it with a compact accessible `<details>` control showing the saved-photo count even when collapsed; import guidance and selection stay available when expanded.
