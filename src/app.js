@@ -162,11 +162,11 @@ function imagePage(item){const value=item?.page;return value===0?'0':(value==nul
 function hasImageVisual(item){return Boolean(imageSource(item)||imagePage(item))}
 function imagePlaceholderHtml(q){const page=imagePage(q);const reference=page?`Lecture page ${page}`:'Lecture source';return `<div class="visual-placeholder" role="img" aria-label="${esc(q.title)} figure reference"><span class="visual-placeholder-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m5 17 4.5-4.5 3 3 2-2L19 18"></path></svg></span><strong>${esc(q.title)}</strong><span>${esc(reference)} is referenced for this spot question; the figure is not embedded in the bank.</span></div>`}
 function imageVisualHtml(q){
-  if(typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
+  if(!q.image&&typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
   const source=imageSource(q);
   return source?`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`:imagePlaceholderHtml(q);
 }
-function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';if(q.imageSha256){a.dataset.originalFigureId=q.id;a.dataset.originalFigureSha256=q.imageSha256;}a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
+function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';if(!q.image&&q.imageSha256){a.dataset.originalFigureId=q.id;a.dataset.originalFigureSha256=q.imageSha256;}a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
 
 function populateSubjectSelector(){const s=$('subjectSelector');s.innerHTML=subjects.map(x=>`<option value="${x.id}">${esc(x.label)}</option>`).join('');if(!subjects.some(x=>x.id===activeSubject))activeSubject='urology';s.value=activeSubject}
 function populateLectureFilter(){
@@ -403,7 +403,7 @@ function createStudyGuide(lecture) {
     details.append(figure);
     sourceLabel(details,guide.infographic.sourcePage);
   }
-  const sourceQuestions=(lecture.imageQuestions||[]).filter(item=>typeof item.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(item.imageSha256));
+  const sourceQuestions=(lecture.imageQuestions||[]).filter(item=>!item.image&&typeof item.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(item.imageSha256));
   if(sourceQuestions.length){
     const details=disclosure('Original lecture figures',sourceQuestions.length);
     const copy=document.createElement('p');copy.className='original-guide-copy';
@@ -668,174 +668,184 @@ $('emptyResetBtn').onclick=()=>{
 if(storage.get('medicalBankDarkV4')==='1'||storage.get('medicalBankDarkV3')==='1')document.body.classList.add('dark');
 syncThemeButton();
 
-/* Original lecture medical photographs ONLY.
-   Copyrighted PDF images are never uploaded to MEQ or stored in the public code.
-   SHA-256 fingerprints pin imported figures to the 14 owner-supplied source crops.
-   IndexedDB does not share the student's question-progress store.
-   A compressed source ZIP is read entirely in this browser (no network). */
+/* Source-bound clinical imagery: only original photos individually reviewed
+   against their lecture PDF can be accepted. Never upload source images or
+   publish book photos here without permissions. Lecture JSON stores SHA-256
+   and printed page; originals stay in the learner's private IndexedDB.
+   This engine works for every lecture with imageSha256 on its imageQuestions. */
 ;(function setupOriginalFigures(){
-  const lecture='internal-medicine-ii-dermatology-introduction';
-  const expected=Object.freeze({
-    'derm-image-001':'998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19',
-    'derm-image-002':'998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19',
-    'derm-image-003':'7a39b761ba35056277ef9e7dae5b61c42458ecb605b4c67242e43cfce69dd416',
-    'derm-image-004':'1b99cb590d8bea51ecf9cb0adcca39b45f88260e2ff1ee8e66338d1e960dc705',
-    'derm-image-005':'719e39f5c6d36b3ad37025f630eb32c0bab09aa24c821fdceffca1c81b141170',
-    'derm-image-006':'d8833fe0fd52e871edb0ad3462a569114a466020c735b0c1b93db7504c3d798a',
-    'derm-image-007':'a8220f517d651e6025fb05508a6b6b9a04bab372dbd7e95d5bb6978123c0a2aa',
-    'derm-image-008':'8e6c3ca25519a026e8196dfde48d695afbf2b962617965d483d43e426c42ba26',
-    'derm-image-009':'ddbf61f80bf174f952e1599e9e7e119c0781fcd69a3b626ca12e042c581723be',
-    'derm-image-010':'0aded058007aa4bb3768eb16e53e8d45a52a482e000128c6867a5086396feaae',
-    'derm-image-011':'f86286d2907490c429d023a7d25d35b861cf91b49d9fe0549e386d1434eca2fb',
-    'derm-image-012':'0009cc34c1dc28cb98197c017c6fc6fbd4445a8b1f981a92679cae6c5c457131',
-    'derm-image-013':'da6d296e5d781a716c20a733b4adac73e04f1ccfe664785ba143333a7001b7fa',
-    'derm-image-014':'447dca35f5be16ab5001ea99735c662e6270c818389378122c83108ab8c6a2ef'
-  });
-  const filePattern=/^(derm-image-(?:00[1-9]|01[0-4]))\.jpe?g$/i;
   const root=document.getElementById('lectureContainer');
   const section=document.getElementById('originalFigureTools');
   const input=document.getElementById('originalFigureFiles');
   const button=document.getElementById('originalFigureImportBtn');
   const status=document.getElementById('originalFigureStatus');
   if(!root||!section||!input||!button||!status)return;
-  const urls=new Map(), approved=new Map();
+  const cache=new Map(),urls=new Map();
   let pending=false,activeHydration=0;
 
+  function context(){
+    const current=root.querySelector('.lecture[data-lecture]')?.dataset.lecture;
+    if(!current)return null;
+    const lecture=lectures.find(item=>item.id===current&&!item.__metadataOnly);
+    if(!lecture)return null;
+    const originals=(lecture.imageQuestions||[]).filter(item=>
+      !item.image&&typeof item.imageSha256==='string'&&
+      /^[a-f0-9]{64}$/.test(item.imageSha256)&&
+      /^[a-z0-9][a-z0-9_-]*$/.test(item.id)&&imagePage(item)
+    );
+    if(!originals.length)return null;
+    return {lectureId:lecture.id,expected:Object.fromEntries(
+      originals.map(item=>[item.id,item.imageSha256])
+    ),count:originals.length};
+  }
+  const filenamePattern=/^([a-z0-9][a-z0-9_-]*)\.jpe?g$/i;
+  const sourceId=(ctx,name)=>{
+    const match=filenamePattern.exec(String(name).split(/[\\/]/).pop());
+    const id=match?.[1]?.toLowerCase();
+    return id&&Object.hasOwn(ctx.expected,id)?id:'';
+  };
+  const key=(ctx,id)=>ctx.lectureId+'::'+id;
   const openDb=()=>new Promise((resolve,reject)=>{
-    if(!globalThis.indexedDB){reject(new Error('Local original-image storage is not available'));return;}
+    if(!globalThis.indexedDB){reject(new Error('Device source-image storage unavailable'));return;}
     const request=indexedDB.open('medical-meq-original-figures-v1',1);
     request.onupgradeneeded=()=>{
       if(!request.result.objectStoreNames.contains('figures'))request.result.createObjectStore('figures');
     };
     request.onsuccess=()=>resolve(request.result);
-    request.onerror=()=>reject(request.error||new Error('Local image storage failed'));
+    request.onerror=()=>reject(request.error||new Error('Source-image database unavailable'));
   });
-  const withStore=async(mode,apply)=>{
+  const stored=async(mode,apply)=>{
     const db=await openDb();
     try{return await new Promise((resolve,reject)=>{
-      const transaction=db.transaction('figures',mode);
-      const request=apply(transaction.objectStore('figures'));
+      const tx=db.transaction('figures',mode),request=apply(tx.objectStore('figures'));
       request.onsuccess=()=>resolve(request.result);
-      request.onerror=()=>reject(request.error||new Error('Original image storage failed'));
-      transaction.onerror=()=>reject(transaction.error||new Error('Local storage transaction failed'));
+      request.onerror=()=>reject(request.error||new Error('Cannot read original photo'));
+      tx.onerror=()=>reject(tx.error||new Error('Image storage transaction failed'));
     });}finally{db.close();}
   };
-  const key=id=>lecture+'::'+id;
-  const get=id=>withStore('readonly',store=>store.get(key(id)));
-  const put=(id,blob)=>withStore('readwrite',store=>store.put(blob,key(id)));
+  const get=(ctx,id)=>stored('readonly',store=>store.get(key(ctx,id)));
+  const put=(ctx,id,blob)=>stored('readwrite',store=>store.put(blob,key(ctx,id)));
   const digest=async blob=>{
-    if(!globalThis.crypto?.subtle)throw new Error('Secure source verification is unavailable; images were not imported');
+    if(!globalThis.crypto?.subtle)throw new Error('Secure SHA-256 verification unavailable');
     const hash=await crypto.subtle.digest('SHA-256',await blob.arrayBuffer());
     return Array.from(new Uint8Array(hash),byte=>byte.toString(16).padStart(2,'0')).join('');
   };
-  const validOriginal=async(id,blob)=>{
-    if(!blob||!expected[id]||blob.size>5*1024*1024||blob.size<300)return false;
+  const validOriginal=async(ctx,id,blob)=>{
+    if(!blob||!Object.hasOwn(ctx.expected,id)||blob.size<300||blob.size>5*1024*1024)return false;
     const head=new Uint8Array(await blob.slice(0,3).arrayBuffer());
     if(head[0]!==0xff||head[1]!==0xd8||head[2]!==0xff)return false;
-    return (await digest(blob))===expected[id];
+    return (await digest(blob))===ctx.expected[id];
   };
-  const sourceId=name=>filePattern.exec(name)?.[1]?.toLowerCase()||'';
 
-  // Supports ZIP local headers and a central-directory index: no remote parser,
-  // scripts, filenames from outside the 14 originals, or archive extraction paths.
-  async function unpackZip(file){
-    if(file.size>12*1024*1024)throw new Error('ZIP pack exceeds the 12 MB safety limit');
-    const buffer=await file.arrayBuffer();
-    const bytes=new Uint8Array(buffer),view=new DataView(buffer);
-    const u16=(offset)=>view.getUint16(offset,true);
-    const u32=(offset)=>view.getUint32(offset,true);
+  // Only inspect ZIP central-directory entries and recognized photo filenames.
+  // Never evaluate contents, use filename as a path or forward to the network.
+  async function unpackZip(file,ctx){
+    if(file.size>32*1024*1024)throw new Error('Original-photo ZIP exceeds the 32 MB limit');
+    const bytes=new Uint8Array(await file.arrayBuffer()),view=new DataView(bytes.buffer);
+    const u16=i=>view.getUint16(i,true),u32=i=>view.getUint32(i,true);
     let end=-1;
-    for(let cursor=bytes.length-22;cursor>=Math.max(0,bytes.length-65557);cursor--){
-      if(u32(cursor)===0x06054b50){end=cursor;break;}
+    for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--){
+      if(u32(i)===0x06054b50){end=i;break;}
     }
-    if(end<0)throw new Error('Invalid ZIP: missing directory record');
+    if(end<0)throw new Error('ZIP directory was not found');
     const count=u16(end+10),start=u32(end+16);
-    if(count>36||start>=bytes.length)throw new Error('ZIP entries are invalid or excessive');
-    const decoder=new TextDecoder(),files=[];
-    let pos=start;
+    if(count>128||start>=bytes.length)throw new Error('ZIP contains too many or malformed entries');
+    const files=[],seen=new Set(),decoder=new TextDecoder();
+    let pos=start,totalDecoded=0;
     for(let index=0;index<count;index++){
-      if(pos+46>bytes.length||u32(pos)!==0x02014b50)throw new Error('Malformed ZIP file index');
-      const method=u16(pos+10),compressed=u32(pos+20),original=u32(pos+24);
+      if(pos+46>bytes.length||u32(pos)!==0x02014b50)throw new Error('Malformed ZIP directory');
+      const method=u16(pos+10),packedLength=u32(pos+20),rawLength=u32(pos+24);
       const nameLen=u16(pos+28),extraLen=u16(pos+30),commentLen=u16(pos+32),offset=u32(pos+42);
-      const endName=pos+46+nameLen;
-      if(endName>bytes.length)throw new Error('Malformed ZIP entry name');
-      const filename=decoder.decode(bytes.subarray(pos+46,endName)).replace(/\\/g,'/');
-      pos=endName+extraLen+commentLen;
-      const name=filename.split('/').pop();
-      const id=sourceId(name);
+      if(pos+46+nameLen+extraLen+commentLen>bytes.length)throw new Error('Malformed ZIP entry');
+      const filename=decoder.decode(bytes.subarray(pos+46,pos+46+nameLen));
+      pos+=46+nameLen+extraLen+commentLen;
+      const id=sourceId(ctx,filename);
       if(!id)continue;
-      if(![0,8].includes(method)||original>5*1024*1024||compressed>5*1024*1024)
-        throw new Error('Unsupported or excessive source-photo entry in ZIP');
-      if(offset+30>bytes.length||u32(offset)!==0x04034b50)throw new Error('Broken ZIP local header');
-      const from=offset+30+u16(offset+26)+u16(offset+28),to=from+compressed;
-      if(to>bytes.length)throw new Error('Incomplete ZIP source photo');
+      if(seen.has(id))throw new Error('Source photo appears twice in the ZIP: '+id);
+      seen.add(id);
+      if(![0,8].includes(method)||rawLength>5*1024*1024||packedLength>5*1024*1024)
+        throw new Error('Unsupported image compression or size in ZIP');
+      totalDecoded+=rawLength;
+      if(totalDecoded>64*1024*1024)throw new Error('ZIP photo contents exceed the device safety limit');
+      if(offset+30>bytes.length||u32(offset)!==0x04034b50)throw new Error('Malformed ZIP photo header');
+      const from=offset+30+u16(offset+26)+u16(offset+28),to=from+packedLength;
+      if(to>bytes.length)throw new Error('Truncated ZIP photo');
       const packed=bytes.slice(from,to);
       let raw;
       if(method===0){raw=packed;}
       else{
-        if(typeof DecompressionStream!=='function')throw new Error('This browser cannot unpack ZIP files; extract the archive and import its JPEGs instead');
+        if(typeof DecompressionStream!=='function')
+          throw new Error('Extract this ZIP on your device and select its JPEG photos instead');
         let stream;
         try{stream=new Blob([packed]).stream().pipeThrough(new DecompressionStream('deflate-raw'));}
-        catch(e){throw new Error('ZIP unpacking unavailable; extract the archive and select the JPEG photos instead');}
+        catch(e){throw new Error('ZIP decompression is unavailable here: select the extracted JPEG photos instead');}
         const reader=stream.getReader(),chunks=[];
-        let total=0;
+        let size=0;
         try{
           while(true){
-            const {value,done}=await reader.read();if(done)break;
-            total+=value.byteLength;
-            if(total>5*1024*1024)throw new Error('Uncompressed source photo is too large');
+            const {value,done}=await reader.read();
+            if(done)break;
+            size+=value.byteLength;
+            if(size>5*1024*1024)throw new Error('Decompressed original photo exceeds 5 MB');
             chunks.push(value);
           }
         }catch(e){await reader.cancel().catch(()=>{});throw e;}
-        raw=new Uint8Array(total);let i=0;
-        for(const chunk of chunks){raw.set(chunk,i);i+=chunk.length;}
+        raw=new Uint8Array(size);
+        let position=0;
+        for(const chunk of chunks){raw.set(chunk,position);position+=chunk.byteLength;}
       }
-      if(raw.length!==original)throw new Error('ZIP photo size mismatch');
-      files.push({name,blob:new Blob([raw],{type:'image/jpeg'})});
+      if(raw.byteLength!==rawLength)throw new Error('ZIP photo size mismatch');
+      files.push({name:id+'.jpg',blob:new Blob([raw],{type:'image/jpeg'})});
     }
-    if(!files.length)throw new Error('ZIP contains no named original Dermatology figures');
+    if(!files.length)throw new Error('No matching source-photo filenames were found in this ZIP');
     return files;
   }
-  const syncStatus=async()=>{
+  const updateStatus=async(ctx)=>{
+    if(!ctx){status.textContent='Open a lecture with original source photos to import its images.';return;}
     try{
-      const ids=Object.keys(expected);
-      const all=await Promise.all(ids.map(async id=>{
-        let blob=approved.get(id)||await get(id);
-        if(!blob||!(await validOriginal(id,blob)))return false;
-        approved.set(id,blob);return true;
+      const flags=await Promise.all(Object.keys(ctx.expected).map(async id=>{
+        const storageKey=key(ctx,id);
+        const blob=cache.get(storageKey)||await get(ctx,id);
+        if(!blob||!(await validOriginal(ctx,id,blob)))return false;
+        cache.set(storageKey,blob);return true;
       }));
-      status.textContent=all.filter(Boolean).length+'/14 verified original PDF figures saved on this device. Progress backups do not include private photos.';
-    }catch(e){status.textContent='Original-photo storage or SHA-256 verification unavailable. Text and questions still work.';}
+      // The private images stay in the browser; they are not in progress backup.
+      status.textContent=flags.filter(Boolean).length+'/'+ctx.count+
+        ' verified original PDF figures saved on this device. Progress backup excludes private photos.';
+    }catch(e){
+      status.textContent='Unable to read original photos. You can still study the text and questions.';
+    }
   };
   const hydrate=async()=>{
-    const cards=[...root.querySelectorAll('[data-original-figure-id]')];
-    const requested=new Set(cards.map(card=>card.dataset.originalFigureId));
-    section.hidden=!cards.length;
-    if(!cards.length)return;
-    const current=++activeHydration;
-    const blobs=new Map();
-    await Promise.all([...requested].map(async id=>{
+    const ctx=context(),cards=[...root.querySelectorAll('[data-original-figure-id]')];
+    section.hidden=!ctx||!cards.length;
+    if(!ctx)return;
+    const stamp=++activeHydration;
+    const loaded=new Map();
+    await Promise.all(Object.keys(ctx.expected).map(async id=>{
+      const storageKey=key(ctx,id);
       try{
-        const blob=approved.get(id)||await get(id);
-        if(blob&&await validOriginal(id,blob)){approved.set(id,blob);blobs.set(id,blob);}
-      }catch(e){/* Honest missing-photo state; never show an unverified image. */}
+        const blob=cache.get(storageKey)||await get(ctx,id);
+        if(blob&&await validOriginal(ctx,id,blob)){cache.set(storageKey,blob);loaded.set(id,blob);}
+      }catch(e){/* A missing image must never become an invented visual. */}
     }));
-    if(current!==activeHydration)return;
+    if(stamp!==activeHydration||context()?.lectureId!==ctx.lectureId)return;
     for(const card of cards){
-      const id=card.dataset.originalFigureId,blob=blobs.get(id);
+      const id=card.dataset.originalFigureId,blob=loaded.get(id);
       if(!blob||!card.isConnected||card.dataset.originalHydrated==='true')continue;
       const visual=card.classList.contains('original-atlas-item')
         ?card.querySelector('.original-atlas-frame'):card.querySelector('.visual');
       if(!visual)continue;
-      let src=urls.get(id);
-      if(!src){src=URL.createObjectURL(blob);urls.set(id,src);}
-      const link=document.createElement('a');link.className='source-figure-full';
-      link.href=src;link.target='_blank';link.rel='noopener noreferrer';
-      link.setAttribute('aria-label','Open verified original PDF figure '+id+' in full size');
+      const storageKey=key(ctx,id);
+      let src=urls.get(storageKey);
+      if(!src){src=URL.createObjectURL(blob);urls.set(storageKey,src);}
+      const link=document.createElement('a');
+      link.className='source-figure-full';link.href=src;link.target='_blank';link.rel='noopener noreferrer';
+      link.setAttribute('aria-label','View original lecture photo '+id+' at full resolution');
       const image=document.createElement('img');image.src=src;image.loading='lazy';image.decoding='async';
-      image.alt='Verified original lecture figure for '+(card.querySelector('.case-title')?.textContent||card.querySelector('figcaption')?.textContent||id);
+      image.alt='Verified original printed lecture photo for '+(card.querySelector('.case-title')?.textContent||card.querySelector('figcaption')?.textContent||id);
       const caption=document.createElement('span');caption.className='source-figure-caption';
-      caption.textContent='Verified original PDF · local only · tap for full resolution';
+      caption.textContent='Original printed PDF · private device · view full resolution';
       link.append(image,caption);visual.replaceChildren(link);
       card.dataset.originalHydrated='true';card.dataset.visualSource='original-pdf';
     }
@@ -843,36 +853,43 @@ syncThemeButton();
   const refresh=()=>{
     if(pending)return;
     pending=true;
-    requestAnimationFrame(()=>{pending=false;hydrate().catch(()=>{});});
+    requestAnimationFrame(()=>{
+      pending=false;
+      hydrate().catch(()=>{});
+      updateStatus(context()).catch(()=>{});
+    });
   };
   button.addEventListener('click',()=>input.click());
   input.addEventListener('change',async()=>{
-    const picks=[...input.files];if(!picks.length)return;
-    button.disabled=true;status.textContent='Checking original-source fingerprints…';
+    const picks=[...input.files],ctx=context();
+    if(!picks.length)return;
+    if(!ctx){status.textContent='Choose a lecture with original photos first.';input.value='';return;}
+    button.disabled=true;status.textContent='Verifying the original printed-source photos…';
     let accepted=0,rejected=0;
     try{
-      const expanded=[];
+      const candidates=[];
       for(const pick of picks){
-        if(/\.zip$/i.test(pick.name)||pick.type==='application/zip'){
-          expanded.push(...await unpackZip(pick));continue;
-        }
-        expanded.push({name:pick.name,blob:pick});
+        if(/\.zip$/i.test(pick.name)||pick.type==='application/zip')
+          candidates.push(...await unpackZip(pick,ctx));
+        else candidates.push({name:pick.name,blob:pick});
       }
-      for(const item of expanded){
-        const id=sourceId(item.name);
-        if(!id||!(await validOriginal(id,item.blob))){rejected++;continue;}
-        await put(id,item.blob);approved.set(id,item.blob);accepted++;
-        const oldUrl=urls.get(id);if(oldUrl){URL.revokeObjectURL(oldUrl);urls.delete(id);}
+      for(const item of candidates){
+        const id=sourceId(ctx,item.name);
+        if(!id||!(await validOriginal(ctx,id,item.blob))){rejected++;continue;}
+        await put(ctx,id,item.blob);
+        cache.set(key(ctx,id),item.blob);accepted++;
+        const storedUrl=urls.get(key(ctx,id));
+        if(storedUrl){URL.revokeObjectURL(storedUrl);urls.delete(key(ctx,id));}
       }
       root.querySelectorAll('[data-original-figure-id]').forEach(card=>{card.dataset.originalHydrated='';});
-      await hydrate();await syncStatus();
-      if(rejected)status.textContent+=' '+rejected+' unverified/unmatched file(s) rejected.';
-      if(!accepted)status.textContent='No original source files were accepted. Use the exact JPEGs or original ZIP pack supplied with this lecture.';
-    }catch(e){status.textContent='Unable to import: '+(e?.message||'unsupported ZIP or storage');}
+      await hydrate();await updateStatus(ctx);
+      if(rejected)status.textContent+=' '+rejected+' mismatched/unverified image(s) rejected.';
+      if(!accepted)status.textContent='No original source files were accepted. Choose this lecture’s source JPEGs or ZIP pack.';
+    }catch(e){status.textContent='Original image import failed: '+(e?.message||'unsupported photo archive');}
     finally{input.value='';button.disabled=false;}
   });
-  new MutationObserver(()=>refresh()).observe(root,{childList:true});
+  new MutationObserver(refresh).observe(root,{childList:true});
   addEventListener('beforeunload',()=>{for(const src of urls.values())URL.revokeObjectURL(src);});
   globalThis.MEQOriginalFigures={refresh};
-  refresh();syncStatus();
+  refresh();updateStatus(context());
 })();
