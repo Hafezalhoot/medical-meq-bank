@@ -64,9 +64,12 @@ test('Dermatology uses only source figures and never substituted clinical graphi
   await expect(page.locator('.study-guide-figure img')).toHaveCount(0);
   const status=await page.evaluate(id=>{
     const l=lectures.find(item=>item.id===id);
-    return {images:l.imageQuestions.map(q=>q.image??null),infographic:Boolean(l.studyGuide.infographic)};
+    return {images:l.imageQuestions.map(q=>q.image??null),hashes:l.imageQuestions.map(q=>q.imageSha256),pages:l.imageQuestions.map(q=>q.page),infographic:Boolean(l.studyGuide.infographic)};
   },lectureId);
   expect(status.images.every(img=>img===null)).toBe(true);
+  expect(status.hashes).toHaveLength(14);
+  expect(status.hashes.every(hash=>/^[a-f0-9]{64}$/.test(hash))).toBe(true);
+  expect(status.pages.every(page=>/PDF p/.test(page))).toBe(true);
   expect(status.infographic).toBe(false);
 });
 
@@ -158,4 +161,36 @@ test('unpacks ZIP locally but rejects substituted photo bytes by SHA-256', async
   });
   await expect(page.locator('#originalFigureStatus')).toContainText('No original source files were accepted');
   await expect(page.locator('.image-card[data-original-figure-id="derm-image-003"] .source-figure-full')).toHaveCount(0);
+});
+
+
+test('source-figure reader accepts a new ID and fingerprint supplied as lecture metadata, without hardcoded Dermatology IDs', async ({page}) => {
+  await openDermatology(page);
+  // A non-clinical gray canvas is created only inside this isolated browser test.
+  // It is never added to source JSON, the site assets, or a real lecture.
+  const fixture=await page.evaluate(async id=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=64;canvas.height=64;
+    const ctx=canvas.getContext('2d');
+    ctx.fillStyle='#aaaaaa';ctx.fillRect(0,0,64,64);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.86));
+    const bytes=new Uint8Array(await blob.arrayBuffer());
+    const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),n=>n.toString(16).padStart(2,'0')).join('');
+    const lecture=lectures.find(item=>item.id===id);
+    const original=lecture.imageQuestions[2];
+    original.id='cross-course-original-source-fixture';
+    original.imageSha256=hash;
+    render();
+    return {base64:btoa(String.fromCharCode(...bytes)),hash};
+  },lectureId);
+  expect(fixture.hash).toMatch(/^[a-f0-9]{64}$/);
+  const sourceId='cross-course-original-source-fixture';
+  const card=page.locator('.image-card[data-original-figure-id="'+sourceId+'"]');
+  await expect(card.locator('.original-source-placeholder')).toHaveCount(1);
+  await page.locator('#originalFigureFiles').setInputFiles({
+    name:sourceId+'.jpg',mimeType:'image/jpeg',buffer:Buffer.from(fixture.base64,'base64')
+  });
+  await expect(card.locator('.source-figure-full img')).toBeVisible();
+  await expect(card).toHaveAttribute('data-visual-source','original-pdf');
+  await expect(page.locator('#originalFigureStatus')).toContainText('1/14 verified');
 });
