@@ -824,8 +824,19 @@ syncThemeButton();
   };
   const hydrate=async()=>{
     const ctx=context(),cards=[...root.querySelectorAll('[data-original-figure-id]')];
+    // IndexedDB is durable. Reclaim only short-lived in-memory images when
+    // browsing another lecture, avoiding unbounded RAM across course changes.
+    const activePrefix=ctx?ctx.lectureId+'::':'';
+    for(const [id,src] of urls){
+      if(!activePrefix||!id.startsWith(activePrefix)){
+        URL.revokeObjectURL(src);urls.delete(id);
+      }
+    }
+    for(const id of cache.keys()){
+      if(!activePrefix||!id.startsWith(activePrefix))cache.delete(id);
+    }
     section.hidden=!ctx||!cards.length;
-    if(!ctx)return;
+    if(!ctx){activeHydration++;return;}
     const stamp=++activeHydration;
     const loaded=new Map();
     await Promise.all(Object.keys(ctx.expected).map(async id=>{
