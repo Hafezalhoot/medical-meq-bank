@@ -83,6 +83,7 @@ def main() -> None:
     catalog_ids: set[str] = set()
     total_images = 0
     total_bytes = 0
+    original_source_slots = 0
 
     for entry in catalog["lectures"]:
         if not isinstance(entry, dict):
@@ -109,8 +110,26 @@ def main() -> None:
             source = item.get("image")
 
             if not (isinstance(source, str) and source.startswith(AVIF_PREFIX)):
-                if item.get("imageBytes") is not None or item.get("imageSha256") is not None:
-                    fail(f"AVIF integrity metadata exists without an embedded AVIF for {global_id}")
+                fingerprint = item.get("imageSha256")
+                declared_bytes = item.get("imageBytes")
+                if not source and isinstance(fingerprint, str):
+                    # Source-photograph metadata only. JPEG bytes intentionally
+                    # remain outside this public repository until licensed.
+                    if len(fingerprint) != 64 or any(ch not in "0123456789abcdef" for ch in fingerprint):
+                        fail(f"invalid private original-photo SHA-256 for {global_id}")
+                    if item.get("page") in (None, ""):
+                        fail(f"source JPEG requires a printed PDF page for {global_id}")
+                    if not isinstance(item.get("prompt"), str) or not item["prompt"].strip():
+                        fail(f"source JPEG requires a lecture-grounded prompt for {global_id}")
+                    if declared_bytes is not None and (
+                        not isinstance(declared_bytes, int) or isinstance(declared_bytes, bool)
+                        or declared_bytes < 300 or declared_bytes > 5 * 1024 * 1024
+                    ):
+                        fail(f"invalid private original-photo size for {global_id}")
+                    original_source_slots += 1
+                    continue
+                if fingerprint is not None or declared_bytes is not None:
+                    fail(f"image integrity metadata has no supported source for {global_id}")
                 continue
 
             raw = decode_avif(source, label=global_id)
@@ -136,7 +155,7 @@ def main() -> None:
     if missing_targets:
         fail("materialized lectures are missing from catalog: " + ", ".join(missing_targets))
 
-    print(f"Validated {total_images} embedded AVIF lecture images ({total_bytes} decoded bytes)")
+    print(f"Validated {total_images} embedded AVIF images ({total_bytes} decoded bytes) and {original_source_slots} private original-PDF photo slots")
 
 
 if __name__ == "__main__":
