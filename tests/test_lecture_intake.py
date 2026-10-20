@@ -253,7 +253,7 @@ class LectureIntakeTests(unittest.TestCase):
         cases = [
             ({"imageSha256": "0" * 63}, "invalid original PDF imageSha256"),
             ({"imageSha256": "F" * 64}, "invalid original PDF imageSha256"),
-            ({"page": ""}, "printed source page"),
+            ({"page": ""}, "lecture-page reference|printed source page"),
             ({"prompt": ""}, "source-linked prompt"),
             ({"imageBytes": 1}, "private original-image byte count"),
             ({"imageBytes": True}, "private original-image byte count"),
