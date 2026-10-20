@@ -37,6 +37,9 @@ test('capture actual V2 reading surfaces across desktop, phone, and dark/focus s
   await attachScreenshot(page, testInfo, 'desktop-focus-questions');
   await page.locator('#focusModeBtn').click();
 
+  await openWorkspace(page, 1280, 800);
+  await attachScreenshot(page, testInfo, 'laptop-study');
+
   await openWorkspace(page, 768, 1024);
   await attachScreenshot(page, testInfo, 'tablet-study');
 
@@ -51,7 +54,7 @@ test('capture actual V2 reading surfaces across desktop, phone, and dark/focus s
 });
 
 
-test('capture source-reviewed Dermatology pilot, explanation and infant reading surface', async ({page}, testInfo) => {
+test('capture Dermatology source-first reader, original figures and phone explanation', async ({page}, testInfo) => {
   await openWorkspace(page, 1440, 900);
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
