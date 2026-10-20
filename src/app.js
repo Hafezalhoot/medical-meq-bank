@@ -162,11 +162,11 @@ function imagePage(item){const value=item?.page;return value===0?'0':(value==nul
 function hasImageVisual(item){return Boolean(imageSource(item)||imagePage(item))}
 function imagePlaceholderHtml(q){const page=imagePage(q);const reference=page?`Lecture page ${page}`:'Lecture source';return `<div class="visual-placeholder" role="img" aria-label="${esc(q.title)} figure reference"><span class="visual-placeholder-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m5 17 4.5-4.5 3 3 2-2L19 18"></path></svg></span><strong>${esc(q.title)}</strong><span>${esc(reference)} is referenced for this spot question; the figure is not embedded in the bank.</span></div>`}
 function imageVisualHtml(q){
-  if(/^derm-image-\d{3}$/.test(q.id))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
+  if(typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
   const source=imageSource(q);
   return source?`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`:imagePlaceholderHtml(q);
 }
-function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';if(/^derm-image-\d{3}$/.test(q.id))a.dataset.originalFigureId=q.id;a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
+function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';if(q.imageSha256){a.dataset.originalFigureId=q.id;a.dataset.originalFigureSha256=q.imageSha256;}a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
 
 function populateSubjectSelector(){const s=$('subjectSelector');s.innerHTML=subjects.map(x=>`<option value="${x.id}">${esc(x.label)}</option>`).join('');if(!subjects.some(x=>x.id===activeSubject))activeSubject='urology';s.value=activeSubject}
 function populateLectureFilter(){
@@ -403,19 +403,21 @@ function createStudyGuide(lecture) {
     details.append(figure);
     sourceLabel(details,guide.infographic.sourcePage);
   }
-  if(lecture.id==='internal-medicine-ii-dermatology-introduction'){
-    const details=disclosure('Original lecture figures',lecture.imageQuestions.length);
+  const sourceQuestions=(lecture.imageQuestions||[]).filter(item=>typeof item.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(item.imageSha256));
+  if(sourceQuestions.length){
+    const details=disclosure('Original lecture figures',sourceQuestions.length);
     const copy=document.createElement('p');copy.className='original-guide-copy';
-    copy.textContent='Study the original images from the printed lecture, not redrawn substitutes. Import the 14 source crops on this device, then study the source-linked image questions below.';
+    copy.textContent='Study the original images from the printed lecture, not redrawn substitutes. Import the exact source photographs for this lecture on this device, then study its original image questions below.';
     const jump=document.createElement('a');jump.className='original-guide-link';
     jump.href='#'+lecture.id+'-images';jump.textContent='Open original figure questions';
     const atlas=document.createElement('div');
     atlas.className='original-atlas-grid';
     atlas.setAttribute('aria-label','Original lecture photograph atlas');
-    lecture.imageQuestions.forEach((item,index)=>{
+    sourceQuestions.forEach((item,index)=>{
       const entry=document.createElement('figure');
       entry.className='original-atlas-item';
       entry.dataset.originalFigureId=item.id;
+      entry.dataset.originalFigureSha256=item.imageSha256;
       const media=document.createElement('div');
       media.className='original-atlas-frame';
       const missing=document.createElement('div');
