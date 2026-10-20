@@ -164,6 +164,23 @@ test('unpacks ZIP locally but rejects substituted photo bytes by SHA-256', async
 });
 
 
+test('source-only lecture renders its image atlas without optional study guide', async ({page}) => {
+  await openDermatology(page);
+  await page.evaluate(id=>{
+    const lecture=lectures.find(item=>item.id===id);
+    if(!lecture)throw new Error('Missing tested lecture');
+    delete lecture.studyGuide;
+    render();
+  },lectureId);
+  await expect(page.locator('.learning-companion')).toBeVisible();
+  await expect(page.locator('.learning-companion .study-guide-part')).toHaveCount(1);
+  await page.locator('.learning-companion summary').click();
+  await expect(page.locator('.original-atlas-item')).toHaveCount(14);
+  await expect(page.locator('#originalFigureTools')).toBeVisible();
+  await expect(page.locator('.image-card[data-original-figure-id]')).toHaveCount(14);
+  await expect(page.locator('.image-section .section-head p')).toContainText('Printed original figures');
+});
+
 test('source-figure reader accepts a new ID and fingerprint supplied as lecture metadata, without hardcoded Dermatology IDs', async ({page}) => {
   await openDermatology(page);
   // A non-clinical gray canvas is created only inside this isolated browser test.
