@@ -194,3 +194,25 @@ test('source-figure reader accepts a new ID and fingerprint supplied as lecture 
   await expect(card).toHaveAttribute('data-visual-source','original-pdf');
   await expect(page.locator('#originalFigureStatus')).toContainText('1/14 verified');
 });
+
+test('original-photo importer is collapsed while reading, opens with keyboard, and keeps the status visible', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await openDermatology(page);
+  const original=page.locator('#originalFigureTools');
+  await expect(original).toBeVisible();
+  await expect(original).not.toHaveAttribute('open','');
+  await expect(original.locator('#originalFigureStatus')).toContainText('0/14 verified');
+  await expect(page.locator('#originalFigureImportBtn')).toBeHidden();
+  const summary=original.locator('summary');
+  await summary.focus();
+  await page.keyboard.press('Enter');
+  await expect(original).toHaveAttribute('open','');
+  await expect(page.locator('#originalFigureImportBtn')).toBeVisible();
+  await page.keyboard.press('Enter');
+  await expect(original).not.toHaveAttribute('open','');
+  const widths=await page.evaluate(()=>({
+    page:document.documentElement.scrollWidth,
+    viewport:document.documentElement.clientWidth
+  }));
+  expect(widths.page).toBeLessThanOrEqual(widths.viewport+1);
+});

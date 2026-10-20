@@ -59,6 +59,12 @@ test('capture source-reviewed Dermatology pilot, explanation and infant reading 
   await page.locator('#lectureFilter').selectOption('internal-medicine-ii-dermatology-introduction');
   await expect(page.locator('.learning-companion')).toBeVisible();
   await attachScreenshot(page, testInfo, 'dermatology-desktop');
+  await expect(page.locator('#originalFigureTools')).not.toHaveAttribute('open','');
+  await attachScreenshot(page, testInfo, 'dermatology-compact-original-photo-tools');
+  await page.locator('#originalFigureTools summary').click();
+  await expect(page.locator('#originalFigureImportBtn')).toBeVisible();
+  await attachScreenshot(page, testInfo, 'dermatology-expanded-original-photo-import');
+  await page.locator('#originalFigureTools summary').click();
   await page.locator('.learning-companion summary').first().click();
   await attachScreenshot(page, testInfo, 'dermatology-explanation');
   await page.locator('.learning-companion summary').nth(2).click();
