@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-20 — Clinical reader layout review and latest full CI green
+
+- ✅ Audited real Chromium desktop/tablet/390px/320px screenshots of the revised reader. Found original-photo onboarding occupying excessive pre-lecture space and interrupting the start of explanation. Replaced it with a compact accessible `<details>` control showing the saved-photo count even when collapsed; import guidance and selection stay available when expanded.
+- ✅ Added keyboard Enter open/close and 390px no-overflow regression tests; captured collapsed and expanded image-import states and a **1280x800 laptop layout**, complementing 320/390/768/1440 coverage.
+- ✅ Cached successful SHA-256 checks for immutable imported Blob objects to reduce duplicate hashing on subsequent renders, without accepting an unverified image; guarded asynchronous image-count text from cross-course stale updates.
+- ✅ Advanced coherent `version.json`, service-worker and PWA client version to **2026.10.20.1** so the tested redesign has a separate cache namespace.
+- ✅ [Actions #39417994882](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39417994882) passed static `validate`, Chromium and Safari/iPhone WebKit on the latest changes including the 1280px screenshot test.
+- ✅ Prepared refreshed *private* original-source 14-JPEG Dermatology HTML preview in the conversation; this private file is not committed to a public repository and it is not the Cloudflare site.
+- ⚠️ Remaining: learner's final visual sign-off and explicit image reuse authorization **only if** the original book photos should be hosted publicly; Cloudflare manual deployment and live-version check cannot be replaced by successful GitHub CI.
+
 ### 2026-10-20 — Continue V3: generic source-only media pipeline and P0 CI repair
 
 - ✅ Source-photo SHA-256 fingerprints moved into each Dermatology image-question record (existing `imageSha256` field) with unchanged question IDs, printed page mappings, teaching answers and course placement. Both lecture gallery and spot cards detect source photos from metadata, not a Dermatology-only hardcoded condition.

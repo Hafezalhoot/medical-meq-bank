@@ -1,6 +1,6 @@
 # Medical MEQ Workspace V3 — Reader-first design and original-only imagery
 
-**Status:** Draft UX and source-image trial in [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28), not deployed. Baseline production source is `main` at `d7f3c0b`, candidate preview version `2026.10.17.2`. 
+**Status:** Draft UX and source-image trial in [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28), not deployed. Baseline production source is `main` at `d7f3c0b`, candidate preview version `2026.10.20.1`. 
 **User direction:** A stronger, potentially complete redesign of the UI and ordering without losing any old features. ONLY photographs from the original uploaded lecture PDFs may be used. Do not create or source replacement medical visuals.
 
 ## Current verified architecture and constraints
@@ -82,4 +82,19 @@ The verified photo workflow was generalized beyond the first Dermatology pilot:
 - Static validators now distinguish **source-only private JPEG fingerprints** from existing legacy **embedded AVIF** integrity contracts, without weakening the latter.
 - Added `tools/prepare_original_figure_pack.py`, a private-only crop/ZIP packager using actual full-page JPEG image layers in a supplied PDF, optional dependencies and a human-reviewed crop map. No remote or AI-generated figures are introduced.
 - **Release criteria:** schema/static + Chromium/WebKit pass on new head; real source-crop mapping remains human-reviewed; Cloudflare promotion remains a separate step. The repository never hosts copyrighted clinical photos without permission.
+
+
+## 2026-10-20 — Reader-first V3 release candidate, accessibility and design QA
+
+**Functional candidate:** `2026.10.20.1` on protected-main proposal [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28).
+
+- Design audit from real Playwright screenshots (320, 390, 768, **1280**, 1440px): the V3 teal/ink clinical visual system is calmer, but the first version of the source photo importer occupied excessive space above the lesson. It was redesigned as a **single compact `<details>` disclosure** with visible status, keyboard-operable summary, and optional expanded import controls.
+- All source-image lecture content is now **metadata-first**: `imageQuestions[].imageSha256` and printed PDF `page` determine whether a source JPEG slot exists. Source image names must match item IDs; no visual hallucination, external photo search, or synthetic SVG assets.
+- The new authoring tool `tools/prepare_original_figure_pack.py` accepts a human-reviewed page/crop manifest and original scanned PDF, extracts the real printed JPEG layer (refuses unsafe or uncertain pages), and writes a **private** ZIP and provenance manifest. It does not create new exam facts, public image URLs or remote uploads.
+- Existing AVIF integrity checks continue to verify bytes and hashes; source-photo SHA metadata is checked separately by static validation. Original photos remain outside public GitHub.
+- Tests cover a new, arbitrary item ID derived from lecture metadata rather than hardcoding Dermatology, original-photo verification, ZIP bad-file rejection, mobile keyboard accessibility, screenshot evidence and the full preexisting study/search/print/progress/offline matrix.
+- Latest **full code + 1280px visual evidence** CI run: [Actions #39417994882](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39417994882) — `validate`, `chromium-quality`, `webkit-quality` **all passed**.
+- No protected-main merge or Cloudflare deployment was executed; app viewers need their own source-photo ZIP until rights to publicly host textbook clinical images are established.
+
+**Open release approvals:** source book's public reuse rights, learner approval of screenshot/reading experience and manual physical-device verification. These gates are not waived by passing automated checks.
 

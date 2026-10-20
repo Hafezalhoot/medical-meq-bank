@@ -247,3 +247,10 @@ For an existing reviewed lecture, changed crop output intentionally fails a hash
 
 The browser reads the JPEG file hashes from each lecture automatically, accepts the matching private ZIP or multiple JPEGs, saves them in IndexedDB, displays them in the source-image atlas and exam spots, and preserves text/MCQ/case progress separately. Private photos are device-local and **not** in a normal study-progress backup; the user should retain the source ZIP to restore photos on another device.
 
+
+### Keeping new source-image lecture UI independent of course-specific code
+
+The user-facing source-photo gallery and device-local photo importer are **not per-lecture hand-coded**. For each approved image spot, the canonical JSON includes `id`, `page`, `prompt` and the SHA-256 of the actual reviewed source JPEG as `imageSha256`, with **no** public `image` reference unless public use is licensed. The current app detects those image slots automatically under any course/department, and device-local imports are scoped to `<lecture-id>::<image-question-id>` to avoid collisions between courses.
+
+Run `bash build.sh` and the Chromium/WebKit quality matrix after changing source hashes or lecture IDs. Legacy published AVIF images continue under a separate, strict embedded-media integrity rule. A successful source-image hash check **does not confer copyright permission**.
+
