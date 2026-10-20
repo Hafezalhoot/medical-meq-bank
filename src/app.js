@@ -680,7 +680,7 @@ syncThemeButton();
   const button=document.getElementById('originalFigureImportBtn');
   const status=document.getElementById('originalFigureStatus');
   if(!root||!section||!input||!button||!status)return;
-  const cache=new Map(),urls=new Map();
+  const cache=new Map(),urls=new Map(),verifiedBlobs=new WeakMap();
   let pending=false,activeHydration=0;
 
   function context(){
@@ -734,7 +734,9 @@ syncThemeButton();
     if(!blob||!Object.hasOwn(ctx.expected,id)||blob.size<300||blob.size>5*1024*1024)return false;
     const head=new Uint8Array(await blob.slice(0,3).arrayBuffer());
     if(head[0]!==0xff||head[1]!==0xd8||head[2]!==0xff)return false;
-    return (await digest(blob))===ctx.expected[id];
+    if(verifiedBlobs.get(blob)===ctx.expected[id])return true;
+    if((await digest(blob))!==ctx.expected[id])return false;
+    verifiedBlobs.set(blob,ctx.expected[id]);return true;
   };
 
   // Only inspect ZIP central-directory entries and recognized photo filenames.
@@ -810,6 +812,7 @@ syncThemeButton();
         cache.set(storageKey,blob);return true;
       }));
       // The private images stay in the browser; they are not in progress backup.
+      if(context()?.lectureId!==ctx.lectureId)return;
       status.textContent=flags.filter(Boolean).length+'/'+ctx.count+
         ' verified original PDF figures saved on this device. Progress backup excludes private photos.';
     }catch(e){
