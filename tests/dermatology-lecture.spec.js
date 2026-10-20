@@ -210,6 +210,17 @@ test('source-figure reader accepts a new ID and fingerprint supplied as lecture 
   await expect(card.locator('.source-figure-full img')).toBeVisible();
   await expect(card).toHaveAttribute('data-visual-source','original-pdf');
   await expect(page.locator('#originalFigureStatus')).toContainText('1/14 verified');
+
+  // Switching medical courses must reclaim temporary Blob URLs but retain
+  // the verified original photo in durable IndexedDB for the next visit.
+  await page.locator('#courseSelector').selectOption('surgery');
+  await expect(page.locator('#originalFigureTools')).toBeHidden();
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+  await expect(page.locator('#lectureFilter option[value="'+lectureId+'"]')).toHaveCount(1);
+  await page.locator('#lectureFilter').selectOption(lectureId);
+  await expect(page.locator('.image-card[data-original-figure-id="'+sourceId+'"] .source-figure-full img')).toBeVisible();
+  await expect(page.locator('#originalFigureStatus')).toContainText('1/14 verified');
 });
 
 test('original-photo importer is collapsed while reading, opens with keyboard, and keeps the status visible', async ({page}) => {
