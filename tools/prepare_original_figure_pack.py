@@ -19,6 +19,8 @@ import re
 import tempfile
 import zipfile
 
+from check_original_figure_pack import audit_zip
+
 ROOT = Path(__file__).resolve().parents[1]
 MAX_JPEG = 5 * 1024 * 1024
 MAX_ARCHIVE = 32 * 1024 * 1024
@@ -212,12 +214,23 @@ def main() -> None:
             ))
         if staging.stat().st_size > MAX_ARCHIVE:
             fail("ZIP exceeds browser's 32 MB limit; prepare a smaller reviewed crop package")
+        # Verify against the intended reviewed hashes BEFORE touching the
+        # canonical lecture or publishing the private output file.
+        reviewed = dict(lecture)
+        reviewed["imageQuestions"] = [dict(item) for item in lecture["imageQuestions"]]
+        reviewed_ids = {item["id"]: item for item in reviewed["imageQuestions"]}
+        for item in manifest["items"]:
+            question = reviewed_ids[item["id"]]
+            question["imageSha256"] = item["sha256"]
+            question["imageBytes"] = item["imageBytes"]
+        try:
+            checked, _ = audit_zip(reviewed, staging)
+        except ValueError as error:
+            fail(f"private ZIP verification failed before writing: {error}")
+        if checked != len(photos):
+            fail("private ZIP was incomplete; no source image data was written")
         if args.write_reviewed_hashes:
-            for item in manifest["items"]:
-                question = by_id[item["id"]]
-                question["imageSha256"] = item["sha256"]
-                question["imageBytes"] = item["imageBytes"]
-            payload = json.dumps(lecture, ensure_ascii=False, indent=2) + "\n"
+            payload = json.dumps(reviewed, ensure_ascii=False, indent=2) + "\n"
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", dir=lecture_path.parent,
                 suffix=".json-tmp", delete=False,
