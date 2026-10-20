@@ -84,8 +84,28 @@ def validate_image_sources(lecture: dict) -> None:
         sources.append({"id": f"{lecture['id']}-infographic", "image": infographic["image"]})
     for image in sources:
         source = image.get("image")
+        fingerprint = image.get("imageSha256")
+        byte_count = image.get("imageBytes")
         if not isinstance(source, str) or not source.strip():
-            continue  # A lecture-page reference may be the whole visual cue.
+            if fingerprint is not None:
+                # Private original JPEGs are pinned by the printed PDF photo's
+                # exact fingerprint. Do not copy book scans into this public repo.
+                if not isinstance(fingerprint, str) or not re.fullmatch(r"[a-f0-9]{64}", fingerprint):
+                    fail(f"{image['id']}: invalid original PDF imageSha256")
+                page = image.get("page")
+                if (not isinstance(page, (str, int, float)) or isinstance(page, bool)
+                        or not str(page).strip()):
+                    fail(f"{image['id']}: original PDF image requires a printed source page")
+                if not isinstance(image.get("prompt"), str) or not image["prompt"].strip():
+                    fail(f"{image['id']}: original PDF image requires a source-linked prompt")
+                if byte_count is not None and (
+                    not isinstance(byte_count, int) or isinstance(byte_count, bool)
+                    or not 300 <= byte_count <= 5 * 1024 * 1024
+                ):
+                    fail(f"{image['id']}: invalid private original-image byte count")
+            elif byte_count is not None:
+                fail(f"{image['id']}: imageBytes requires an image source or original PDF SHA-256")
+            continue  # A source-page reference without photo is still a valid visual cue.
         if source.startswith("data:"):
             match = re.fullmatch(
                 r"data:image/(?:png|jpeg|webp|avif);base64,([A-Za-z0-9+/=\r\n]+)",
