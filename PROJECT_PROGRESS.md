@@ -1,5 +1,14 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Confirm deployment identity independently of Access-protected browser QA
+
+- ✅ [PR #43](https://github.com/Hafezalhoot/medical-meq-bank/pull/43) merged narrow-screen Course Library/My Review improvements and native bilingual study-guide direction after `validate`, `chromium-quality`, `webkit-quality` and Workers Builds all passed on exact PR head `77da57f235b3becd743a0b355ba5ac09a2d10c41`. Source release is now `2026.10.22.1`; merged `main` at `30c22bd619a63e02fe6f8ab38d219aa8b0bf60e5`.
+- ✅ Verified source-feature preservation via PR diff: no lecture JSON, clinical answers, source JPEGs, persistent progress schemas or offline cache key changes. Source release metadata, SW and PWA client are version-aligned.
+- 🔎 The new Cloudflare Workers Builds check uploaded version `abeae6ad-7084-4f5d-b855-4fac0586273e` for merged main, but Workers Builds **success is not proof of 100% live traffic**. The Access-protected production browser smoke still returned an auth redirect before inspecting UI.
+- 🧪 Added a **read-only** `wrangler deployments status --name medical-meq-bank` step ahead of the independent browser smoke; it uses the already scoped GitHub Actions Cloudflare deployment secrets if available and writes active traffic/version status to the job summary. It must not perform promotion, disable Access, emit token values, or turn a failing browser QA into a false success. Diagnostic failure is non-blocking so the actual login blocker remains visible.
+- ⏳ The separate diagnostic PR requires its complete protected CI before merging. After merge, live production smoke should show active Worker deployment identity even while [Access issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35) remains open pending Service Auth. Human responsive/browser checks and original-photo publishing rights remain separate gates.
+
+
 ### 2026-10-22 — Reader-first mobile and bilingual content iteration (2026.10.22.1 release candidate)
 
 - ✅ Previous reviewed app release `2026.10.21.6` was actually promoted by GitHub Actions [run #39680752224 (attempt 3)](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39680752224) to Cloudflare Worker version `1a70d27b-e2a1-499d-9b0e-91758210fdb0` at **100% traffic**. Publication issue #22 was closed; this does **not** certify live UI behind Cloudflare Access.
