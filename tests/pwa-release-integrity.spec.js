@@ -175,3 +175,42 @@ test('320/390px course and specialty selectors show their full names and Clear a
     expect(geometry.overflow).toBeLessThanOrEqual(1);
   }
 });
+
+
+test('tablet and desktop course/specialty names are never cropped by the native selectors', async ({page}) => {
+  for(const width of [768,1024,1280,1440]){
+    await page.setViewportSize({width,height:900});
+    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
+    await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+    await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+    const bounds=await page.evaluate(()=>{
+      const info=id=>{
+        const el=document.getElementById(id),style=getComputedStyle(el);
+        const ctx=document.createElement('canvas').getContext('2d');
+        ctx.font=style.font;
+        const rect=el.getBoundingClientRect();
+        return {
+          textWidth:ctx.measureText(el.selectedOptions[0].textContent).width,
+          availableWidth:el.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),
+          left:rect.left,right:rect.right,top:rect.top,bottom:rect.bottom
+        };
+      };
+      const resume=document.getElementById('resumeStudyBtn').getBoundingClientRect();
+      return {
+        course:info('courseSelector'),specialty:info('subjectSelector'),
+        resumeTop:resume.top,
+        overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
+      };
+    });
+    expect(bounds.course.textWidth).toBeLessThanOrEqual(bounds.course.availableWidth);
+    expect(bounds.specialty.textWidth).toBeLessThanOrEqual(bounds.specialty.availableWidth);
+    if(width<=980){
+      expect(bounds.specialty.top).toBeGreaterThan(bounds.course.bottom);
+      expect(bounds.resumeTop).toBeGreaterThan(bounds.specialty.bottom);
+    }else{
+      expect(bounds.specialty.left).toBeGreaterThanOrEqual(bounds.course.right);
+    }
+    expect(bounds.overflow).toBeLessThanOrEqual(1);
+  }
+});

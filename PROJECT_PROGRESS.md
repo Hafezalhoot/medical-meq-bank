@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — Tablet/desktop original course text and study-path layout (2026.10.21.4)
+
+- ✅ After the 320/390 mobile fixes, checked the *exact* `2026.10.21.3` main build at 320,390,768,1440 in local Chromium. Every size had no horizontal document overflow, 18px icons, 14 original hosted Dermatology images and 30 MCQs. Main Actions [#39660277049](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39660277049) passed all three CI jobs.
+- 🔎 Found another related omission: `Internal Medicine II` needed about 132px of select text space on tablet/desktop but had only 92px at 768px and 119px at 1440px. Fixing mobile alone did not address this. This was found by *measuring rendered control font widths*, not inferring from CSS.
+- ✅ At typical desktop widths (>=981px), allocated the course dropdown a slightly wider share of the Study Path two-column panel. At 701–980px tablet widths, use one orderly column for long course/specialty labels and the Start Studying button, reducing grid gaps to preserve initial lecture access.
+- ✅ Added Chromium/WebKit behavioral assertions at 768,1024,1280,1440px for both full native select labels and correct tablet control order. Source facts, media assets, answers, PWA offline data, progress keys and existing course IDs remain unchanged.
+- ⏳ Version `2026.10.21.4` is proposed for CI and Cloudflare auto-deploy after protected-main merge. Live Worker appearance is **not confirmed** without an external production screenshot/version check.
+
 ### 2026-10-21 — Mobile course labels and filter action visibility (2026.10.21.3)
 
 - ✅ Re-verified the built V3 release candidate locally in Chromium at **320, 390, 768, 1280 and 1440px**: all widths showed **0px horizontal overflow**, **18px navigation SVG icons**, coherent teal hero, and no JavaScript page errors. The locally rendered, self-contained HTML is not proof that Cloudflare promoted this release.
