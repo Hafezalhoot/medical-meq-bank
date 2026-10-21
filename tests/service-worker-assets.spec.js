@@ -75,11 +75,18 @@ test('saved Dermatology source study remains available offline without invented 
   await expect(page.locator('#lectureFilter option[value="'+id+'"]')).toHaveCount(1,{timeout:15000});
   await page.evaluate(async x=>globalThis.MEQOfflineCache.cacheLecture(x),id);
   await expect.poll(()=>page.evaluate(x=>globalThis.MEQOfflineCache.isLectureCached(x),id)).toBe(true);
-  const source=await page.evaluate(x=>lectures.find(item=>item.id===x),id);
+  const source=await page.evaluate(async()=>(
+    await (await fetch('/lectures/data/internal-medicine-ii-dermatology-introduction.json')).json()
+  ));
   expect(source.imageQuestions).toHaveLength(14);
-  expect(source.imageQuestions.every(q=>!q.image)).toBe(true);
+  expect(source.imageQuestions.every(q=>/^\.\/assets\/lectures\/dermatology-introduction\/derm-image-\d{3}\.jpg$/.test(q.image))).toBe(true);
   expect(Boolean(source.studyGuide.infographic)).toBe(false);
   await page.context().setOffline(true);
-  const ok=await page.evaluate(async()=>{const r=await fetch('/lectures/data/internal-medicine-ii-dermatology-introduction.json');return r.ok;});
-  expect(ok).toBe(true);
+  const found=await page.evaluate(async data=>{
+    const doc=await fetch('/lectures/data/internal-medicine-ii-dermatology-introduction.json');
+    if(!doc.ok)return false;
+    const responses=await Promise.all(data.imageQuestions.map(q=>fetch(q.image)));
+    return responses.length===14 && responses.every(x=>x.ok);
+  },source);
+  expect(found).toBe(true);
 });

@@ -5,7 +5,7 @@
   "subject": "Dermatology",
   "title": "Introduction to Dermatology",
   "subtitle": "Basic skin structure, function and morphology of primary and secondary lesions",
-  "sourceNote": "Lecture-first exam source: user-supplied Dermatology Department book 2022.pdf, Introduction to Dermatology, pp. 1-10 (printed teaching text ONLY; handwritten annotations and the embedded chat screenshot are personal notes, not exam facts). Explanations, examples and self-test marks are study aids, not additional university facts or official marks. Prepared as a draft for learner/lecturer verification; original source scan and clinical photographs are not published. Original-image policy: only figures cropped from the learner-supplied printed PDF may appear with Dermatology image-spot questions; no external or generated substitute image. Personal figures are imported and stored privately on the learner's device.",
+  "sourceNote": "Lecture-first exam source: user-supplied Dermatology Department book 2022.pdf, Introduction to Dermatology, pp. 1-10 (printed teaching text ONLY; handwritten annotations and the embedded chat screenshot are personal notes, not exam facts). Explanations, examples and self-test marks are study aids, not additional university facts or official marks. Prepared as a draft for learner/lecturer verification; original source PDF scan is not included; the 14 printed teaching figures are served as original JPEG crops. Original-image policy: only figures cropped from the learner-supplied printed PDF may appear with Dermatology image-spot questions; no external or generated substitute image. Original figure crops are part of the hosted lecture and cached with the lecture for offline use; lecture-first printed text remains the only exam authority.",
   "subtopics": [
     {
       "id": "clinical-links",
@@ -1349,7 +1349,9 @@
         "Epidermis.",
         "It rests on the basement membrane."
       ],
-      "imageSha256": "998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19"
+      "imageSha256": "998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-001.jpg",
+      "imageBytes": 60540
     },
     {
       "id": "derm-image-002",
@@ -1368,7 +1370,9 @@
       "answer": [
         "Hypodermis (subcutaneous tissue)."
       ],
-      "imageSha256": "998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19"
+      "imageSha256": "998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-002.jpg",
+      "imageBytes": 60540
     },
     {
       "id": "derm-image-003",
@@ -1387,7 +1391,9 @@
       "answer": [
         "Macule — flat, non-palpable area of discoloration under 1 cm."
       ],
-      "imageSha256": "7a39b761ba35056277ef9e7dae5b61c42458ecb605b4c67242e43cfce69dd416"
+      "imageSha256": "7a39b761ba35056277ef9e7dae5b61c42458ecb605b4c67242e43cfce69dd416",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-003.jpg",
+      "imageBytes": 75149
     },
     {
       "id": "derm-image-004",
@@ -1406,7 +1412,9 @@
       "answer": [
         "Patch — flat, non-palpable area of discoloration over 1 cm."
       ],
-      "imageSha256": "1b99cb590d8bea51ecf9cb0adcca39b45f88260e2ff1ee8e66338d1e960dc705"
+      "imageSha256": "1b99cb590d8bea51ecf9cb0adcca39b45f88260e2ff1ee8e66338d1e960dc705",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-004.jpg",
+      "imageBytes": 78690
     },
     {
       "id": "derm-image-005",
@@ -1425,7 +1433,9 @@
       "answer": [
         "Papule — solid palpable elevation under 1 cm."
       ],
-      "imageSha256": "719e39f5c6d36b3ad37025f630eb32c0bab09aa24c821fdceffca1c81b141170"
+      "imageSha256": "719e39f5c6d36b3ad37025f630eb32c0bab09aa24c821fdceffca1c81b141170",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-005.jpg",
+      "imageBytes": 36571
     },
     {
       "id": "derm-image-006",
@@ -1444,7 +1454,9 @@
       "answer": [
         "Plaque — solid palpable elevation over 1 cm."
       ],
-      "imageSha256": "d8833fe0fd52e871edb0ad3462a569114a466020c735b0c1b93db7504c3d798a"
+      "imageSha256": "d8833fe0fd52e871edb0ad3462a569114a466020c735b0c1b93db7504c3d798a",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-006.jpg",
+      "imageBytes": 47951
     },
     {
       "id": "derm-image-007",
@@ -1464,7 +1476,9 @@
         "Vesicle — clear fluid under 1 cm.",
         "Example: Herpes simplex."
       ],
-      "imageSha256": "a8220f517d651e6025fb05508a6b6b9a04bab372dbd7e95d5bb6978123c0a2aa"
+      "imageSha256": "a8220f517d651e6025fb05508a6b6b9a04bab372dbd7e95d5bb6978123c0a2aa",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-007.jpg",
+      "imageBytes": 54225
     },
     {
       "id": "derm-image-008",
@@ -1484,7 +1498,9 @@
         "Bulla — clear fluid over 1 cm.",
         "Example: Bullous impetigo."
       ],
-      "imageSha256": "8e6c3ca25519a026e8196dfde48d695afbf2b962617965d483d43e426c42ba26"
+      "imageSha256": "8e6c3ca25519a026e8196dfde48d695afbf2b962617965d483d43e426c42ba26",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-008.jpg",
+      "imageBytes": 68585
     },
     {
       "id": "derm-image-009",
@@ -1503,7 +1519,9 @@
       "answer": [
         "Pustule — a raised lesion under 1 cm containing purulent fluid."
       ],
-      "imageSha256": "ddbf61f80bf174f952e1599e9e7e119c0781fcd69a3b626ca12e042c581723be"
+      "imageSha256": "ddbf61f80bf174f952e1599e9e7e119c0781fcd69a3b626ca12e042c581723be",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-009.jpg",
+      "imageBytes": 68382
     },
     {
       "id": "derm-image-010",
@@ -1522,7 +1540,9 @@
       "answer": [
         "Wheal — transient edematous lesion seen in urticaria."
       ],
-      "imageSha256": "0aded058007aa4bb3768eb16e53e8d45a52a482e000128c6867a5086396feaae"
+      "imageSha256": "0aded058007aa4bb3768eb16e53e8d45a52a482e000128c6867a5086396feaae",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-010.jpg",
+      "imageBytes": 57237
     },
     {
       "id": "derm-image-011",
@@ -1541,7 +1561,9 @@
       "answer": [
         "Open comedo (blackhead)."
       ],
-      "imageSha256": "f86286d2907490c429d023a7d25d35b861cf91b49d9fe0549e386d1434eca2fb"
+      "imageSha256": "f86286d2907490c429d023a7d25d35b861cf91b49d9fe0549e386d1434eca2fb",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-011.jpg",
+      "imageBytes": 33049
     },
     {
       "id": "derm-image-012",
@@ -1560,7 +1582,9 @@
       "answer": [
         "Burrow, produced by the female Sarcoptes scabiei mite in scabies."
       ],
-      "imageSha256": "0009cc34c1dc28cb98197c017c6fc6fbd4445a8b1f981a92679cae6c5c457131"
+      "imageSha256": "0009cc34c1dc28cb98197c017c6fc6fbd4445a8b1f981a92679cae6c5c457131",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-012.jpg",
+      "imageBytes": 57073
     },
     {
       "id": "derm-image-013",
@@ -1579,7 +1603,9 @@
       "answer": [
         "Crust."
       ],
-      "imageSha256": "da6d296e5d781a716c20a733b4adac73e04f1ccfe664785ba143333a7001b7fa"
+      "imageSha256": "da6d296e5d781a716c20a733b4adac73e04f1ccfe664785ba143333a7001b7fa",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-013.jpg",
+      "imageBytes": 42399
     },
     {
       "id": "derm-image-014",
@@ -1598,7 +1624,9 @@
       "answer": [
         "Scale — keratin accumulation from increased proliferation or reduced desquamation."
       ],
-      "imageSha256": "447dca35f5be16ab5001ea99735c662e6270c818389378122c83108ab8c6a2ef"
+      "imageSha256": "447dca35f5be16ab5001ea99735c662e6270c818389378122c83108ab8c6a2ef",
+      "image": "./assets/lectures/dermatology-introduction/derm-image-014.jpg",
+      "imageBytes": 71470
     }
   ],
   "detailedShorts": [

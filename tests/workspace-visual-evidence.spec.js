@@ -62,12 +62,9 @@ test('capture Dermatology source-first reader, original figures and phone explan
   await page.locator('#lectureFilter').selectOption('internal-medicine-ii-dermatology-introduction');
   await expect(page.locator('.learning-companion')).toBeVisible();
   await attachScreenshot(page, testInfo, 'dermatology-desktop');
-  await expect(page.locator('#originalFigureTools')).not.toHaveAttribute('open','');
-  await attachScreenshot(page, testInfo, 'dermatology-compact-original-photo-tools');
-  await page.locator('#originalFigureTools summary').click();
-  await expect(page.locator('#originalFigureImportBtn')).toBeVisible();
-  await attachScreenshot(page, testInfo, 'dermatology-expanded-original-photo-import');
-  await page.locator('#originalFigureTools summary').click();
+  await expect(page.locator('#originalFigureTools')).toBeHidden();
+  await expect(page.locator('.image-card img')).toHaveCount(14);
+  await attachScreenshot(page, testInfo, 'dermatology-hosted-original-photos');
   await page.locator('.learning-companion summary').first().click();
   await attachScreenshot(page, testInfo, 'dermatology-explanation');
   await page.locator('.learning-companion summary').nth(2).click();
@@ -75,8 +72,9 @@ test('capture Dermatology source-first reader, original figures and phone explan
   await page.locator('.original-atlas-grid').scrollIntoViewIfNeeded();
   await attachScreenshot(page, testInfo, 'dermatology-original-source-gallery');
   await page.setViewportSize({width:390,height:844});
-  await page.locator('#originalFigureTools').scrollIntoViewIfNeeded();
-  await attachScreenshot(page, testInfo, 'dermatology-phone-original-source-import');
+  await expect(page.locator('.original-atlas-item img')).toHaveCount(14);
+  await page.locator('.original-atlas-grid').scrollIntoViewIfNeeded();
+  await attachScreenshot(page, testInfo, 'dermatology-phone-original-photo-gallery');
   await page.locator('.study-guide-explanation').first().scrollIntoViewIfNeeded();
   await attachScreenshot(page, testInfo, 'dermatology-phone');
 });

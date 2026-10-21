@@ -25,6 +25,16 @@ async function openDermatology(page) {
   await expect(page.locator('#dataAlert')).toBeHidden();
 }
 
+
+async function usePrivateOriginalPhotoFixture(page, index=2) {
+  await page.evaluate(({id,index})=>{
+    const lecture=lectures.find(item=>item.id===id);
+    if(!lecture)throw new Error('Source lecture did not load');
+    delete lecture.imageQuestions[index].image;
+    render();
+  },{id:lectureId,index});
+}
+
 test('Internal Medicine II / Dermatology loads the complete 10-page source-based lecture', async ({page}) => {
   await openDermatology(page);
   const info=await page.evaluate(id=>{
@@ -53,24 +63,35 @@ test('Internal Medicine II / Dermatology loads the complete 10-page source-based
   await expect(firstMCQ.locator('.study-guide-answer')).toContainText('Your answer is correct.');
 });
 
-test('Dermatology uses only source figures and never substituted clinical graphics', async ({page}) => {
+test('Dermatology shows all 14 original PDF JPEG photos automatically without manual import', async ({page}) => {
   await openDermatology(page);
-  await expect(page.locator('#lecture-'+lectureId+' .image-card')).toHaveCount(14);
-  await expect(page.locator('#lecture-'+lectureId+' .image-card[data-original-figure-id]')).toHaveCount(14);
-  await expect(page.locator('#originalFigureTools')).toBeVisible();
+  const cards=page.locator('#lecture-'+lectureId+' .image-card');
+  await expect(cards).toHaveCount(14);
+  await expect(cards.locator('img')).toHaveCount(14);
+  await expect(cards.locator('[data-original-figure-id]')).toHaveCount(0);
+  await expect(page.locator('#originalFigureTools')).toBeHidden();
   await expect(page.locator('.learning-companion .study-guide-part')).toHaveCount(3);
   await page.locator('.learning-companion summary').nth(2).click();
-  await expect(page.locator('.original-guide-link')).toBeVisible();
-  await expect(page.locator('.study-guide-figure img')).toHaveCount(0);
-  const status=await page.evaluate(id=>{
+  const atlas=page.locator('.original-atlas-grid');
+  await expect(atlas.locator('.original-atlas-item')).toHaveCount(14);
+  await expect(atlas.locator('.original-atlas-item img')).toHaveCount(14);
+  await expect(atlas.locator('.original-atlas-missing')).toHaveCount(0);
+  const info=await page.evaluate(async id=>{
     const l=lectures.find(item=>item.id===id);
-    return {images:l.imageQuestions.map(q=>q.image??null),hashes:l.imageQuestions.map(q=>q.imageSha256),pages:l.imageQuestions.map(q=>q.page),infographic:Boolean(l.studyGuide.infographic)};
+    const paths=l.imageQuestions.map(q=>q.image);
+    const resources=await Promise.all(paths.map(async src=>{
+      const r=await fetch(src);
+      return {ok:r.ok,type:r.headers.get('content-type'),size:(await r.arrayBuffer()).byteLength};
+    }));
+    return {paths,resources,hashes:l.imageQuestions.map(q=>q.imageSha256),
+      pages:l.imageQuestions.map(q=>q.page),infographic:Boolean(l.studyGuide.infographic)};
   },lectureId);
-  expect(status.images.every(img=>img===null)).toBe(true);
-  expect(status.hashes).toHaveLength(14);
-  expect(status.hashes.every(hash=>/^[a-f0-9]{64}$/.test(hash))).toBe(true);
-  expect(status.pages.every(page=>/PDF p/.test(page))).toBe(true);
-  expect(status.infographic).toBe(false);
+  expect(info.paths).toHaveLength(14);
+  expect(info.paths.every(x=>/^\.\/assets\/lectures\/dermatology-introduction\/derm-image-\d{3}\.jpg$/.test(x))).toBe(true);
+  expect(info.resources.every(x=>x.ok&&/image\/jpeg/.test(x.type||'')&&x.size>300)).toBe(true);
+  expect(info.hashes.every(hash=>/^[a-f0-9]{64}$/.test(hash))).toBe(true);
+  expect(info.pages.every(page=>/PDF p/.test(page))).toBe(true);
+  expect(info.infographic).toBe(false);
 });
 
 test('Dermatology progress remains isolated from the original Surgery course', async ({page}) => {
@@ -94,25 +115,28 @@ test('Dermatology progress remains isolated from the original Surgery course', a
 
 
 
-test('source-only gallery has 14 printed-PDF slots and explains authenticity', async ({page}) => {
+test('original printed-photo gallery renders directly on narrow mobile screens', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   await openDermatology(page);
-  await expect(page.locator('#originalFigureTools')).toBeVisible();
-  await expect(page.locator('#originalFigureImportBtn')).toContainText('ZIP');
+  await expect(page.locator('#originalFigureTools')).toBeHidden();
   await page.locator('.learning-companion summary').nth(2).click();
   const gallery=page.locator('.original-atlas-grid');
   await expect(gallery).toBeVisible();
   await expect(gallery.locator('.original-atlas-item')).toHaveCount(14);
-  await expect(gallery.locator('.original-atlas-missing')).toHaveCount(14);
-  await expect(page.locator('.image-card[data-original-figure-id]')).toHaveCount(14);
-  await expect(page.locator('.study-guide-figure img')).toHaveCount(0);
-  const size=await page.evaluate(()=>document.documentElement.scrollWidth);
-  expect(size).toBeLessThanOrEqual(392);
+  await expect(gallery.locator('.original-atlas-item img')).toHaveCount(14);
+  await expect(gallery.locator('.original-atlas-missing')).toHaveCount(0);
+  const first=gallery.locator('img').first();
+  await first.scrollIntoViewIfNeeded();
+  await expect.poll(()=>first.evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+  const width=await page.evaluate(()=>document.documentElement.scrollWidth);
+  expect(width).toBeLessThanOrEqual(392);
 });
 
 test('rejects renamed non-source images and never incorrectly calls them original', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   await openDermatology(page);
+  // Simulate a NEW source-only lecture slot; published Dermatology remains hosted.
+  await usePrivateOriginalPhotoFixture(page);
   const figure=page.locator('.image-card[data-original-figure-id="derm-image-003"]');
   await expect(figure.locator('.original-source-placeholder')).toHaveCount(1);
   await page.locator('#originalFigureFiles').setInputFiles({
@@ -122,12 +146,14 @@ test('rejects renamed non-source images and never incorrectly calls them origina
   await expect(figure.locator('.source-figure-full img')).toHaveCount(0);
   await page.reload();
   await openDermatology(page);
-  await expect(page.locator('.image-card[data-original-figure-id="derm-image-003"] .original-source-placeholder')).toHaveCount(1);
-  await expect(page.locator('#originalFigureStatus')).toContainText('0/14 verified');
+  // The baseline published image is unaffected by attempted forged imports.
+  await expect(page.locator('.image-card img')).toHaveCount(14);
+  await expect(page.locator('#originalFigureTools')).toBeHidden();
 });
 
 test('unpacks ZIP locally but rejects substituted photo bytes by SHA-256', async ({page}) => {
   await openDermatology(page);
+  await usePrivateOriginalPhotoFixture(page);
   const filename=Buffer.from('original-figures/derm-image-003.jpg');
   // A fake JPEG envelope is used to exercise ZIP decompression. Its checksum
   // must NOT match the genuine book photograph; copyrighted photos are not in CI.
@@ -176,9 +202,9 @@ test('source-only lecture renders its image atlas without optional study guide',
   await expect(page.locator('.learning-companion .study-guide-part')).toHaveCount(1);
   await page.locator('.learning-companion summary').click();
   await expect(page.locator('.original-atlas-item')).toHaveCount(14);
-  await expect(page.locator('#originalFigureTools')).toBeVisible();
-  await expect(page.locator('.image-card[data-original-figure-id]')).toHaveCount(14);
-  await expect(page.locator('.image-section .section-head p')).toContainText('Printed original figures');
+  await expect(page.locator('#originalFigureTools')).toBeHidden();
+  await expect(page.locator('.image-card img')).toHaveCount(14);
+  await expect(page.locator('.image-section .section-head p')).toContainText('Original photographs');
 });
 
 test('source-figure reader accepts a new ID and fingerprint supplied as lecture metadata, without hardcoded Dermatology IDs', async ({page}) => {
@@ -196,6 +222,7 @@ test('source-figure reader accepts a new ID and fingerprint supplied as lecture 
     const lecture=lectures.find(item=>item.id===id);
     const original=lecture.imageQuestions[2];
     original.id='cross-course-original-source-fixture';
+    delete original.image; // Future lecture awaiting public-reuse permission.
     original.imageSha256=hash;
     render();
     return {base64:btoa(String.fromCharCode(...bytes)),hash};
@@ -209,7 +236,7 @@ test('source-figure reader accepts a new ID and fingerprint supplied as lecture 
   });
   await expect(card.locator('.source-figure-full img')).toBeVisible();
   await expect(card).toHaveAttribute('data-visual-source','original-pdf');
-  await expect(page.locator('#originalFigureStatus')).toContainText('1/14 verified');
+  await expect(page.locator('#originalFigureStatus')).toContainText('1/1 verified');
 
   // Switching medical courses must reclaim temporary Blob URLs but retain
   // the verified original photo in durable IndexedDB for the next visit.
@@ -220,16 +247,17 @@ test('source-figure reader accepts a new ID and fingerprint supplied as lecture 
   await expect(page.locator('#lectureFilter option[value="'+lectureId+'"]')).toHaveCount(1);
   await page.locator('#lectureFilter').selectOption(lectureId);
   await expect(page.locator('.image-card[data-original-figure-id="'+sourceId+'"] .source-figure-full img')).toBeVisible();
-  await expect(page.locator('#originalFigureStatus')).toContainText('1/14 verified');
+  await expect(page.locator('#originalFigureStatus')).toContainText('1/1 verified');
 });
 
 test('original-photo importer is collapsed while reading, opens with keyboard, and keeps the status visible', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   await openDermatology(page);
+  await usePrivateOriginalPhotoFixture(page);
   const original=page.locator('#originalFigureTools');
   await expect(original).toBeVisible();
   await expect(original).not.toHaveAttribute('open','');
-  await expect(original.locator('#originalFigureStatus')).toContainText('0/14 verified');
+  await expect(original.locator('#originalFigureStatus')).toContainText('0/1 verified');
   await expect(page.locator('#originalFigureImportBtn')).toBeHidden();
   const summary=original.locator('summary');
   await summary.focus();

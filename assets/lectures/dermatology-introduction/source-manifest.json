@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "lectureId": "internal-medicine-ii-dermatology-introduction",
+  "sourceDocument": "Dermatology Department book 2022.pdf",
+  "sourceDocumentSha256": "273f991bd41337bd2ed964fea67096693db32ac162ea857002d250cc4f6d081a",
+  "figures": [
+    {
+      "questionId": "derm-image-001",
+      "sourcePage": 2,
+      "path": "assets/lectures/dermatology-introduction/derm-image-001.jpg",
+      "sha256": "998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19",
+      "bytes": 60540
+    },
+    {
+      "questionId": "derm-image-002",
+      "sourcePage": 2,
+      "path": "assets/lectures/dermatology-introduction/derm-image-002.jpg",
+      "sha256": "998b8f978394a715e6c9c157411081cce88f19fff693fd31a85da6948b826d19",
+      "bytes": 60540
+    },
+    {
+      "questionId": "derm-image-003",
+      "sourcePage": 4,
+      "path": "assets/lectures/dermatology-introduction/derm-image-003.jpg",
+      "sha256": "7a39b761ba35056277ef9e7dae5b61c42458ecb605b4c67242e43cfce69dd416",
+      "bytes": 75149
+    },
+    {
+      "questionId": "derm-image-004",
+      "sourcePage": 4,
+      "path": "assets/lectures/dermatology-introduction/derm-image-004.jpg",
+      "sha256": "1b99cb590d8bea51ecf9cb0adcca39b45f88260e2ff1ee8e66338d1e960dc705",
+      "bytes": 78690
+    },
+    {
+      "questionId": "derm-image-005",
+      "sourcePage": 5,
+      "path": "assets/lectures/dermatology-introduction/derm-image-005.jpg",
+      "sha256": "719e39f5c6d36b3ad37025f630eb32c0bab09aa24c821fdceffca1c81b141170",
+      "bytes": 36571
+    },
+    {
+      "questionId": "derm-image-006",
+      "sourcePage": 5,
+      "path": "assets/lectures/dermatology-introduction/derm-image-006.jpg",
+      "sha256": "d8833fe0fd52e871edb0ad3462a569114a466020c735b0c1b93db7504c3d798a",
+      "bytes": 47951
+    },
+    {
+      "questionId": "derm-image-007",
+      "sourcePage": 6,
+      "path": "assets/lectures/dermatology-introduction/derm-image-007.jpg",
+      "sha256": "a8220f517d651e6025fb05508a6b6b9a04bab372dbd7e95d5bb6978123c0a2aa",
+      "bytes": 54225
+    },
+    {
+      "questionId": "derm-image-008",
+      "sourcePage": 6,
+      "path": "assets/lectures/dermatology-introduction/derm-image-008.jpg",
+      "sha256": "8e6c3ca25519a026e8196dfde48d695afbf2b962617965d483d43e426c42ba26",
+      "bytes": 68585
+    },
+    {
+      "questionId": "derm-image-009",
+      "sourcePage": 7,
+      "path": "assets/lectures/dermatology-introduction/derm-image-009.jpg",
+      "sha256": "ddbf61f80bf174f952e1599e9e7e119c0781fcd69a3b626ca12e042c581723be",
+      "bytes": 68382
+    },
+    {
+      "questionId": "derm-image-010",
+      "sourcePage": 7,
+      "path": "assets/lectures/dermatology-introduction/derm-image-010.jpg",
+      "sha256": "0aded058007aa4bb3768eb16e53e8d45a52a482e000128c6867a5086396feaae",
+      "bytes": 57237
+    },
+    {
+      "questionId": "derm-image-011",
+      "sourcePage": 7,
+      "path": "assets/lectures/dermatology-introduction/derm-image-011.jpg",
+      "sha256": "f86286d2907490c429d023a7d25d35b861cf91b49d9fe0549e386d1434eca2fb",
+      "bytes": 33049
+    },
+    {
+      "questionId": "derm-image-012",
+      "sourcePage": 8,
+      "path": "assets/lectures/dermatology-introduction/derm-image-012.jpg",
+      "sha256": "0009cc34c1dc28cb98197c017c6fc6fbd4445a8b1f981a92679cae6c5c457131",
+      "bytes": 57073
+    },
+    {
+      "questionId": "derm-image-013",
+      "sourcePage": 8,
+      "path": "assets/lectures/dermatology-introduction/derm-image-013.jpg",
+      "sha256": "da6d296e5d781a716c20a733b4adac73e04f1ccfe664785ba143333a7001b7fa",
+      "bytes": 42399
+    },
+    {
+      "questionId": "derm-image-014",
+      "sourcePage": 9,
+      "path": "assets/lectures/dermatology-introduction/derm-image-014.jpg",
+      "sha256": "447dca35f5be16ab5001ea99735c662e6270c818389378122c83108ab8c6a2ef",
+      "bytes": 71470
+    }
+  ],
+  "note": "Each JPEG is an exact crop from the uploaded printed PDF page background (not from handwritten overlays). Images are hosted directly by user request; do not replace with AI or external medical images."
+}

@@ -134,10 +134,14 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
   await expect(mcq.locator('.study-guide-answer')).toContainText('Your answer is correct');
 
   await openStudyPart(guide.locator('.study-guide-part').nth(2));
-  await expect(guide.locator('.original-guide-copy')).toContainText('original images');
+  await expect(guide.locator('.original-guide-copy')).toContainText('original printed lecture photographs');
   await expect(guide.locator('.original-atlas-item')).toHaveCount(14);
-  await expect(page.locator('#originalFigureImportBtn')).toContainText('ZIP');
-  await expect(page.locator('#originalFigureTools')).toBeVisible();
+  const figures=guide.locator('.original-atlas-item img');
+  await expect(figures).toHaveCount(14);
+  await expect(page.locator('#originalFigureTools')).toBeHidden();
+  const first=figures.first();
+  await first.scrollIntoViewIfNeeded();
+  await expect.poll(()=>first.evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
   await expect(guide.locator('.study-guide-figure img')).toHaveCount(0);
 
   if (testInfo.project.name === 'webkit-mobile') {

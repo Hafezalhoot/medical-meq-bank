@@ -158,15 +158,22 @@ function actions(lid,type,id,label){return `<div class="actions"><button class="
 function caseCard(l,c,i){const a=document.createElement('article');a.className='case study-item';a.id=l.id+'-case-'+c.id;a.dataset.type='case';a.dataset.lecture=l.id;a.dataset.topic=c.topic;a.dataset.priority=c.priority;a.dataset.search=(l.title+' '+c.title+' '+c.scenario+' '+c.questions.join(' ')+' '+c.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(c.title)}</h3><div class="meta"><span class="pill ${c.priority==='High'?'high':'core'}">${c.priority} priority</span><span class="pill">${esc(c.topic)}</span><span class="pill marks">${c.marks} marks</span></div></div></div><div class="case-body"><div class="scenario"><b>Scenario:</b> ${esc(c.scenario)}<div class="arabic">${esc(c.ar)}</div></div><ol class="q-list">${c.questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-grid"><div class="answer-card"><h4>Model answer</h4><ul>${c.answer.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="answer-card marking"><h4>Suggested marking scheme</h4><ul>${c.marking.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div><div class="exam-trap"><b>Exam trap:</b> ${esc(c.trap)}</div><div class="memory">Memory trigger: ${esc(c.memory)}</div></div></div>${actions(l.id,'case',c.id,'Show model answer')}`;return setSubtopicData(a,c)}
 function shortCard(l,q,i,type,label){const a=document.createElement('article');a.className='short-card study-item';a.id=l.id+'-'+type+'-'+q.id;a.dataset.type=type;a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.search=(l.title+' '+q.q+' '+(Array.isArray(q.a)?q.a.join(' '):q.a)).toLowerCase();a.innerHTML=`<div class="short-top"><div class="short-num">${label} ${i+1}</div><div class="short-q">${esc(q.q)}</div><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} mark${q.marks>1?'s':''}</span></div><div class="short-answer"><b>Model answer:</b>${answerHtml(q.a)}</div></div>${actions(l.id,type,q.id,'Show answer')}`;return setSubtopicData(a,q)}
 function imageSource(item){return typeof item?.image==='string'?item.image.trim():''}
+function isOriginalSourceFigure(item){
+  const source=imageSource(item);
+  // Only local, source-hashed printed PDF JPEGs and reviewed private-photo slots.
+  // Historical embedded AVIF teaching images stay in their existing workflow.
+  return typeof item?.imageSha256==='string' && /^[a-f0-9]{64}$/.test(item.imageSha256) &&
+    (!source || /^\.\/assets\/lectures\/[a-z0-9_-]+\/[a-z0-9_-]+\.jpe?g$/i.test(source));
+}
 function imagePage(item){const value=item?.page;return value===0?'0':(value==null?'':String(value).trim())}
 function hasImageVisual(item){return Boolean(imageSource(item)||imagePage(item))}
 function imagePlaceholderHtml(q){const page=imagePage(q);const reference=page?`Lecture page ${page}`:'Lecture source';return `<div class="visual-placeholder" role="img" aria-label="${esc(q.title)} figure reference"><span class="visual-placeholder-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m5 17 4.5-4.5 3 3 2-2L19 18"></path></svg></span><strong>${esc(q.title)}</strong><span>${esc(reference)} is referenced for this spot question; the figure is not embedded in the bank.</span></div>`}
 function imageVisualHtml(q){
-  if(!q.image&&typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
+  if(isOriginalSourceFigure(q)&&!imageSource(q))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
   const source=imageSource(q);
   return source?`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`:imagePlaceholderHtml(q);
 }
-function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';if(!q.image&&q.imageSha256){a.dataset.originalFigureId=q.id;a.dataset.originalFigureSha256=q.imageSha256;}a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
+function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?(isOriginalSourceFigure(q)?'original-pdf':'embedded'):'lecture-reference';if(isOriginalSourceFigure(q)&&!source){a.dataset.originalFigureId=q.id;a.dataset.originalFigureSha256=q.imageSha256;}a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
 
 function populateSubjectSelector(){const s=$('subjectSelector');s.innerHTML=subjects.map(x=>`<option value="${x.id}">${esc(x.label)}</option>`).join('');if(!subjects.some(x=>x.id===activeSubject))activeSubject='urology';s.value=activeSubject}
 function populateLectureFilter(){
@@ -280,7 +287,7 @@ function createStudyGuide(lecture) {
   const guide=lecture.studyGuide||{};
   // A lecture with original clinical photos still deserves its source atlas
   // even if the reviewer has not supplied Explanation/MCQ companions yet.
-  const sourceOnlyImages=(lecture.imageQuestions||[]).some(q=>!q.image&&typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256));
+  const sourceOnlyImages=(lecture.imageQuestions||[]).some(isOriginalSourceFigure);
   if(!guide.explanation?.length&&!guide.mcqs?.length&&!guide.infographic&&!sourceOnlyImages)return null;
   const section=document.createElement('section');
   section.className='learning-companion';
@@ -406,11 +413,11 @@ function createStudyGuide(lecture) {
     details.append(figure);
     sourceLabel(details,guide.infographic.sourcePage);
   }
-  const sourceQuestions=(lecture.imageQuestions||[]).filter(item=>!item.image&&typeof item.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(item.imageSha256));
+  const sourceQuestions=(lecture.imageQuestions||[]).filter(isOriginalSourceFigure);
   if(sourceQuestions.length){
     const details=disclosure('Original lecture figures',sourceQuestions.length);
     const copy=document.createElement('p');copy.className='original-guide-copy';
-    copy.textContent='Study the original images from the printed lecture, not redrawn substitutes. Import the exact source photographs for this lecture on this device, then study its original image questions below.';
+    copy.textContent=sourceQuestions.every(item=>Boolean(imageSource(item)))?'These are the original printed lecture photographs, served directly from the lecture and available when the lecture is saved offline. No generated or external substitutes.':'These are original printed-source figures. Hosted images appear automatically; for private-only figures, import the exact matching source JPEGs on your device.';
     const jump=document.createElement('a');jump.className='original-guide-link';
     jump.href='#'+lecture.id+'-images';jump.textContent='Open original figure questions';
     const atlas=document.createElement('div');
@@ -419,14 +426,28 @@ function createStudyGuide(lecture) {
     sourceQuestions.forEach((item,index)=>{
       const entry=document.createElement('figure');
       entry.className='original-atlas-item';
-      entry.dataset.originalFigureId=item.id;
-      entry.dataset.originalFigureSha256=item.imageSha256;
       const media=document.createElement('div');
       media.className='original-atlas-frame';
-      const missing=document.createElement('div');
-      missing.className='original-atlas-missing';
-      missing.textContent='Original source photo not imported';
-      media.append(missing);
+      const hosted=imageSource(item);
+      if(hosted){
+        const link=document.createElement('a');
+        link.className='source-figure-full';link.href=hosted;
+        link.target='_blank';link.rel='noopener noreferrer';
+        link.setAttribute('aria-label','Open original printed source figure '+item.title+' at full size');
+        const picture=document.createElement('img');
+        picture.src=hosted;picture.alt='Original printed lecture photograph: '+item.title;
+        picture.loading='lazy';picture.decoding='async';
+        const caption=document.createElement('span');caption.className='source-figure-caption';
+        caption.textContent='Original PDF · '+(item.page||'Printed lecture')+' · open full size';
+        link.append(picture,caption);media.append(link);
+      }else{
+        entry.dataset.originalFigureId=item.id;
+        entry.dataset.originalFigureSha256=item.imageSha256;
+        const missing=document.createElement('div');
+        missing.className='original-atlas-missing';
+        missing.textContent='Original source photo not imported';
+        media.append(missing);
+      }
       const label=document.createElement('figcaption');
       const heading=document.createElement('strong');
       heading.textContent=String(index+1).padStart(2,'0')+' · '+item.title;
@@ -465,7 +486,7 @@ function render(){
   sec.innerHTML=`<header class="lecture-head"><div><div class="lecture-kicker">Lecture ${String(l.order).padStart(2,'0')} • ${esc(l.subject)}</div><h2 class="lecture-title">${esc(l.title)}</h2><div class="lecture-summary">${esc(l.subtitle)}</div><details class="source-boundary"><summary>Lecture source boundary</summary><div>${esc(l.sourceNote)}</div></details></div><div class="lecture-side"><div class="lecture-counts"><span class="count-pill">${l.cases.length} MEQ cases</span><span class="count-pill">${l.coreShorts.length} high-yield shorts</span><span class="count-pill">${l.imageQuestions.length} image questions</span><span class="count-pill">${l.detailedShorts.length} detailed practice</span></div><div class="quick-views"><button class="quick-view-btn" data-view="case" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="M4 10h16"></path><path d="M10 5v14"></path></svg></span><span>Cases</span></button><button class="quick-view-btn" data-view="core" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span><span>Short Questions</span></button><button class="quick-view-btn" data-view="image" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.2"></circle><path d="m5 17 5-5 3 3 2-2 4 4"></path></svg></span><span>Images</span></button><button class="offline-lecture-btn" type="button" data-lecture="${l.id}">Save lecture offline</button><button class="quick-reset" data-view="all" data-lecture="${l.id}">Show all content</button></div></div></header>
   <div class="content-section cases-section" data-section-type="case"><div class="section-head" id="${l.id}-cases"><div><h2>MEQ Cases</h2><p>Progressive scenarios, model answers, marking schemes and exam traps.</p></div><span class="section-badge">Start here for application</span></div><div class="study-grid cases-grid"></div></div>
   <div class="content-section core-section" data-section-type="core"><div class="section-head" id="${l.id}-core"><div><h2>High-Yield Short Questions</h2><p>The essential short notes, enumerations and comparisons.</p></div><span class="section-badge">Core exam list</span></div><div class="study-grid shorts core-grid"></div></div>
-  <div class="content-section image-section" data-section-type="image"><div class="section-head" id="${l.id}-images"><div><h2>Image & Spot Questions</h2><p>${l.imageQuestions.some(q=>!q.image&&typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256))?'Printed original figures only. Import verified source photos privately for offline study.':'Source-linked lecture figures and exam images.'}</p></div><span class="section-badge">Visual revision</span></div><div class="study-grid images image-grid"></div></div>
+  <div class="content-section image-section" data-section-type="image"><div class="section-head" id="${l.id}-images"><div><h2>Image & Spot Questions</h2><p>${l.imageQuestions.some(q=>isOriginalSourceFigure(q)&&Boolean(imageSource(q)))?'Original photographs from your printed lecture — view directly or save the lesson for offline study.':l.imageQuestions.some(q=>isOriginalSourceFigure(q)&&!imageSource(q))?'Printed original figures only. Import verified source photos privately for offline study.':'Source-linked lecture figures and exam images.'}</p></div><span class="section-badge">Visual revision</span></div><div class="study-grid images image-grid"></div></div>
   <div class="content-section extra-section" data-section-type="extra"><div class="section-head"><div><h2>Detailed Practice</h2><p>The original direct questions are preserved for deeper repetition.</p></div></div><details class="practice-details"><summary>Open detailed practice questions (${l.detailedShorts.length})</summary><div class="practice-body"><div class="study-grid shorts extra-grid"></div></div></details></div>
   <div class="content-section rapid-section" data-section-type="rapid"><div class="section-head" id="${l.id}-rapid"><div><h2>Rapid Recall</h2><p>Click each card to reveal the one-line answer.</p></div></div><section class="rapid"><div class="rapid-grid"></div></section></div>`;
   container.appendChild(sec);
@@ -474,7 +495,7 @@ function render(){
   if(studyGuide){
     sec.querySelector('.cases-section').before(studyGuide);
     const jump=document.createElement('button');jump.type='button';
-    jump.className='study-guide-jump';jump.textContent=l.id==='internal-medicine-ii-dermatology-introduction'?'Explanation / MCQ / Original Photos':'Explanation / MCQ / Infographic';
+    jump.className='study-guide-jump';jump.textContent=l.imageQuestions.some(isOriginalSourceFigure)?'Explanation / MCQ / Original Photos':'Explanation / MCQ / Infographic';
     jump.addEventListener('click',()=>{
       const first=studyGuide.querySelector('details');
       if(first)first.open=true;
