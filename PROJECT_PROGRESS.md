@@ -1,5 +1,14 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — Mobile course labels and filter action visibility (2026.10.21.3)
+
+- ✅ Re-verified the built V3 release candidate locally in Chromium at **320, 390, 768, 1280 and 1440px**: all widths showed **0px horizontal overflow**, **18px navigation SVG icons**, coherent teal hero, and no JavaScript page errors. The locally rendered, self-contained HTML is not proof that Cloudflare promoted this release.
+- ✅ Tested Dermatology reader in the same actual build: **14 original JPEG images, 30 MCQs**, selecting an answer and toggling dark mode without page errors.
+- ✅ Found a reproducible second-order mobile issue: on 390px, `Internal Medicine II` required ~127px of native select text width but had only 120px, cutting the course name; on 320px, both course and specialty need balanced width. Adjusted the native selector grid and typography by viewport without replacing the accessible controls.
+- ✅ Found that the initial lecture filter chip pushed `Clear all` partly outside the mobile scroll strip. Capped chip text width at narrow sizes while keeping horizontal scrolling available for multiple simultaneous filters.
+- ✅ Added browser checks for legible current course/specialty options and reachable Clear all at 320px and 390px, plus retained previous regression gates. App version and PWA cache cohort bumped to **2026.10.21.3**.
+- ⏳ Confirm latest PR and post-merge CI, plus physical Cloudflare live screenshot; do not claim the public site is visually fixed without that check.
+
 ### 2026-10-21 — P0 production CSS/JS mismatch: V3 hotfix and regression protection
 
 - 🚨 User screenshot of live `2026.10.21.1` showed blue old hero, oversized SVG controls, overlapping theme/selection buttons, exposed skip link and large empty gaps, despite all previous PR CI passing.

@@ -76,3 +76,12 @@
   }
   .toolbar.mobile-filters-expanded .mobile-filter-sheet-header{padding-top:18px}
 }
+
+
+/* Keep the sole lecture filter and Clear all visible together on tiny phones.
+   Additional active filters continue to scroll horizontally when necessary. */
+@media (max-width:700px){
+  .active-filter-chips .filter-chip-text{
+    max-width:min(220px,calc(100vw - 164px))
+  }
+}
