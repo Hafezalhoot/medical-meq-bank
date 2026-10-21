@@ -64,7 +64,7 @@ python3 tools/new_lecture.py --course internal-medicine --subject cardiology \
   --title "Heart Failure" --source "Heart-Failure-Lecture.pdf"
 ```
 
-This creates an **unpublished, intentionally empty** `tmp/lecture-drafts/cardiology-heart-failure.json`. It does not extract PDF facts or publish placeholder content. Populate the medically reviewed `subtopics`, `cases`, `coreShorts`, `imageQuestions`, `detailedShorts`, and `rapid` using the lecture PDF only.
+This creates an **unpublished, intentionally empty** `tmp/lecture-drafts/internal-medicine-cardiology-heart-failure.json`. New draft IDs include the course and specialty to avoid collisions when different courses teach similarly named lectures. An explicit `--id` still allows a reviewed custom stable identifier. This tool does not extract PDF facts or publish placeholder content. Populate the medically reviewed `subtopics`, `cases`, `coreShorts`, `imageQuestions`, `detailedShorts`, and `rapid` using the lecture PDF only.
 
 The five existing practice modes remain the **current production contract**. An optional **studyGuide** extension is now schema-validated in this authoring branch. Its browser renderer and tests are developed separately in V2 PR #23. A schema-only change does not make new modes live until both components are merged, quality-gated and promoted.
 

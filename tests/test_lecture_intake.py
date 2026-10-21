@@ -143,7 +143,7 @@ class LectureIntakeTests(unittest.TestCase):
         ]):
             with redirect_stdout(StringIO()):
                 generator.main()
-        path = self.root / "tmp" / "lecture-drafts" / "cardiology-cardiac-pharmacology.json"
+        path = self.root / "tmp" / "lecture-drafts" / "internal-medicine-cardiology-cardiac-pharmacology.json"
         self.assertTrue(path.is_file())
         content = json.loads(path.read_text())
         self.assertEqual(content["order"], 1)
@@ -156,6 +156,43 @@ class LectureIntakeTests(unittest.TestCase):
         ]):
             with self.assertRaisesRegex(SystemExit, "draft already exists"):
                 generator.main()
+
+
+    def test_default_draft_ids_are_unique_across_courses_with_the_same_subject(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "draft_generator_scoped_test_module", ROOT_SOURCE / "tools" / "new_lecture.py"
+        )
+        generator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(generator)
+        generator.ROOT, generator.LECTURES = self.root, self.root / "lectures"
+        generator.course_pack = intake.course_pack
+        generator.read_json = intake.read_json
+
+        # A shared specialty exists in more than one medical course.
+        surgery_pack = self.root / "courses" / "packs" / "surgery.json"
+        pack = json.loads(surgery_pack.read_text(encoding="utf-8"))
+        pack["subjects"].append({"id": "cardiology", "label": "Cardiology"})
+        save(surgery_pack, pack)
+
+        files = []
+        for course in ("internal-medicine", "surgery"):
+            with patch.object(sys, "argv", [
+                "new_lecture.py", "--course", course, "--subject", "cardiology",
+                "--title", "Shared Introduction", "--source", "Source.pdf",
+            ]):
+                with redirect_stdout(StringIO()):
+                    generator.main()
+            output = self.root / "tmp" / "lecture-drafts" / (
+                f"{course}-cardiology-shared-introduction.json"
+            )
+            self.assertTrue(output.is_file())
+            draft = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(draft["id"], f"{course}-cardiology-shared-introduction")
+            files.append(output)
+
+        self.assertNotEqual(files[0], files[1])
+        self.assertEqual(json.loads(self.catalog.read_text())["lectures"], [])
 
     def test_dry_run_does_not_change_sources(self):
         save(self.root / "draft.json", draft())

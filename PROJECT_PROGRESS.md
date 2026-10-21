@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — Collision-safe lecture draft authoring
+
+- 🧪 The lecture skeleton generator now includes **course + specialty + title** in its default globally unique lecture ID, rather than specialty/title alone. This avoids a confusing registration collision when the same specialty or lecture name appears in different medical courses.
+- ✅ Preserved explicit `--id` overrides, all already-published lecture IDs, their clinical content and the `--write --reviewed` publication gate. No existing lecture was renamed.
+- 🧪 Updated the stdlib authoring regression and added a two-course same-specialty fixture to verify unique drafts are created, without mutating the protected baseline/catalog. Updated CONTENT_AUTHORING.md example.
+- ⏳ Exact-head static/Chromium/WebKit quality gates required before protected merge. This is an authoring quality-of-life fix, **not** a claim that PDFs can be automatically published without source review.
+
+
 ### 2026-10-21 — V3 dark-mode design-token cleanup (2026.10.21.5 candidate)
 
 - ✅ Merged real-deployment smoke [PR #33](https://github.com/Hafezalhoot/medical-meq-bank/pull/33) after exact-head validate, Chromium, WebKit and Cloudflare preview checks passed; protected-main CI [#39667472916](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667472916) is green. The independent live Worker smoke is tracked separately in [#39667473228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667473228); do not infer production success merely from merge.
