@@ -142,6 +142,17 @@ def main() -> None:
         '<script id="course-pack-runtime" src="./course-packs.js"></script>',
         "course pack runtime",
     )
+    # The new HTML shell may be served by an older SW controlling a tab.
+    # Pin every CSS/JS URL to the same release so the old worker cannot serve
+    # outdated layouts or scripts from its cache to fresh HTML.
+    release = read_json(ROOT / "version.json").get("version")
+    if not isinstance(release, str) or not re.fullmatch(r"\d{4}\.\d{2}\.\d{2}\.\d+", release):
+        fail("cannot pin runtime assets: invalid release version")
+    refs = set(re.findall(r'(?:href|src)="(\./[^"?]+\.(?:css|js))"', index))
+    if len(refs) < 14:
+        fail("cannot version-pin all CSS and JavaScript release resources")
+    for src in refs:
+        index = index.replace(f'"{src}"', f'"{src}?v={release}"')
     index_path.write_text(index, encoding="utf-8")
 
     offline_path = DIST / "offline" / "Medical_MEQ_Review_Bank_Offline.html"
