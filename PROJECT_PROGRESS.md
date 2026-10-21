@@ -10,6 +10,15 @@
 - ⏳ Gate: full static/Chromium/WebKit and Cloudflare preview must pass on the exact PR head; only then consider a protected-main merge and check live deployment. Do not claim visual signoff for the new dark styling without screenshots/owner review.
 
 
+### 2026-10-21 — Live Worker health check exposed an unresolved HTML response
+
+- ✅ The independent post-merge live Cloudflare smoke [run #39667473228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667473228) executed from GitHub's network and **failed**: `/version.json` returned HTML rather than JSON on 18 consecutive attempts. Meanwhile [main CI #39667472916](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667472916) passed validate, Chromium, and WebKit. Thus source correctness and public release reachability are distinct.
+- ⚠️ The first smoke script did not capture whether the HTML was a Cloudflare Access login page, app-index fallback or other route; do not assert the exact root cause yet.
+- 🧪 Added a fail-fast HTML/redirect diagnostic that captures safe Content-Type/status/title/redirect path only (never full HTML content or credentials), while retaining deployment-propagation polling for genuine JSON version mismatch.
+- 🧪 Expanded DEPLOYMENT.md with an operator checklist distinguishing Access login from static asset fallback and an explicit prohibition on bypassing access policy just to pass CI.
+- ⏳ The hardened smoke must pass protected PR tests, merge and execute to classify the real response; Cloudflare Access and Worker version promotion are operational settings outside this GitHub repository. Do not call the production UI repaired until independent live verification succeeds.
+
+
 ### 2026-10-21 — Production verification guard (PR pending)
 
 - ✅ Confirmed protected `main` commit `95725f3ca40a56db838320980cc161df23da163b` passed all three existing validation jobs in [Actions #39661802301](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39661802301). PRs #30–#32 are merged.
