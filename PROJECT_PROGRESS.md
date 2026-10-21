@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — V3 dark-mode design-token cleanup (2026.10.21.5 candidate)
+
+- ✅ Merged real-deployment smoke [PR #33](https://github.com/Hafezalhoot/medical-meq-bank/pull/33) after exact-head validate, Chromium, WebKit and Cloudflare preview checks passed; protected-main CI [#39667472916](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667472916) is green. The independent live Worker smoke is tracked separately in [#39667473228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667473228); do not infer production success merely from merge.
+- 🔎 Inspected the layered V1/V2/V3 CSS cascade and found legacy blue/navy literal backgrounds still overriding V3 dark theme on shared toolbars, controls, question surfaces and course-library cards, despite V3 teal semantic variables already existing. Also found an obsolete initial blue `:root` palette shadowed by the later V3 palette.
+- 🧪 On the isolated dark-token branch, replaced obsolete hard-coded dark backgrounds/active colors with existing `--card`, `--surface-soft`, `--surface-subtle`, `--brand-soft`, `--brand`, `--line`, and `--text`; retained semantic success/warning colors and all functionality.
+- 🧪 Removed only unused early root palette declarations that the final V3 root completely overrides, retaining the original status tokens. No layout grid, content, medical image/answer, app progress or offline storage logic changed.
+- 🧪 Added Playwright CSSOM assertions at 390px and 1440px for dark V3 surface tokens, all three Course Library entries and zero overflow. Candidate release version `2026.10.21.5` synchronized in `version.json`, Service Worker, and PWA client.
+- ⏳ Gate: full static/Chromium/WebKit and Cloudflare preview must pass on the exact PR head; only then consider a protected-main merge and check live deployment. Do not claim visual signoff for the new dark styling without screenshots/owner review.
+
+
 ### 2026-10-21 — Production verification guard (PR pending)
 
 - ✅ Confirmed protected `main` commit `95725f3ca40a56db838320980cc161df23da163b` passed all three existing validation jobs in [Actions #39661802301](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39661802301). PRs #30–#32 are merged.
