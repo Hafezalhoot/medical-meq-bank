@@ -1,13 +1,22 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
-### 2026-10-21 — Print Center keyboard access and no-results recovery (2026.10.21.6 candidate)
+### 2026-10-22 — Reconciled published curriculum, current V3 design tokens and live release status
+
+- 🔎 Audited the canonical 10-lecture catalog across Surgery (9), Internal Medicine II / Dermatology (1) and the not-yet-populated Internal Medicine course. Found README omitted Dermatology and did not distinguish empty specialties from exam-ready lessons.
+- 🧪 Updated README course inventory to match source lecture counts and the Access-protected production endpoint; no clinical questions, photographs or IDs were rewritten.
+- 🔎 Inspected the final V3 source CSS light/dark tokens. The existing UI_DESIGN_SYSTEM.md still prescribed the obsolete blue V1/V2 colors and elevation, risking future design regressions.
+- 🧪 Aligned the documented V3 token palette, calm borders, accessible contrast rules and release status with the actual source. Corrected V3 status notes to acknowledge merged PRs #34, #38 and #39.
+- ⏳ Documentation-only [PR #40](https://github.com/Hafezalhoot/medical-meq-bank/pull/40) requires protected CI and review. Source/UI tests do not prove Cloudflare authenticated production deployment; issue #35 remains OPEN.
+
+
+### 2026-10-21 — Print Center keyboard access and no-results recovery (merged PR #39; source 2026.10.21.6)
 
 - ✅ Merged collision-safe lecture draft IDs in [PR #38](https://github.com/Hafezalhoot/medical-meq-bank/pull/38) after exact-head validate, Chromium, WebKit and Workers Builds checks passed. Protected-main commit: cc02c3125ab86352932b127ad7be3325c6a404e2.
 - 🔎 Audited Print Center launch paths: the sidebar button was found by scanning DOM button text or an inline window.print attribute, making the action fragile to copy changes and localization.
 - 🧪 Added a stable sidebar button ID, type=button and dialog semantics; Print Center binds by ID, and the quick-launch also announces dialog intent. If filters hide all questions, the disabled print action now explains how to recover.
 - 🧪 Added browser tests for Enter/Escape and focus restoration through the sidebar launch, plus a no-results state with zero printable questions.
-- 🧪 Candidate version 2026.10.21.6 synced across version.json, Service Worker and PWA client; medical content, image hashes, saved progress and offline user storage are untouched.
-- ⏳ Require exact-head static/Chromium/WebKit checks before merge; live release still requires authenticated Cloudflare Access verification (issue #35).
+- ✅ Source version 2026.10.21.6 synced across version.json, Service Worker and PWA client; medical content, image hashes, saved progress and offline user storage are untouched.
+- ✅ Exact-head static, Chromium, WebKit and Workers Builds checks passed in [run #39674914963](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39674914963), followed by protected merge [PR #39](https://github.com/Hafezalhoot/medical-meq-bank/pull/39) (commit 6aa0cdf7). Live release still requires authorized Cloudflare Access verification (issue #35).
 
 
 ### 2026-10-21 — Collision-safe lecture draft authoring
@@ -15,10 +24,10 @@
 - 🧪 The lecture skeleton generator now includes **course + specialty + title** in its default globally unique lecture ID, rather than specialty/title alone. This avoids a confusing registration collision when the same specialty or lecture name appears in different medical courses.
 - ✅ Preserved explicit `--id` overrides, all already-published lecture IDs, their clinical content and the `--write --reviewed` publication gate. No existing lecture was renamed.
 - 🧪 Updated the stdlib authoring regression and added a two-course same-specialty fixture to verify unique drafts are created, without mutating the protected baseline/catalog. Updated CONTENT_AUTHORING.md example.
-- ⏳ Exact-head static/Chromium/WebKit quality gates required before protected merge. This is an authoring quality-of-life fix, **not** a claim that PDFs can be automatically published without source review.
+- ✅ Exact-head static, Chromium and WebKit gates passed and the authoring fix merged via [PR #38](https://github.com/Hafezalhoot/medical-meq-bank/pull/38). It does **not** automatically publish PDFs or waive lecture-first medical review.
 
 
-### 2026-10-21 — V3 dark-mode design-token cleanup (2026.10.21.5 candidate)
+### 2026-10-21 — V3 dark-mode design-token cleanup (merged PR #34; source 2026.10.21.5)
 
 - ✅ Merged real-deployment smoke [PR #33](https://github.com/Hafezalhoot/medical-meq-bank/pull/33) after exact-head validate, Chromium, WebKit and Cloudflare preview checks passed; protected-main CI [#39667472916](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667472916) is green. The independent live Worker smoke is tracked separately in [#39667473228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667473228); do not infer production success merely from merge.
 - 🔎 Inspected the layered V1/V2/V3 CSS cascade and found legacy blue/navy literal backgrounds still overriding V3 dark theme on shared toolbars, controls, question surfaces and course-library cards, despite V3 teal semantic variables already existing. Also found an obsolete initial blue `:root` palette shadowed by the later V3 palette.
@@ -34,7 +43,7 @@
 - 🧪 Added optional `MEQ_CF_ACCESS_CLIENT_ID` and `MEQ_CF_ACCESS_CLIENT_SECRET` GitHub Actions secrets for the automated production smoke. The script refuses half-configured credentials and a production origin other than the pinned approved Worker. Service headers are attached to HTTP health probe and browser requests **only when origin matches**, never to redirected Access/login/third-party requests.
 - 🧪 Added Chromium-run Node regressions for incomplete token configuration and cross-origin credential refusal, plus deployment instructions for a dedicated Cloudflare **Service Auth** policy. No account secrets were created, exposed, committed, or requested in chat.
 - ⏳ The owner must create/authorize the Service Token in Cloudflare Zero Trust and save both values as GitHub repository Actions secrets. Do **not** disable Cloudflare Access to make a red smoke test green. Until configured and the test runs successfully, public Worker version/UI cannot be confirmed by automated CI.
-- ⏳ V3 dark UI token cleanup remains isolated in [PR #34](https://github.com/Hafezalhoot/medical-meq-bank/pull/34); do not combine authentication and visual changes into one unverified release.
+- ✅ V3 dark UI token cleanup merged via [PR #34](https://github.com/Hafezalhoot/medical-meq-bank/pull/34); authentication and visual changes remained separately reviewed. The live production release still needs independent authenticated verification.
 
 
 ### 2026-10-21 — Live Worker health check exposed an unresolved HTML response
