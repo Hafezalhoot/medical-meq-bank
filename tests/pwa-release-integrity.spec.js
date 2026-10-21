@@ -101,3 +101,41 @@ test('SW upgrade migrates students downloaded lessons but never obsolete app CSS
   expect(await persistent.match('https://study.example/assets/lectures/original/source.jpg')).toBeTruthy();
   expect(await persistent.match('https://study.example/app.css')).toBeFalsy();
 });
+
+
+test('reader-first responsive UI keeps the first lecture in reach across phone/tablet/desktop', async ({page}) => {
+  const targets=[
+    {width:320,height:700,maxLectureTop:830},
+    {width:390,height:844,maxLectureTop:765},
+    {width:768,height:1024,maxLectureTop:760},
+    {width:1280,height:800,maxLectureTop:750},
+    {width:1440,height:900,maxLectureTop:700}
+  ];
+  for(const device of targets){
+    await page.setViewportSize({width:device.width,height:device.height});
+    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
+    const geometry=await page.evaluate(()=>{
+      const title=document.querySelector('.lecture-head');
+      const icon=document.querySelector('.pwa-tools-toggle .ui-icon svg');
+      const shortcuts=document.querySelector('.study-launch-row');
+      return {
+        firstLectureTop:title?.getBoundingClientRect().top,
+        iconWidth:icon?.getBoundingClientRect().width,
+        overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+        shortcutColumns:getComputedStyle(shortcuts).gridTemplateColumns.split(' ').length
+      };
+    });
+    expect(geometry.firstLectureTop).toBeGreaterThanOrEqual(0);
+    expect(geometry.firstLectureTop).toBeLessThan(device.maxLectureTop);
+    expect(geometry.iconWidth).toBeLessThanOrEqual(24);
+    expect(geometry.overflow).toBeLessThanOrEqual(1);
+    if(device.width===390){
+      expect(geometry.shortcutColumns).toBe(2);
+      await page.locator('#courseLibraryDisclosure summary').click();
+      await expect(page.locator('.course-library-card')).toHaveCount(3);
+      const shortcut=await page.locator('.course-library').boundingBox();
+      expect(shortcut.width).toBeGreaterThan(350);
+    }
+  }
+});
