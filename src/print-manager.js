@@ -68,7 +68,7 @@
       </header>
       <div class="print-center-body">
         <div class="print-center-summary">
-          <div><strong id="printSelectionCount">0 printable items</strong><small>The active filters and review-status filter are respected.</small></div>
+          <div><strong id="printSelectionCount">0 printable items</strong><small id="printSelectionHint" role="status" aria-live="polite">The active filters and review-status filter are respected.</small></div>
           <div class="print-filter-chips" id="printFilterChips"></div>
         </div>
 
@@ -198,12 +198,9 @@
     </section>`;
   document.body.appendChild(overlay);
 
-  const originalPrintButton = [...document.querySelectorAll('button')].find(button =>
-    (button.getAttribute('onclick') || '').includes('window.print') || button.textContent.includes('Print / Save as PDF')
-  );
+  const originalPrintButton = document.getElementById('printCenterSidebarBtn');
   if (originalPrintButton) {
     originalPrintButton.removeAttribute('onclick');
-    originalPrintButton.id = 'printCenterSidebarBtn';
     originalPrintButton.classList.add('print-center-launch');
     originalPrintButton.innerHTML = `<span class="print-icon" aria-hidden="true">${icons.print}</span><span>Print / Save PDF</span>`;
   }
@@ -214,6 +211,7 @@
     quickPrintButton = document.createElement('button');
     quickPrintButton.id = 'printCenterQuickBtn';
     quickPrintButton.type = 'button';
+    quickPrintButton.setAttribute('aria-haspopup', 'dialog');
     quickPrintButton.className = 'nav-toggle print-center-launch';
     quickPrintButton.innerHTML = `<span class="print-icon" aria-hidden="true">${icons.print}</span><span>Print / PDF</span>`;
     navControls.appendChild(quickPrintButton);
@@ -340,6 +338,9 @@
     const perPage = settings.questionsPerPage === 'auto' ? 0 : Number.parseInt(settings.questionsPerPage, 10);
     const pageEstimate = perPage > 0 && items.length ? ` • about ${Math.ceil(items.length / perPage)} question page${Math.ceil(items.length / perPage) === 1 ? '' : 's'}` : '';
     $('printSelectionCount').textContent = `${items.length} printable item${items.length === 1 ? '' : 's'}${parts.length ? ` • ${parts.join(' • ')}` : ''}${pageEstimate}`;
+    $('printSelectionHint').textContent = items.length
+      ? 'The active filters and review-status filter are respected.'
+      : 'Select a lecture or clear the current filters to print questions.';
     $('printFilterChips').innerHTML = currentFilterLabels().map(label => `<span class="print-filter-chip">${escapeHtml(label)}</span>`).join('');
     $('printLargeWarning').classList.toggle('show', items.length > 80);
     createButton.disabled = items.length === 0;
