@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — Collision-safe lecture draft authoring
+
+- 🧪 The lecture skeleton generator now includes **course + specialty + title** in its default globally unique lecture ID, rather than specialty/title alone. This avoids a confusing registration collision when the same specialty or lecture name appears in different medical courses.
+- ✅ Preserved explicit `--id` overrides, all already-published lecture IDs, their clinical content and the `--write --reviewed` publication gate. No existing lecture was renamed.
+- 🧪 Updated the stdlib authoring regression and added a two-course same-specialty fixture to verify unique drafts are created, without mutating the protected baseline/catalog. Updated CONTENT_AUTHORING.md example.
+- ⏳ Exact-head static/Chromium/WebKit quality gates required before protected merge. This is an authoring quality-of-life fix, **not** a claim that PDFs can be automatically published without source review.
+
+
 ### 2026-10-21 — Confirmed Cloudflare Access blocker and safe service-authenticated QA
 
 - ✅ The updated post-main [live run #39669065228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39669065228) proved the **exact** cause: `/version.json` redirects with HTTP 302 to `hafztamr.cloudflareaccess.com/cdn-cgi/access/login/`. This is Cloudflare Access authentication, **not proof of missing JSON in dist**. Previous smoke failure is now source-classified and reported in [issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35).
