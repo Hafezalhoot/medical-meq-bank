@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#174ea6">
+<meta name="theme-color" content="#113942">
 <meta name="application-name" content="Medical MEQ Bank">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -24,17 +24,17 @@
     <div class="hero-copy">
       <div class="workspace-brandline">
         <div class="eyebrow">Your medical study workspace • Offline-ready • Progress saved</div>
-        <button class="theme-toggle" id="darkBtn" type="button" aria-label="Switch to dark mode"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"></path></svg></span><span class="button-label" data-theme-label>Dark mode</span></button>
+        <button class="theme-toggle" id="darkBtn" type="button" aria-label="Switch to dark mode"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"></path></svg></span><span class="button-label" data-theme-label>Dark mode</span></button>
       </div>
       <h1>Medical MEQ Review Bank</h1>
       <p>Your medical courses, clinical cases, image questions and rapid recall — in one place.</p>
       <div class="hero-tags" id="heroTags"></div>
       <div class="pwa-tools" aria-label="App and backup tools">
-        <button class="pwa-tools-toggle" id="pwaToolsToggle" type="button" aria-expanded="false" aria-controls="pwaToolsActions"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 5h14v14H5z"></path><path d="M9 10h6"></path><path d="M9 14h6"></path></svg></span> Study tools <span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+        <button class="pwa-tools-toggle" id="pwaToolsToggle" type="button" aria-expanded="false" aria-controls="pwaToolsActions"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M5 5h14v14H5z"></path><path d="M9 10h6"></path><path d="M9 14h6"></path></svg></span> Study tools <span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span></button>
         <div class="pwa-tools-actions" id="pwaToolsActions">
-        <button class="pwa-btn" id="installAppBtn" type="button" hidden><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Install App</span></button>
-        <button class="pwa-btn" id="exportProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Backup Progress</span></button>
-        <button class="pwa-btn" id="importProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 21V9"></path><path d="m7 14 5-5 5 5"></path><path d="M5 3h14"></path></svg></span><span class="button-label">Restore Progress</span></button>
+        <button class="pwa-btn" id="installAppBtn" type="button" hidden><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Install App</span></button>
+        <button class="pwa-btn" id="exportProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Backup Progress</span></button>
+        <button class="pwa-btn" id="importProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M12 21V9"></path><path d="m7 14 5-5 5 5"></path><path d="M5 3h14"></path></svg></span><span class="button-label">Restore Progress</span></button>
         <input id="importProgressFile" type="file" accept="application/json,.json" hidden>
         </div>
         <span class="connection-pill" id="connectionPill" role="status" aria-live="polite"><span class="connection-dot" aria-hidden="true"></span><span id="connectionText">Online</span></span>
@@ -55,11 +55,11 @@
   <details id="courseLibraryDisclosure">
     <summary class="course-library-toggle">
       <span class="course-library-symbol" aria-hidden="true">
-        <svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="4" width="8" height="7" rx="1.5"></rect><rect x="13" y="4" width="8" height="7" rx="1.5"></rect><rect x="3" y="13" width="8" height="7" rx="1.5"></rect><rect x="13" y="13" width="8" height="7" rx="1.5"></rect></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><rect x="3" y="4" width="8" height="7" rx="1.5"></rect><rect x="13" y="4" width="8" height="7" rx="1.5"></rect><rect x="3" y="13" width="8" height="7" rx="1.5"></rect><rect x="13" y="13" width="8" height="7" rx="1.5"></rect></svg>
       </span>
       <span class="course-library-heading"><strong>Explore your courses</strong><span>Switch between medical courses without losing your place or study progress.</span></span>
       <span id="courseLibraryCount" class="course-library-count">Courses</span>
-      <span class="course-library-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span>
+      <span class="course-library-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span>
     </summary>
     <div id="courseLibraryGrid" class="course-library-grid" aria-label="Available medical courses"></div>
   </details>
@@ -105,12 +105,12 @@
 <details class="study-insights" id="studyInsights">
   <summary class="insights-summary">
     <span class="insights-title">
-      <span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 19V8"></path><path d="M10 19V4"></path><path d="M16 19v-7"></path><path d="M22 19V10"></path></svg></span>
+      <span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M4 19V8"></path><path d="M10 19V4"></path><path d="M16 19v-7"></path><path d="M22 19V10"></path></svg></span>
       Study progress
     </span>
     <span class="insights-summary-value" id="insightsHeadline">0% overall practice</span>
     <span class="insights-summary-track" aria-hidden="true"><i id="insightsOverallFill"></i></span>
-    <span class="insights-detail-action"><span class="insights-view-text">View stats</span><span class="insights-hide-text">Hide stats</span><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span></span>
+    <span class="insights-detail-action"><span class="insights-view-text">View stats</span><span class="insights-hide-text">Hide stats</span><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span></span>
   </summary>
 <section class="stats" aria-labelledby="progressOverviewTitle">
   <h2 id="progressOverviewTitle" class="sr-only">Study progress overview</h2>
@@ -125,10 +125,10 @@
 </details>
 
 <div class="nav-controls" aria-label="Navigation panels">
-  <button class="nav-toggle active" id="toggleLectures" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M9 4v16"></path></svg></span><span>Lectures</span></button>
-  <button class="nav-toggle active" id="toggleSubtopics" type="button"><span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><circle cx="4" cy="6" r="1"></circle><circle cx="4" cy="12" r="1"></circle><circle cx="4" cy="18" r="1"></circle></svg></span><span>Topics</span></button>
+  <button class="nav-toggle active" id="toggleLectures" type="button"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M9 4v16"></path></svg></span><span>Lectures</span></button>
+  <button class="nav-toggle active" id="toggleSubtopics" type="button"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><circle cx="4" cy="6" r="1"></circle><circle cx="4" cy="12" r="1"></circle><circle cx="4" cy="18" r="1"></circle></svg></span><span>Topics</span></button>
   <button class="nav-toggle study-focus-toggle" id="focusModeBtn" type="button" aria-pressed="false" aria-controls="mainLayout">
-    <span class="ui-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8 3H4a1 1 0 0 0-1 1v4"></path><path d="M16 3h4a1 1 0 0 1 1 1v4"></path><path d="M3 16v4a1 1 0 0 0 1 1h4"></path><path d="M21 16v4a1 1 0 0 1-1 1h-4"></path><rect x="8" y="8" width="8" height="8" rx="1"></rect></svg></span>
+    <span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M8 3H4a1 1 0 0 0-1 1v4"></path><path d="M16 3h4a1 1 0 0 1 1 1v4"></path><path d="M3 16v4a1 1 0 0 0 1 1h4"></path><path d="M21 16v4a1 1 0 0 1-1 1h-4"></path><rect x="8" y="8" width="8" height="8" rx="1"></rect></svg></span>
     <span data-focus-label>Focus on questions</span>
   </button>
 </div>
