@@ -1,5 +1,14 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Dynamic build identity fixes safe publication retry
+
+- ✅ [Protected PR #41](https://github.com/Hafezalhoot/medical-meq-bank/pull/41) passed source/Chromium/WebKit/Workers Builds and merged to `main` as `a4932b17ea2ba379e16dcdc93fc2e13daa6ca53b`. The one-time GitHub production promotion workflow actually triggered in [run #39680011351](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39680011351).
+- ✅ Release guard blocked that run **before Wrangler deploy** because the latest successful Cloudflare Workers Builds check for reviewed source SHA `7a01299ffa9d0b2ca066903b02918feb8ec7761f` reported Worker ID `1a70d27b-e2a1-499d-9b0e-91758210fdb0`, not the earlier `693d6a6f-f459-4080-ba98-5a14b935946e`. Production traffic was **not** changed by this run.
+- 🧪 Updated `scripts/promotion_gate.mjs` to select the **latest successful Worker Version ID from the exact reviewed SHA at promotion time**. If a manual caller supplies an ID, the gate still enforces an exact match. It now writes the verified ID to the trusted GitHub Actions step output, and the deploy step uses only that output.
+- 🧪 Expanded the existing self-test to cover safe automatic selection as well as explicit-ID match, version mismatch, missing quality checks, and newer failed check runs. Updated the workflow, owner runbook and one-time protected retry trigger to exact PR #42 merge title.
+- ⏳ Protected PR CI and Cloudflare API credential availability are pending. Production is **not confirmed published** until Wrangler promotion succeeds and the independent Access-authenticated smoke passes.
+
+
 ### 2026-10-22 — Safe production promotion of an already approved Cloudflare version
 
 - ✅ Verified protected `main` commit `7a01299ffa9d0b2ca066903b02918feb8ec7761f` passed GitHub [validate/Chromium/WebKit run #39676081836](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39676081836).

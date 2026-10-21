@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {appendFileSync} from 'node:fs';
 
 const UUID = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/;
 const SHA = /^[a-f0-9]{40}$/;
@@ -12,8 +13,8 @@ function latestCheck(checkRuns, name) {
     )[0];
 }
 
-function validatePromotionChecks(checkRuns, workerVersion) {
-  assert(UUID.test(workerVersion), 'Worker version must be a lowercase UUID');
+function validatePromotionChecks(checkRuns, requestedVersion = '') {
+  assert(!requestedVersion || UUID.test(requestedVersion), 'Worker version must be a lowercase UUID');
   for (const name of REQUIRED) {
     const check = latestCheck(checkRuns, name);
     assert.equal(check?.conclusion, 'success', 'Missing or failing required check: ' + name);
@@ -21,8 +22,12 @@ function validatePromotionChecks(checkRuns, workerVersion) {
   const worker = latestCheck(checkRuns, 'Workers Builds: medical-meq-bank');
   assert.equal(worker?.conclusion, 'success', 'Cloudflare Workers Build must succeed');
   const buildVersion = worker.output?.summary?.match(/Version ID:\s*([0-9a-f-]{36})/i)?.[1]?.toLowerCase();
-  assert.equal(buildVersion, workerVersion,
-    'Worker version does not match the validated Cloudflare build for this commit');
+  assert(UUID.test(buildVersion || ''), 'Successful Cloudflare build did not report a valid Worker version ID');
+  if (requestedVersion) {
+    assert.equal(buildVersion, requestedVersion,
+      'Worker version does not match the latest validated Cloudflare build for this commit');
+  }
+  return buildVersion;
 }
 
 function selfTest() {
@@ -34,7 +39,8 @@ function selfTest() {
     started_at: '2026-10-21T20:01:00Z',
     output: {summary: 'Build ID: example\nVersion ID: ' + id}
   });
-  validatePromotionChecks(passes, id);
+  assert.equal(validatePromotionChecks(passes), id);
+  assert.equal(validatePromotionChecks(passes, id), id);
   assert.throws(() => validatePromotionChecks(passes, '11111111-2222-3333-4444-555555555555'));
   assert.throws(() => validatePromotionChecks(passes.filter(x => x.name !== 'webkit-quality'), id));
   assert.throws(() => validatePromotionChecks([
@@ -52,7 +58,7 @@ async function main() {
   assert.equal(repo, 'Hafezalhoot/medical-meq-bank', 'Refusing to promote an unknown repository');
   assert(SHA.test(sha), 'Expected a full 40-character Git SHA');
   assert(token, 'Missing checks:read GitHub token');
-  assert(UUID.test(version), 'Invalid Cloudflare Worker version identifier');
+  assert(!version || UUID.test(version), 'Invalid Cloudflare Worker version identifier');
   const url = 'https://api.github.com/repos/' + repo + '/commits/' + sha + '/check-runs?per_page=100';
   const response = await fetch(url, {
     headers: {
@@ -66,8 +72,11 @@ async function main() {
   assert(response.ok, 'Cannot read GitHub CI checks (' + response.status + ')');
   const body = await response.json();
   assert(body.total_count <= 100, 'Unexpected check-run pagination; review promotion gate before deploying');
-  validatePromotionChecks(body.check_runs || [], version);
-  console.log('Approved release: ' + sha + ' / Cloudflare Worker version ' + version);
+  const actualVersion = validatePromotionChecks(body.check_runs || [], version);
+  if (process.env.GITHUB_OUTPUT) {
+    appendFileSync(process.env.GITHUB_OUTPUT, 'worker_version_id=' + actualVersion + '\n');
+  }
+  console.log('Approved release: ' + sha + ' / latest validated Cloudflare Worker ' + actualVersion);
 }
 
 main().catch(error => {
