@@ -34,3 +34,46 @@ test('Cloudflare Access service tokens cannot be sent to a different host', () =
   expect(result.stderr).toContain('Cloudflare Access credentials are restricted to the approved production origin');
   expect(result.stderr).not.toContain(secret);
 });
+
+import {createServer} from 'node:http';
+import {once} from 'node:events';
+
+test('service-auth request never forwards its secret after a cross-origin redirect', async ({page}) => {
+  let receivedAtOrigin = '';
+  let receivedAtRedirect = '';
+  const listen = async server => {
+    server.listen(0, '127.0.0.1');
+    await once(server, 'listening');
+    return 'http://127.0.0.1:' + server.address().port + '/';
+  };
+  const destination = createServer((req, res) => {
+    receivedAtRedirect = req.headers['cf-access-client-secret'] || '';
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Redirect reached');
+  });
+  const destinationURL = await listen(destination);
+  const origin = createServer((req, res) => {
+    receivedAtOrigin = req.headers['cf-access-client-secret'] || '';
+    res.writeHead(302, {Location: destinationURL});
+    res.end();
+  });
+  const originURL = await listen(origin);
+  try {
+    await page.route(originURL + '**', async route => {
+      const response = await route.fetch({
+        headers: {...route.request().headers(), 'CF-Access-Client-Secret': 'dummy-secret'},
+        maxRedirects: 0
+      });
+      await route.fulfill({response});
+    });
+    await page.goto(originURL);
+    expect(receivedAtOrigin).toBe('dummy-secret');
+    expect(receivedAtRedirect).toBe('');
+    await expect(page.locator('body')).toContainText('Redirect reached');
+  } finally {
+    await Promise.all([
+      new Promise(resolve => origin.close(resolve)),
+      new Promise(resolve => destination.close(resolve))
+    ]);
+  }
+});
