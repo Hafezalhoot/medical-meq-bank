@@ -1,0 +1,49 @@
+name: Live Cloudflare Production Smoke
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '15 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-cloudflare-production-smoke
+  cancel-in-progress: true
+
+jobs:
+  production-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --user 1001
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked browser dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Verify actual published Cloudflare Worker
+        run: node scripts/production_smoke.mjs
+
+      - name: Upload live evidence and failure screenshots
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: cloudflare-production-smoke
+          path: production-smoke-evidence
+          if-no-files-found: warn
+          retention-days: 7
