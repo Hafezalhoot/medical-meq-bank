@@ -71,11 +71,16 @@ reported a **successfully uploaded** Worker Version ID
 `57145de7-0235-4daf-a687-1be75070aaa1`.
 **An uploaded Worker is not necessarily the version currently receiving traffic.**
 
-An independent, manually approved workflow is available at
+An independent release workflow is available at
 [Promote approved MEQ Worker](https://github.com/Hafezalhoot/medical-meq-bank/actions/workflows/promote-production.yml)
-once this workflow PR has merged. This promotes an **existing approved version**
-to 100% traffic via `wrangler versions deploy`, without rebuilding, uploading
-book photos again, clearing student progress, or weakening Cloudflare Access.
+once this workflow PR has merged. The exact protected-main merge titled
+**Promote approved MEQ Worker via protected CI (#41)** makes **one**
+owner-requested automatic attempt using the already-approved SHA and Worker
+Version ID; **future pushes do not auto-promote**. The same workflow also
+supports manual runs for an authorized retry or subsequent approved release.
+It promotes an **existing approved version** to 100% traffic via
+`wrangler versions deploy`, without rebuilding, uploading book photos again,
+clearing student progress, or weakening Cloudflare Access.
 
 **One-time credentials — owner action:** In Cloudflare, create a limited
 "Edit Cloudflare Workers" API token scoped to the correct account. Under GitHub
