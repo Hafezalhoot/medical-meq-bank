@@ -41,7 +41,9 @@ def main() -> None:
 
     catalog = read_json(LECTURES / "catalog.json")
     entries = catalog["lectures"]
-    lecture_id = args.id or f"{args.subject}-{slug(args.title)}"
+    # Globally unique by default across courses with the same specialty/title.
+    # Explicit --id remains supported for stable legacy or faculty-reviewed IDs.
+    lecture_id = args.id or f"{args.course}-{args.subject}-{slug(args.title)}"
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", lecture_id):
         fail("lecture ID must use lowercase letters, digits and hyphens")
     if any(entry["id"] == lecture_id for entry in entries):
