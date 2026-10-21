@@ -81,6 +81,7 @@ javascript_files=(
   tests/service-worker-assets.spec.js
   tests/webkit-smoke.spec.js
   scripts/production_smoke.mjs
+  scripts/promotion_gate.mjs
   tests/production-access.spec.js
   playwright.config.js
   playwright.webkit.config.js
@@ -89,5 +90,7 @@ javascript_files=(
 for source in "${javascript_files[@]}"; do
   node --check "$source"
 done
+
+node scripts/promotion_gate.mjs --self-test
 
 echo "Static quality gate passed: generated output, data integrity, repository audit, performance budgets and JavaScript syntax are valid."
