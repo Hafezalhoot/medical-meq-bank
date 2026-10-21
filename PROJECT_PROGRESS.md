@@ -1,5 +1,18 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Exam Mode 1.0 candidate, automatic Weak ratings and safe self-assessment
+
+- ✅ Added an accessible **Exam mode** action next to Start studying with a keyboard-operable native dialog, mobile reading-first layout and dark/light palettes.
+- ✅ Added **source-verified MCQ instant scoring** from `studyGuide.mcqs[].answerIndex` only: correct → **Mastered**, incorrect → **Weak**, with one irreversible selection in that attempt, source rationale, and original options. Both ratings use the existing course+subject+lecture+type+question ID and IndexedDB progress system; MCQ ratings also show in the source study guide.
+- ✅ For source MEQ cases, short answers and image/spot questions, the exam displays **original model answers** and offers explicit *self-rating* rather than misrepresenting free-text auto-grading.
+- ✅ Added 10/20/30/50 randomized question sessions, lecture/specialty scope, Weak/Review-only focus, MCQ/written/smart mix formats, optional 10/20/30/60-minute timer, saved same-device resume/history, auto vs self scores, retry mistakes, numeric-key MCQ selection and keyboard-friendly dismissal.
+- ✅ Extended My Review to include Weak/Review MCQs while preserving existing saved progress and all medical lecture files; no fabricated distractors, outside medical facts or clinical photo replacements.
+- ✅ Online PWA and standalone offline HTML include the exam's script/style and the service worker pre-caches release-aligned assets `2026.10.22.2`. Source datasets, schema and original images unchanged.
+- 🧪 Open review: [PR #45](https://github.com/Hafezalhoot/medical-meq-bank/pull/45). First Chromium run found buttons disabled during initial render and one extra hero row; both fixes are committed. Full static+Chromium+WebKit+Cloudflare Workers Build approval is required before merge/publication. Do not mark released from source-only validation.
+- ⏳ Cloudflare Access [issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35) still separately blocks authenticated production screenshots/asset checks. Keep protection enabled. Release signoff requires a successful post-merge Worker deployment status report.
+- ⏭ Future: as new PDF-based lectures gain independently reviewed MCQs, they automatically become available for exam auto-grading; keep lecture-first exam policy and prevent unsupported answer inference.
+
+
 ### 2026-10-22 — Confirm deployment identity independently of Access-protected browser QA
 
 - ✅ [PR #43](https://github.com/Hafezalhoot/medical-meq-bank/pull/43) merged narrow-screen Course Library/My Review improvements and native bilingual study-guide direction after `validate`, `chromium-quality`, `webkit-quality` and Workers Builds all passed on exact PR head `77da57f235b3becd743a0b355ba5ac09a2d10c41`. Source release is now `2026.10.22.1`; merged `main` at `30c22bd619a63e02fe6f8ab38d219aa8b0bf60e5`.

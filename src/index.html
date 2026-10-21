@@ -46,6 +46,7 @@
       <select id="subjectSelector" class="subject-select"></select>
       <span class="subject-hint">Choose a specialty to display its lectures and study content.</span>
       <button id="resumeStudyBtn" class="study-resume-btn" type="button">Start studying <span aria-hidden="true">→</span></button>
+      <button id="examModeBtn" class="exam-launch-btn" type="button" aria-haspopup="dialog" aria-controls="examDialog"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="m8 12 3 3 5-6"></path></svg> Exam mode <span aria-hidden="true">→</span></button>
     </div>
   </div>
 </section>
@@ -187,6 +188,7 @@
 <div class="footer">Medical course → specialty → lecture → subtopic • Saved progress • Offline-ready</div>
 </div>
 <div id="appToast" class="toast" role="status" aria-live="polite"></div>
+<dialog id="examDialog" class="exam-dialog" aria-labelledby="examTitle" aria-modal="true"><div id="examRoot"><h2 id="examTitle">Exam mode</h2></div></dialog>
 <script src="./app.js"></script>
 
 <script src="./pwa-client.js"></script>

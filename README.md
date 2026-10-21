@@ -27,6 +27,35 @@ Cardiology, Chest Medicine, Gastroenterology, Nephrology, Endocrinology, Hematol
 
 The uploaded lecture remains the exam-content authority. The application build verifies every reviewable lecture source and confirms that the published and standalone study banks are identical to the committed JSON.
 
+## Exam Mode — source-verified practice
+
+Click **Exam mode** beside **Start studying** to create a timed or untimed exam
+from the currently selected lecture or entire specialty. The study interface
+continues to support the original MEQ, Shorts, Image/Spot, print and offline flows.
+
+- **MCQ automatic scoring** uses only `studyGuide.mcqs[].answerIndex` from
+  published, lecture-reviewed content. Selecting one option checks the answer
+  immediately, shows the correct choice and source explanation, locks that
+  attempt, and writes **Mastered (correct)** or **Weak (incorrect)** using the
+  existing per-item IndexedDB progress system. MCQs automatically scored in
+  Exam Mode also appear in the ordinary Study Guide rating chips and My Review.
+- **Written/clinical/Image practice** shows the original model answer and asks
+  the learner to mark **Mastered** or **Weak** manually. The application does
+  not claim to auto-grade free-text clinical answers, and never synthesizes
+  multiple-choice distractors for these questions.
+- Configure 10/20/30/50 questions, MCQ-only / written-only / smart mix,
+  Weak+Review focus, and no timer or 10/20/30/60-minute sessions.
+- Sessions can be resumed after a reload on the same browser, with keyboard
+  MCQ shortcuts **1–4**, navigation, auto MCQ accuracy, separate self-grading
+  metrics, and **Retry missed questions**. Attempt history is device-local;
+  answers and source IDs remain untouched.
+- A lecture without published, reviewed MCQs explicitly refuses MCQ-only
+  tests instead of presenting invented questions. New lectures can contribute
+  to auto-scored tests after their own source-verified MCQs are published.
+- Existing study progress keys are preserved; exam state is stored under
+  `medicalBankExamSessionV1` and `medicalBankExamHistoryV1`. Cloudflare Access
+  protection is unchanged.
+
 ## Deployment vs. source access
 
 The source repository is public. The [Cloudflare Worker](https://medical-meq-bank.hafztamr.workers.dev/) may require Cloudflare Access login; a public GitHub repository does **not** mean anonymous Worker access. Live release verification is tracked in [issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35), which must be resolved through authorized Access service authentication, not by assuming that green source CI proves production deployment.

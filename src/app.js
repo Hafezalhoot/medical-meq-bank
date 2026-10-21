@@ -375,6 +375,20 @@ function createStudyGuide(lecture) {
       });
       article.append(reveal,feedback);
       sourceLabel(article,item.sourcePage);
+      // Store authored MCQ ratings in the same progress system as MEQ/shorts.
+      const ratings=document.createElement('div');
+      ratings.className='status-group exam-mcq-rating';
+      ratings.setAttribute('aria-label','Study rating for this MCQ');
+      for(const level of ['mastered','review','weak']){
+        const button=document.createElement('button');
+        button.type='button';
+        button.className='status '+level;
+        button.dataset.key=key(lecture.id,'mcq',item.id);
+        button.dataset.status=level;
+        button.textContent=level.charAt(0).toUpperCase()+level.slice(1);
+        ratings.append(button);
+      }
+      article.append(ratings);
       details.append(article);
     });
   }

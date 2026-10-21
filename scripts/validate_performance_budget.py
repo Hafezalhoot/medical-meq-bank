@@ -14,6 +14,8 @@ BUDGETS = {
     "index.html": 1_500_000,
     "app.css": 500_000,
     "app.js": 500_000,
+    "exam-mode.css": 60_000,
+    "exam-mode.js": 85_000,
     "progress-resilience.js": 100_000,
     "lecture-loader.js": 100_000,
     "pwa-client.js": 150_000,

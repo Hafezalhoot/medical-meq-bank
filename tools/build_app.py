@@ -238,10 +238,13 @@ def build(output: Path) -> None:
     print_js = (ROOT / "src" / "print-manager.js").read_text(encoding="utf-8")
     back_to_top_css = (ROOT / "back-to-top.css").read_text(encoding="utf-8")
     back_to_top_js = (ROOT / "back-to-top.js").read_text(encoding="utf-8")
+    exam_css = (ROOT / "src" / "exam-mode.css").read_text(encoding="utf-8")
+    exam_js = (ROOT / "src" / "exam-mode.js").read_text(encoding="utf-8")
     lecture_batch_js = build_lecture_extensions(ROOT)
 
     extension_styles = (
         ("review-filter-styles", "./review-filter.css", review_css),
+        ("exam-mode-styles", "./exam-mode.css", exam_css),
         ("mobile-filter-styles", "./mobile-filters.css", mobile_filter_css),
         ("print-manager-styles", "./print-manager.css", print_css),
         ("back-to-top-styles", "./back-to-top.css", back_to_top_css),
@@ -251,6 +254,7 @@ def build(output: Path) -> None:
         ("review-filter-extension", "./review-filter.js", review_js),
         ("mobile-filter-extension", "./mobile-filters.js", mobile_filter_js),
         ("search-optimization-extension", "./search-optimization.js", search_optimization_js),
+        ("exam-mode-extension", "./exam-mode.js", exam_js),
         ("print-manager-extension", "./print-manager.js", print_js),
         ("back-to-top-extension", "./back-to-top.js", back_to_top_js),
     )
