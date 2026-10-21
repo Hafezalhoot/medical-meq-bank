@@ -5,14 +5,18 @@ test.use({serviceWorkers: 'block'});
 const payload = {
   explanation: [{
     heading: 'Source-linked example',
-    paragraphs: ['Literal content <script>must stay text</script> and is not executable.'],
+    paragraphs: [
+      'Literal content <script>must stay text</script> and is not executable.',
+      'Dermatology هو تخصص طبي يدرس الجلد.',
+      'الجلد له وظائف عديدة، ومنها حماية الجسم — Skin and Hair.'
+    ],
     sourcePage: 'Slide 3',
     understandingAids: ['This is an aid, not a separate exam claim.']
   }],
   mcqs: [{
     id: 'demo-mcq-a', question: 'Which fixture option was selected?',
     options: ['Option A', 'Option B', 'Option C', 'Option D'],
-    answerIndex: 1, rationale: 'Because the fixture says so.',
+    answerIndex: 1, rationale: 'الإجابة في مصدر المحاضرة — see the referenced slide.',
     sourcePage: 'Slide 4'
   }],
   infographic: {
@@ -69,4 +73,31 @@ test('legacy lectures show no empty study guide section and preserve original co
   await expect(page.locator('.learning-companion')).toHaveCount(0);
   await expect(page.locator('.study-guide-jump')).toHaveCount(0);
   await expect(page.locator('.study-item').first()).toBeAttached();
+});
+
+test('mixed Arabic and English source text follows natural direction without overflow', async ({page}) => {
+  await page.setViewportSize({width:320,height:700});
+  await openWithOptionalGuide(page);
+  await page.locator('.learning-companion .study-guide-part').first().locator('summary').click();
+  const paragraphs=page.locator('.study-guide-explanation p');
+  await expect(paragraphs).toHaveCount(3);
+  for (const paragraph of await paragraphs.all()) {
+    await expect(paragraph).toHaveAttribute('dir','auto');
+  }
+  const directions=await paragraphs.evaluateAll(nodes=>nodes.map(el=>getComputedStyle(el).direction));
+  expect(directions).toEqual(['ltr','ltr','rtl']);
+  const fits=await paragraphs.evaluateAll(nodes=>nodes.every(el=>el.scrollWidth<=el.clientWidth+1));
+  expect(fits).toBe(true);
+  const heading=page.locator('.study-guide-explanation h3').first();
+  await expect(heading).toHaveAttribute('dir','auto');
+
+  await page.locator('.learning-companion .study-guide-part').nth(1).locator('summary').click();
+  const question=page.locator('.study-guide-mcq').first();
+  await question.locator('input[type="radio"]').nth(1).check();
+  await question.getByRole('button',{name:'Reveal explanation'}).click();
+  await expect(question.locator('.study-guide-answer')).toContainText('Option B');
+  const rationale=question.locator('.study-guide-answer span[dir="auto"]');
+  await expect(rationale).toHaveText('الإجابة في مصدر المحاضرة — see the referenced slide.');
+  expect(await rationale.evaluate(el=>getComputedStyle(el).direction)).toBe('rtl');
+  await expect(question.locator('.study-guide-answer bdi')).toHaveText('Option B');
 });
