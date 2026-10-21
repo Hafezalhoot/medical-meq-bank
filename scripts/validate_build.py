@@ -513,7 +513,7 @@ def validate_html(source_lectures: dict[str, dict]) -> None:
 
     # Prevent a new HTML shell from requesting an old cached CSS/JS file.
     # Every deployed runtime asset must share the version in version.json.
-    urls = re.findall(r'(?:href|src)="(\\./[^"]+\\.(?:css|js)(?:\\?v=([^"]+))?)"', html)
+    urls = re.findall(r'(?:href|src)="(\./[^"]+\.(?:css|js)(?:\?v=([^"]+))?)"', html)
     if len(urls) < 14 or any(asset_version != version for _, asset_version in urls):
         fail("online HTML has unversioned or mismatched CSS/JS references")
     if not any(src.startswith("./app.css?v=") for src, _ in urls):
