@@ -79,7 +79,7 @@ test('saved Dermatology source study remains available offline without invented 
     await (await fetch('/lectures/data/internal-medicine-ii-dermatology-introduction.json')).json()
   ));
   expect(source.imageQuestions).toHaveLength(14);
-  expect(source.imageQuestions.every(q=>/^\\.\\/assets\\/lectures\\/dermatology-introduction\\/derm-image-\\d{3}\\.jpg$/.test(q.image))).toBe(true);
+  expect(source.imageQuestions.every(q=>/^\.\/assets\/lectures\/dermatology-introduction\/derm-image-\d{3}\.jpg$/.test(q.image))).toBe(true);
   expect(Boolean(source.studyGuide.infographic)).toBe(false);
   await page.context().setOffline(true);
   const found=await page.evaluate(async data=>{
