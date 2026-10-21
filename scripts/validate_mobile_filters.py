@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +36,7 @@ def require_exactly_once(source: str, marker: str, label: str) -> None:
 
 
 def main() -> None:
+    release = json.loads(read(ROOT / 'version.json'))['version']
     source_js = read(ROOT / "mobile-filters.js")
     source_css = read(ROOT / "mobile-filters.css")
     online_js = read(DIST / "mobile-filters.js")
@@ -77,9 +79,9 @@ def main() -> None:
     if online_css != source_css:
         fail("published mobile-filters.css does not exactly match its reviewable source")
 
-    online_style = '<link id="mobile-filter-styles" rel="stylesheet" href="./mobile-filters.css">'
-    online_script = '<script id="mobile-filter-extension" src="./mobile-filters.js"></script>'
-    online_review = '<script id="review-filter-extension" src="./review-filter.js"></script>'
+    online_style = f'<link id="mobile-filter-styles" rel="stylesheet" href="./mobile-filters.css?v={release}">'
+    online_script = f'<script id="mobile-filter-extension" src="./mobile-filters.js?v={release}"></script>'
+    online_review = f'<script id="review-filter-extension" src="./review-filter.js?v={release}"></script>'
     for marker, label in (
         (online_style, "online HTML"),
         (online_script, "online HTML"),

@@ -2,6 +2,7 @@
 """Validate IndexedDB progress resilience across online, offline and PWA builds."""
 
 from pathlib import Path
+import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +20,7 @@ def read(path: Path) -> str:
 
 
 def main() -> None:
+    release = json.loads(read(ROOT / 'version.json'))['version']
     source = read(ROOT / "src" / "progress-resilience.js")
     generated = read(DIST / "progress-resilience.js")
     html = read(DIST / "index.html")
@@ -52,10 +54,10 @@ def main() -> None:
         fail("progress changes are not written as individual IndexedDB records")
 
     ordered = (
-        '<script src="./app.js"></script>',
-        '<script src="./progress-resilience.js"></script>',
-        '<script src="./lecture-loader.js"></script>',
-        '<script src="./pwa-client.js"></script>',
+        f'<script src="./app.js?v={release}"></script>',
+        f'<script src="./progress-resilience.js?v={release}"></script>',
+        f'<script src="./lecture-loader.js?v={release}"></script>',
+        f'<script src="./pwa-client.js?v={release}"></script>',
     )
     positions = []
     for marker in ordered:

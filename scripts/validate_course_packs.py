@@ -175,10 +175,11 @@ def main() -> None:
         if '/*__COURSE_CONFIG__*/ null' in runtime or 'MEQCourseRegistry' not in runtime:
             fail('generated course runtime is incomplete')
         html = (dist / 'index.html').read_text(encoding='utf-8')
+        release = load_json(ROOT / 'version.json')['version']
         markers = [
-            '<script src="./app.js"></script>',
-            '<script id="course-pack-runtime" src="./course-packs.js"></script>',
-            '<script src="./lecture-loader.js"></script>',
+            f'<script src="./app.js?v={release}"></script>',
+            f'<script id="course-pack-runtime" src="./course-packs.js?v={release}"></script>',
+            f'<script src="./lecture-loader.js?v={release}"></script>',
         ]
         positions = []
         for marker in markers:

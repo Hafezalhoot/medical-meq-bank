@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML = ROOT / "dist" / "index.html"
@@ -27,6 +28,7 @@ def require_markers(source: str, markers: tuple[str, ...], label: str) -> None:
 
 
 def main() -> None:
+    release = json.loads(read(ROOT / 'version.json'))['version']
     responsive = read(ROOT / "responsive-sidebars.js")
     search = read(ROOT / "search-optimization.js")
     loader = read(ROOT / "src" / "lecture-loader.js")
@@ -73,9 +75,9 @@ def main() -> None:
     )
 
     external_markers = (
-        '<script src="./app.js"></script>',
-        '<script src="./lecture-loader.js"></script>',
-        '<script src="./pwa-client.js"></script>',
+        f'<script src="./app.js?v={release}"></script>',
+        f'<script src="./lecture-loader.js?v={release}"></script>',
+        f'<script src="./pwa-client.js?v={release}"></script>',
     )
     external_positions = []
     for marker in external_markers:

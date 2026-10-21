@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.21.1';
+  const APP_VERSION = '2026.10.21.2';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -8,7 +8,8 @@
   const MAX_BACKUP_BYTES = 16 * 1024 * 1024;
   const VALID_PROGRESS_LEVELS = new Set(['mastered', 'review', 'weak', '']);
   const $p = id => document.getElementById(id);
-  const OFFLINE_CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
+  // Keep student-saved lectures across app-shell version changes.
+  const OFFLINE_CACHE_NAME = 'medical-meq-bank-user-lessons-v1';
 
   const sameOriginUrl = value => {
     const url = new URL(value, location.href);
