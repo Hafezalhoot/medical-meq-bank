@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Safe production promotion of an already approved Cloudflare version
+
+- ✅ Verified protected `main` commit `7a01299ffa9d0b2ca066903b02918feb8ec7761f` passed GitHub [validate/Chromium/WebKit run #39676081836](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39676081836).
+- ✅ Confirmed the Cloudflare Workers Builds check for that exact commit succeeded and reported existing uploaded Worker Version ID `693d6a6f-f459-4080-ba98-5a14b935946e` (build `57145de7-0235-4daf-a687-1be75070aaa1`). **Uploaded ≠ serving traffic.**
+- 🔎 Checked connected deployment capabilities: GitHub is available, but **no connected Cloudflare admin/deployment tool or API credentials** exist in this assistant environment. The public Worker returns a Cloudflare Access login redirect to unauthenticated production-smoke CI.
+- 🧪 Added a GitHub Actions workflow `Promote approved MEQ Worker`, manual-only, with a typed approval, source-SHA ancestry and matching release-version checks, successful latest GitHub quality checks, and exact matching Cloudflare build version ID. It then uses `wrangler versions deploy <id>@100% --yes` and prints deployment status. It intentionally does **not** automatically deploy future pushes or disable Access.
+- 🧪 Added `scripts/promotion_gate.mjs` with a runnable self-test in the existing static quality gate; documented least-privilege `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets separately from the Access Service Auth test token.
+- ⏳ Workflow must pass protected PR CI and merge before an authorized owner can trigger it. Actual live promotion and its version/asset/photo verification remain **pending** until the Cloudflare deployment credentials are configured. Do not mark the Worker published from a green GitHub build alone; keep previous production version for rollback.
+
+
 ### 2026-10-22 — Reconciled published curriculum, current V3 design tokens and live release status
 
 - 🔎 Audited the canonical 10-lecture catalog across Surgery (9), Internal Medicine II / Dermatology (1) and the not-yet-populated Internal Medicine course. Found README omitted Dermatology and did not distinguish empty specialties from exam-ready lessons.
