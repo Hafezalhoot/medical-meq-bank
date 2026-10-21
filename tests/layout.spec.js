@@ -304,3 +304,46 @@ test('Impeccable: Escape closes mobile study utilities and restores focus safely
   await expect(toggle).toBeFocused();
   await expect(page.locator('#exportProgressBtn')).toBeHidden();
 });
+
+
+test('V3 dark study surfaces use one clinical palette at phone and desktop widths', async ({page}) => {
+  for (const viewport of [{width: 390, height: 844}, {width: 1440, height: 900}]) {
+    await openBank(page, viewport);
+    await page.locator('#darkBtn').click();
+    await expect(page.locator('body')).toHaveClass(/dark/);
+
+    await page.locator('#courseLibraryDisclosure summary').click();
+    await expect(page.locator('.course-library-card')).toHaveCount(3);
+    const colors = await page.evaluate(() => {
+      const probe = document.createElement('span');
+      document.body.append(probe);
+      const tokenColor = token => {
+        probe.style.backgroundColor = 'var(' + token + ')';
+        return getComputedStyle(probe).backgroundColor;
+      };
+      const expected = {
+        card: tokenColor('--card'),
+        soft: tokenColor('--surface-soft'),
+        selected: tokenColor('--brand-soft')
+      };
+      probe.remove();
+      const background = selector => getComputedStyle(document.querySelector(selector)).backgroundColor;
+      return {
+        expected,
+        sidebar: background('.sidebar'),
+        toolbar: background('.toolbar'),
+        selector: background('#lectureFilter'),
+        libraryItem: background('.course-library-card:not(.is-active)'),
+        activeLibraryItem: background('.course-library-card.is-active'),
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+      };
+    });
+
+    expect(colors.sidebar).toBe(colors.expected.card);
+    expect(colors.toolbar).toBe(colors.expected.card);
+    expect(colors.selector).toBe(colors.expected.soft);
+    expect(colors.libraryItem).toBe(colors.expected.soft);
+    expect(colors.activeLibraryItem).toBe(colors.expected.selected);
+    expect(colors.overflow).toBeLessThanOrEqual(1);
+  }
+});
