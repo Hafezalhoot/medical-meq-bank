@@ -304,3 +304,56 @@ test('Impeccable: Escape closes mobile study utilities and restores focus safely
   await expect(toggle).toBeFocused();
   await expect(page.locator('#exportProgressBtn')).toBeHidden();
 });
+
+
+test('V3 dark study surfaces use one clinical palette at phone and desktop widths', async ({page}) => {
+  // Verify settled colors: the course cards animate background-color on hover.
+  await page.emulateMedia({reducedMotion: 'reduce'});
+  for (const viewport of [{width: 390, height: 844}, {width: 1440, height: 900}]) {
+    await openBank(page, viewport);
+    // The theme preference persists across reloads and viewport checks.
+    if (!(await page.locator('body').evaluate(element => element.classList.contains('dark')))) {
+      await page.locator('#darkBtn').click();
+    }
+    await expect(page.locator('body')).toHaveClass(/dark/);
+
+    await page.locator('#courseLibraryDisclosure summary').click();
+    await expect(page.locator('.course-library-card')).toHaveCount(3);
+    await page.mouse.move(0, 0); // Ensure the browser is not hovering a transient card.
+    const colors = await page.evaluate(() => {
+      const tokens = getComputedStyle(document.body);
+      // Read the actual dark-theme tokens, then resolve each on its own
+      // element. Reassigning one CSSOM probe repeatedly gave stale colors.
+      const tokenColor = token => {
+        const probe = document.createElement('span');
+        probe.style.backgroundColor = tokens.getPropertyValue(token).trim();
+        document.body.append(probe);
+        const color = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return color;
+      };
+      const expected = {
+        card: tokenColor('--card'),
+        soft: tokenColor('--surface-soft'),
+        selected: tokenColor('--brand-soft')
+      };
+      const background = selector => getComputedStyle(document.querySelector(selector)).backgroundColor;
+      return {
+        expected,
+        sidebar: background('.sidebar'),
+        toolbar: background('.toolbar'),
+        selector: background('#lectureFilter'),
+        libraryItem: background('.course-library-card:not(.is-active)'),
+        activeLibraryItem: background('.course-library-card.is-active'),
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+      };
+    });
+
+    expect(colors.sidebar).toBe(colors.expected.card);
+    expect(colors.toolbar).toBe(colors.expected.card);
+    expect(colors.selector).toBe(colors.expected.soft);
+    expect(colors.libraryItem).toBe(colors.expected.soft);
+    expect(colors.activeLibraryItem).toBe(colors.expected.selected);
+    expect(colors.overflow).toBeLessThanOrEqual(1);
+  }
+});

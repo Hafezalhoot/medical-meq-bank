@@ -1,6 +1,7 @@
 # Medical MEQ Workspace V3 — Reader-first design and original-only imagery
 
-**Status:** V3 shipped to production on 2026-10-21, but the user reported a critical mixed-stylesheet PWA problem. [PR #30](https://github.com/Hafezalhoot/medical-meq-bank/pull/30) contains a release-coherent CSS/JS hotfix (`2026.10.21.2`). See [PRODUCTION_UI_AUDIT_2026-10-21.md](PRODUCTION_UI_AUDIT_2026-10-21.md) for evidence and remaining gates. 
+**Current status (2026-10-21):** The source-first V3 redesign, 14 original hosted Dermatology photographs, and hotfixes for mixed CSS/JS and course selectors are merged to protected `main` through PRs #28–#33, with their GitHub CI gates green. **Live Worker verification is NOT complete**: the independent production smoke [run #39667473228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667473228) received HTML from `/version.json` instead of release JSON; [issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35) tracks operational routing/Access diagnosis. The current isolated V3 dark palette clean-up is PR #34 and is not merged. Historical notes below describe earlier private previews and must not be mistaken for current production status.
+**Source rights:** The 14 original Dermatology JPEGs were published at the owner's explicit request; confirm any required rights to redistribute the printed-book photographs. Do not add external/AI-generated substitutes or rewrite reviewed medical content.
 **User direction:** A stronger, potentially complete redesign of the UI and ordering without losing any old features. ONLY photographs from the original uploaded lecture PDFs may be used. Do not create or source replacement medical visuals.
 
 ## Current verified architecture and constraints

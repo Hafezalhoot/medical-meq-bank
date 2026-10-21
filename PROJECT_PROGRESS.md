@@ -8,6 +8,16 @@
 - ⏳ Exact-head static/Chromium/WebKit quality gates required before protected merge. This is an authoring quality-of-life fix, **not** a claim that PDFs can be automatically published without source review.
 
 
+### 2026-10-21 — V3 dark-mode design-token cleanup (2026.10.21.5 candidate)
+
+- ✅ Merged real-deployment smoke [PR #33](https://github.com/Hafezalhoot/medical-meq-bank/pull/33) after exact-head validate, Chromium, WebKit and Cloudflare preview checks passed; protected-main CI [#39667472916](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667472916) is green. The independent live Worker smoke is tracked separately in [#39667473228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667473228); do not infer production success merely from merge.
+- 🔎 Inspected the layered V1/V2/V3 CSS cascade and found legacy blue/navy literal backgrounds still overriding V3 dark theme on shared toolbars, controls, question surfaces and course-library cards, despite V3 teal semantic variables already existing. Also found an obsolete initial blue `:root` palette shadowed by the later V3 palette.
+- 🧪 On the isolated dark-token branch, replaced obsolete hard-coded dark backgrounds/active colors with existing `--card`, `--surface-soft`, `--surface-subtle`, `--brand-soft`, `--brand`, `--line`, and `--text`; retained semantic success/warning colors and all functionality.
+- 🧪 Removed only unused early root palette declarations that the final V3 root completely overrides, retaining the original status tokens. No layout grid, content, medical image/answer, app progress or offline storage logic changed.
+- 🧪 Added Playwright CSSOM assertions at 390px and 1440px for dark V3 surface tokens, all three Course Library entries and zero overflow. Candidate release version `2026.10.21.5` synchronized in `version.json`, Service Worker, and PWA client.
+- ⏳ Gate: full static/Chromium/WebKit and Cloudflare preview must pass on the exact PR head; only then consider a protected-main merge and check live deployment. Do not claim visual signoff for the new dark styling without screenshots/owner review.
+
+
 ### 2026-10-21 — Confirmed Cloudflare Access blocker and safe service-authenticated QA
 
 - ✅ The updated post-main [live run #39669065228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39669065228) proved the **exact** cause: `/version.json` redirects with HTTP 302 to `hafztamr.cloudflareaccess.com/cdn-cgi/access/login/`. This is Cloudflare Access authentication, **not proof of missing JSON in dist**. Previous smoke failure is now source-classified and reported in [issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35).
