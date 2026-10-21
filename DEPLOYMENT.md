@@ -62,55 +62,58 @@ To keep the study site protected **without disabling Access**:
 
 Cloudflare reference: [Service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/) and [Authenticate coding agents](https://developers.cloudflare.com/cloudflare-one/access-controls/authenticate-agents/).
 
-## One-click promotion of an approved uploaded Worker
+## Promote a validated Cloudflare Worker without rebuilding
 
-GitHub CI validated source release `2026.10.21.6` on merge commit
-`7a01299ffa9d0b2ca066903b02918feb8ec7761f`. Cloudflare Workers Builds
-reported a **successfully uploaded** Worker Version ID
-`693d6a6f-f459-4080-ba98-5a14b935946e` with build ID
-`57145de7-0235-4daf-a687-1be75070aaa1`.
-**An uploaded Worker is not necessarily the version currently receiving traffic.**
+The current reviewed application source is `2026.10.21.6` from
+`7a01299ffa9d0b2ca066903b02918feb8ec7761f`. Its
+[GitHub source tests](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39676081836)
+passed `validate`, `chromium-quality` and `webkit-quality`.
 
-An independent release workflow is available at
-[Promote approved MEQ Worker](https://github.com/Hafezalhoot/medical-meq-bank/actions/workflows/promote-production.yml)
-once this workflow PR has merged. The exact protected-main merge titled
-**Promote approved MEQ Worker via protected CI (#41)** makes **one**
-owner-requested automatic attempt using the already-approved SHA and Worker
-Version ID; **future pushes do not auto-promote**. The same workflow also
-supports manual runs for an authorized retry or subsequent approved release.
-It promotes an **existing approved version** to 100% traffic via
-`wrangler versions deploy`, without rebuilding, uploading book photos again,
-clearing student progress, or weakening Cloudflare Access.
+**Important:** Cloudflare Workers Builds can issue **new Worker Version IDs for
+the same source commit**. The initial build showed
+`693d6a6f-f459-4080-ba98-5a14b935946e`, but the later successful check
+reported `1a70d27b-e2a1-499d-9b0e-91758210fdb0`. The
+[one-time promotion attempt #39680011351](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39680011351)
+**safely refused** the stale ID at its preflight gate. It did not change
+production traffic.
 
-**One-time credentials — owner action:** In Cloudflare, create a limited
-"Edit Cloudflare Workers" API token scoped to the correct account. Under GitHub
-**Settings → Secrets and variables → Actions**, store
-`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as *repository secrets*.
-Never commit or paste the token. These are **Cloudflare deployment API**
-credentials and are **different from** the `MEQ_CF_ACCESS_CLIENT_ID` and
-`MEQ_CF_ACCESS_CLIENT_SECRET` login-testing credentials.
+The corrected [Promote approved MEQ Worker](https://github.com/Hafezalhoot/medical-meq-bank/actions/workflows/promote-production.yml)
+workflow resolves the **latest successful Cloudflare Workers Builds Version ID
+from the exact GitHub source commit at run time**, so a repeated build cannot
+silently invalidate the release. The exact protected-main merge titled
+**Promote latest approved MEQ Worker via protected CI (#42)** triggers a
+**one-time owner-requested retry**; other pushes do **not** automatically
+promote. The workflow also supports manually approved future runs.
 
-To promote the approved version:
+The gate confirms that the approved source is in protected `main` history,
+that the application's release version is still current, and that the latest
+static, Chromium, WebKit and Cloudflare build checks all succeeded. Only then
+does it call `wrangler versions deploy <verified-version-id>@100% --yes`.
+It does not create another Worker, bypass Cloudflare Access, upload medical
+photographs again or delete student progress.
 
-1. In GitHub Actions, select **Promote approved MEQ Worker** → **Run workflow**
-   on `main` (do not select a development branch).
-2. Set **source_sha** to `7a01299ffa9d0b2ca066903b02918feb8ec7761f`,
-   **worker_version_id** to `693d6a6f-f459-4080-ba98-5a14b935946e`,
-   and explicitly check the 100% production traffic confirmation.
-3. The job refuses unreviewed commits, mismatched release metadata,
-   a failed Chromium/WebKit/static check, or a Worker version not reported
-   in the successful Cloudflare Workers Build for that exact commit.
-4. Review the Wrangler deployment-status output and retain the previously
-   active Worker version for rollback. Then run **Live Cloudflare Production
-   Smoke** with the separate narrowly scoped Access Service Auth policy.
-   The smoke's successful checks for responsive presentation, same-release
-   CSS/JS and original-photo hashes are the final verification gate.
+**One-time credentials (owner action):** Create a Cloudflare API token with
+limited **Edit Cloudflare Workers** permission for the correct account, then
+store it as `CLOUDFLARE_API_TOKEN` alongside `CLOUDFLARE_ACCOUNT_ID` in
+[GitHub Actions repository secrets](https://github.com/Hafezalhoot/medical-meq-bank/settings/secrets/actions).
+Never paste token values into source, issues or ChatGPT. These **deployment**
+credentials differ from `MEQ_CF_ACCESS_CLIENT_ID` and
+`MEQ_CF_ACCESS_CLIENT_SECRET`, which allow the separate production smoke to
+authenticate without making the Worker public.
 
-If a new application version is merged before promotion, do **not** use the
-old inputs; select and verify the newer build's source SHA and Worker version.
-A successful GitHub Workers Builds check alone is **not** a traffic-promotion
-receipt. Cloudflare official references: [versions deploy](https://developers.cloudflare.com/workers/wrangler/commands/workers/#versions-deploy)
-and [GitHub Actions authentication](https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/).
+To retry or run manually: GitHub Actions → **Promote approved MEQ Worker** →
+**Run workflow** on `main`; enter the fully tested source SHA, leave
+**worker_version_id** empty to use its latest successful Cloudflare build, and
+tick the 100% production confirmation. Review the deployment status and keep
+the previously active version for rollback. Then run the authenticated
+**Live Cloudflare Production Smoke**; only a green exact-release, original-photo
+hash and responsive-UI check completes the production signoff.
+
+If a newer app release has landed, select that newer reviewed source SHA
+instead. A green Workers Builds check alone confirms **uploaded**, not
+**deployed**. Cloudflare references:
+[versions deploy](https://developers.cloudflare.com/workers/wrangler/commands/workers/#versions-deploy)
+and [GitHub Actions](https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/).
 
 ## Cloudflare Workers Builds
 
