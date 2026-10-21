@@ -81,6 +81,7 @@ javascript_files=(
   tests/service-worker-assets.spec.js
   tests/webkit-smoke.spec.js
   scripts/production_smoke.mjs
+  tests/production-access.spec.js
   playwright.config.js
   playwright.webkit.config.js
 )
