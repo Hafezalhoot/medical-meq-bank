@@ -9,6 +9,7 @@ source assets so it remains directly openable as one HTML file.
 from __future__ import annotations
 
 from pathlib import Path
+import base64
 import json
 import re
 import sys
@@ -97,6 +98,30 @@ def safe_inline_style(source: str) -> str:
     return re.sub(r"</style", r"<\\/style", source, flags=re.I)
 
 
+def inline_offline_source_photos(lecture_payload: str) -> str:
+    """Embed the same original source JPEGs in standalone HTML (no network).
+
+    The public PWA keeps JPEGs as separately cached static assets; only the
+    standalone downloadable HTML needs data: URLs so it can open from disk.
+    """
+    candidates = set(re.findall(
+        r"\./assets/lectures/[a-z0-9_-]+/[a-z0-9_-]+\.jpe?g",
+        lecture_payload,
+        flags=re.I,
+    ))
+    root = (ROOT / "assets" / "lectures").resolve()
+    for relative in sorted(candidates):
+        photo = (ROOT / relative.removeprefix("./")).resolve()
+        if not photo.is_relative_to(root) or not photo.is_file():
+            raise SystemExit(f"Missing or unsafe offline source photo: {relative}")
+        raw = photo.read_bytes()
+        if not raw.startswith(bytes((0xFF, 0xD8, 0xFF))):
+            raise SystemExit(f"Source photo is not a JPEG: {relative}")
+        embedded = "data:image/jpeg;base64," + base64.b64encode(raw).decode("ascii")
+        lecture_payload = lecture_payload.replace(relative, embedded)
+    return lecture_payload
+
+
 def create_offline_copy(
     html: str,
     *,
@@ -130,7 +155,7 @@ def create_offline_copy(
     offline = replace_required(
         offline,
         '<script src="./lecture-loader.js"></script>',
-        f'<script id="lecture-extensions">\n{safe_inline_script(lecture_batch_js)}\n</script>',
+        f'<script id="lecture-extensions">\n{safe_inline_script(inline_offline_source_photos(lecture_batch_js))}\n</script>',
         "offline lecture bank",
     )
     offline = replace_required(
