@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate embedded AVIF image-question payloads without lecture-specific rules."""
+"""Validate embedded AVIFs, original printed-PDF JPEG assets and private media metadata."""
 
 from __future__ import annotations
 
@@ -108,6 +108,27 @@ def main() -> None:
             question_id = item["id"]
             global_id = f"{lecture_id}/{question_id}"
             source = item.get("image")
+
+            # Original printed PDF photograph made available as a local JPEG.
+            # Validate bytes, MIME signature and source hash from the repo asset;
+            # external URLs and fabricated image replacements are not allowed.
+            if isinstance(source, str) and source.startswith("./assets/lectures/") and source.endswith(".jpg"):
+                relative = source[2:]
+                resolved = (ROOT / relative).resolve()
+                allowed_root = (ROOT / "assets" / "lectures").resolve()
+                if not resolved.is_relative_to(allowed_root) or not resolved.is_file():
+                    fail(f"missing or unsafe source PDF JPEG for {global_id}")
+                raw = resolved.read_bytes()
+                if len(raw) < 300 or len(raw) > 5 * 1024 * 1024 or raw[:3] != b"\\xff\\xd8\\xff":
+                    fail(f"source PDF JPEG is invalid for {global_id}")
+                digest = hashlib.sha256(raw).hexdigest()
+                if item.get("imageSha256") != digest or item.get("imageBytes") != len(raw):
+                    fail(f"hosted original JPEG integrity mismatch for {global_id}")
+                if not item.get("page") or not isinstance(item.get("prompt"), str) or not item["prompt"].strip():
+                    fail(f"hosted original JPEG requires a printed page and prompt for {global_id}")
+                total_images += 1
+                total_bytes += len(raw)
+                continue
 
             if not (isinstance(source, str) and source.startswith(AVIF_PREFIX)):
                 fingerprint = item.get("imageSha256")

@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — Original Dermatology images hosted directly by learner request
+
+- ✅ Learner explicitly requested the 14 authentic printed-source Dermatology photographs to render automatically for all visitors, like the existing Surgery lecture images. The 14 reviewed JPEG crops were added as **separate same-origin static assets** under `assets/lectures/dermatology-introduction/`, preserving exact original SHA-256 and source page attribution.
+- ✅ Each existing Dermatology Image Spot now references its own JPEG URL and original byte count without changing answer keys, question IDs, course location or saved progress. The original PDF and handwritten annotations are still omitted.
+- ✅ Embedded AVIF and local source-JPEG verification remain strict and independent. Source images are not generated or downloaded from third parties.
+- 🧪 Pending at this stage: make original image atlas render hosted photos, update offline standalone embedding and Playwright browser tests, rerun all three CI jobs before merging/prod deployment.
+- ⚠️ The site/repository are public. The uploader should confirm they have any necessary permission to redistribute textbook photographs. Revert source-image asset publication if a verified rights issue arises.
+
 ### 2026-10-20 — V3 release candidate hardening: original-source media authoring and memory
 
 - ✅ Closed the lecture-intake validation gap: `tools/add_lecture.py` now checks the source-image SHA-256, page, caption/prompt and optional byte count **before writing reviewed lecture records**. Invalid images fail a dry run; existing Surgery lecture sources and progress IDs remain untouched.
