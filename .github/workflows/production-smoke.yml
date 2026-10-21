@@ -37,6 +37,9 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Verify actual published Cloudflare Worker
+        env:
+          MEQ_CF_ACCESS_CLIENT_ID: ${{ secrets.MEQ_CF_ACCESS_CLIENT_ID }}
+          MEQ_CF_ACCESS_CLIENT_SECRET: ${{ secrets.MEQ_CF_ACCESS_CLIENT_SECRET }}
         run: node scripts/production_smoke.mjs
 
       - name: Upload live evidence and failure screenshots
