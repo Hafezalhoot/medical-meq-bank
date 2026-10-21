@@ -7,6 +7,8 @@ required_files=(
   src/index.html
   src/app.css
   src/app.js
+  src/exam-mode.js
+  src/exam-mode.css
   src/course-packs.template.js
   src/course-packs.css
   src/progress-resilience.js
@@ -107,6 +109,8 @@ python3 tools/materialize_lectures.py
 python3 scripts/validate_lecture_images.py
 
 node --check src/app.js
+node --check src/exam-mode.js
+node --check tests/exam-mode.spec.js
 node --check src/course-packs.template.js
 node --check src/progress-resilience.js
 node --check src/lecture-loader.js
@@ -124,6 +128,8 @@ install -m 0644 \
   src/progress-resilience.js \
   src/lecture-loader.js \
   src/pwa-client.js \
+  src/exam-mode.js \
+  src/exam-mode.css \
   "$OUTPUT/"
 install -m 0644 \
   review-filter.css \
