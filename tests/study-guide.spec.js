@@ -79,7 +79,7 @@ test('mixed Arabic and English source text follows natural direction without ove
   await openWithOptionalGuide(page);
   await page.setViewportSize({width:320,height:700});
   await page.locator('.learning-companion .study-guide-part').first().locator('summary').click();
-  const paragraphs=page.locator('.study-guide-explanation p');
+  const paragraphs=page.locator('.study-guide-explanation > p');
   await expect(paragraphs).toHaveCount(3);
   for (const paragraph of await paragraphs.all()) {
     await expect(paragraph).toHaveAttribute('dir','auto');
