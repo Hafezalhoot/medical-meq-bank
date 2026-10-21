@@ -1,5 +1,17 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Reader-first mobile and bilingual content iteration (2026.10.22.1 release candidate)
+
+- ✅ Previous reviewed app release `2026.10.21.6` was actually promoted by GitHub Actions [run #39680752224 (attempt 3)](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39680752224) to Cloudflare Worker version `1a70d27b-e2a1-499d-9b0e-91758210fdb0` at **100% traffic**. Publication issue #22 was closed; this does **not** certify live UI behind Cloudflare Access.
+- 🔎 Reviewed actual Chromium desktop/320px screenshots and source-backed `src/app.js` rendering. On 320px, Course Library and My Review stacked as two rows even when both collapsed. Explanation paragraphs forced RTL if they contained **any** Arabic, even when the first strong words were English; MCQ feedback placed rationale inline under LTR prefixes.
+- 🧪 Keep collapsed Course Library / My Review alongside one another at <=350px and span full width on expansion, preserving both native details and keyboard actions. This reduces pre-content chrome without removing filters, controls, shortcuts, status or storage.
+- 🧪 Use native `dir=auto` for source explanation headings, paragraphs and understanding aids, and isolate correct-option text in `<bdi>` plus rationale in its own auto-direction span. Preserve all literal source content, MCQ answers, identifiers, and original photos.
+- 🧪 Added 320px shortcut layout/opening/overflow regression and mixed Arabic/English text-direction tests with narrow wrapping and source-linked MCQ feedback. Updated PWA/Service Worker/source version consistently to **`2026.10.22.1`**.
+- ⏳ Pending this branch's protected static/Chromium/WebKit and Cloudflare build checks, review and merge. The prior live release stays untouched until gates pass and release promotion is separately verified.
+- ⏳ Open external blocker [#35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35): Cloudflare Access service authentication for actual live screenshots, versioned JS/CSS, image SHA checks, offline/resume tests. Rights to redistribute printed Dermatology source photographs still require owner's documentation.
+- ⏭ Next: use actual deployed screenshots to finish 200% zoom, RTL, responsive first-content distance, and review workflow quality. Do not create synthetic medical content or reset stored progress.
+
+
 ### 2026-10-22 — Dynamic build identity fixes safe publication retry
 
 - ✅ [Protected PR #41](https://github.com/Hafezalhoot/medical-meq-bank/pull/41) passed source/Chromium/WebKit/Workers Builds and merged to `main` as `a4932b17ea2ba379e16dcdc93fc2e13daa6ca53b`. The one-time GitHub production promotion workflow actually triggered in [run #39680011351](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39680011351).
