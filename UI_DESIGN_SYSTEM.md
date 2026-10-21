@@ -11,7 +11,7 @@ The interface is a study tool, not a marketing page. Visual hierarchy must alway
 4. filters/navigation;
 5. secondary app/backup/offline utilities.
 
-The system intentionally keeps the existing blue + teal identity rather than introducing a new palette during the architecture refactor.
+**Current V3 identity:** deep ink/teal surfaces and a restrained, clinical reading experience. The blue palette in older V1/V2 CSS is historical, not a token source for new UI. Use the last active V3 values in `src/app.css`; printed exam sheets are a separate, intentionally print-optimized surface.
 
 ## Design principles
 
@@ -28,20 +28,22 @@ The system intentionally keeps the existing blue + teal identity rather than int
 
 ### Color
 
-| Token | Light | Dark | Purpose |
+| Token | Light (V3) | Dark (V3) | Purpose |
 | --- | --- | --- | --- |
-| `--bg` / page | `#F4F7FB` | `#0B1220` | Page background |
-| `--card` / surface | `#FFFFFF` | `#111C2F` | Primary cards |
-| `--text` | `#172033` | `#F8FAFC` | Primary text |
-| `--muted` | `#667085` | `#ABB6C5` | Secondary text |
-| `--line` | `#DBE3EE` | `#2B3A51` | Borders/dividers |
-| `--brand` | `#174EA6` | lighter contextual variants | Primary action/navigation |
-| `--brand2` | `#0F766E` | contextual variants | Progress/supporting state |
-| Success | green semantic tokens | dark semantic pair | Mastered/saved |
-| Warning | amber semantic tokens | dark semantic pair | Review/source note |
-| Danger | red semantic tokens | dark semantic pair | Weak/error |
+| `--bg` | `#F4F7F6` | `#101C20` | Workspace background |
+| `--card` / `--surface` | `#FFFFFF` | `#16262B` | Primary study panels |
+| `--text` | `#17343E` | `#EAF5F3` | Primary text |
+| `--muted` | `#566C72` | `#B5C9C9` | Secondary labels and prose |
+| `--line` | `#D9E5E3` | `#32464A` | Panel borders and separators |
+| `--brand` | `#0D6267` | `#82D2C8` | Primary action, active study links |
+| `--brand2` | `#0F766E` | `#66C3B4` | Secondary brand use |
+| `--brand3` | `#08474D` | `#C7EEEA` | High-emphasis teal |
+| `--brand-soft` | `#E7F4F3` | `#223F40` | Selected states |
+| `--surface-soft` | `#F2F7F6` | `#1C3237` | Input/section background |
+| `--surface-subtle` | `#EDF4F2` | `#20383C` | Quiet supporting surfaces |
+| Mastered / Review / Weak | Existing semantic success / warning / danger styles | Existing dark semantic counterparts | Revision-state meaning |
 
-Verified primary text, muted text, brand, and revision-state foreground/background pairs meet WCAG AA contrast targets.
+These are **observed source tokens**, not a proposed visual palette. For new components, prefer existing semantic tokens over literal per-component colors. Measure normal text contrast at least 4.5:1 and non-text meaningful boundaries at least 3:1 against the *actual* composed background, including both themes. Never apply the dark brand foreground on its own dark background.
 
 ### Spacing
 
@@ -64,9 +66,9 @@ Avoid arbitrary spacing values unless required by an existing asset or responsiv
 
 ### Elevation
 
-- `--shadow-sm` — study cards, sidebars, stats
-- `--shadow-md` — hero / modal-level emphasis
-- Do not stack multiple heavy shadows.
+- V3 uses crisp borders and almost-flat card surfaces; do not restore large V1/V2 floating-card shadows.
+- `--shadow-sm` is reserved for subtle hierarchy where needed, and dark theme currently removes it.
+- A modal may use elevation for separation, but never stack heavy glows or blur on all panels.
 
 ### Typography
 
