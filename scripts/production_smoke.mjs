@@ -165,14 +165,18 @@ async function run() {
   browser = await chromium.launch({headless: true});
   const context = await browser.newContext({viewport: {width: 390, height: 844}, serviceWorkers: 'allow'});
   if (accessId) {
-    // Do not use context-wide extraHTTPHeaders: those can leak a service
-    // token to external resources or a redirected login origin.
-    await context.route('**/*', route => {
+    // Playwright Route.continue({headers}) propagates headers to every
+    // redirect, so even an origin-filtered handler is NOT safe for tokens.
+    // Route.fetch with maxRedirects:0 returns the original response only;
+    // browser-followed redirects receive no injected service token.
+    await context.route('**/*', async route => {
       const requestUrl = new URL(route.request().url());
       if (requestUrl.origin !== site.origin) return route.continue();
-      return route.continue({
-        headers: {...route.request().headers(), ...accessHeaders}
+      const response = await route.fetch({
+        headers: {...route.request().headers(), ...accessHeaders},
+        maxRedirects: 0
       });
+      return route.fulfill({response});
     });
   }
   page = await context.newPage();
