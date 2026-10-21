@@ -305,8 +305,14 @@ def validate_service_worker(version: str, entries: list[dict]) -> None:
         asset = f"./lectures/{entry['file']}"
         if f'"{asset}"' in worker or f"'{asset}'" in worker:
             fail(f"service worker still pre-caches lecture payload: {asset}")
-    if "await cache.put(request, response.clone())" not in worker:
+    if "await releaseCache.put(request, response.clone())" not in worker:
         fail("service worker does not runtime-cache successful same-origin assets")
+    if "await caches.match(request)" in worker:
+        fail("service worker still allows obsolete release assets to override new CSS/JS")
+    if "USER_LESSON_CACHE" not in worker or "oldReleases" not in worker:
+        fail("service worker must preserve user-selected offline lessons across updates")
+    if ".map(asset =>" not in worker or "?v=" not in worker:
+        fail("service worker does not precache the version-pinned application assets")
 
 
 def validate_search_index(source_lectures: dict[str, dict]) -> None:
@@ -503,6 +509,14 @@ def validate_html(source_lectures: dict[str, dict]) -> None:
 
     if "const incomingLectures" in html:
         fail("online index still embeds the complete lecture bank")
+
+    # Prevent a new HTML shell from requesting an old cached CSS/JS file.
+    # Every deployed runtime asset must share the version in version.json.
+    urls = re.findall(r'(?:href|src)="(\\./[^"]+\\.(?:css|js)(?:\\?v=([^"]+))?)"', html)
+    if len(urls) < 14 or any(asset_version != version for _, asset_version in urls):
+        fail("online HTML has unversioned or mismatched CSS/JS references")
+    if not any(src.startswith("./app.css?v=") for src, _ in urls):
+        fail("online HTML has no version-pinned main stylesheet")
     for marker in (
         "globalThis.__urolScrotalCompactGzip",
         "globalThis.__neuroTbiGzip",
