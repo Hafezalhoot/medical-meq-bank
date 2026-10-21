@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — Production verification guard (PR pending)
+
+- ✅ Confirmed protected `main` commit `95725f3ca40a56db838320980cc161df23da163b` passed all three existing validation jobs in [Actions #39661802301](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39661802301). PRs #30–#32 are merged.
+- ✅ Added `scripts/production_smoke.mjs` to directly verify Cloudflare `/version.json` against the current checked-out version, rendered 390/768/1440px live UI, one CSS/JS release cohort, measured hero/icon sizing and zero overflow, stale-service-worker CSS isolation, dark mode, and 14 original hosted Dermatology photographs with SHA-256 verification + 30 MCQs.
+- ✅ Added an independently named GitHub Actions workflow to run the real production smoke on `main` pushes, each morning, and manually; it uploads screenshots and structured result evidence even on failure. It does not replace or weaken the existing static/Chromium/WebKit quality gates.
+- ✅ Included the new Node smoke script in the existing static syntax gate.
+- ⏳ Source-only review at this stage; live Worker could not be inspected from the current assistant environment. The newly added smoke workflow must be validated on the PR, merged only after existing checks pass, and its real production run verified before claiming the public release fixed.
+- ⚠️ Cloudflare deployment/Access governance and licensed redistribution of printed book photographs remain separate owner checks. No exam facts, answer keys, progress DB data or source medical images changed.
+
+
 ### 2026-10-21 — Tablet/desktop original course text and study-path layout (2026.10.21.4)
 
 - ✅ After the 320/390 mobile fixes, checked the *exact* `2026.10.21.3` main build at 320,390,768,1440 in local Chromium. Every size had no horizontal document overflow, 18px icons, 14 original hosted Dermatology images and 30 MCQs. Main Actions [#39660277049](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39660277049) passed all three CI jobs.
