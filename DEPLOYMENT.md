@@ -48,6 +48,20 @@ HTML title/content type or redirect target *without logging the full page*.
 4. If an old JSON version is returned, verify Workers Builds deployment and version promotion from protected `main`; do not delete IndexedDB or the user-selected offline cache to fix a release routing issue.
 5. Run the independent GitHub workflow **Live Cloudflare Production Smoke** after correcting the root cause, and review its JSON/screenshot artifact. Only a passing live smoke confirms production presentation of the exact release.
 
+### Protected-site production smoke (confirmed Access redirect)
+
+The improved smoke run [#39669065228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39669065228) identified **HTTP 302 to `hafztamr.cloudflareaccess.com/cdn-cgi/access/login/`**. This confirms that Cloudflare Access is intercepting the unauthenticated health request. It does **not** mean the application JS, images, or lecture content are broken. Public production verification is blocked until the smoke has approved authentication.
+
+To keep the study site protected **without disabling Access**:
+
+1. In Cloudflare Zero Trust, open **Access controls → Service credentials → Service Tokens**, create a dedicated token named e.g. `MEQ Production Smoke`, and copy the Client ID and Client Secret **to a secure manager**. Cloudflare displays the Secret only when it is created.
+2. In **Access → Applications**, edit the policy protecting `medical-meq-bank.hafztamr.workers.dev`. Add a narrowly scoped **Service Auth** policy that includes **only this token**. Keep existing human login policies. A token alone is insufficient without the matching Service Auth policy.
+3. In the GitHub repository, open **Settings → Secrets and variables → Actions → New repository secret**. Create `MEQ_CF_ACCESS_CLIENT_ID` and `MEQ_CF_ACCESS_CLIENT_SECRET` using the values from Cloudflare. **Never put token values in a PR, file, chat message, workflow log, or URL.** Rotate/revoke according to your Access policy.
+4. Trigger **Live Cloudflare Production Smoke** via GitHub Actions → Run workflow. The script attaches token headers **only to the pinned approved Worker origin**, not to redirects or external resources. Both secrets must be configured together; if absent, the health check honestly fails at the existing Access boundary.
+5. Confirm live `/version.json` matches repository `version.json`, all static assets share the release cohort, and responsive UI/source-JPEG SHA checks pass. An authorized CI test does **not** make the protected app public.
+
+Cloudflare reference: [Service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/) and [Authenticate coding agents](https://developers.cloudflare.com/cloudflare-one/access-controls/authenticate-agents/).
+
 ## Cloudflare Workers Builds
 
 Open the existing `medical-meq-bank` Worker in the Cloudflare dashboard → **Settings → Build**. The repository was transferred from an organization to the personal GitHub account, so verify the integration still points to the **new personal owner**; do not create another production Worker.

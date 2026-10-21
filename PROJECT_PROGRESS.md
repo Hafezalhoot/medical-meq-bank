@@ -10,6 +10,15 @@
 - ⏳ Gate: full static/Chromium/WebKit and Cloudflare preview must pass on the exact PR head; only then consider a protected-main merge and check live deployment. Do not claim visual signoff for the new dark styling without screenshots/owner review.
 
 
+### 2026-10-21 — Confirmed Cloudflare Access blocker and safe service-authenticated QA
+
+- ✅ The updated post-main [live run #39669065228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39669065228) proved the **exact** cause: `/version.json` redirects with HTTP 302 to `hafztamr.cloudflareaccess.com/cdn-cgi/access/login/`. This is Cloudflare Access authentication, **not proof of missing JSON in dist**. Previous smoke failure is now source-classified and reported in [issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35).
+- 🧪 Added optional `MEQ_CF_ACCESS_CLIENT_ID` and `MEQ_CF_ACCESS_CLIENT_SECRET` GitHub Actions secrets for the automated production smoke. The script refuses half-configured credentials and a production origin other than the pinned approved Worker. Service headers are attached to HTTP health probe and browser requests **only when origin matches**, never to redirected Access/login/third-party requests.
+- 🧪 Added Chromium-run Node regressions for incomplete token configuration and cross-origin credential refusal, plus deployment instructions for a dedicated Cloudflare **Service Auth** policy. No account secrets were created, exposed, committed, or requested in chat.
+- ⏳ The owner must create/authorize the Service Token in Cloudflare Zero Trust and save both values as GitHub repository Actions secrets. Do **not** disable Cloudflare Access to make a red smoke test green. Until configured and the test runs successfully, public Worker version/UI cannot be confirmed by automated CI.
+- ⏳ V3 dark UI token cleanup remains isolated in [PR #34](https://github.com/Hafezalhoot/medical-meq-bank/pull/34); do not combine authentication and visual changes into one unverified release.
+
+
 ### 2026-10-21 — Live Worker health check exposed an unresolved HTML response
 
 - ✅ The independent post-merge live Cloudflare smoke [run #39667473228](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667473228) executed from GitHub's network and **failed**: `/version.json` returned HTML rather than JSON on 18 consecutive attempts. Meanwhile [main CI #39667472916](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39667472916) passed validate, Chromium, and WebKit. Thus source correctness and public release reachability are distinct.
