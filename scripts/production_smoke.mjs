@@ -23,16 +23,47 @@ async function waitForDeployment() {
     try {
       const response = await fetch(endpoint, {
         cache: 'no-store',
-        headers: {'Cache-Control': 'no-cache'},
+        redirect: 'manual',
+        headers: {'Cache-Control': 'no-cache', 'Accept': 'application/json'},
         signal: AbortSignal.timeout(12000)
       });
-      assert(response.ok, 'Live version endpoint returned HTTP ' + response.status);
-      liveVersion = (await response.json()).version;
+      if (response.status >= 300 && response.status < 400) {
+        const destination = new URL(response.headers.get('location') || '/', endpoint);
+        const error = new Error(
+          'Production version endpoint redirected (HTTP ' + response.status +
+          ') to ' + destination.origin + destination.pathname +
+          '. Check the Cloudflare Access login policy or Worker asset routing.'
+        );
+        error.permanent = true;
+        throw error;
+      }
+      if (!response.ok) throw new Error('Live version endpoint returned HTTP ' + response.status);
+      const body = await response.text();
+      const contentType = response.headers.get('content-type') || 'unknown';
+      if (body.trimStart().startsWith('<')) {
+        // Do not dump HTML into CI logs; an Access/login page may contain
+        // session-sensitive data. The title is enough to diagnose routing.
+        const title = body.match(/<title[^>]*>([^<]{0,120})<\/title>/i)?.[1]?.trim() || '(no HTML title)';
+        const error = new Error(
+          'Production /version.json returned HTML instead of the release manifest ' +
+          '(HTTP ' + response.status + ', Content-Type: ' + contentType +
+          ', title: ' + JSON.stringify(title) + '). ' +
+          'Check whether Cloudflare Access is serving a login page, or the Worker is serving index.html in place of static JSON.'
+        );
+        error.permanent = true;
+        throw error;
+      }
+      const parsed = JSON.parse(body);
+      if (!parsed || typeof parsed.version !== 'string') {
+        throw new Error('Live version.json is missing the version string');
+      }
+      liveVersion = parsed.version;
       observations.push({step: 'version-poll', attempt, liveVersion});
       if (liveVersion === expectedVersion) return;
       console.log('Cloudflare version is ' + liveVersion + '; expecting ' + expectedVersion + ' (attempt ' + attempt + '/18)');
     } catch (error) {
       observations.push({step: 'version-poll', attempt, error: String(error)});
+      if (error.permanent) throw error; // Access/routing is not a deployment-propagation delay.
       console.warn('Could not read live version (' + attempt + '/18): ' + String(error));
     }
     if (attempt < 18) await pause(15000);
