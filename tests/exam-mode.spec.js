@@ -84,7 +84,7 @@ test('written clinical exam reveals model answer then self-rating Weak with no i
   await page.getByRole('button',{name:'Reveal model answer'}).click();
   await expect(page.locator('.exam-model')).toBeVisible();
   await page.getByRole('button',{name:'Needs review · Weak'}).click();
-  await expect(page.locator('#examFeedback')).toContainText('Incorrect · Weak');
+  await expect(page.locator('#examFeedback')).toContainText('Self-rated Weak');
   await expect(page.locator('.exam-option')).toHaveCount(0);
   page.once('dialog',dialog=>dialog.accept());
   await page.locator('#examFinish').click();
@@ -98,6 +98,7 @@ test('unfinished attempt survives reload and expired time does not mark unanswer
   await openExam(page);
   await page.locator('#examFormat').selectOption('mcq');
   await page.locator('#examDuration').selectOption('10');
+  await page.locator('#examCount').selectOption('10');
   await page.locator('#examBegin').click();
   await expect(page.locator('#examQuestionHeading')).toBeVisible();
   const before=await questionKey(page);
@@ -133,6 +134,7 @@ test('320px exam is keyboard-usable without horizontal overflow or hidden close 
   await page.locator('#examFormat').selectOption('mcq');
   await page.locator('#examBegin').click();
   await expect(page.locator('.exam-option')).toHaveCount(4);
+  await page.locator('.exam-option').first().focus();
   await page.keyboard.press('1');
   await expect(page.locator('#examFeedback')).not.toBeHidden();
 });
