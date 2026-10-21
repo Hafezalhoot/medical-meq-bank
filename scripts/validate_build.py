@@ -489,16 +489,17 @@ def validate_html(source_lectures: dict[str, dict]) -> None:
     require_file(offline_path, 100_000)
     html = read_text(index_path)
     offline = read_text(offline_path)
+    version = read_json(ROOT / "version.json")["version"]
 
     for marker in (
         "Medical MEQ",
         'id="lectureFilter"',
         'id="typeFilter"',
         'id="search"',
-        '<link rel="stylesheet" href="./app.css">',
-        '<script src="./app.js"></script>',
-        '<script src="./lecture-loader.js"></script>',
-        '<script src="./pwa-client.js"></script>',
+        f'<link rel="stylesheet" href="./app.css?v={version}">',
+        f'<script src="./app.js?v={version}"></script>',
+        f'<script src="./lecture-loader.js?v={version}"></script>',
+        f'<script src="./pwa-client.js?v={version}"></script>',
         'id="review-filter-extension"',
         'id="mobile-filter-extension"',
         'id="print-manager-extension"',
