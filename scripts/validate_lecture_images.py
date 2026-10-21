@@ -119,7 +119,7 @@ def main() -> None:
                 if not resolved.is_relative_to(allowed_root) or not resolved.is_file():
                     fail(f"missing or unsafe source PDF JPEG for {global_id}")
                 raw = resolved.read_bytes()
-                if len(raw) < 300 or len(raw) > 5 * 1024 * 1024 or raw[:3] != b"\\xff\\xd8\\xff":
+                if len(raw) < 300 or len(raw) > 5 * 1024 * 1024 or raw[:3] != b"\xff\xd8\xff":
                     fail(f"source PDF JPEG is invalid for {global_id}")
                 digest = hashlib.sha256(raw).hexdigest()
                 if item.get("imageSha256") != digest or item.get("imageBytes") != len(raw):
