@@ -13,10 +13,10 @@ on:
         type: string
         default: '7a01299ffa9d0b2ca066903b02918feb8ec7761f'
       worker_version_id:
-        description: 'Exact matching version ID from Cloudflare Workers Builds'
-        required: true
+        description: 'Optional Worker ID; leave blank for latest validated Cloudflare build at source_sha'
+        required: false
         type: string
-        default: '693d6a6f-f459-4080-ba98-5a14b935946e'
+        default: ''
       confirm_production:
         description: 'I approve sending 100% of MEQ production traffic to this version'
         required: true
@@ -36,7 +36,7 @@ jobs:
     if: >-
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'workflow_dispatch' ||
-       (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'Promote approved MEQ Worker via protected CI (#41)')))
+       (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'Promote latest approved MEQ Worker via protected CI (#42)')))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
@@ -52,9 +52,10 @@ jobs:
           node-version: 22
 
       - name: Verify explicit approval, version and protected quality checks
+        id: eligibility
         env:
           SOURCE_SHA: ${{ github.event_name == 'push' && '7a01299ffa9d0b2ca066903b02918feb8ec7761f' || inputs.source_sha }}
-          WORKER_VERSION_ID: ${{ github.event_name == 'push' && '693d6a6f-f459-4080-ba98-5a14b935946e' || inputs.worker_version_id }}
+          WORKER_VERSION_ID: ${{ inputs.worker_version_id }}
           CONFIRM_PRODUCTION: ${{ github.event_name == 'push' && 'true' || inputs.confirm_production }}
           GITHUB_TOKEN: ${{ github.token }}
         shell: bash
@@ -68,8 +69,8 @@ jobs:
             echo '::error::Enter a complete lowercase 40-character source commit SHA.'
             exit 1
           fi
-          if [[ ! "$WORKER_VERSION_ID" =~ ^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$ ]]; then
-            echo '::error::Enter the exact Cloudflare Worker version UUID.'
+          if [[ -n "$WORKER_VERSION_ID" && ! "$WORKER_VERSION_ID" =~ ^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$ ]]; then
+            echo '::error::If supplied, the Cloudflare Worker version must be a lowercase UUID.'
             exit 1
           fi
           git merge-base --is-ancestor "$SOURCE_SHA" "$GITHUB_SHA" || {
@@ -86,7 +87,7 @@ jobs:
 
       - name: Promote the previously built Worker version to 100% traffic
         env:
-          WORKER_VERSION_ID: ${{ github.event_name == 'push' && '693d6a6f-f459-4080-ba98-5a14b935946e' || inputs.worker_version_id }}
+          WORKER_VERSION_ID: ${{ steps.eligibility.outputs.worker_version_id }}
           SOURCE_SHA: ${{ github.event_name == 'push' && '7a01299ffa9d0b2ca066903b02918feb8ec7761f' || inputs.source_sha }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
