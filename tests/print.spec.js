@@ -90,3 +90,31 @@ test('print center close control meets the minimum interaction target', async ({
   expect(box.width).toBeGreaterThanOrEqual(44);
   expect(box.height).toBeGreaterThanOrEqual(44);
 });
+
+
+test('sidebar print shortcut remains keyboard-accessible and restores focus on Escape', async ({page}) => {
+  await page.setViewportSize({width: 1440, height: 900});
+  await openBank(page);
+  const launch = page.locator('#printCenterSidebarBtn');
+  await expect(launch).toHaveAttribute('aria-haspopup', 'dialog');
+  await expect(launch).toHaveCount(1);
+  await launch.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#printCenterModal')).toBeVisible();
+  await expect(page.locator('#printCenterClose')).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#printCenterModal')).toBeHidden();
+  await expect(launch).toBeFocused();
+});
+
+test('Print Center explains how to recover when filters leave no printable questions', async ({page}) => {
+  await openBank(page);
+  await page.locator('#search').fill('unmatched-lecture-query-987654321');
+  await expect(page.locator('#empty')).toHaveClass(/show/);
+  await page.locator('#printCenterQuickBtn').click();
+  await expect(page.locator('#printSelectionCount')).toHaveText('0 printable items');
+  await expect(page.locator('#printSelectionHint')).toHaveText(
+    'Select a lecture or clear the current filters to print questions.'
+  );
+  await expect(page.locator('#printCenterCreate')).toBeDisabled();
+});
