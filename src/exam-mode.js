@@ -41,6 +41,7 @@
       savedSession.questions.length<=100&&savedSession.questions.every(validQuestion)&&
       savedSession.answers&&typeof savedSession.answers==='object'&&!Array.isArray(savedSession.answers)
         ?savedSession:null;
+  if(session&&(!Number.isInteger(session.index)||session.index<0||session.index>=session.questions.length))session.index=0;
   let busy=false;
   let clock=null;
 
@@ -287,7 +288,8 @@
         b.setAttribute('aria-pressed',String(result?.choice===index));
         const mark=node('span','exam-option-letter',String.fromCharCode(65+index));
         mark.setAttribute('aria-hidden','true');
-        b.append(mark,appendText(node('span','',''),'span','exam-option-text',option));
+        const optionText=node('span','exam-option-text',option);optionText.dir='auto';
+        b.append(mark,optionText);
         if(result){
           if(index===item.answerIndex)b.classList.add('is-correct');
           else if(index===result.choice)b.classList.add('is-wrong');
@@ -418,8 +420,7 @@
   const loadQuestions=async items=>{
     const ids=[...new Set(items.map(q=>q.lectureId))];
     const loader=globalThis.MEQLectureLoader;
-    if(!loader)throw new Error('Lecture loader is not ready. Reload the page.');
-    await Promise.all(ids.map(id=>loader.loadLecture(id,{refresh:false,busy:false})));
+    if(loader)await Promise.all(ids.map(id=>loader.loadLecture(id,{refresh:false,busy:false})));
     if(items.some(q=>!sourceFor(q)))throw new Error('A question was removed or the lecture was updated. Start a fresh exam.');
   };
   const begin=async()=>{
@@ -430,14 +431,13 @@
     try{
       await Promise.resolve(globalThis.MEQProgressStore?.ready);
       const loader=globalThis.MEQLectureLoader;
-      if(!loader)throw new Error('Lectures are still loading. Try again.');
       const course=activeCourseId(),subject=activeSubject;
-      await loader.loadSubjectMetadata(subject,course);
+      if(loader)await loader.loadSubjectMetadata(subject,course);
       const scope=el('examScope').value;
       const selected=selectedLectureId();
       const rows=visibleLectures().filter(l=>scope==='subject'||l.id===selected);
       if(!rows.length)throw new Error('Choose a published lecture with questions first.');
-      await Promise.all(rows.map(l=>loader.loadLecture(l.id,{refresh:false,busy:false})));
+      if(loader)await Promise.all(rows.map(l=>loader.loadLecture(l.id,{refresh:false,busy:false})));
       let pool=rows.flatMap(l=>cardPool(lectures.find(x=>x.id===l.id)||l));
       if(el('examWeakOnly').checked)pool=pool.filter(q=>['weak','review'].includes(state[key(q.lectureId,q.type,q.id)]));
       const format=el('examFormat').value;
