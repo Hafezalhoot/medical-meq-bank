@@ -309,7 +309,10 @@ test('Impeccable: Escape closes mobile study utilities and restores focus safely
 test('V3 dark study surfaces use one clinical palette at phone and desktop widths', async ({page}) => {
   for (const viewport of [{width: 390, height: 844}, {width: 1440, height: 900}]) {
     await openBank(page, viewport);
-    await page.locator('#darkBtn').click();
+    // The theme preference persists across reloads and viewport checks.
+    if (!(await page.locator('body').evaluate(element => element.classList.contains('dark')))) {
+      await page.locator('#darkBtn').click();
+    }
     await expect(page.locator('body')).toHaveClass(/dark/);
 
     await page.locator('#courseLibraryDisclosure summary').click();
