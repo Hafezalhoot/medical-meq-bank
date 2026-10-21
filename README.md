@@ -4,24 +4,32 @@ Public source repository for the Medical MEQ Review Bank.
 
 The project is an offline-first Progressive Web App containing lecture-based MEQ cases, high-yield short questions, image/spot questions, detailed practice, Rapid Recall, saved progress, dark mode, printing, and lecture/subtopic navigation.
 
-## Current lecture content
+## Current lecture content — 10 published lectures
 
-### Urology
+The published catalog has **3 medical courses**, with study content in the specialties listed below.
 
-1. Congenital Anomalies
-2. BPH & Prostate Carcinoma
-3. Urological Emergencies
-4. Urinary Tract Infection
-5. Scrotal Swelling
-6. Bladder Cancer
-7. Urolithiasis
-8. Renal Tumors
+### Surgery — 9 lectures
 
-### Neurosurgery
+**Urology (8):** Congenital Anomalies; BPH & Prostate Carcinoma; Urological Emergencies; Urinary Tract Infection; Scrotal Swelling; Bladder Cancer; Urolithiasis; Renal Tumors.
 
-1. Traumatic Brain Injury
+**Neurosurgery (1):** Traumatic Brain Injury.
+
+General Surgery and GIT Surgery are registered specialties with no published lecture payloads yet.
+
+### Internal Medicine II — 1 lecture
+
+**Dermatology (1):** Introduction to Dermatology. Its lecture-based companion includes Explanation, 30 MCQs and 14 source-original image/spot questions with reviewed JPEG fingerprints.
+
+### Internal Medicine — awaiting lectures
+
+Cardiology, Chest Medicine, Gastroenterology, Nephrology, Endocrinology, Hematology and Rheumatology are registered specialties without published lectures. Do not display a draft as exam-ready content.
+
 
 The uploaded lecture remains the exam-content authority. The application build verifies every reviewable lecture source and confirms that the published and standalone study banks are identical to the committed JSON.
+
+## Deployment vs. source access
+
+The source repository is public. The [Cloudflare Worker](https://medical-meq-bank.hafztamr.workers.dev/) may require Cloudflare Access login; a public GitHub repository does **not** mean anonymous Worker access. Live release verification is tracked in [issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35), which must be resolved through authorized Access service authentication, not by assuming that green source CI proves production deployment.
 
 ## Repository structure
 
