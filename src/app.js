@@ -320,16 +320,16 @@ function createStudyGuide(lecture) {
     const details=disclosure('Explanation',guide.explanation.length);
     guide.explanation.forEach(part=>{
       const article=document.createElement('article');article.className='study-guide-explanation';
-      const heading=document.createElement('h3');heading.textContent=part.heading;article.append(heading);
+      const heading=document.createElement('h3');heading.textContent=part.heading;heading.dir='auto';article.append(heading);
       for(const text of part.paragraphs){
-        const p=document.createElement('p');p.textContent=text;p.dir=/[\u0600-\u06FF]/.test(text)?'rtl':'ltr';article.append(p);
+        const p=document.createElement('p');p.textContent=text;p.dir='auto';article.append(p);
       }
       if(part.understandingAids?.length){
         const aid=document.createElement('aside');aid.className='study-guide-understanding';
         const title=document.createElement('strong');
         title.textContent='Understanding Aid — Not an additional exam fact';
         aid.append(title);
-        for(const text of part.understandingAids){const p=document.createElement('p');p.textContent=text;p.dir=/[\u0600-\u06FF]/.test(text)?'rtl':'ltr';aid.append(p);}
+        for(const text of part.understandingAids){const p=document.createElement('p');p.textContent=text;p.dir='auto';aid.append(p);}
         article.append(aid);
       }
       sourceLabel(article,part.sourcePage);
@@ -367,7 +367,10 @@ function createStudyGuide(lecture) {
           const result=selected
             ?(Number(selected.value)===item.answerIndex?'Your answer is correct. ':'Your answer needs review. ')
             :'';
-          feedback.textContent=result+'Correct answer: '+item.options[item.answerIndex]+'. '+item.rationale;
+          feedback.textContent=result+'Correct answer: ';
+          const answer=document.createElement('bdi');answer.textContent=item.options[item.answerIndex];
+          const rationale=document.createElement('span');rationale.dir='auto';rationale.textContent=item.rationale;
+          feedback.append(answer,'. ',rationale);
         }
       });
       article.append(reveal,feedback);
