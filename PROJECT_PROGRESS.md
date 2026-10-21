@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — Print Center keyboard access and no-results recovery (2026.10.21.6 candidate)
+
+- ✅ Merged collision-safe lecture draft IDs in [PR #38](https://github.com/Hafezalhoot/medical-meq-bank/pull/38) after exact-head validate, Chromium, WebKit and Workers Builds checks passed. Protected-main commit: cc02c3125ab86352932b127ad7be3325c6a404e2.
+- 🔎 Audited Print Center launch paths: the sidebar button was found by scanning DOM button text or an inline window.print attribute, making the action fragile to copy changes and localization.
+- 🧪 Added a stable sidebar button ID, type=button and dialog semantics; Print Center binds by ID, and the quick-launch also announces dialog intent. If filters hide all questions, the disabled print action now explains how to recover.
+- 🧪 Added browser tests for Enter/Escape and focus restoration through the sidebar launch, plus a no-results state with zero printable questions.
+- 🧪 Candidate version 2026.10.21.6 synced across version.json, Service Worker and PWA client; medical content, image hashes, saved progress and offline user storage are untouched.
+- ⏳ Require exact-head static/Chromium/WebKit checks before merge; live release still requires authenticated Cloudflare Access verification (issue #35).
+
+
 ### 2026-10-21 — Collision-safe lecture draft authoring
 
 - 🧪 The lecture skeleton generator now includes **course + specialty + title** in its default globally unique lecture ID, rather than specialty/title alone. This avoids a confusing registration collision when the same specialty or lecture name appears in different medical courses.
