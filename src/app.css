@@ -855,3 +855,20 @@ details.original-figure-tools{display:block;padding:0!important;margin:2px 0 15p
     background-position:calc(100% - 10px) 17px,calc(100% - 6px) 17px
   }
 }
+
+
+/* Full course/specialty labels at tablet and desktop sizes.
+   Reuse existing native controls; do not rely on browser tooltip to recover
+   hidden course names. The tablet panel has an intentional compact sequence. */
+@media (min-width:981px){
+  .hero .hero-panel{grid-template-columns:minmax(0,1.28fr) minmax(0,1fr)}
+}
+@media (min-width:701px) and (max-width:980px){
+  .hero .hero-panel{grid-template-columns:minmax(0,1fr);row-gap:2px}
+  .hero .hero-panel-heading{grid-column:1;grid-row:1}
+  .hero .hero-panel .course-panel-label{grid-column:1;grid-row:2}
+  .hero .hero-panel #courseSelector{grid-column:1;grid-row:3;width:100%}
+  .hero .hero-panel label[for="subjectSelector"]{grid-column:1;grid-row:4}
+  .hero .hero-panel #subjectSelector{grid-column:1;grid-row:5;width:100%}
+  .hero .hero-panel #resumeStudyBtn{grid-column:1;grid-row:6}
+}
