@@ -42,7 +42,7 @@ test('exam instantly marks wrong source-authored MCQ Weak, locks answer and show
   await expect(page.locator('#examFeedback')).toContainText('Incorrect · Weak');
   await expect(page.locator('#examFeedback')).toContainText(mcq.options[mcq.answerIndex]);
   await expect(page.locator('#examFeedback')).toContainText(mcq.rationale);
-  await expect(page.locator('.exam-option')).toBeDisabled();
+  for(const option of await page.locator('.exam-option').all())await expect(option).toBeDisabled();
   const rated=await page.evaluate(({derm,id})=>{
     const value=key(derm,'mcq',id);
     return {value:state[value],button:document.querySelector('.study-guide-mcq .status.weak')?.classList.contains('active')};
