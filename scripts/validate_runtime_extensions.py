@@ -92,6 +92,7 @@ def main() -> None:
         "review-filter-extension",
         "mobile-filter-extension",
         "search-optimization-extension",
+        "exam-mode-extension",
         "print-manager-extension",
         "back-to-top-extension",
     )
@@ -103,6 +104,11 @@ def main() -> None:
         positions.append(html.index(marker))
     if positions != sorted(positions):
         fail("runtime extensions are not generated in the required order")
+    for asset in (f'./exam-mode.css?v={release}', f'./exam-mode.js?v={release}'):
+        if html.count(asset) != 1:
+            fail(f'exam asset missing or not version aligned: {asset}')
+    if offline.count('id="exam-mode-extension"') != 1 or offline.count('id="exam-mode-styles"') != 1:
+        fail('standalone exam mode is not embedded in the offline bank')
     if external_positions[-1] >= positions[0]:
         fail("runtime extensions execute before the core application scripts finish loading")
 
