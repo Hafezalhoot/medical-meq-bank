@@ -1,0 +1,109 @@
+name: Promote approved MEQ Worker
+
+on:
+  # One-time owner-requested release attempt when PR #41 is merged.
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: 'Fully reviewed source commit (must be on main and pass all quality checks)'
+        required: true
+        type: string
+        default: '7a01299ffa9d0b2ca066903b02918feb8ec7761f'
+      worker_version_id:
+        description: 'Exact matching version ID from Cloudflare Workers Builds'
+        required: true
+        type: string
+        default: '693d6a6f-f459-4080-ba98-5a14b935946e'
+      confirm_production:
+        description: 'I approve sending 100% of MEQ production traffic to this version'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  checks: read
+
+concurrency:
+  group: meq-production-promotion
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'Promote approved MEQ Worker via protected CI (#41)')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - name: Check out protected main and its history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Verify explicit approval, version and protected quality checks
+        env:
+          SOURCE_SHA: ${{ github.event_name == 'push' && '7a01299ffa9d0b2ca066903b02918feb8ec7761f' || inputs.source_sha }}
+          WORKER_VERSION_ID: ${{ github.event_name == 'push' && '693d6a6f-f459-4080-ba98-5a14b935946e' || inputs.worker_version_id }}
+          CONFIRM_PRODUCTION: ${{ github.event_name == 'push' && 'true' || inputs.confirm_production }}
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$CONFIRM_PRODUCTION" != 'true' ]]; then
+            echo '::error::Production promotion requires explicit confirmation.'
+            exit 1
+          fi
+          if [[ ! "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]]; then
+            echo '::error::Enter a complete lowercase 40-character source commit SHA.'
+            exit 1
+          fi
+          if [[ ! "$WORKER_VERSION_ID" =~ ^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$ ]]; then
+            echo '::error::Enter the exact Cloudflare Worker version UUID.'
+            exit 1
+          fi
+          git merge-base --is-ancestor "$SOURCE_SHA" "$GITHUB_SHA" || {
+            echo '::error::The target commit is not in protected main history.'
+            exit 1
+          }
+          source_release=$(git show "${SOURCE_SHA}:version.json" | python3 -c 'import sys,json;print(json.load(sys.stdin)["version"])')
+          main_release=$(python3 -c 'import json;print(json.load(open("version.json"))["version"])')
+          if [[ "$source_release" != "$main_release" ]]; then
+            echo '::error::A newer application version exists on main. Refresh the release candidate.'
+            exit 1
+          fi
+          node scripts/promotion_gate.mjs
+
+      - name: Promote the previously built Worker version to 100% traffic
+        env:
+          WORKER_VERSION_ID: ${{ github.event_name == 'push' && '693d6a6f-f459-4080-ba98-5a14b935946e' || inputs.worker_version_id }}
+          SOURCE_SHA: ${{ github.event_name == 'push' && '7a01299ffa9d0b2ca066903b02918feb8ec7761f' || inputs.source_sha }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" ]]; then
+            echo '::error::Create the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID GitHub Actions secrets first.'
+            exit 1
+          fi
+          npx --yes wrangler@4 versions deploy "${WORKER_VERSION_ID}@100%" \
+            --name medical-meq-bank --message "Approved source ${SOURCE_SHA}" --yes
+          npx --yes wrangler@4 deployments status --name medical-meq-bank
+          {
+            echo '### MEQ Worker promotion command completed'
+            echo "- Source commit: ${SOURCE_SHA}"
+            echo "- Worker version: ${WORKER_VERSION_ID}"
+            echo '- Traffic target: 100% (check Wrangler status output)'
+            echo '- Run the separate authenticated Live Cloudflare Production Smoke before declaring the site verified.'
+          } >> "$GITHUB_STEP_SUMMARY"
