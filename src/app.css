@@ -839,3 +839,19 @@ details.original-figure-tools{display:block;padding:0!important;margin:2px 0 15p
   .study-launch-row .course-library-toggle{min-height:52px;padding:8px 11px}
   .study-launch-row .course-library-heading span{display:none}
 }
+
+
+/* Mobile clinical controls: display complete course and specialty names.
+   At the smallest width keep native selectors, never replace them with a
+   decorative truncation or add a second navigation path. */
+@media (min-width:351px) and (max-width:700px){
+  .hero .hero-panel{grid-template-columns:minmax(0,1.32fr) minmax(0,1fr)}
+}
+@media (max-width:350px){
+  .hero .hero-panel{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+  .hero .hero-panel #courseSelector,
+  .hero .hero-panel #subjectSelector{
+    font-size:12px;padding-left:5px;padding-right:14px;
+    background-position:calc(100% - 10px) 17px,calc(100% - 6px) 17px
+  }
+}

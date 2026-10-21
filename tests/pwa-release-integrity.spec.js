@@ -139,3 +139,39 @@ test('reader-first responsive UI keeps the first lecture in reach across phone/t
     }
   }
 });
+
+
+test('320/390px course and specialty selectors show their full names and Clear all is reachable', async ({page}) => {
+  for(const width of [320,390]){
+    await page.setViewportSize({width,height:844});
+    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
+    await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+    await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+    await expect(page.locator('.reset-filter-chips-button')).toBeVisible();
+    const geometry=await page.evaluate(()=>{
+      const readableSelect=id=>{
+        const el=document.getElementById(id);
+        const computed=getComputedStyle(el);
+        const context=document.createElement('canvas').getContext('2d');
+        context.font=computed.font;
+        return {
+          textWidth:context.measureText(el.selectedOptions[0].textContent).width,
+          availableWidth:el.clientWidth-parseFloat(computed.paddingLeft)-parseFloat(computed.paddingRight)
+        };
+      };
+      const strip=document.querySelector('.active-filter-chips').getBoundingClientRect();
+      const reset=document.querySelector('.reset-filter-chips-button').getBoundingClientRect();
+      return {
+        course:readableSelect('courseSelector'),
+        specialty:readableSelect('subjectSelector'),
+        resetFullyVisible:reset.left>=strip.left&&reset.right<=strip.right-2,
+        overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
+      };
+    });
+    expect(geometry.course.textWidth).toBeLessThanOrEqual(geometry.course.availableWidth);
+    expect(geometry.specialty.textWidth).toBeLessThanOrEqual(geometry.specialty.availableWidth);
+    expect(geometry.resetFullyVisible).toBe(true);
+    expect(geometry.overflow).toBeLessThanOrEqual(1);
+  }
+});
