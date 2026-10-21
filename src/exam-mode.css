@@ -116,3 +116,7 @@
 }
 @media(prefers-reduced-motion:reduce){.exam-launch-btn,.exam-track span{transition:none}}
 @media print{.exam-launch-btn,.exam-dialog{display:none!important}}
+
+/* Source MCQs share the same Mastered/Review/Weak controls as the original bank. */
+.exam-mcq-rating{margin:15px 0 0;display:flex;gap:7px;flex-wrap:wrap}
+.exam-mcq-rating .status{min-height:44px}
