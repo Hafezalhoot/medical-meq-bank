@@ -357,3 +357,32 @@ test('V3 dark study surfaces use one clinical palette at phone and desktop width
     expect(colors.overflow).toBeLessThanOrEqual(1);
   }
 });
+
+
+test('320px study shortcuts share one row and expand without losing their controls', async ({page}) => {
+  await openBank(page, {width:320, height:700});
+  const collapsed=await page.evaluate(() => {
+    const row=document.querySelector('.study-launch-row').getBoundingClientRect();
+    const library=document.querySelector('.study-launch-row>.course-library').getBoundingClientRect();
+    const review=document.querySelector('.study-launch-row>.my-review').getBoundingClientRect();
+    return {height:row.height,libraryTop:library.top,reviewTop:review.top,
+      libraryWidth:library.width,reviewWidth:review.width};
+  });
+  expect(Math.abs(collapsed.libraryTop-collapsed.reviewTop)).toBeLessThanOrEqual(2);
+  expect(collapsed.height).toBeLessThanOrEqual(74);
+  expect(collapsed.libraryWidth).toBeGreaterThan(110);
+  expect(collapsed.reviewWidth).toBeGreaterThan(110);
+  const library=page.locator('#courseLibraryDisclosure');
+  await library.locator('summary').click();
+  await expect(library).toHaveAttribute('open','');
+  await expect(page.locator('#courseLibraryGrid')).toBeVisible();
+  const openWidth=await library.evaluate(el=>el.getBoundingClientRect().width);
+  expect(openWidth).toBeGreaterThan(270);
+  await library.locator('summary').click();
+  const review=page.locator('#myReviewDisclosure');
+  await review.locator('summary').click();
+  await expect(review).toHaveAttribute('open','');
+  await expect(page.locator('#myReviewStatus')).toBeVisible();
+  const width=await page.evaluate(() => document.documentElement.scrollWidth-innerWidth);
+  expect(width).toBeLessThanOrEqual(1);
+});
