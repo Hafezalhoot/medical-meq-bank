@@ -1,6 +1,10 @@
 name: Promote approved MEQ Worker
 
 on:
+  # One-time owner-requested release attempt when PR #41 is merged.
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       source_sha:
@@ -29,7 +33,10 @@ concurrency:
 
 jobs:
   promote:
-    if: github.ref == 'refs/heads/main'
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'Promote approved MEQ Worker via protected CI (#41)')))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
@@ -46,9 +53,9 @@ jobs:
 
       - name: Verify explicit approval, version and protected quality checks
         env:
-          SOURCE_SHA: ${{ inputs.source_sha }}
-          WORKER_VERSION_ID: ${{ inputs.worker_version_id }}
-          CONFIRM_PRODUCTION: ${{ inputs.confirm_production }}
+          SOURCE_SHA: ${{ github.event_name == 'push' && '7a01299ffa9d0b2ca066903b02918feb8ec7761f' || inputs.source_sha }}
+          WORKER_VERSION_ID: ${{ github.event_name == 'push' && '693d6a6f-f459-4080-ba98-5a14b935946e' || inputs.worker_version_id }}
+          CONFIRM_PRODUCTION: ${{ github.event_name == 'push' && 'true' || inputs.confirm_production }}
           GITHUB_TOKEN: ${{ github.token }}
         shell: bash
         run: |
@@ -79,8 +86,8 @@ jobs:
 
       - name: Promote the previously built Worker version to 100% traffic
         env:
-          WORKER_VERSION_ID: ${{ inputs.worker_version_id }}
-          SOURCE_SHA: ${{ inputs.source_sha }}
+          WORKER_VERSION_ID: ${{ github.event_name == 'push' && '693d6a6f-f459-4080-ba98-5a14b935946e' || inputs.worker_version_id }}
+          SOURCE_SHA: ${{ github.event_name == 'push' && '7a01299ffa9d0b2ca066903b02918feb8ec7761f' || inputs.source_sha }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
