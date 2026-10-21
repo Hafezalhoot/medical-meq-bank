@@ -1,6 +1,6 @@
 # Medical MEQ Workspace V3 — Reader-first design and original-only imagery
 
-**Status:** Draft UX and source-image trial in [PR #28](https://github.com/Hafezalhoot/medical-meq-bank/pull/28), not deployed. Baseline production source is `main` at `d7f3c0b`, candidate preview version `2026.10.20.2`. 
+**Status:** V3 shipped to production on 2026-10-21, but the user reported a critical mixed-stylesheet PWA problem. [PR #30](https://github.com/Hafezalhoot/medical-meq-bank/pull/30) contains a release-coherent CSS/JS hotfix (`2026.10.21.2`). See [PRODUCTION_UI_AUDIT_2026-10-21.md](PRODUCTION_UI_AUDIT_2026-10-21.md) for evidence and remaining gates. 
 **User direction:** A stronger, potentially complete redesign of the UI and ordering without losing any old features. ONLY photographs from the original uploaded lecture PDFs may be used. Do not create or source replacement medical visuals.
 
 ## Current verified architecture and constraints

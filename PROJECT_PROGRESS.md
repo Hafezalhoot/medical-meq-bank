@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-21 — P0 production CSS/JS mismatch: V3 hotfix and regression protection
+
+- 🚨 User screenshot of live `2026.10.21.1` showed blue old hero, oversized SVG controls, overlapping theme/selection buttons, exposed skip link and large empty gaps, despite all previous PR CI passing.
+- ✅ Root cause traced to old active Service Worker combining **network-first new HTML** with **global cache-first old CSS/JS**. Existing screenshot tests disabled Service Workers and did not catch this mismatch.
+- ✅ Implemented `?v=2026.10.21.2` for every runtime CSS/JS in generated online HTML and version-matched SW precache; asset fetch reads only release-specific cache. The content/standalone offline HTML remains preserved.
+- ✅ Downloaded original lectures/images are migrated to a stable user-lesson cache before old app cache retirement; IndexedDB progress isn't rewritten. Added 18px intrinsic SVG safeguards and mobile/tablet discovery compaction.
+- ✅ Added SW-enabled Playwright CSS-cache-poisoning, offline-lesson-migration and 320/390/768/1280/1440 responsive tests. Updated static HTML validators rather than bypassing existing checks.
+- ✅ Documented confirmed defects and deferred improvement backlog in [PRODUCTION_UI_AUDIT_2026-10-21.md](PRODUCTION_UI_AUDIT_2026-10-21.md).
+- ⚠️ Exact last-commit CI and Cloudflare live visual proof are release conditions. Do not claim browser production repair just from successful GitHub Actions.
+
 ### 2026-10-21 — Original Dermatology images hosted directly by learner request
 
 - ✅ Learner explicitly requested the 14 authentic printed-source Dermatology photographs to render automatically for all visitors, like the existing Surgery lecture images. The 14 reviewed JPEG crops were added as **separate same-origin static assets** under `assets/lectures/dermatology-introduction/`, preserving exact original SHA-256 and source page attribution.
