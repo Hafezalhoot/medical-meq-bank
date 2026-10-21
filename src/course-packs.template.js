@@ -242,7 +242,7 @@
     Object.entries(state).forEach(([statusKey,level])=>{
       if(level!=='weak'&&level!=='review')return;
       const item=progressKeyParts(statusKey);
-      if(!item.lectureId||!item.itemId||!['case','core','image','extra'].includes(item.type))return;
+      if(!item.lectureId||!item.itemId||!['case','core','image','extra','mcq'].includes(item.type))return;
       const identity=[item.lectureId,item.type,item.itemId].join('::');
       if(!unique.has(identity)||item.version===2)unique.set(identity,{...item,level});
     });
@@ -286,8 +286,22 @@
         reviewFilter.value=level;
         reviewFilter.dispatchEvent(new Event('change',{bubbles:true}));
       }else applyFilters();
-      const matching=[...document.querySelectorAll('#mainContent .study-item:not(.hidden)')]
+      let matching=[...document.querySelectorAll('#mainContent .study-item:not(.hidden)')]
         .find(item=>item.querySelector('.status[data-status="'+level+'"].active'));
+      if(!matching){
+        // Source MCQs are study-guide cards, not legacy .study-item cards.
+        const mcq=[...document.querySelectorAll('#mainContent .study-guide-mcq')]
+          .find(item=>item.querySelector('.status[data-status="'+level+'"].active'));
+        if(mcq){
+          if(reviewFilter){
+            reviewFilter.value='all';
+            reviewFilter.dispatchEvent(new Event('change',{bubbles:true}));
+          }
+          const disclosure=mcq.closest('details');
+          if(disclosure)disclosure.open=true;
+          matching=mcq;
+        }
+      }
       if(!matching)throw new Error('No saved '+level+' items are visible in this lecture.');
       reviewPanel.open=false;
       matching.setAttribute('tabindex','-1');
@@ -385,6 +399,10 @@
       updateSavedReviewCount();
       if(reviewPanel?.open)void renderSavedReview();
     });
+  });
+  document.addEventListener('meq:exam-rating-changed',()=>{
+    updateSavedReviewCount();
+    if(reviewPanel?.open)void renderSavedReview();
   });
   updateSavedReviewCount();
 
