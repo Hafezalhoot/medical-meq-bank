@@ -8,6 +8,18 @@ import {chromium} from '@playwright/test';
 const site = new URL(process.env.MEQ_PRODUCTION_URL || 'https://medical-meq-bank.hafztamr.workers.dev/');
 assert.equal(site.protocol, 'https:', 'Production smoke requires HTTPS');
 const expectedVersion = JSON.parse(readFileSync(new URL('../version.json', import.meta.url), 'utf8')).version;
+const accessId = process.env.MEQ_CF_ACCESS_CLIENT_ID?.trim() || '';
+const accessSecret = process.env.MEQ_CF_ACCESS_CLIENT_SECRET?.trim() || '';
+assert.equal(Boolean(accessId), Boolean(accessSecret), 'Provide BOTH Cloudflare Access secrets, or neither');
+if (accessId) {
+  // Never send long-lived service credentials to a configurable/untrusted host.
+  assert.equal(site.origin, 'https://medical-meq-bank.hafztamr.workers.dev',
+    'Cloudflare Access credentials are restricted to the approved production origin');
+}
+const accessHeaders = accessId
+  ? {'CF-Access-Client-Id': accessId, 'CF-Access-Client-Secret': accessSecret}
+  : {};
+
 const output = process.env.MEQ_SMOKE_OUTPUT || 'production-smoke-evidence';
 mkdirSync(output, {recursive: true});
 
@@ -24,7 +36,7 @@ async function waitForDeployment() {
       const response = await fetch(endpoint, {
         cache: 'no-store',
         redirect: 'manual',
-        headers: {'Cache-Control': 'no-cache', 'Accept': 'application/json'},
+        headers: {'Cache-Control': 'no-cache', 'Accept': 'application/json', ...accessHeaders},
         signal: AbortSignal.timeout(12000)
       });
       if (response.status >= 300 && response.status < 400) {
@@ -152,6 +164,17 @@ async function run() {
   await waitForDeployment();
   browser = await chromium.launch({headless: true});
   const context = await browser.newContext({viewport: {width: 390, height: 844}, serviceWorkers: 'allow'});
+  if (accessId) {
+    // Do not use context-wide extraHTTPHeaders: those can leak a service
+    // token to external resources or a redirected login origin.
+    await context.route('**/*', route => {
+      const requestUrl = new URL(route.request().url());
+      if (requestUrl.origin !== site.origin) return route.continue();
+      return route.continue({
+        headers: {...route.request().headers(), ...accessHeaders}
+      });
+    });
+  }
   page = await context.newPage();
   page.on('pageerror', error => errors.push('Page: ' + String(error)));
   page.on('response', response => {
