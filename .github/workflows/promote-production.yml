@@ -1,7 +1,7 @@
 name: Promote approved MEQ Worker
 
 on:
-  # One-time owner-requested release attempt when PR #41 is merged.
+  # One-time owner-requested retry when PR #42 is merged; other pushes skip.
   push:
     branches:
       - main
