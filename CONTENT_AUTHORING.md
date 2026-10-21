@@ -2,6 +2,17 @@
 
 This is the contributor workflow for adding new Medical MEQ Bank content without creating lecture-specific build code.
 
+## Medical visual provenance policy — owner request (2026-10-17)
+
+**Only figures and clinical photographs actually present in the learner-provided PDF may appear as medical lecture images.** The repository must not manufacture new clinical visuals, depict invented lesions, borrow photographs from external sources, or replace original source photographs with AI-generated diagrams.
+
+- Every question's visual must have an identifiable **source lecture, printed PDF page and crop/figure identity**. Explanatory text remains governed by **Lecture-First Policy**; handwritten margin notes belong to the learner and are not extra examinable facts.
+- Do not silently substitute an invented figure when an original photo is missing. Display a clear **original source image not yet available** state with its page and a private import workflow.
+- Confirm reuse/public distribution rights before publishing the original source scans or individual photographs in a **public** GitHub repo, Worker static assets or shared HTML. Private, user-chosen source-only local imports can remain in IndexedDB on the learner's device without transmitting originals to the app backend.
+- The Dermatology pilot uses stable file names `derm-image-001.jpg` through `derm-image-014.jpg`, with all originals cropped from the user's PDF printed layers. Users import these locally, and the source-package manifest maps each ID to original page, bounding box and file hash. Keep the image ID stable through redesigned UI and progress migration.
+- Generic infographic functionality remains available for legacy lectures that already include source-authorized figures, but **do not generate a synthetic infographic/clinical image** for future lectures unless the user explicitly changes the original-only medical imagery rule. A text-only comparison or HTML/CSS table can summarize printed definitions without pretending to be source photography.
+- Visual provenance and user understanding are different from medical factual approval; a full published exam-facing question still needs printed-source answer review.
+
 ## Source of truth
 
 - Human-reviewable lecture content belongs in `lectures/data/<lecture-id>.json`.
@@ -170,3 +181,101 @@ Adding content is not complete when JSON is merely committed. It is complete onl
 - Don't rename a published lecture or question merely to reorder the UI; IndexedDB progress keys depend on stable IDs.
 - The website is public. Review redistribution permission and remove private student/patient details before pushing a lecture source or its illustrations to GitHub.
 - Drafts in `tmp/lecture-drafts/` are ignored by Git. Public content only comes from a reviewed commit and release.
+
+
+### Source-original photo packaging & verification (V3 pilot)
+
+For a lecture where the source file has real clinical photographs, extract **only** its printed original photographs from the learner-supplied PDF, not synthetic clinical drawings, online replacements or generated visuals. Preserve a private pack manifest with stable item ID, printed page, crop coordinates and SHA-256 of each JPEG. The Dermatology V3 pilot is pinned to 14 JPEGs from `Dermatology Department book 2022.pdf`.
+
+- **Public repo:** lecture text/questions + page attribution + approved SHA-256 fingerprints and import controls are allowed. Do not publish the source-book PDF, crops, handwritten annotations, or clinical photos without the copyright holder's permission.
+- **Private learner import:** the V3 prototype accepts the owner-provided ZIP or extracted exact JPEGs, verifies source hashes locally and persists the files in IndexedDB. A wrong image with a correct filename is rejected and never relabeled as original.
+- **Offline:** imported photos persist only in the current browser/device storage and are not included in normal question-progress backup JSON; a separate **personal offline review HTML** may bundle the originals for the original PDF owner. A local photo pack is not automatically a licensed public asset.
+- **New lectures:** add a generic provenance-first intake/manifest pipeline before expanding beyond the Dermatology pilot; never simply copy hard-coded image arrays or invent medical diagrams when a lecture is missing figures.
+- **Study Guide:** source-photo atlas displays authentic originals when verified, and a clear source-not-imported message otherwise. Printed text remains the only exam authority; handwritten notes are solely personal understanding aids.
+
+
+
+## Reusable original-PDF photo intake (all subjects, no synthetic images)
+
+The source-image importer is now metadata-driven. **You no longer edit src/app.js or copy a Dermatology-specific array to add another lecture.** Each reviewed image-spot question has:
+
+- A stable `id` such as `some-lecture-image-001`, and source `page` from the printed PDF.
+- No public `image` URL if reuse rights are unconfirmed.
+- `imageSha256` (64 lowercase hexadecimal characters) pinning the actual source JPEG crop; optional `imageBytes` provides its size.
+- The exact original JPEG, private to the student, named `<image-question-id>.jpg`. The renderer discovers the source images by these fields regardless of course/specialty/lecture ID.
+
+For reliable authoring, crop from the original uploaded PDF's **printed full-page JPEG layer**, never a fabricated redraw, web stock image, screenshot containing personal handwritten annotations, or up-to-date external textbook figure. If a PDF is vector-based rather than a printed JPEG background, the automatic extractor refuses to guess and a reviewer must manually extract and verify the true original. Medical facts and answer keys still obey Lecture-First Policy.
+
+### One command to prepare a private photo ZIP
+
+The crop map is a locally reviewed JSON file outside the public repo, with entries like:
+
+```json
+{
+  "items": [
+    {
+      "id": "some-lecture-image-001",
+      "sourcePage": 4,
+      "cropNormalized": [0.21, 0.34, 0.50, 0.56],
+      "description": "Review against the printed source image"
+    }
+  ]
+}
+```
+
+Map **every** source image question, verify each coordinate visually, and keep the original PDF in a private folder. This illustrative coordinate example is *not* a medical figure or an exam fact.
+
+```bash
+python3 -m pip install -r tools/requirements-original-figures.txt
+
+python3 tools/prepare_original_figure_pack.py \
+  --source-pdf "/private/Lecture.pdf" \
+  --lecture "/private/lecture-draft.json" \
+  --crop-map "/private/reviewed-crop-map.json" \
+  --private-zip "/private/Lecture_Original_Figures.zip"
+
+# Only after verifying every printed PDF crop and page label:
+python3 tools/prepare_original_figure_pack.py \
+  --source-pdf "/private/Lecture.pdf" \
+  --lecture "/private/lecture-draft.json" \
+  --crop-map "/private/reviewed-crop-map.json" \
+  --private-zip "/private/Lecture_Original_Figures_REVIEWED.zip" \
+  --write-reviewed-hashes
+```
+
+For an existing reviewed lecture, changed crop output intentionally fails a hash check; an explicit `--replace-existing-hashes` (combined with `--write-reviewed-hashes`) is required after a second medical/source-photo review. The packaging tool writes its ZIP **outside the public repo** and does not upload it or publish the source PDF.
+
+The browser reads the JPEG file hashes from each lecture automatically, accepts the matching private ZIP or multiple JPEGs, saves them in IndexedDB, displays them in the source-image atlas and exam spots, and preserves text/MCQ/case progress separately. Private photos are device-local and **not** in a normal study-progress backup; the user should retain the source ZIP to restore photos on another device.
+
+
+### Keeping new source-image lecture UI independent of course-specific code
+
+The user-facing source-photo gallery and device-local photo importer are **not per-lecture hand-coded**. For each approved image spot, the canonical JSON includes `id`, `page`, `prompt` and the SHA-256 of the actual reviewed source JPEG as `imageSha256`, with **no** public `image` reference unless public use is licensed. The current app detects those image slots automatically under any course/department, and device-local imports are scoped to `<lecture-id>::<image-question-id>` to avoid collisions between courses.
+
+Run `bash build.sh` and the Chromium/WebKit quality matrix after changing source hashes or lecture IDs. Legacy published AVIF images continue under a separate, strict embedded-media integrity rule. A successful source-image hash check **does not confer copyright permission**.
+
+
+
+### Verify the complete PRIVATE image pack before lecture registration
+
+The prep step produces a ZIP and JSON provenance manifest; before delivering a source-photo pack, check **every** original crop is present, its JPEG hash matches the source-question metadata, the printed PDF page is consistent, and there are no renamed or extra files:
+
+```bash
+python3 tools/check_original_figure_pack.py \
+  --lecture "/private/reviewed-lecture.json" \
+  --private-zip "/private/Lecture_Original_Figures_REVIEWED.zip"
+```
+
+A successful check prints `VERIFIED: N original PDF figures`. An incomplete pack, wrong fingerprint, unexpected path or mismatched page fails with a nonzero exit code and must **not** be distributed. The command reads privately; it does not extract a JPEG to disk, upload a book photograph, or permit publishing copyrighted source photos publicly. It does not replace the human check of what the photographed lesion depicts.
+
+Tests in `tests/test_original_figure_pack.py` use nonclinical fixture bytes only to prove invalid filenames, missing photos and forged manifests fail. They are included in the regular `bash build.sh` quality gate, along with the existing clinical/lecture intake integration tests.
+
+### Additional source-only publication safeguards
+
+1. Run a dry-run of `tools/add_lecture.py` on the medically reviewed JSON first. Source-photo SHA-256, printed page, source prompt and optional size are checked before registration.
+2. Prepare the reviewed source ZIP **outside GitHub**. The packager now runs the exact pack checker against the staged archive before modifying the reviewed JSON.
+3. Independently run `python3 tools/check_original_figure_pack.py --lecture /private/lecture.json --private-zip /private/Original_Figures.zip`. An error means **do not register or distribute** that photo pack.
+4. Publish source-only JSON and course catalog *only* after human content/page review; source JPEGs stay private, importable on each student's device, unless reuse permission to distribute them has been explicitly confirmed.
+5. Every future lecture with `imageSha256` automatically receives its source-image atlas, including a lecture with no optional Explanation or MCQs yet. Keep every `imageQuestions[].id` unchanged after publishing to preserve saved study state.
+
+These checks are in the repository's standard Python quality gate; do not bypass them in a direct GitHub or Cloudflare deployment.

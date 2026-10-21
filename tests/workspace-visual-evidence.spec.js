@@ -37,6 +37,9 @@ test('capture actual V2 reading surfaces across desktop, phone, and dark/focus s
   await attachScreenshot(page, testInfo, 'desktop-focus-questions');
   await page.locator('#focusModeBtn').click();
 
+  await openWorkspace(page, 1280, 800);
+  await attachScreenshot(page, testInfo, 'laptop-study');
+
   await openWorkspace(page, 768, 1024);
   await attachScreenshot(page, testInfo, 'tablet-study');
 
@@ -51,7 +54,7 @@ test('capture actual V2 reading surfaces across desktop, phone, and dark/focus s
 });
 
 
-test('capture source-reviewed Dermatology pilot, explanation and infant reading surface', async ({page}, testInfo) => {
+test('capture Dermatology source-first reader, original figures and phone explanation', async ({page}, testInfo) => {
   await openWorkspace(page, 1440, 900);
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
@@ -59,15 +62,21 @@ test('capture source-reviewed Dermatology pilot, explanation and infant reading 
   await page.locator('#lectureFilter').selectOption('internal-medicine-ii-dermatology-introduction');
   await expect(page.locator('.learning-companion')).toBeVisible();
   await attachScreenshot(page, testInfo, 'dermatology-desktop');
+  await expect(page.locator('#originalFigureTools')).not.toHaveAttribute('open','');
+  await attachScreenshot(page, testInfo, 'dermatology-compact-original-photo-tools');
+  await page.locator('#originalFigureTools summary').click();
+  await expect(page.locator('#originalFigureImportBtn')).toBeVisible();
+  await attachScreenshot(page, testInfo, 'dermatology-expanded-original-photo-import');
+  await page.locator('#originalFigureTools summary').click();
   await page.locator('.learning-companion summary').first().click();
   await attachScreenshot(page, testInfo, 'dermatology-explanation');
   await page.locator('.learning-companion summary').nth(2).click();
-  await page.locator('.study-guide-figure img').scrollIntoViewIfNeeded();
-  await expect.poll(()=>page.locator('.study-guide-figure img').evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
-  await attachScreenshot(page, testInfo, 'dermatology-infographic');
+  await expect(page.locator('.original-guide-link')).toBeVisible();
+  await page.locator('.original-atlas-grid').scrollIntoViewIfNeeded();
+  await attachScreenshot(page, testInfo, 'dermatology-original-source-gallery');
   await page.setViewportSize({width:390,height:844});
-  await page.locator('.study-guide-image-scroller').scrollIntoViewIfNeeded();
-  await attachScreenshot(page, testInfo, 'dermatology-phone-zoomable-infographic');
+  await page.locator('#originalFigureTools').scrollIntoViewIfNeeded();
+  await attachScreenshot(page, testInfo, 'dermatology-phone-original-source-import');
   await page.locator('.study-guide-explanation').first().scrollIntoViewIfNeeded();
   await attachScreenshot(page, testInfo, 'dermatology-phone');
 });

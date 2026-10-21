@@ -77,7 +77,7 @@ test('iPhone WebKit can expand, search and reset mobile filters', async ({page},
 });
 
 
-test('Safari desktop and iPhone study the new Dermatology lecture with source-linked MCQ and infographic', async ({page}, testInfo) => {
+test('Safari desktop and iPhone study the new Dermatology lecture with source-linked MCQ and original lecture photos', async ({page}, testInfo) => {
   const lectureId = 'internal-medicine-ii-dermatology-introduction';
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
@@ -134,9 +134,11 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
   await expect(mcq.locator('.study-guide-answer')).toContainText('Your answer is correct');
 
   await openStudyPart(guide.locator('.study-guide-part').nth(2));
-  const image=guide.locator('.study-guide-figure img');
-  await image.scrollIntoViewIfNeeded();
-  await expect.poll(()=>image.evaluate(img=>img.complete && img.naturalWidth>0)).toBe(true);
+  await expect(guide.locator('.original-guide-copy')).toContainText('original images');
+  await expect(guide.locator('.original-atlas-item')).toHaveCount(14);
+  await expect(page.locator('#originalFigureImportBtn')).toContainText('ZIP');
+  await expect(page.locator('#originalFigureTools')).toBeVisible();
+  await expect(guide.locator('.study-guide-figure img')).toHaveCount(0);
 
   if (testInfo.project.name === 'webkit-mobile') {
     const sizes=await page.evaluate(()=>({

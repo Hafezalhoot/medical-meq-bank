@@ -161,8 +161,12 @@ function imageSource(item){return typeof item?.image==='string'?item.image.trim(
 function imagePage(item){const value=item?.page;return value===0?'0':(value==null?'':String(value).trim())}
 function hasImageVisual(item){return Boolean(imageSource(item)||imagePage(item))}
 function imagePlaceholderHtml(q){const page=imagePage(q);const reference=page?`Lecture page ${page}`:'Lecture source';return `<div class="visual-placeholder" role="img" aria-label="${esc(q.title)} figure reference"><span class="visual-placeholder-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m5 17 4.5-4.5 3 3 2-2L19 18"></path></svg></span><strong>${esc(q.title)}</strong><span>${esc(reference)} is referenced for this spot question; the figure is not embedded in the bank.</span></div>`}
-function imageVisualHtml(q){const source=imageSource(q);return source?`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`:imagePlaceholderHtml(q)}
-function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
+function imageVisualHtml(q){
+  if(!q.image&&typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
+  const source=imageSource(q);
+  return source?`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`:imagePlaceholderHtml(q);
+}
+function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?'embedded':'lecture-reference';if(!q.image&&q.imageSha256){a.dataset.originalFigureId=q.id;a.dataset.originalFigureSha256=q.imageSha256;}a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
 
 function populateSubjectSelector(){const s=$('subjectSelector');s.innerHTML=subjects.map(x=>`<option value="${x.id}">${esc(x.label)}</option>`).join('');if(!subjects.some(x=>x.id===activeSubject))activeSubject='urology';s.value=activeSubject}
 function populateLectureFilter(){
@@ -273,8 +277,11 @@ function renderLectureOverview(container,list){
   container.appendChild(section)
 }
 function createStudyGuide(lecture) {
-  const guide=lecture.studyGuide;
-  if(!guide||(!guide.explanation?.length&&!guide.mcqs?.length&&!guide.infographic))return null;
+  const guide=lecture.studyGuide||{};
+  // A lecture with original clinical photos still deserves its source atlas
+  // even if the reviewer has not supplied Explanation/MCQ companions yet.
+  const sourceOnlyImages=(lecture.imageQuestions||[]).some(q=>!q.image&&typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256));
+  if(!guide.explanation?.length&&!guide.mcqs?.length&&!guide.infographic&&!sourceOnlyImages)return null;
   const section=document.createElement('section');
   section.className='learning-companion';
   section.id=lecture.id+'-guide';
@@ -399,6 +406,37 @@ function createStudyGuide(lecture) {
     details.append(figure);
     sourceLabel(details,guide.infographic.sourcePage);
   }
+  const sourceQuestions=(lecture.imageQuestions||[]).filter(item=>!item.image&&typeof item.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(item.imageSha256));
+  if(sourceQuestions.length){
+    const details=disclosure('Original lecture figures',sourceQuestions.length);
+    const copy=document.createElement('p');copy.className='original-guide-copy';
+    copy.textContent='Study the original images from the printed lecture, not redrawn substitutes. Import the exact source photographs for this lecture on this device, then study its original image questions below.';
+    const jump=document.createElement('a');jump.className='original-guide-link';
+    jump.href='#'+lecture.id+'-images';jump.textContent='Open original figure questions';
+    const atlas=document.createElement('div');
+    atlas.className='original-atlas-grid';
+    atlas.setAttribute('aria-label','Original lecture photograph atlas');
+    sourceQuestions.forEach((item,index)=>{
+      const entry=document.createElement('figure');
+      entry.className='original-atlas-item';
+      entry.dataset.originalFigureId=item.id;
+      entry.dataset.originalFigureSha256=item.imageSha256;
+      const media=document.createElement('div');
+      media.className='original-atlas-frame';
+      const missing=document.createElement('div');
+      missing.className='original-atlas-missing';
+      missing.textContent='Original source photo not imported';
+      media.append(missing);
+      const label=document.createElement('figcaption');
+      const heading=document.createElement('strong');
+      heading.textContent=String(index+1).padStart(2,'0')+' · '+item.title;
+      const source=document.createElement('small');
+      source.textContent=item.page||'Printed lecture source';
+      label.append(heading,source);
+      entry.append(media,label);atlas.append(entry);
+    });
+    details.append(copy,atlas,jump);
+  }
   return section;
 }
 
@@ -427,15 +465,16 @@ function render(){
   sec.innerHTML=`<header class="lecture-head"><div><div class="lecture-kicker">Lecture ${String(l.order).padStart(2,'0')} • ${esc(l.subject)}</div><h2 class="lecture-title">${esc(l.title)}</h2><div class="lecture-summary">${esc(l.subtitle)}</div><details class="source-boundary"><summary>Lecture source boundary</summary><div>${esc(l.sourceNote)}</div></details></div><div class="lecture-side"><div class="lecture-counts"><span class="count-pill">${l.cases.length} MEQ cases</span><span class="count-pill">${l.coreShorts.length} high-yield shorts</span><span class="count-pill">${l.imageQuestions.length} image questions</span><span class="count-pill">${l.detailedShorts.length} detailed practice</span></div><div class="quick-views"><button class="quick-view-btn" data-view="case" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="M4 10h16"></path><path d="M10 5v14"></path></svg></span><span>Cases</span></button><button class="quick-view-btn" data-view="core" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span><span>Short Questions</span></button><button class="quick-view-btn" data-view="image" data-lecture="${l.id}"><span class="quick-view-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="1.2"></circle><path d="m5 17 5-5 3 3 2-2 4 4"></path></svg></span><span>Images</span></button><button class="offline-lecture-btn" type="button" data-lecture="${l.id}">Save lecture offline</button><button class="quick-reset" data-view="all" data-lecture="${l.id}">Show all content</button></div></div></header>
   <div class="content-section cases-section" data-section-type="case"><div class="section-head" id="${l.id}-cases"><div><h2>MEQ Cases</h2><p>Progressive scenarios, model answers, marking schemes and exam traps.</p></div><span class="section-badge">Start here for application</span></div><div class="study-grid cases-grid"></div></div>
   <div class="content-section core-section" data-section-type="core"><div class="section-head" id="${l.id}-core"><div><h2>High-Yield Short Questions</h2><p>The essential short notes, enumerations and comparisons.</p></div><span class="section-badge">Core exam list</span></div><div class="study-grid shorts core-grid"></div></div>
-  <div class="content-section image-section" data-section-type="image"><div class="section-head" id="${l.id}-images"><div><h2>Image & Spot Questions</h2><p>Original lecture figures embedded inside the bank.</p></div><span class="section-badge">Visual revision</span></div><div class="study-grid images image-grid"></div></div>
+  <div class="content-section image-section" data-section-type="image"><div class="section-head" id="${l.id}-images"><div><h2>Image & Spot Questions</h2><p>${l.imageQuestions.some(q=>!q.image&&typeof q.imageSha256==='string'&&/^[a-f0-9]{64}$/.test(q.imageSha256))?'Printed original figures only. Import verified source photos privately for offline study.':'Source-linked lecture figures and exam images.'}</p></div><span class="section-badge">Visual revision</span></div><div class="study-grid images image-grid"></div></div>
   <div class="content-section extra-section" data-section-type="extra"><div class="section-head"><div><h2>Detailed Practice</h2><p>The original direct questions are preserved for deeper repetition.</p></div></div><details class="practice-details"><summary>Open detailed practice questions (${l.detailedShorts.length})</summary><div class="practice-body"><div class="study-grid shorts extra-grid"></div></div></details></div>
   <div class="content-section rapid-section" data-section-type="rapid"><div class="section-head" id="${l.id}-rapid"><div><h2>Rapid Recall</h2><p>Click each card to reveal the one-line answer.</p></div></div><section class="rapid"><div class="rapid-grid"></div></section></div>`;
   container.appendChild(sec);
+  requestAnimationFrame(()=>globalThis.MEQOriginalFigures?.refresh?.());
   const studyGuide=createStudyGuide(l);
   if(studyGuide){
     sec.querySelector('.cases-section').before(studyGuide);
     const jump=document.createElement('button');jump.type='button';
-    jump.className='study-guide-jump';jump.textContent='Explanation / MCQ / Infographic';
+    jump.className='study-guide-jump';jump.textContent=l.id==='internal-medicine-ii-dermatology-introduction'?'Explanation / MCQ / Original Photos':'Explanation / MCQ / Infographic';
     jump.addEventListener('click',()=>{
       const first=studyGuide.querySelector('details');
       if(first)first.open=true;
@@ -630,4 +669,244 @@ $('emptyResetBtn').onclick=()=>{
   applyFilters()
 };
 if(storage.get('medicalBankDarkV4')==='1'||storage.get('medicalBankDarkV3')==='1')document.body.classList.add('dark');
-syncThemeButton()
+syncThemeButton();
+
+/* Source-bound clinical imagery: only original photos individually reviewed
+   against their lecture PDF can be accepted. Never upload source images or
+   publish book photos here without permissions. Lecture JSON stores SHA-256
+   and printed page; originals stay in the learner's private IndexedDB.
+   This engine works for every lecture with imageSha256 on its imageQuestions. */
+;(function setupOriginalFigures(){
+  const root=document.getElementById('lectureContainer');
+  const section=document.getElementById('originalFigureTools');
+  const input=document.getElementById('originalFigureFiles');
+  const button=document.getElementById('originalFigureImportBtn');
+  const status=document.getElementById('originalFigureStatus');
+  if(!root||!section||!input||!button||!status)return;
+  const cache=new Map(),urls=new Map(),verifiedBlobs=new WeakMap();
+  let pending=false,activeHydration=0;
+
+  function context(){
+    const current=root.querySelector('.lecture[data-lecture]')?.dataset.lecture;
+    if(!current)return null;
+    const lecture=lectures.find(item=>item.id===current&&!item.__metadataOnly);
+    if(!lecture)return null;
+    const originals=(lecture.imageQuestions||[]).filter(item=>
+      !item.image&&typeof item.imageSha256==='string'&&
+      /^[a-f0-9]{64}$/.test(item.imageSha256)&&
+      /^[a-z0-9][a-z0-9_-]*$/.test(item.id)&&imagePage(item)
+    );
+    if(!originals.length)return null;
+    return {lectureId:lecture.id,expected:Object.fromEntries(
+      originals.map(item=>[item.id,item.imageSha256])
+    ),count:originals.length};
+  }
+  const filenamePattern=/^([a-z0-9][a-z0-9_-]*)\.jpe?g$/i;
+  const sourceId=(ctx,name)=>{
+    const match=filenamePattern.exec(String(name).split(/[\\/]/).pop());
+    const id=match?.[1]?.toLowerCase();
+    return id&&Object.hasOwn(ctx.expected,id)?id:'';
+  };
+  const key=(ctx,id)=>ctx.lectureId+'::'+id;
+  const openDb=()=>new Promise((resolve,reject)=>{
+    if(!globalThis.indexedDB){reject(new Error('Device source-image storage unavailable'));return;}
+    const request=indexedDB.open('medical-meq-original-figures-v1',1);
+    request.onupgradeneeded=()=>{
+      if(!request.result.objectStoreNames.contains('figures'))request.result.createObjectStore('figures');
+    };
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error||new Error('Source-image database unavailable'));
+  });
+  const stored=async(mode,apply)=>{
+    const db=await openDb();
+    try{return await new Promise((resolve,reject)=>{
+      const tx=db.transaction('figures',mode),request=apply(tx.objectStore('figures'));
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error||new Error('Cannot read original photo'));
+      tx.onerror=()=>reject(tx.error||new Error('Image storage transaction failed'));
+    });}finally{db.close();}
+  };
+  const get=(ctx,id)=>stored('readonly',store=>store.get(key(ctx,id)));
+  const put=(ctx,id,blob)=>stored('readwrite',store=>store.put(blob,key(ctx,id)));
+  const digest=async blob=>{
+    if(!globalThis.crypto?.subtle)throw new Error('Secure SHA-256 verification unavailable');
+    const hash=await crypto.subtle.digest('SHA-256',await blob.arrayBuffer());
+    return Array.from(new Uint8Array(hash),byte=>byte.toString(16).padStart(2,'0')).join('');
+  };
+  const validOriginal=async(ctx,id,blob)=>{
+    if(!blob||!Object.hasOwn(ctx.expected,id)||blob.size<300||blob.size>5*1024*1024)return false;
+    const head=new Uint8Array(await blob.slice(0,3).arrayBuffer());
+    if(head[0]!==0xff||head[1]!==0xd8||head[2]!==0xff)return false;
+    if(verifiedBlobs.get(blob)===ctx.expected[id])return true;
+    if((await digest(blob))!==ctx.expected[id])return false;
+    verifiedBlobs.set(blob,ctx.expected[id]);return true;
+  };
+
+  // Only inspect ZIP central-directory entries and recognized photo filenames.
+  // Never evaluate contents, use filename as a path or forward to the network.
+  async function unpackZip(file,ctx){
+    if(file.size>32*1024*1024)throw new Error('Original-photo ZIP exceeds the 32 MB limit');
+    const bytes=new Uint8Array(await file.arrayBuffer()),view=new DataView(bytes.buffer);
+    const u16=i=>view.getUint16(i,true),u32=i=>view.getUint32(i,true);
+    let end=-1;
+    for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--){
+      if(u32(i)===0x06054b50){end=i;break;}
+    }
+    if(end<0)throw new Error('ZIP directory was not found');
+    const count=u16(end+10),start=u32(end+16);
+    if(count>128||start>=bytes.length)throw new Error('ZIP contains too many or malformed entries');
+    const files=[],seen=new Set(),decoder=new TextDecoder();
+    let pos=start,totalDecoded=0;
+    for(let index=0;index<count;index++){
+      if(pos+46>bytes.length||u32(pos)!==0x02014b50)throw new Error('Malformed ZIP directory');
+      const method=u16(pos+10),packedLength=u32(pos+20),rawLength=u32(pos+24);
+      const nameLen=u16(pos+28),extraLen=u16(pos+30),commentLen=u16(pos+32),offset=u32(pos+42);
+      if(pos+46+nameLen+extraLen+commentLen>bytes.length)throw new Error('Malformed ZIP entry');
+      const filename=decoder.decode(bytes.subarray(pos+46,pos+46+nameLen));
+      pos+=46+nameLen+extraLen+commentLen;
+      const id=sourceId(ctx,filename);
+      if(!id)continue;
+      if(seen.has(id))throw new Error('Source photo appears twice in the ZIP: '+id);
+      seen.add(id);
+      if(![0,8].includes(method)||rawLength>5*1024*1024||packedLength>5*1024*1024)
+        throw new Error('Unsupported image compression or size in ZIP');
+      totalDecoded+=rawLength;
+      if(totalDecoded>64*1024*1024)throw new Error('ZIP photo contents exceed the device safety limit');
+      if(offset+30>bytes.length||u32(offset)!==0x04034b50)throw new Error('Malformed ZIP photo header');
+      const from=offset+30+u16(offset+26)+u16(offset+28),to=from+packedLength;
+      if(to>bytes.length)throw new Error('Truncated ZIP photo');
+      const packed=bytes.slice(from,to);
+      let raw;
+      if(method===0){raw=packed;}
+      else{
+        if(typeof DecompressionStream!=='function')
+          throw new Error('Extract this ZIP on your device and select its JPEG photos instead');
+        let stream;
+        try{stream=new Blob([packed]).stream().pipeThrough(new DecompressionStream('deflate-raw'));}
+        catch(e){throw new Error('ZIP decompression is unavailable here: select the extracted JPEG photos instead');}
+        const reader=stream.getReader(),chunks=[];
+        let size=0;
+        try{
+          while(true){
+            const {value,done}=await reader.read();
+            if(done)break;
+            size+=value.byteLength;
+            if(size>5*1024*1024)throw new Error('Decompressed original photo exceeds 5 MB');
+            chunks.push(value);
+          }
+        }catch(e){await reader.cancel().catch(()=>{});throw e;}
+        raw=new Uint8Array(size);
+        let position=0;
+        for(const chunk of chunks){raw.set(chunk,position);position+=chunk.byteLength;}
+      }
+      if(raw.byteLength!==rawLength)throw new Error('ZIP photo size mismatch');
+      files.push({name:id+'.jpg',blob:new Blob([raw],{type:'image/jpeg'})});
+    }
+    if(!files.length)throw new Error('No matching source-photo filenames were found in this ZIP');
+    return files;
+  }
+  const updateStatus=async(ctx)=>{
+    if(!ctx){status.textContent='Open a lecture with original source photos to import its images.';return;}
+    try{
+      const flags=await Promise.all(Object.keys(ctx.expected).map(async id=>{
+        const storageKey=key(ctx,id);
+        const blob=cache.get(storageKey)||await get(ctx,id);
+        if(!blob||!(await validOriginal(ctx,id,blob)))return false;
+        cache.set(storageKey,blob);return true;
+      }));
+      // The private images stay in the browser; they are not in progress backup.
+      if(context()?.lectureId!==ctx.lectureId)return;
+      status.textContent=flags.filter(Boolean).length+'/'+ctx.count+
+        ' verified original PDF figures saved on this device. Progress backup excludes private photos.';
+    }catch(e){
+      status.textContent='Unable to read original photos. You can still study the text and questions.';
+    }
+  };
+  const hydrate=async()=>{
+    const ctx=context(),cards=[...root.querySelectorAll('[data-original-figure-id]')];
+    // IndexedDB is durable. Reclaim only short-lived in-memory images when
+    // browsing another lecture, avoiding unbounded RAM across course changes.
+    const activePrefix=ctx?ctx.lectureId+'::':'';
+    for(const [id,src] of urls){
+      if(!activePrefix||!id.startsWith(activePrefix)){
+        URL.revokeObjectURL(src);urls.delete(id);
+      }
+    }
+    for(const id of cache.keys()){
+      if(!activePrefix||!id.startsWith(activePrefix))cache.delete(id);
+    }
+    section.hidden=!ctx||!cards.length;
+    if(!ctx){activeHydration++;return;}
+    const stamp=++activeHydration;
+    const loaded=new Map();
+    await Promise.all(Object.keys(ctx.expected).map(async id=>{
+      const storageKey=key(ctx,id);
+      try{
+        const blob=cache.get(storageKey)||await get(ctx,id);
+        if(blob&&await validOriginal(ctx,id,blob)){cache.set(storageKey,blob);loaded.set(id,blob);}
+      }catch(e){/* A missing image must never become an invented visual. */}
+    }));
+    if(stamp!==activeHydration||context()?.lectureId!==ctx.lectureId)return;
+    for(const card of cards){
+      const id=card.dataset.originalFigureId,blob=loaded.get(id);
+      if(!blob||!card.isConnected||card.dataset.originalHydrated==='true')continue;
+      const visual=card.classList.contains('original-atlas-item')
+        ?card.querySelector('.original-atlas-frame'):card.querySelector('.visual');
+      if(!visual)continue;
+      const storageKey=key(ctx,id);
+      let src=urls.get(storageKey);
+      if(!src){src=URL.createObjectURL(blob);urls.set(storageKey,src);}
+      const link=document.createElement('a');
+      link.className='source-figure-full';link.href=src;link.target='_blank';link.rel='noopener noreferrer';
+      link.setAttribute('aria-label','View original lecture photo '+id+' at full resolution');
+      const image=document.createElement('img');image.src=src;image.loading='lazy';image.decoding='async';
+      image.alt='Verified original printed lecture photo for '+(card.querySelector('.case-title')?.textContent||card.querySelector('figcaption')?.textContent||id);
+      const caption=document.createElement('span');caption.className='source-figure-caption';
+      caption.textContent='Original printed PDF · private device · view full resolution';
+      link.append(image,caption);visual.replaceChildren(link);
+      card.dataset.originalHydrated='true';card.dataset.visualSource='original-pdf';
+    }
+  };
+  const refresh=()=>{
+    if(pending)return;
+    pending=true;
+    requestAnimationFrame(()=>{
+      pending=false;
+      hydrate().catch(()=>{});
+      updateStatus(context()).catch(()=>{});
+    });
+  };
+  button.addEventListener('click',()=>input.click());
+  input.addEventListener('change',async()=>{
+    const picks=[...input.files],ctx=context();
+    if(!picks.length)return;
+    if(!ctx){status.textContent='Choose a lecture with original photos first.';input.value='';return;}
+    button.disabled=true;status.textContent='Verifying the original printed-source photos…';
+    let accepted=0,rejected=0;
+    try{
+      const candidates=[];
+      for(const pick of picks){
+        if(/\.zip$/i.test(pick.name)||pick.type==='application/zip')
+          candidates.push(...await unpackZip(pick,ctx));
+        else candidates.push({name:pick.name,blob:pick});
+      }
+      for(const item of candidates){
+        const id=sourceId(ctx,item.name);
+        if(!id||!(await validOriginal(ctx,id,item.blob))){rejected++;continue;}
+        await put(ctx,id,item.blob);
+        cache.set(key(ctx,id),item.blob);accepted++;
+        const storedUrl=urls.get(key(ctx,id));
+        if(storedUrl){URL.revokeObjectURL(storedUrl);urls.delete(key(ctx,id));}
+      }
+      root.querySelectorAll('[data-original-figure-id]').forEach(card=>{card.dataset.originalHydrated='';});
+      await hydrate();await updateStatus(ctx);
+      if(rejected)status.textContent+=' '+rejected+' mismatched/unverified image(s) rejected.';
+      if(!accepted)status.textContent='No original source files were accepted. Choose this lecture’s source JPEGs or ZIP pack.';
+    }catch(e){status.textContent='Original image import failed: '+(e?.message||'unsupported photo archive');}
+    finally{input.value='';button.disabled=false;}
+  });
+  new MutationObserver(refresh).observe(root,{childList:true});
+  addEventListener('beforeunload',()=>{for(const src of urls.values())URL.revokeObjectURL(src);});
+  globalThis.MEQOriginalFigures={refresh};
+  refresh();updateStatus(context());
+})();

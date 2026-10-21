@@ -43,6 +43,10 @@ required_files=(
   tools/add_lecture.py
   tools/add_course.py
   tools/new_lecture.py
+  tools/prepare_original_figure_pack.py
+  tools/check_original_figure_pack.py
+  tests/test_original_figure_pack.py
+  tools/requirements-original-figures.txt
   tools/build_app.py
   tools/build_search_index.py
   tools/finalize_offline.py
@@ -79,6 +83,9 @@ python3 -m py_compile \
   tools/add_lecture.py \
   tools/add_course.py \
   tools/new_lecture.py \
+  tools/prepare_original_figure_pack.py \
+  tools/check_original_figure_pack.py \
+  tests/test_original_figure_pack.py \
   tools/build_app.py \
   tools/build_search_index.py \
   tools/finalize_offline.py \
