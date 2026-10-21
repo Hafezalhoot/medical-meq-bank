@@ -234,7 +234,9 @@
     const box=el('examFeedback');
     box.className='exam-feedback '+(result.correct?'is-correct':'is-wrong');
     box.replaceChildren();
-    appendText(box,'strong','',result.correct?'Correct · Mastered ✓':'Incorrect · Weak ✕');
+    appendText(box,'strong','',result.manual
+      ?(result.correct?'Self-rated Mastered ✓':'Self-rated Weak ✕')
+      :(result.correct?'Correct · Mastered ✓':'Incorrect · Weak ✕'));
     if(q.type==='mcq'){
       appendText(box,'p','',result.correct?'Your answer matches the lecture key.':'Correct answer: '+source.item.options[source.item.answerIndex]);
       if(source.item.rationale)appendText(box,'p','exam-rationale',source.item.rationale);
@@ -284,7 +286,7 @@
         const b=node('button','exam-option',null);
         b.type='button';
         b.dataset.choice=String(index);
-        b.disabled=Boolean(result)||busy;
+        b.disabled=Boolean(result);
         b.setAttribute('aria-pressed',String(result?.choice===index));
         const mark=node('span','exam-option-letter',String.fromCharCode(65+index));
         mark.setAttribute('aria-hidden','true');
@@ -420,7 +422,10 @@
   const loadQuestions=async items=>{
     const ids=[...new Set(items.map(q=>q.lectureId))];
     const loader=globalThis.MEQLectureLoader;
-    if(loader)await Promise.all(ids.map(id=>loader.loadLecture(id,{refresh:false,busy:false})));
+    if(loader){
+      await loader.loadSubjectMetadata(session.subject,session.course);
+      await Promise.all(ids.map(id=>loader.loadLecture(id,{refresh:false,busy:false})));
+    }
     if(items.some(q=>!sourceFor(q)))throw new Error('A question was removed or the lecture was updated. Start a fresh exam.');
   };
   const begin=async()=>{
