@@ -1,5 +1,26 @@
 /* Exam Mode — reading-first, theme-aware and mobile-safe. */
-.hero-panel #examModeBtn{grid-column:1/-1}
+/* Keep the primary Study and Exam paths together, never increase hero depth. */
+.hero .hero-panel #resumeStudyBtn{grid-column:1;grid-row:4;min-width:0;width:100%;font-size:.76rem;padding-inline:5px;gap:5px}
+.hero .hero-panel #examModeBtn{grid-column:2;grid-row:4;min-width:0;width:100%;margin:0;padding:8px 7px;gap:5px;font-size:.78rem;white-space:nowrap}
+.hero .hero-panel #examModeBtn svg{width:16px;height:16px;flex:none}
+@media (max-width:700px){
+  .hero .hero-panel #resumeStudyBtn{grid-row:3;margin-top:4px}
+  .hero .hero-panel #examModeBtn{grid-row:3;margin-top:4px}
+}
+@media (max-width:360px){
+  .hero .hero-panel #examModeBtn svg{display:none}
+  .hero .hero-panel #resumeStudyBtn{font-size:.7rem}
+}
+@media (min-width:701px) and (max-width:980px){
+  .hero .hero-panel{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero .hero-panel .hero-panel-heading,
+  .hero .hero-panel .course-panel-label,
+  .hero .hero-panel #courseSelector,
+  .hero .hero-panel label[for="subjectSelector"],
+  .hero .hero-panel #subjectSelector{grid-column:1/-1}
+  .hero .hero-panel #resumeStudyBtn{grid-column:1;grid-row:6}
+  .hero .hero-panel #examModeBtn{grid-column:2;grid-row:6}
+}
 .exam-launch-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:9px;padding:10px 15px;border:1px solid rgba(15,85,82,.3);border-radius:10px;background:var(--card);color:var(--brand);font:inherit;font-weight:800;cursor:pointer;transition:background .15s ease,border-color .15s ease}
 .exam-launch-btn:hover{background:var(--brand-soft);border-color:var(--brand)}
 .exam-launch-btn:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
