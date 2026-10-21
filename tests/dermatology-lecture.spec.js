@@ -52,7 +52,9 @@ test('Internal Medicine II / Dermatology loads the complete 10-page source-based
   await page.locator('.learning-companion summary').first().click();
   await expect(page.getByText('Dermatology هو فرع الطب',{exact:false})).toBeVisible();
   await expect(page.locator('.study-guide-explanation p').first()).toHaveAttribute('dir','auto');
-  expect(await page.locator('.study-guide-explanation p').first().evaluate(el=>getComputedStyle(el).direction)).toBe('rtl');
+  const directions=await page.locator('.study-guide-explanation p').evaluateAll(nodes=>
+    nodes.slice(0,3).map(el=>getComputedStyle(el).direction));
+  expect(directions).toEqual(['ltr','rtl','ltr']);
   await expect(page.getByText('PDF p. 1',{exact:false}).first()).toBeVisible();
   await expect(page.locator('.study-guide-understanding strong').first())
     .toHaveText('Understanding Aid — Not an additional exam fact');
