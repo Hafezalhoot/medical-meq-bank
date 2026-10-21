@@ -163,7 +163,7 @@ function isOriginalSourceFigure(item){
   // Only local, source-hashed printed PDF JPEGs and reviewed private-photo slots.
   // Historical embedded AVIF teaching images stay in their existing workflow.
   return typeof item?.imageSha256==='string' && /^[a-f0-9]{64}$/.test(item.imageSha256) &&
-    (!source || /^\.\/assets\/lectures\/[a-z0-9_/-]+\.jpe?g$/i.test(source));
+    (!source || /^\.\/assets\/lectures\/[a-z0-9_-]+\/[a-z0-9_-]+\.jpe?g$/i.test(source));
 }
 function imagePage(item){const value=item?.page;return value===0?'0':(value==null?'':String(value).trim())}
 function hasImageVisual(item){return Boolean(imageSource(item)||imagePage(item))}
