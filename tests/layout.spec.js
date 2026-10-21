@@ -321,18 +321,22 @@ test('V3 dark study surfaces use one clinical palette at phone and desktop width
     await expect(page.locator('.course-library-card')).toHaveCount(3);
     await page.mouse.move(0, 0); // Ensure the browser is not hovering a transient card.
     const colors = await page.evaluate(() => {
-      const probe = document.createElement('span');
-      document.body.append(probe);
+      const tokens = getComputedStyle(document.body);
+      // Read the actual dark-theme tokens, then resolve each on its own
+      // element. Reassigning one CSSOM probe repeatedly gave stale colors.
       const tokenColor = token => {
-        probe.style.backgroundColor = 'var(' + token + ')';
-        return getComputedStyle(probe).backgroundColor;
+        const probe = document.createElement('span');
+        probe.style.backgroundColor = tokens.getPropertyValue(token).trim();
+        document.body.append(probe);
+        const color = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return color;
       };
       const expected = {
         card: tokenColor('--card'),
         soft: tokenColor('--surface-soft'),
         selected: tokenColor('--brand-soft')
       };
-      probe.remove();
       const background = selector => getComputedStyle(document.querySelector(selector)).backgroundColor;
       return {
         expected,
