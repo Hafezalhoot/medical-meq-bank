@@ -1,5 +1,6 @@
-const APP_VERSION = '2026.10.21.1';
+const APP_VERSION = '2026.10.21.2';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
+const USER_LESSON_CACHE = 'medical-meq-bank-user-lessons-v1';
 const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
 const LECTURE_ASSETS = /*__LECTURE_ASSETS__*/ [];
 const REQUIRED_ASSETS = [
@@ -27,7 +28,7 @@ const REQUIRED_ASSETS = [
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
   ...LECTURE_ASSETS
-];
+].map(asset => /\.(?:css|js)$/.test(asset) ? asset + '?v=' + APP_VERSION : asset);
 const OPTIONAL_ASSETS = [];
 
 self.addEventListener('install', event => {
@@ -43,7 +44,25 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)));
+    const oldReleases = keys.filter(key =>
+      key.startsWith('medical-meq-bank-') &&
+      key !== CACHE_NAME && key !== USER_LESSON_CACHE
+    );
+    // Migrate previously saved source lectures/figures before retiring an
+    // older release. Never migrate old CSS or JS into the new application.
+    const personal = await caches.open(USER_LESSON_CACHE);
+    for (const release of oldReleases) {
+      const old = await caches.open(release);
+      for (const request of await old.keys()) {
+        const path = new URL(request.url).pathname;
+        if (!(/^\/lectures\/(?:data|search)\//.test(path) ||
+              /^\/assets\/lectures\//.test(path))) continue;
+        if (await personal.match(request)) continue;
+        const response = await old.match(request);
+        if (response?.ok) await personal.put(request, response);
+      }
+    }
+    await Promise.all(oldReleases.map(release => caches.delete(release)));
     await self.clients.claim();
   })());
 });
@@ -89,14 +108,28 @@ const handleNavigation = async request => {
 };
 
 const handleAsset = async request => {
-  const cached = await caches.match(request);
+  // A prior service worker may still be controlling this tab while the
+  // server returns newer HTML. Never search all caches for a CSS/JS file.
+  const releaseCache = await caches.open(CACHE_NAME);
+  const cached = await releaseCache.match(request);
   if (cached) return cached;
-  const response = await fetch(request);
-  if (isSafeAppResponse(response)) {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.put(request, response.clone());
+  try {
+    const response = await fetch(request);
+    if (isSafeAppResponse(response)) {
+      await releaseCache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    // Personal downloaded lecture data remains available when disconnected.
+    const path = new URL(request.url).pathname;
+    if (/^\/lectures\/(?:data|search)\//.test(path) ||
+        /^\/assets\/lectures\//.test(path)) {
+      const personal = await caches.open(USER_LESSON_CACHE);
+      const response = await personal.match(request);
+      if (response) return response;
+    }
+    throw error;
   }
-  return response;
 };
 
 self.addEventListener('fetch', event => {
