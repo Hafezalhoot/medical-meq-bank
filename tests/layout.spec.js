@@ -307,6 +307,8 @@ test('Impeccable: Escape closes mobile study utilities and restores focus safely
 
 
 test('V3 dark study surfaces use one clinical palette at phone and desktop widths', async ({page}) => {
+  // Verify settled colors: the course cards animate background-color on hover.
+  await page.emulateMedia({reducedMotion: 'reduce'});
   for (const viewport of [{width: 390, height: 844}, {width: 1440, height: 900}]) {
     await openBank(page, viewport);
     // The theme preference persists across reloads and viewport checks.
@@ -317,6 +319,7 @@ test('V3 dark study surfaces use one clinical palette at phone and desktop width
 
     await page.locator('#courseLibraryDisclosure summary').click();
     await expect(page.locator('.course-library-card')).toHaveCount(3);
+    await page.mouse.move(0, 0); // Ensure the browser is not hovering a transient card.
     const colors = await page.evaluate(() => {
       const probe = document.createElement('span');
       document.body.append(probe);
