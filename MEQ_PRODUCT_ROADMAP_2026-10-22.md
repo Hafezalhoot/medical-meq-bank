@@ -1,7 +1,14 @@
 # Medical MEQ Bank — Product Evaluation and Priority Roadmap
 **Audit date:** 2026-10-22
-**Observed live release before this PR:** `2026.10.22.2` (Worker `5c3fcfce-4f81-4ba7-828a-61376dc82f3c`, 100% traffic in [production status run #39695650888](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39695650888)).
-**Shipped session hardening:** PR #46 merged on protected `main` as `49b912d` (`2026.10.22.3`). **In-flight development:** Daily Weak / Mistake Notebook PR #47 (`2026.10.22.4` candidate) and dependent learning analytics PR #48 (`2026.10.22.5` candidate). These candidates are not production releases.
+**Latest independently observed active release:** `2026.10.22.4` (Worker `7e5c9e09-bdd9-4d6c-bb7d-e8904d6974bb`, 100% traffic in [live diagnostic #39702689754](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39702689754) at 03:56 Cairo on 2026-10-22). Source `2026.10.22.5` has a successful Cloudflare Build; its traffic identity still awaits a later read-only status.
+**Reviewed source now on `main`:** PR #46 (`2026.10.22.3`), PR #47 (Daily Weak + Mistake Notebook, `2026.10.22.4`), and PR #48 (transparent learning analytics, `2026.10.22.5`, merged commit `4247338`). `.4` is verified at 100% active Worker traffic, while `.5` still requires an **independent later deployment-status check**. Protected authenticated browser QA is a separate unresolved gate.
+
+## 2026-10-22 delivery update
+
+- **Implemented and merged:** Daily Weak 15, Mistake Notebook with historic mistakes and source-backed retry, and per-lecture saved-rating / auto-vs-self exam analytics. [PR #47](https://github.com/Hafezalhoot/medical-meq-bank/pull/47) and [PR #48](https://github.com/Hafezalhoot/medical-meq-bank/pull/48) both passed their **exact-head** static, Chromium, WebKit and Cloudflare Workers Builds checks.
+- **Deployment evidence:** a newer read-only [production diagnostic #39702689754](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39702689754) confirms `.4` Worker `7e5c9e09-bdd9-4d6c-bb7d-e8904d6974bb` at 100%; `.5` Cloudflare Build produced Worker `1d2d9ddf-fe68-4abc-b8f9-52e54a6305fe` but a later read-only status must verify its active traffic. Access-based post-login QA still fails HTTP 302 without scoped Service Auth [#35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35).
+- **Release-controls risk:** Cloudflare Workers Builds appears to publish `main` commits automatically (same PR #47 Worker version observed active), even though the separate protected GitHub manual promotion job was skipped and full post-merge Chromium finished later. Review the Cloudflare deployment trigger so production promotion occurs **only after** source quality gates, without downgrading the existing Cloudflare Access protection.
+- **Open high-impact work:** verified MCQ answer keys beyond Dermatology; source-first PDF lecture intake with approval, status and preview; validated protected live browser QA. Preserve existing doctor/lecture content and source-photo rights boundaries.
 
 ## Evidence and confidence
 

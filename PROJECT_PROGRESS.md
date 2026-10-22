@@ -1,20 +1,31 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
-### 2026-10-22 — Transparent learning analytics (draft PR #48, release candidate 2026.10.22.5)
+### 2026-10-22 — Revision engine and learning analytics merged; Cloudflare promotion pending
+
+- ✅ **[PR #47](https://github.com/Hafezalhoot/medical-meq-bank/pull/47)** merged into protected `main` at `edd3505b701db00b94b9437999ad0954f7f9ddae`; source release `2026.10.22.4`. Exact PR head `e80b1ef` passed static, Chromium, WebKit and Cloudflare Workers Builds ([checks](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39701882226)).
+- ✅ **[PR #48](https://github.com/Hafezalhoot/medical-meq-bank/pull/48)** rebased on the merged PR #47, retested on exact head `bd0aff9` ([checks](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39702398959)), and merged into protected `main` at `42473381268388412a5052a0b3f6d9095d6fe3ef`. Combined source release is `2026.10.22.5`.
+- ✅ Study updates: Daily Weak 15, Mistake Notebook, mistake retention across a correct retry, separate objective MCQ and written self-grade metrics, and per-lecture saved-ratings breakdown. Kept original medical lecture IDs, contents, reviewed keys, photo hashes, original progress engine and JSON backup semantics.
+- ✅ Regression work: corrected a 320px above-the-fold regression, preserved confirmation before discarding unfinished exam sessions, fixed nested My Review disclosure test interactions, and tested >500 persisted mistake entries (2500-entry retention ceiling).
+- ✅ **PR #47 confirmed live (03:56 Cairo, 2026-10-22):** read-only Wrangler in [production smoke #39702689754](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39702689754) showed **Worker `7e5c9e09-bdd9-4d6c-bb7d-e8904d6974bb` at 100%**, exactly matching PR #47 main Cloudflare Workers Build. This supersedes the earlier `33f0f044` observation for version `.3`. Browser smoke still fails at Access HTTP 302 with Service Auth variables unset; preserve Access and see [#35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35).
+- 🔎 **PR #48 active-traffic status pending:** Cloudflare Workers Builds for main `.5` issued Worker `1d2d9ddf-fe68-4abc-b8f9-52e54a6305fe`, but the latest read-only status ran just before that build completed. Check Wrangler `deployments status` for 100% traffic/identical Worker ID and validate full main CI. The Cloudflare Workers Builds integration appears to auto-promote main builds (observed PR #47); avoid redundant manual promotion without checking, and prevent auto-promotion before required validation gates in a dedicated release-controls review.
+- ⏭ New medical MCQ content for the nine unkeyed lectures remains deliberately pending source PDF answer review; lecture intake already has `new_lecture.py` and `add_lecture.py` dry-run/approved-write flows. New clinical images require documented reuse rights.
+
+
+### 2026-10-22 — Transparent learning analytics (merged PR #48; source 2026.10.22.5)
 
 - 🧪 Added per-lecture Mastered, Weak, Review, **Mastered / rated** and repeated-error counts inside the existing collapsed Study progress panel. Deliberately avoid interpreting self-ratings as exam accuracy or increasing first-screen height.
 - 🧪 Added recent exam history with verified-MCQ automatic accuracy and written self-rating displayed independently; no third-party charts, new medical content or progress-key changes.
 - 🧪 Added refresh events for new mistake records, empty states, responsive overflow control and focused Playwright regressions.
-- ⏳ **PR #48 depends on PR #47** and is not ready to merge until its exact-head CI and both browser engines pass. Cloudflare release and Access-authenticated live QA remain separate.
+- ✅ PR #48 passed exact-head static, Chromium, WebKit and Cloudflare Build gates and is merged; Cloudflare activation and Access-authenticated QA remain separate.
 
 
-### 2026-10-22 — Daily Weak 15 + Mistake Notebook (draft PR #47, unverified)
+### 2026-10-22 — Daily Weak 15 + Mistake Notebook (merged PR #47; source 2026.10.22.4)
 
 - 🧪 Implemented an opt-in personal revision bar: **Daily Weak 15** draws from saved Weak / Review ratings across published course metadata, with Weak-first/oldest-activity priority and stable tie-breaking; no AI-generated medical facts.
 - 🧪 Added an additive `medicalBankReviewLogV1` activity store (identifiers, attempt counts, mistake counts, automatic vs self-assessed provenance, timestamps) independent of existing canonical ratings. The store is captured by the existing JSON backup preference mechanism; no backup schema migration or question-ID changes.
 - 🧪 Added Mistake Notebook with source answer and one-question retry, retained historical mistakes after Mastered retries, and distinct auto-scored/self-scored labels.
 - 🧪 Added Playwright regression coverage for remembered mistakes after reload, daily selected Weak questions, empty review state, and Mastered retry without erasing mistakes.
-- ⚠️ Draft [PR #47](https://github.com/Hafezalhoot/medical-meq-bank/pull/47) is deliberately not merged or deployed until all exact-head validation/Chromium/WebKit checks and screenshot QA succeed. Protected live Cloudflare Access QA and source-photo permissions remain separate release gates.
+- ✅ [PR #47](https://github.com/Hafezalhoot/medical-meq-bank/pull/47) passed the required source/Chromium/WebKit/Workers Build gates and merged. Production activation, authenticated live QA and original-photo permissions are separate release gates.
 
 
 ### 2026-10-22 — Exam session hardening and product assessment (2026.10.22.3 candidate)
