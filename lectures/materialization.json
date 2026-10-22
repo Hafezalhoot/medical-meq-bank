@@ -21,7 +21,8 @@
         "82e3da409d3ac1bbfd1a6ac3431b3a6b9710d6ff0abe8fb0559da74faa79ae40",
         "9187c1c44f4344016d79c72017bc9a9f32da420f19d0add65a60c339dbd9a281"
       ],
-      "partRepairs": {}
+      "partRepairs": {},
+      "studyGuideCompanion": "companions/urology-bladder-cancer.json"
     },
     {
       "kind": "compressed-parts",

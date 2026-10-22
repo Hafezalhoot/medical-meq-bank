@@ -1,0 +1,410 @@
+{
+  "lectureId": "urology-bladder-cancer",
+  "studyGuide": {
+    "mcqs": [
+      {
+        "id": "bc-mcq-001",
+        "question": "Which bladder cancer histological subtype is described as the most common in the lecture?",
+        "options": [
+          "Squamous cell carcinoma",
+          "Transitional cell carcinoma",
+          "Adenocarcinoma",
+          "Sarcoma"
+        ],
+        "answerIndex": 1,
+        "rationale": "The pathology slide identifies transitional cell carcinoma as the commonest histological subtype.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 4"
+      },
+      {
+        "id": "bc-mcq-002",
+        "question": "What proportion of bladder cancers does the lecture attribute to transitional cell carcinoma?",
+        "options": [
+          "70–80%",
+          "10–20%",
+          "80–90%",
+          "About 70% within 3 years"
+        ],
+        "answerIndex": 2,
+        "rationale": "The pathology slide gives transitional cell carcinoma as approximately 80–90% of cases.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 4"
+      },
+      {
+        "id": "bc-mcq-003",
+        "question": "Approximately what share of bladder cancers are classified as non-muscle-invasive in the lecture?",
+        "options": [
+          "80–90%",
+          "70–80%",
+          "Around 70% recurring within 3 years",
+          "More than 80% with gross painless haematuria"
+        ],
+        "answerIndex": 1,
+        "rationale": "The classification slide states that non-muscle-invasive disease represents around 70–80% of cases; the other figures refer to different facts.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 5"
+      },
+      {
+        "id": "bc-mcq-004",
+        "question": "Which layer forms the innermost lining of the bladder wall?",
+        "options": [
+          "Muscularis propria",
+          "Lamina propria",
+          "Outer fatty connective tissue",
+          "Transitional epithelium (urothelium)"
+        ],
+        "answerIndex": 3,
+        "rationale": "The inner lining is the urothelium, also called transitional epithelium.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 6"
+      },
+      {
+        "id": "bc-mcq-005",
+        "question": "Which bladder-wall layer lies immediately beneath the urothelium in the lecture's four-layer description?",
+        "options": [
+          "Lamina propria",
+          "Muscularis propria",
+          "Outer fatty connective tissue",
+          "Perivesical fat"
+        ],
+        "answerIndex": 0,
+        "rationale": "The second layer is the connective tissue called lamina propria.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 6"
+      },
+      {
+        "id": "bc-mcq-006",
+        "question": "Which layer of the bladder wall is the muscular layer?",
+        "options": [
+          "Urothelium",
+          "Lamina propria",
+          "Muscularis propria",
+          "Fatty outer connective tissue"
+        ],
+        "answerIndex": 2,
+        "rationale": "The bladder-wall slide names its third, muscular layer as muscularis propria.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 6"
+      },
+      {
+        "id": "bc-mcq-007",
+        "question": "Which pair is identified as the two most important bladder cancer risk factors?",
+        "options": [
+          "Schistosomiasis and bladder stones",
+          "Smoking and increasing age",
+          "Industrial dyes and previous pelvic radiation",
+          "Recurrent UTIs and an indwelling catheter"
+        ],
+        "answerIndex": 1,
+        "rationale": "Smoking and increasing age are singled out as the most important risk factors; the other options are additional risks listed in the slide.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 7"
+      },
+      {
+        "id": "bc-mcq-008",
+        "question": "Schistosomiasis is specifically associated with which bladder cancer subtype in the lecture?",
+        "options": [
+          "Transitional cell carcinoma",
+          "Adenocarcinoma",
+          "Squamous cell carcinoma",
+          "Sarcoma"
+        ],
+        "answerIndex": 2,
+        "rationale": "The risk-factor slide links schistosomiasis specifically with the SCC subtype.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 7"
+      },
+      {
+        "id": "bc-mcq-009",
+        "question": "A non-invasive papillary bladder tumour is labelled with which T category?",
+        "options": [
+          "Ta",
+          "Tis",
+          "T1",
+          "T2"
+        ],
+        "answerIndex": 0,
+        "rationale": "The staging slide defines Ta as a non-invasive papillary tumour.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 9"
+      },
+      {
+        "id": "bc-mcq-010",
+        "question": "Which T category denotes carcinoma in situ?",
+        "options": [
+          "T1",
+          "Ta",
+          "T2",
+          "Tis"
+        ],
+        "answerIndex": 3,
+        "rationale": "In the provided staging classification, carcinoma in situ is Tis.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 9"
+      },
+      {
+        "id": "bc-mcq-011",
+        "question": "Tumour invasion into the subepithelial connective tissue corresponds to which stage?",
+        "options": [
+          "Tis",
+          "T1",
+          "T2",
+          "T3"
+        ],
+        "answerIndex": 1,
+        "rationale": "T1 is the stage defined by invasion of subepithelial connective tissue.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 9"
+      },
+      {
+        "id": "bc-mcq-012",
+        "question": "Bladder tumour invasion into the muscle is which stage?",
+        "options": [
+          "Ta",
+          "T1",
+          "T2",
+          "T3"
+        ],
+        "answerIndex": 2,
+        "rationale": "T2 marks invasion of the muscular layer according to the lecture.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 9"
+      },
+      {
+        "id": "bc-mcq-013",
+        "question": "Which stage is defined by invasion of the perivesical fat?",
+        "options": [
+          "T1",
+          "T2",
+          "T3",
+          "T4"
+        ],
+        "answerIndex": 2,
+        "rationale": "The staging slide assigns perivesical-fat invasion to T3.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 9"
+      },
+      {
+        "id": "bc-mcq-014",
+        "question": "Which stage describes invasion into adjacent organs?",
+        "options": [
+          "T1",
+          "T2",
+          "T3",
+          "T4"
+        ],
+        "answerIndex": 3,
+        "rationale": "T4 indicates invasion into adjacent organs in the lecture's staging list.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 9"
+      },
+      {
+        "id": "bc-mcq-015",
+        "question": "What is the most common presenting feature of bladder cancer in the lecture?",
+        "options": [
+          "Renal colic",
+          "Painless haematuria",
+          "Pelvic pain",
+          "Feeling of incomplete voiding"
+        ],
+        "answerIndex": 1,
+        "rationale": "The clinical-picture slide identifies painless haematuria, visible or non-visible, as the commonest presentation.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 11"
+      },
+      {
+        "id": "bc-mcq-016",
+        "question": "How is the clinical examination usually described in early bladder cancer?",
+        "options": [
+          "Typically unremarkable",
+          "Always reveals a pelvic mass",
+          "Always demonstrates renal colic",
+          "Requires visible haematuria on examination"
+        ],
+        "answerIndex": 0,
+        "rationale": "The lecture says examination is typically unremarkable, especially early in the disease.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 11"
+      },
+      {
+        "id": "bc-mcq-017",
+        "question": "Bladder cancer obstructing the ureteric orifice may cause which symptom?",
+        "options": [
+          "Urgency",
+          "Weight loss",
+          "Renal colic",
+          "Lethargy"
+        ],
+        "answerIndex": 2,
+        "rationale": "The slide connects ureteric-orifice obstruction with features of ureteric obstruction, including renal colic.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 11"
+      },
+      {
+        "id": "bc-mcq-018",
+        "question": "Which pair is listed as laboratory investigations for suspected bladder cancer?",
+        "options": [
+          "CT and MRI",
+          "Ultrasound and MRI",
+          "Cystoscopy and biopsy",
+          "Urine analysis and urine cytology"
+        ],
+        "answerIndex": 3,
+        "rationale": "The investigation slide lists urine analysis and urine cytology under laboratory investigations.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 13"
+      },
+      {
+        "id": "bc-mcq-019",
+        "question": "What ultrasound appearance of a bladder mass is described in the lecture?",
+        "options": [
+          "Focal wall thickening without reference to flow",
+          "Soft-tissue mass with internal Doppler vascularity, inseparable from the wall",
+          "Clear differentiation of all bladder-wall layers",
+          "A non-invasive papillary T stage"
+        ],
+        "answerIndex": 1,
+        "rationale": "The ultrasound slide describes a vascular soft-tissue mass that is inseparable from the bladder wall.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 14"
+      },
+      {
+        "id": "bc-mcq-020",
+        "question": "Which modality is described as the primary imaging method for evaluating bladder cancer?",
+        "options": [
+          "MRI",
+          "Ultrasound",
+          "CT",
+          "Cystoscopy"
+        ],
+        "answerIndex": 2,
+        "rationale": "The CT slide describes CT as the primary imaging modality; cystoscopy is separately described as the primary diagnostic modality.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 15"
+      },
+      {
+        "id": "bc-mcq-021",
+        "question": "Which property of MRI is highlighted over CT in the lecture?",
+        "options": [
+          "Enables complete resection of small tumours",
+          "Directly delivers intravesical drugs",
+          "Replaces the need for cystoscopy",
+          "Clearer discrimination of bladder-wall layers, without ionising radiation"
+        ],
+        "answerIndex": 3,
+        "rationale": "The MRI slide describes clearer bladder-wall-layer differentiation and no ionising radiation.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 16"
+      },
+      {
+        "id": "bc-mcq-022",
+        "question": "Which procedure is described as the primary diagnostic modality for bladder cancer?",
+        "options": [
+          "CT alone",
+          "Cystoscopy with biopsy",
+          "MRI alone",
+          "Urine cytology alone"
+        ],
+        "answerIndex": 1,
+        "rationale": "The cystoscopy-and-biopsy slide calls this the primary diagnostic modality and says it permits biopsy.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 17"
+      },
+      {
+        "id": "bc-mcq-023",
+        "question": "What is the mainstay of management for non-muscle-invasive bladder tumours such as Tis or T1 in the lecture?",
+        "options": [
+          "CT surveillance alone",
+          "Radical cystectomy for every case",
+          "Transurethral resection of bladder tumour (TURBT)",
+          "Neoadjuvant cisplatin for every case"
+        ],
+        "answerIndex": 2,
+        "rationale": "The non-muscle-invasive treatment slide identifies TURBT as the mainstay for these tumours.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 19"
+      },
+      {
+        "id": "bc-mcq-024",
+        "question": "Which treatments are given as examples of adjuvant intravesical therapy for higher-risk non-muscle-invasive bladder cancer?",
+        "options": [
+          "BCG or Mitomycin C",
+          "Ileal conduit or ureterosigmoidostomy",
+          "CT or MRI",
+          "Cisplatin combination chemotherapy or urinary diversion"
+        ],
+        "answerIndex": 0,
+        "rationale": "The lecture lists intravesical BCG and Mitomycin C for higher-risk non-invasive disease.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 19"
+      },
+      {
+        "id": "bc-mcq-025",
+        "question": "When may radical cystectomy be offered for non-muscle-invasive bladder cancer, according to this lecture?",
+        "options": [
+          "Only when urine cytology is normal",
+          "For every Ta tumour before resection",
+          "Only for the presence of frequency",
+          "For high-risk disease or limited response to initial treatment"
+        ],
+        "answerIndex": 3,
+        "rationale": "The lecture offers radical cystectomy as an option in high-risk non-muscle-invasive disease or with limited response to initial treatment.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 19"
+      },
+      {
+        "id": "bc-mcq-026",
+        "question": "What three-year recurrence figure for non-invasive bladder tumours does the lecture give?",
+        "options": [
+          "About 10%",
+          "About 70%",
+          "About 30%",
+          "About 90%"
+        ],
+        "answerIndex": 1,
+        "rationale": "The non-muscle-invasive treatment slide states that around 70% recur within 3 years.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 19"
+      },
+      {
+        "id": "bc-mcq-027",
+        "question": "Which surveillance methods are specified for non-muscle-invasive bladder cancer follow-up?",
+        "options": [
+          "CT and MRI at every visit",
+          "Ultrasound and urine analysis only",
+          "Urine cytology and cystoscopy",
+          "Cisplatin and Mitomycin C"
+        ],
+        "answerIndex": 2,
+        "rationale": "The lecture recommends regular surveillance using cytology and cystoscopy because recurrences are common.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 19"
+      },
+      {
+        "id": "bc-mcq-028",
+        "question": "Which operation is the principal surgical treatment discussed for fit patients with muscle-invasive bladder cancer?",
+        "options": [
+          "Radical cystectomy",
+          "TURBT only",
+          "Ureterosigmoidostomy alone",
+          "Ileal conduit alone"
+        ],
+        "answerIndex": 0,
+        "rationale": "The muscle-invasive treatment slide says most fit surgical patients warrant radical cystectomy, removing the bladder.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 20"
+      },
+      {
+        "id": "bc-mcq-029",
+        "question": "Which chemotherapy approach is typically considered in the lecture for muscle-invasive bladder cancer?",
+        "options": [
+          "Intravesical BCG alone",
+          "Intravesical Mitomycin C alone",
+          "No chemotherapy is mentioned",
+          "Neoadjuvant cisplatin-combination chemotherapy"
+        ],
+        "answerIndex": 3,
+        "rationale": "The lecture states that neoadjuvant chemotherapy is often considered, typically using a cisplatin combination.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 20"
+      },
+      {
+        "id": "bc-mcq-030",
+        "question": "Which urinary diversion is listed as a non-continent option after cystectomy?",
+        "options": [
+          "Orthotopic bladder substitution",
+          "Continent reservoir for CIC",
+          "Ileal conduit",
+          "Ureterosigmoidostomy"
+        ],
+        "answerIndex": 2,
+        "rationale": "The urinary-diversion slide lists ileal conduit under non-continent options; the others appear under continent options.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 21"
+      },
+      {
+        "id": "bc-mcq-031",
+        "question": "Which urinary diversion is classified as continent in the lecture?",
+        "options": [
+          "Uretero-cutaneous diversion",
+          "Orthotopic bladder substitution",
+          "Ileal conduit",
+          "None of the options"
+        ],
+        "answerIndex": 1,
+        "rationale": "The urinary-diversion slide places orthotopic bladder substitution under continent diversions.",
+        "sourcePage": "Bladder cancer 4(1).pdf p. 21"
+      }
+    ]
+  }
+}
