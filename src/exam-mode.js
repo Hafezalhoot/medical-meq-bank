@@ -15,7 +15,7 @@
   const node=(tag,cls,text)=>{
     const item=document.createElement(tag);
     if(cls)item.className=cls;
-    if(text!==undefined)item.textContent=String(text);
+    if(text!==undefined&&text!==null)item.textContent=String(text);
     return item;
   };
   const appendText=(parent,tag,cls,value)=>{
