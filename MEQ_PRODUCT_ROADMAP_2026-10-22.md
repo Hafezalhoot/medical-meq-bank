@@ -60,7 +60,7 @@
 - Acceptance: no overflow at 320px and 200% zoom; keyboard/VoiceOver focus path; accessible color contrast in both themes; no significant performance regressions.
 
 ### P3 — Optional sync, collaboration and convenience
-- **Export/import study progress** first, with clear timestamp and conflict handling; cross-device accounts can be introduced only when multi-device demand justifies authentication, privacy and maintenance cost.
+- **Preserve the existing Backup Progress / Restore Progress functionality** (manual JSON export/import already ships). Make its date, data coverage, restore confirmation and device-switch guidance clearer; cross-device accounts can be introduced only when demand justifies authentication, privacy and maintenance cost.
 - Opt-in personal notes, bookmarks and high-yield topic lists based strictly on the lecture.
 - Read-only shareable practice link or class quiz after exams are medically reviewed; never leak private student notes.
 - Avoid speculative gamification, AI chatbots guessing clinical answers, or wholesale framework rewrites.
@@ -73,7 +73,7 @@
 4. Pilot one additional fully source-reviewed MCQ-enabled lecture from Urology.
 5. Introduce the **Lecture Intake Review** interface and repeat the pilot across 2–3 lectures.
 6. Expand to other subjects with consistent templates, measurable quality and no loss of existing tools.
-7. Add backups, optional accounts and advanced analytics only after the previous surfaces are stable.
+7. Polish existing Backup/Restore guidance; add optional automatic cross-device sync and advanced analytics only after the earlier learning surfaces are stable.
 
 ## Non-negotiable safeguards
 - Maintain existing MCQ answer keys and original authored medical facts; never manufacture clinical answers or assume outside scientific updates are exam facts.
