@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {test, expect} from '@playwright/test';
@@ -159,6 +160,7 @@ test('backup import rolls back progress and preferences when progress replacemen
     }
   });
 
+  page.once('dialog', dialog => dialog.accept());
   await page.locator('#importProgressFile').setInputFiles({
     name: 'progress-v2-rollback.json',
     mimeType: 'application/json',
@@ -211,6 +213,7 @@ test('backup import reports when automatic rollback also fails', async ({page}) 
     }
   });
 
+  page.once('dialog', dialog => dialog.accept());
   await page.locator('#importProgressFile').setInputFiles({
     name: 'progress-v2-rollback-failure.json',
     mimeType: 'application/json',
@@ -227,6 +230,71 @@ test('backup import reports when automatic rollback also fails', async ({page}) 
 });
 
 
+test('restore asks before replacing saved ratings and mistake notebook, and cancel keeps both', async ({page}) => {
+  await openBank(page);
+  const originalMistakes = {'urology-congenital-anomalies::core::old-mistake': {
+    lectureId: 'urology-congenital-anomalies', type: 'core', id: 'old-mistake', mistakes: 3
+  }};
+  await page.evaluate(async records => {
+    await globalThis.MEQProgressStore.replaceAll({
+      'urology-congenital-anomalies::core::original-rating': 'weak'
+    });
+    localStorage.setItem('medicalBankReviewLogV1', JSON.stringify(records));
+    localStorage.setItem('medicalBankExamHistoryV1', '[{"answered":4,"questions":10}]');
+  }, originalMistakes);
+  const incoming = {
+    schema: 'medical-meq-progress', schemaVersion: 2,
+    progress: {'urology-congenital-anomalies::core::replacement-rating': 'mastered'},
+    preferences: {medicalBankReviewLogV1: JSON.stringify({
+      'urology-congenital-anomalies::core::replacement': {
+        lectureId:'urology-congenital-anomalies',type:'core',id:'replacement',mistakes:1
+      }
+    })}
+  };
+  const dialogPromise = page.waitForEvent('dialog');
+  const upload = page.locator('#importProgressFile').setInputFiles({
+    name: 'replace-backup.json', mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(incoming))
+  });
+  const dialog = await dialogPromise;
+  expect(dialog.type()).toBe('confirm');
+  expect(dialog.message()).toContain('On this device: 1 saved ratings, 1 recorded mistakes.');
+  expect(dialog.message()).toContain('In backup: 1 saved ratings, 1 recorded mistakes.');
+  expect(dialog.message()).toContain('unfinished exam');
+  await dialog.dismiss();
+  await upload;
+  await expect(page.locator('#appToast')).toContainText('Restore cancelled');
+  expect(await page.evaluate(() => globalThis.MEQProgressStore.exportAll()))
+    .toEqual({'urology-congenital-anomalies::core::original-rating':'weak'});
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('medicalBankReviewLogV1'))))
+    .toEqual(originalMistakes);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('medicalBankExamHistoryV1'))))
+    .toEqual([{answered:4, questions:10}]);
+});
+
+test('downloaded progress backup carries saved mistakes and recent exam history', async ({page}) => {
+  await openBank(page);
+  const mistakes = {'urology-congenital-anomalies::core::original-mistake': {
+    lectureId: 'urology-congenital-anomalies', type:'core', id:'original-mistake', mistakes:2
+  }};
+  await page.evaluate(async log => {
+    await globalThis.MEQProgressStore.replaceAll({
+      'urology-congenital-anomalies::core::export-rating': 'review'
+    });
+    localStorage.setItem('medicalBankReviewLogV1', JSON.stringify(log));
+    localStorage.setItem('medicalBankExamHistoryV1', '[{"answered":3,"questions":10}]');
+  }, mistakes);
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#exportProgressBtn').click();
+  const download = await downloadPromise;
+  const backup = JSON.parse(readFileSync(await download.path(), 'utf8'));
+  expect(backup.schemaVersion).toBe(2);
+  expect(backup.progress).toEqual({'urology-congenital-anomalies::core::export-rating':'review'});
+  expect(JSON.parse(backup.preferences.medicalBankReviewLogV1)).toEqual(mistakes);
+  expect(JSON.parse(backup.preferences.medicalBankExamHistoryV1))
+    .toEqual([{answered:3,questions:10}]);
+});
+
 test('backup schema v2 restores progress and preferences transactionally', async ({page}) => {
   await openBank(page);
 
@@ -234,13 +302,20 @@ test('backup schema v2 restores progress and preferences transactionally', async
     schema: 'medical-meq-progress',
     schemaVersion: 2,
     preferences: {
-      medicalBankDarkV4: '1'
+      medicalBankDarkV4: '1',
+      medicalBankReviewLogV1: JSON.stringify({
+        'urology-congenital-anomalies::core::restored-history': {
+          lectureId:'urology-congenital-anomalies',type:'core',id:'restored-history',mistakes:2
+        }
+      }),
+      medicalBankExamHistoryV1: '[{"answered":3,"questions":10}]'
     },
     progress: {
       'urology-congenital-anomalies::core::backup-v2': 'review'
     }
   });
 
+  page.once('dialog', dialog => dialog.accept());
   await page.locator('#importProgressFile').setInputFiles({
     name: 'progress-v2.json',
     mimeType: 'application/json',
@@ -254,4 +329,10 @@ test('backup schema v2 restores progress and preferences transactionally', async
   await expect.poll(
     () => page.evaluate(() => localStorage.getItem('medicalBankDarkV4'))
   ).toBe('1');
+  const restored = await page.evaluate(() => ({
+    log: JSON.parse(localStorage.getItem('medicalBankReviewLogV1')),
+    history: JSON.parse(localStorage.getItem('medicalBankExamHistoryV1'))
+  }));
+  expect(restored.log['urology-congenital-anomalies::core::restored-history'].mistakes).toBe(2);
+  expect(restored.history).toEqual([{answered:3,questions:10}]);
 });
