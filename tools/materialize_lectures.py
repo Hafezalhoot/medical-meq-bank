@@ -137,6 +137,38 @@ def validate_materialized_lecture(
     return lecture
 
 
+def apply_study_guide_companion(lecture: dict, target: dict) -> dict:
+    """Attach a source-reviewable companion after verifying the original transport hash.
+
+    Never overwrite the original question IDs, cases, figures, or an existing guide.
+    """
+    relative = target.get("studyGuideCompanion")
+    if relative is None:
+        return lecture
+    lecture_id = target.get("lectureId")
+    if relative != f"companions/{lecture_id}.json":
+        fail(f"{lecture_id} companion must use its exact lecture-scoped path")
+    source = safe_path(LECTURES, relative)
+    if source.parent != (LECTURES / "companions").resolve() or not source.is_file():
+        fail(f"{lecture_id} study guide companion is missing or unsafe")
+    candidate = read_json(source)
+    if not isinstance(candidate, dict) or set(candidate) != {"lectureId", "studyGuide"}:
+        fail(f"{lecture_id} companion must contain only lectureId and studyGuide")
+    if candidate["lectureId"] != lecture_id:
+        fail(f"{lecture_id} companion claims a different lecture ID")
+    if "studyGuide" in lecture:
+        fail(f"{lecture_id} already has a studyGuide; do not replace existing reviewed content")
+    ids = {
+        item["id"]
+        for key in ("cases", "coreShorts", "imageQuestions", "detailedShorts")
+        for item in lecture.get(key, [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    from lecture_builder import validate_study_guide
+    validate_study_guide(candidate["studyGuide"], label=f"Companion {lecture_id}", item_ids=ids)
+    return {**lecture, "studyGuide": candidate["studyGuide"]}
+
+
 def materialize_compressed(target: dict) -> None:
     output = safe_path(LECTURES, target.get("output"))
     lecture_id = target.get("lectureId")
@@ -197,9 +229,14 @@ def materialize_compressed(target: dict) -> None:
 
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_suffix(output.suffix + ".tmp")
-    temporary.write_bytes(raw)
+    combined = apply_study_guide_companion(lecture, target)
+    published = raw if combined is lecture else (
+        json.dumps(combined, ensure_ascii=False, indent=2) + "\n"
+    ).encode("utf-8")
+    temporary.write_bytes(published)
     temporary.replace(output)
-    print(f"Materialized {lecture_id} from verified compressed parts")
+    print(f"Materialized {lecture_id} from verified compressed parts"
+          + (" and source-linked companion" if combined is not lecture else ""))
 
 
 def materialize_template_assets(target: dict) -> None:
@@ -272,9 +309,10 @@ def materialize_template_assets(target: dict) -> None:
         fail(f"{lecture_id} has unused image assets: {', '.join(unused)}")
 
     validate_materialized_lecture(lecture, lecture_id=lecture_id, image_count=len(assets))
+    combined = apply_study_guide_companion(lecture, target)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
-        json.dumps(lecture, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(combined, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     print(f"Materialized {lecture_id} from template + verified assets")
