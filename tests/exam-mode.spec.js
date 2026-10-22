@@ -121,9 +121,10 @@ test('unfinished attempt survives reload and expired time does not mark unanswer
   await expect(page.locator('#examResultContent')).toContainText('Time is up');
 });
 
-test('320px exam is keyboard-usable without horizontal overflow or hidden close action',async({page})=>{
+test('320px exam is keyboard-usable without horizontal overflow or hidden close action',async({page},testInfo)=>{
   await page.setViewportSize({width:320,height:720});
   await openExam(page);
+  await testInfo.attach('exam-setup-320px',{body:await page.screenshot(),contentType:'image/png'});
   const dimensions=await page.evaluate(()=>{
     const modal=document.getElementById('examDialog').getBoundingClientRect();
     return {width:modal.width,screen:innerWidth,scroll:document.getElementById('examDialog').scrollWidth};
@@ -134,6 +135,7 @@ test('320px exam is keyboard-usable without horizontal overflow or hidden close 
   await page.locator('#examFormat').selectOption('mcq');
   await page.locator('#examBegin').click();
   await expect(page.locator('.exam-option')).toHaveCount(4);
+  await testInfo.attach('exam-question-320px',{body:await page.screenshot(),contentType:'image/png'});
   await page.locator('.exam-option').first().focus();
   await page.keyboard.press('1');
   await expect(page.locator('#examFeedback')).not.toBeHidden();
@@ -145,4 +147,57 @@ test('MCQ-only mode refuses lectures with no verified MCQs rather than fabricati
   await page.locator('#examBegin').click();
   await expect(page.locator('#examAlert')).toContainText('no source-verified MCQs');
   await expect(page.locator('#examResults')).toBeHidden();
+});
+
+test('change exam confirms unsaved attempt replacement and preserves Weak progress across reload',async({page})=>{
+  await openExam(page);
+  await page.locator('#examFormat').selectOption('mcq');
+  await page.locator('#examBegin').click();
+  const item=await currentMcq(page);
+  const wrong=(item.answerIndex+1)%item.options.length;
+  await page.locator('.exam-option[data-choice="'+wrong+'"]').click();
+  await expect(page.locator('#examFeedback')).toContainText('Incorrect · Weak');
+  await expect(page.locator('#examChange')).toBeVisible();
+  page.once('dialog',dialog=>dialog.dismiss());
+  await page.locator('#examChange').click();
+  await expect(page.locator('#examPlay')).toBeVisible();
+  await expect(page.locator('#examFeedback')).toContainText('Incorrect · Weak');
+
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#examChange').click();
+  await expect(page.locator('#examSetup')).toBeVisible();
+  await expect(page.locator('#examBegin')).toBeFocused();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('medicalBankExamSessionV1')))).toBeNull();
+
+  await page.reload();
+  await page.locator('#examModeBtn').click();
+  await expect(page.locator('#examSetup')).toBeVisible();
+  const progress=await page.evaluate(async id=>{
+    const rows=await globalThis.MEQProgressStore.exportAll();
+    return Object.entries(rows).find(([k])=>k.endsWith('::mcq::'+id))?.[1];
+  },item.id);
+  expect(progress).toBe('weak');
+});
+
+test('a blocked local exam session save warns visibly without losing the independently saved Weak rating',async({page})=>{
+  await openExam(page);
+  await page.locator('#examFormat').selectOption('mcq');
+  await page.locator('#examBegin').click();
+  const item=await currentMcq(page);
+  await page.evaluate(()=>{
+    const original=Storage.prototype.setItem;
+    Storage.prototype.setItem=function(key,value){
+      if(key==='medicalBankExamSessionV1')throw new DOMException('Storage is full','QuotaExceededError');
+      return original.call(this,key,value);
+    };
+  });
+  await page.locator('.exam-option[data-choice="'+((item.answerIndex+1)%item.options.length)+'"]').click();
+  await expect(page.locator('#examFeedback')).toContainText('Incorrect · Weak');
+  await expect(page.locator('#examAlert')).toBeVisible();
+  await expect(page.locator('#examAlert')).toContainText('could not be saved for reload');
+  const progress=await page.evaluate(async id=>{
+    const rows=await globalThis.MEQProgressStore.exportAll();
+    return Object.entries(rows).find(([k])=>k.endsWith('::mcq::'+id))?.[1];
+  },item.id);
+  expect(progress).toBe('weak');
 });
