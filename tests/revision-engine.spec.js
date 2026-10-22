@@ -3,7 +3,7 @@ test.use({serviceWorkers:'block'});
 const derm='internal-medicine-ii-dermatology-introduction';
 async function openNotebook(page){
   const panel=page.locator('#myReviewDisclosure');
-  if(!(await panel.getAttribute('open')))await panel.locator('summary').click();
+  if(!(await panel.evaluate(element=>element.open)))await panel.locator('summary').click();
   await page.locator('#mistakeNotebookBtn').click();
 }
 async function startMcq(page){
