@@ -25,12 +25,15 @@ test('Daily Weak 15 uses saved weak questions, and notebook records auto-scored 
   await expect(page.locator('#examNotebookList')).toContainText(mcq.options[mcq.answerIndex]);
   await page.locator('#examClose').click();
   await page.reload();
+  await page.locator('#myReviewDisclosure summary').click();
+  page.once('dialog',dialog=>dialog.accept());
   await page.locator('#dailyWeakBtn').click();
   await expect(page.locator('#examQuestionHeading')).toContainText(mcq.question);
   await expect(page.locator('#examPosition')).toHaveText('Question 1 / 1');
 });
 test('Daily review empty state never starts an exam or fabricates weak questions',async({page})=>{
   await page.goto('/');
+  await page.locator('#myReviewDisclosure summary').click();
   await page.locator('#dailyWeakBtn').click();
   await expect(page.locator('#dailyReviewStatus')).toContainText('No saved Weak / Review questions yet');
   await expect(page.locator('#examDialog')).not.toBeVisible();
