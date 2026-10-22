@@ -75,3 +75,26 @@ test('Notebook history retains more than 500 distinct prior records without eras
   const count=await page.evaluate(()=>Object.keys(JSON.parse(localStorage.getItem('medicalBankReviewLogV1'))).length);
   expect(count).toBe(601);
 });
+
+test('Daily Weak 15 skips obsolete saved question IDs without erasing Weak progress',async({page})=>{
+  const mcq=await startMcq(page);
+  await page.locator('.exam-option[data-choice="'+((mcq.answerIndex+1)%mcq.options.length)+'"]').click();
+  await expect(page.locator('#examFeedback')).toContainText('Incorrect');
+  await page.locator('#examClose').click();
+  const ghost=derm+'::mcq::removed-source-question';
+  await page.evaluate(ghost=>{
+    state[ghost]='weak';
+    const saved=JSON.parse(localStorage.getItem('medicalBankStatusV2')||'{}');
+    saved[ghost]='weak';
+    localStorage.setItem('medicalBankStatusV2',JSON.stringify(saved));
+  },ghost);
+  const review=page.locator('#myReviewDisclosure');
+  if(!(await review.evaluate(element=>element.open)))await review.locator('summary').click();
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#dailyWeakBtn').click();
+  await expect(page.locator('#examQuestionHeading')).toContainText(mcq.question);
+  await expect(page.locator('#examPosition')).toHaveText('Question 1 / 1');
+  await expect(page.locator('#dailyReviewStatus')).toContainText('1 unavailable saved question(s) skipped');
+  const retained=await page.evaluate(ghost=>JSON.parse(localStorage.getItem('medicalBankStatusV2')||'{}')[ghost],ghost);
+  expect(retained).toBe('weak');
+});

@@ -590,19 +590,36 @@
       if(!loader||!registry)throw new Error('The course library is not ready. Try again.');
       const scopes=registry.allSubjectScopes();
       const checked=await Promise.allSettled(scopes.map(scope=>loader.loadSubjectMetadata(scope.subjectKey,scope.courseId)));
-      const questions=dailyCandidates().slice(0,DAILY_LIMIT).map(row=>row.q);
+      const candidates=dailyCandidates();
+      const questions=[],loaded=new Set();
+      let unavailable=0,loadFailures=false;
+      // Restore old ratings without letting missing/renamed source questions block a whole review.
+      for(let offset=0;offset<candidates.length&&questions.length<DAILY_LIMIT;offset+=DAILY_LIMIT){
+        const batch=candidates.slice(offset,offset+DAILY_LIMIT).map(row=>row.q);
+        const ids=[...new Set(batch.map(q=>q.lectureId))].filter(id=>!loaded.has(id));
+        ids.forEach(id=>loaded.add(id));
+        const results=await Promise.allSettled(ids.map(id=>loader.loadLecture(id,{refresh:false,busy:false})));
+        if(results.some(result=>result.status==='rejected'))loadFailures=true;
+        for(const q of batch){
+          if(!sourceFor(q)){unavailable++;continue;}
+          if(questions.length<DAILY_LIMIT)questions.push(q);
+        }
+      }
       if(!questions.length){
-        message.textContent='No saved Weak / Review questions yet. Mark questions in a lecture or take an exam first.';
+        message.textContent=candidates.length
+          ?'Saved review questions are unavailable in the current lectures. Your Weak / Review ratings are still saved.'
+          :'No saved Weak / Review questions yet. Mark questions in a lecture or take an exam first.';
         return;
       }
-      await loadQuestions(questions);
       session={schema:1,course:'mixed',subject:'Across courses',daily:true,startedAt:Date.now(),deadline:0,
         questions,answers:{},index:0,finished:false,timedOut:false};
       const retained=persist();
       if(!dialog.open)dialog.showModal();
       renderQuestion();startClock();
-      message.textContent=questions.length+' review questions selected · Weak first, then oldest attempts. Repeated mistakes break ties.';
-      if(checked.some(result=>result.status==='rejected'))alertUser('Some course catalogs were unavailable. This review uses the accessible saved questions.');
+      message.textContent=questions.length+' review questions selected · Weak first, then oldest attempts.'
+        +(unavailable?' '+unavailable+' unavailable saved question(s) skipped; ratings kept.':'');
+      if(loadFailures||checked.some(result=>result.status==='rejected'))
+        alertUser('Some lecture sources could not be loaded. The review uses available questions; saved ratings were not erased.');
       if(!retained)alertUser('Daily session could not be saved for reload. Saved question ratings remain unchanged.');
     }catch(error){message.textContent='Could not prepare Daily Weak 15: '+String(error.message||error)}
     finally{busy=false;button.disabled=false}
