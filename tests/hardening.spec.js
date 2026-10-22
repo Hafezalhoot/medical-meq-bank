@@ -258,8 +258,8 @@ test('restore asks before replacing saved ratings and mistake notebook, and canc
   });
   const dialog = await dialogPromise;
   expect(dialog.type()).toBe('confirm');
-  expect(dialog.message()).toContain('On this device: 1 saved ratings, 1 recorded mistakes.');
-  expect(dialog.message()).toContain('In backup: 1 saved ratings, 1 recorded mistakes.');
+  expect(dialog.message()).toContain('On this device: 1 saved rating, 1 recorded mistake.');
+  expect(dialog.message()).toContain('In backup: 1 saved rating, 1 recorded mistake.');
   expect(dialog.message()).toContain('unfinished exam');
   await dialog.dismiss();
   await upload;

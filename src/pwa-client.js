@@ -358,12 +358,13 @@
               : 'unknown';
           } catch { return 'unknown'; }
         };
+        const labelCount = (value, word) => value + ' ' + word + (value === 1 ? '' : 's');
         const existingMistakes = mistakeCount(localStorage.getItem('medicalBankReviewLogV1'));
         const restoredMistakes = mistakeCount(incoming.preferences.medicalBankReviewLogV1);
         const confirmed = window.confirm(
           'Replace your MEQ study data with this backup?\n\n'
-          + 'On this device: ' + Object.keys(current).length + ' saved ratings, ' + existingMistakes + ' recorded mistakes.\n'
-          + 'In backup: ' + Object.keys(incoming.progress).length + ' saved ratings, ' + restoredMistakes + ' recorded mistakes.\n\n'
+          + 'On this device: ' + labelCount(Object.keys(current).length, 'saved rating') + ', ' + labelCount(existingMistakes, 'recorded mistake') + '.\n'
+          + 'In backup: ' + labelCount(Object.keys(incoming.progress).length, 'saved rating') + ', ' + labelCount(restoredMistakes, 'recorded mistake') + '.\n\n'
           + 'This replaces your saved ratings, mistake notebook, exam history, unfinished exam and MEQ preferences. '
           + 'Offline downloads and privately imported photos are not restored or removed. Continue?'
         );
