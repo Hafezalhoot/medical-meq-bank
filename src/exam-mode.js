@@ -15,7 +15,7 @@
   const node=(tag,cls,text)=>{
     const item=document.createElement(tag);
     if(cls)item.className=cls;
-    if(text!==undefined)item.textContent=String(text);
+    if(text!==undefined&&text!==null)item.textContent=String(text);
     return item;
   };
   const appendText=(parent,tag,cls,value)=>{
@@ -48,7 +48,7 @@
   root.innerHTML=[
     '<header class="exam-header"><div><span class="exam-eyebrow">MEQ · ASSESSMENT SPACE</span>',
     '<h2 id="examTitle">Exam mode</h2><p>Source-verified answers. Real revision progress.</p></div>',
-    '<button type="button" class="exam-close" id="examClose" aria-label="Close exam and save session">Close <span aria-hidden="true">×</span></button></header>',
+    '<button type="button" class="exam-close" id="examClose" aria-label="Save and close exam">Save &amp; close <span aria-hidden="true">×</span></button></header>',
     '<div id="examAlert" class="exam-alert" role="alert" hidden></div>',
     '<section id="examSetup" class="exam-setup" aria-label="Set up exam">',
     '<p class="exam-intro">Choose a lecture or specialty. MCQs are checked immediately; descriptive questions are graded only after you compare your answer with the source model answer.</p>',
@@ -69,6 +69,7 @@
     '<div id="examFeedback" class="exam-feedback" role="status" aria-live="polite" hidden></div>',
     '<nav class="exam-nav" aria-label="Exam navigation"><button id="examPrevious" class="exam-secondary" type="button">Previous</button>',
     '<button id="examNext" class="exam-primary" type="button">Next question</button>',
+    '<button id="examChange" class="exam-secondary" type="button">Change exam</button>',
     '<button id="examFinish" class="exam-secondary" type="button">Finish exam</button></nav></section>',
     '<section id="examResults" class="exam-results" aria-label="Exam results" hidden>',
     '<div id="examResultContent"></div><div class="exam-result-actions">',
@@ -333,24 +334,32 @@
     busy=true;
     const correct=index===source.item.answerIndex;
     const saved=await saveLevel(q,correct?'mastered':'weak');
+    let retained=true;
     if(saved){
       session.answers[identifier(q)]={choice:index,correct,manual:false,at:Date.now()};
-      if(!persist())alertUser('Exam session could not be saved for reload. Ratings remain in the study-progress store.');
+      retained=persist();
     }
     busy=false;
-    if(saved)renderQuestion();
+    if(saved){
+      renderQuestion();
+      if(!retained)alertUser('Exam session could not be saved for reload. Ratings remain in the study-progress store.');
+    }
   };
   const gradeWritten=async correct=>{
     const q=current();
     if(busy||!q||q.type==='mcq'||answerFor(q))return;
     busy=true;
     const saved=await saveLevel(q,correct?'mastered':'weak');
+    let retained=true;
     if(saved){
       session.answers[identifier(q)]={correct,manual:true,at:Date.now()};
-      if(!persist())alertUser('Exam session could not be saved for reload. Ratings remain in the study-progress store.');
+      retained=persist();
     }
     busy=false;
-    if(saved)renderQuestion();
+    if(saved){
+      renderQuestion();
+      if(!retained)alertUser('Exam session could not be saved for reload. Ratings remain in the study-progress store.');
+    }
   };
   const recordHistory=()=>{
     const data=score();
@@ -456,9 +465,10 @@
       const duration=Number(el('examDuration').value)||0;
       session={schema:1,course,subject,startedAt:Date.now(),deadline:duration?Date.now()+duration*60_000:0,
         questions,answers:{},index:0,finished:false,timedOut:false};
-      persist();
+      const retained=persist();
       renderQuestion();
       startClock();
+      if(!retained)alertUser('Exam session could not be saved for reload. Your ratings will still use the study-progress store.');
     }catch(error){showSetup();alertUser(String(error.message||error))}
     finally{busy=false;button.disabled=false;button.textContent='Start exam'}
   };
@@ -484,6 +494,18 @@
     renderQuestion();
     startClock();
   };
+  const changeExam=()=>{
+    if(!session||session.finished||busy)return;
+    if(!window.confirm('Change exam settings? This unfinished attempt will be discarded. Saved Weak / Mastered ratings will stay.'))return;
+    if(!safelyWrite(SESSION,null)){
+      alertUser('Cannot replace the saved exam. Check browser storage settings and try again.');
+      return;
+    }
+    session=null;
+    stopClock();
+    showSetup();
+    el('examBegin').focus();
+  };
   const open=()=>{
     if(!dialog.open)dialog.showModal();
     if(session)void resume();else showSetup();
@@ -498,6 +520,7 @@
   el('examNext').addEventListener('click',()=>{
     if(session&&session.index<session.questions.length-1){session.index++;persist();renderQuestion()}
   });
+  el('examChange').addEventListener('click',changeExam);
   el('examFinish').addEventListener('click',()=>{
     if(!session)return;
     const remaining=session.questions.length-answeredCount();
