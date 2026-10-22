@@ -57,3 +57,21 @@ test('Notebook retry does not erase mistake history and marks successful retry M
   await expect(page.locator('#examNotebookList')).toContainText('Now Mastered');
   await expect(page.locator('#examNotebookList')).toContainText('1 mistake');
 });
+
+test('Notebook history retains more than 500 distinct prior records without erasing old mistakes',async({page})=>{
+  await page.addInitScript(()=>{
+    const rows={};
+    for(let i=0;i<600;i++){
+      const id='historic-'+i;
+      rows['urology-congenital-anomalies::core::'+id]={
+        lectureId:'urology-congenital-anomalies',type:'core',id,
+        attempts:1,mistakes:1,lastSeen:Date.now()-i*1000
+      };
+    }
+    localStorage.setItem('medicalBankReviewLogV1',JSON.stringify(rows));
+  });
+  const mcq=await startMcq(page);
+  await page.locator('.exam-option[data-choice="'+((mcq.answerIndex+1)%mcq.options.length)+'"]').click();
+  const count=await page.evaluate(()=>Object.keys(JSON.parse(localStorage.getItem('medicalBankReviewLogV1'))).length);
+  expect(count).toBe(601);
+});
