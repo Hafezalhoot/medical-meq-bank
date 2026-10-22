@@ -133,7 +133,7 @@
 }
 @media(max-width:360px){
   .exam-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
-  .exam-nav #examFinish{grid-column:1/-1}
+  .exam-nav #examFinish{grid-column:auto}
   .exam-header{gap:7px}
   .exam-close{padding:6px 9px}
   .exam-result-metric strong{font-size:1.17rem}
