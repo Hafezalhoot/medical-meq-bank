@@ -1,19 +1,28 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
-### 2026-10-22 — Generic source-guide companion architecture (PR #54 candidate)
+### 2026-10-22 — Verified release and outstanding source-content review (documentation update)
+
+- ✅ **[PR #54](https://github.com/Hafezalhoot/medical-meq-bank/pull/54) merged** to protected `main` as `424dc4ac7dc36a5c9fcbd56f336c3866d5b08ad7` following exact-head static/Chromium/WebKit/Workers Build success. Shared Study Guide companion ingestion is now available for future source-reviewed content, without publishing any new clinical facts.
+- ✅ **[PR #52](https://github.com/Hafezalhoot/medical-meq-bank/pull/52) merged** as `19597fca85196f3437ee1fd6d1583d8544afb8a7`; private source-review reports and PDF hash inventory now work in authoring tooling.
+- ✅ **Release `2026.10.22.6` confirmed at 100% traffic** in read-only Wrangler status from [production smoke #39712936674](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39712936674): Worker `2e6601ae-d00e-4003-88d5-c17f47c6f22b`. Later documentation/tool-only commits can rebuild identical app source under a new Worker ID; verify before claiming a new active deployment.
+- 🔒 Full logged-in production smoke still fails at Cloudflare Access HTTP 302 without narrowly scoped Service Auth ([#35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35)). Automatic production activation before protected post-merge CI completion remains [#50](https://github.com/Hafezalhoot/medical-meq-bank/issues/50).
+- 🔬 **[PR #53](https://github.com/Hafezalhoot/medical-meq-bank/pull/53) is editorial draft**, on top of merged #54: 31 proposed PDF-page-linked Bladder Cancer MCQs. It is not merged and is NOT medically approved or active until explicit learner/lecturer review. Candidate source `2026.10.22.7` belongs only to that branch.
+
+
+### 2026-10-22 — Generic source-guide companion architecture (PR #54 merged)
 
 - 🧪 Added optional `studyGuideCompanion` handling to the shared materializer **after** existing raw compressed transport hashes and source images have been verified. The default path remains byte-for-byte equivalent for older lectures without a companion.
 - 🧪 Companion JSON must match its exact lecture-scoped path and ID, contain only `lectureId` and `studyGuide`, pass the established Study Guide schema, and never overwrite an existing guide or reuse a legacy item ID.
 - 🧪 Added focused stdlib unit tests for source preservation, duplicate IDs, mismatched identity and unsafe paths. The change does not itself add clinical content or change the published app version.
-- ⏳ Candidate pending exact-head static/Chromium/WebKit/Workers Build checks. Bladder Cancer MCQs are reviewed separately in editorial draft PR #53 and **must not be published without medical sign-off**.
+- ✅ [PR #54](https://github.com/Hafezalhoot/medical-meq-bank/pull/54) passed its exact-head static/Chromium/WebKit/Workers Build checks and was merged. Bladder Cancer MCQs remain in editorial draft PR #53 and **must not be published without medical sign-off**.
 
 
-### 2026-10-22 — Private source-review intake command (PR #52 draft)
+### 2026-10-22 — Private source-review intake command (PR #52 merged)
 
 - 🧪 Added a no-dependency authoring report generator for source-backed JSON lecture drafts. It summarizes five legacy practice categories and optional Explanation / MCQ / Image sources without changing any medical questions.
 - 🧪 Optional local PDF SHA-256 verification, transparent missing-page flags, exclusive-write ignored Markdown checklist, and required human signoff before existing safe `add_lecture.py` dry-run and `--write --reviewed`.
 - 🧪 Dedicated unittest regression coverage for missing references, empty draft, PDF hash and overwrite guard. This authoring-only enhancement will not change the published Worker version or website UI.
-- ⏳ PR #52 remains unmerged until exact-head static, Chromium, WebKit and Workers Build gates pass.
+- ✅ [PR #52](https://github.com/Hafezalhoot/medical-meq-bank/pull/52) passed exact-head static, Chromium, WebKit and Workers Build checks and merged on main.
 
 
 ### 2026-10-22 — Source-safe Daily Weak 15 recovery (PR #51 merged; source 2026.10.22.6)
