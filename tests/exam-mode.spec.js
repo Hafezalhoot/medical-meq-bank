@@ -135,6 +135,9 @@ test('320px exam is keyboard-usable without horizontal overflow or hidden close 
   await page.locator('#examFormat').selectOption('mcq');
   await page.locator('#examBegin').click();
   await expect(page.locator('.exam-option')).toHaveCount(4);
+  const hasPlaceholder=await page.locator('.exam-option').evaluateAll(options=>options.some(option=>
+    [...option.childNodes].some(child=>child.nodeType===3&&child.textContent.trim()==='null')));
+  expect(hasPlaceholder).toBe(false);
   await testInfo.attach('exam-question-320px',{body:await page.screenshot(),contentType:'image/png'});
   await page.locator('.exam-option').first().focus();
   await page.keyboard.press('1');
