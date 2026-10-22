@@ -1,10 +1,18 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
-### 2026-10-22 — Source-safe Daily Weak 15 recovery (PR #51 candidate)
+### 2026-10-22 — Private source-review intake command (PR #52 draft)
+
+- 🧪 Added a no-dependency authoring report generator for source-backed JSON lecture drafts. It summarizes five legacy practice categories and optional Explanation / MCQ / Image sources without changing any medical questions.
+- 🧪 Optional local PDF SHA-256 verification, transparent missing-page flags, exclusive-write ignored Markdown checklist, and required human signoff before existing safe `add_lecture.py` dry-run and `--write --reviewed`.
+- 🧪 Dedicated unittest regression coverage for missing references, empty draft, PDF hash and overwrite guard. This authoring-only enhancement will not change the published Worker version or website UI.
+- ⏳ PR #52 remains unmerged until exact-head static, Chromium, WebKit and Workers Build gates pass.
+
+
+### 2026-10-22 — Source-safe Daily Weak 15 recovery (PR #51 merged; source 2026.10.22.6)
 
 - 🧪 Avoid aborting the entire Daily Weak 15 session when a saved Weak / Review ID no longer maps to a published source question. Load candidates in compact batches, skip unavailable source items without modifying saved ratings, and continue finding valid review questions (up to 15).
 - 🧪 Added a Playwright regression that inserts an obsolete saved item alongside a real missed MCQ, verifies that review still starts, and confirms that the obsolete rating remains saved.
-- 🔒 Candidate `2026.10.22.6` is an **unmerged draft** until exact-head static, Chromium, WebKit and Workers Build gates pass. Protected live QA remains blocked by Cloudflare Access issue #35; Cloudflare auto-promotion risk remains issue #50.
+- ✅ [PR #51](https://github.com/Hafezalhoot/medical-meq-bank/pull/51) passed exact-head static, Chromium, WebKit and Cloudflare Workers Build checks and merged to main at `7a8cec751c616630501a2ae6a9884046dd061a79`. Active-traffic status for `.6` remains subject to separate read-only deployment inspection; post-login QA remains blocked by Access issue #35 and release gating remains issue #50.
 
 
 ### 2026-10-22 — Revision engine and learning analytics merged; Cloudflare promotion pending
@@ -14,7 +22,7 @@
 - ✅ Study updates: Daily Weak 15, Mistake Notebook, mistake retention across a correct retry, separate objective MCQ and written self-grade metrics, and per-lecture saved-ratings breakdown. Kept original medical lecture IDs, contents, reviewed keys, photo hashes, original progress engine and JSON backup semantics.
 - ✅ Regression work: corrected a 320px above-the-fold regression, preserved confirmation before discarding unfinished exam sessions, fixed nested My Review disclosure test interactions, and tested >500 persisted mistake entries (2500-entry retention ceiling).
 - ✅ **PR #47 confirmed live (03:56 Cairo, 2026-10-22):** read-only Wrangler in [production smoke #39702689754](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39702689754) showed **Worker `7e5c9e09-bdd9-4d6c-bb7d-e8904d6974bb` at 100%**, exactly matching PR #47 main Cloudflare Workers Build. This supersedes the earlier `33f0f044` observation for version `.3`. Browser smoke still fails at Access HTTP 302 with Service Auth variables unset; preserve Access and see [#35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35).
-- 🔎 **PR #48 active-traffic status pending:** Cloudflare Workers Builds for main `.5` issued Worker `1d2d9ddf-fe68-4abc-b8f9-52e54a6305fe`, but the latest read-only status ran just before that build completed. Check Wrangler `deployments status` for 100% traffic/identical Worker ID and validate full main CI. The Cloudflare Workers Builds integration appears to auto-promote main builds (observed PR #47); avoid redundant manual promotion without checking, and prevent auto-promotion before required validation gates in a dedicated release-controls review.
+- ✅ **PR #48 `.5` independently confirmed active:** Wrangler in [live smoke #39711892245](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39711892245) reported Worker `1d2d9ddf-fe68-4abc-b8f9-52e54a6305fe` at 100%, matching `.5` Cloudflare Build. The HTTP 302 Access redirect still blocks post-login browser QA. The Cloudflare Workers Builds integration appears to auto-promote main builds (observed PR #47); avoid redundant manual promotion without checking, and prevent auto-promotion before required validation gates in a dedicated release-controls review.
 - ⏭ New medical MCQ content for the nine unkeyed lectures remains deliberately pending source PDF answer review; lecture intake already has `new_lecture.py` and `add_lecture.py` dry-run/approved-write flows. New clinical images require documented reuse rights.
 
 

@@ -106,6 +106,19 @@ npm run test:webkit
 ```
 
 
+## One-command draft source-review report (local-only)
+
+After creating and filling a new lecture draft, generate a review checklist *before* attempting to register it. This step reuses the existing intake flow and does **not** publish files or approve medical facts:
+
+```bash
+python3 tools/lecture_review_report.py tmp/lecture-drafts/surgery-urology-example.json \
+  --pdf /private/path/original-lecture.pdf --page-count 25
+```
+
+The tool saves `tmp/lecture-drafts/surgery-urology-example-review.md` without overwriting an older report. It lists authored section counts, source-page fields for Explanation / MCQs / image spots, missing page labels, and the **SHA-256 fingerprint** of the private PDF if one is supplied. The `--page-count` value is reviewer-supplied, not automatically inferred. The original PDF is never uploaded or copied into public assets by this command. The report does **not** check whether medical answers are right or whether an image may legally be republished.
+
+Next review the report against the real PDF, run `python3 tools/add_lecture.py <draft.json> --course <course>` as a safe dry-run, and **only after documented source approval** use the existing `--write --reviewed` gate. The old five practice formats and the newer Study Guide are preserved.
+
 ## Optional approved Study Guide (Explanation + MCQ + Infographic)
 
 New lectures may contain an additional **studyGuide** object. It does not change the five existing arrays, saved item IDs, course catalogs or progress keys. The field is omitted completely for old lectures.
