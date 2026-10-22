@@ -1,5 +1,12 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Source-safe Daily Weak 15 recovery (PR #51 candidate)
+
+- 🧪 Avoid aborting the entire Daily Weak 15 session when a saved Weak / Review ID no longer maps to a published source question. Load candidates in compact batches, skip unavailable source items without modifying saved ratings, and continue finding valid review questions (up to 15).
+- 🧪 Added a Playwright regression that inserts an obsolete saved item alongside a real missed MCQ, verifies that review still starts, and confirms that the obsolete rating remains saved.
+- 🔒 Candidate `2026.10.22.6` is an **unmerged draft** until exact-head static, Chromium, WebKit and Workers Build gates pass. Protected live QA remains blocked by Cloudflare Access issue #35; Cloudflare auto-promotion risk remains issue #50.
+
+
 ### 2026-10-22 — Revision engine and learning analytics merged; Cloudflare promotion pending
 
 - ✅ **[PR #47](https://github.com/Hafezalhoot/medical-meq-bank/pull/47)** merged into protected `main` at `edd3505b701db00b94b9437999ad0954f7f9ddae`; source release `2026.10.22.4`. Exact PR head `e80b1ef` passed static, Chromium, WebKit and Cloudflare Workers Builds ([checks](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39701882226)).
