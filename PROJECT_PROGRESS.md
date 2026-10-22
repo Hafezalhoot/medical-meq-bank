@@ -1,6 +1,17 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
-### 2026-10-22 — Exam Mode 1.0 candidate, automatic Weak ratings and safe self-assessment
+### 2026-10-22 — Exam session hardening and product assessment (2026.10.22.3 candidate)
+
+- ✅ Confirmed **PR #45 merged** to protected `main` as `0912ac027fe5f85809f47498293d15d65e3323e5`; release `2026.10.22.2` passed static, Chromium and WebKit checks in [Actions #39695650798](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39695650798).
+- ✅ Confirmed **live Cloudflare traffic** through read-only Wrangler status in [run #39695650888](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39695650888): Worker version `5c3fcfce-4f81-4ba7-828a-61376dc82f3c` at **100%**. The separate authenticated browser smoke still **fails** at Access HTTP 302 (issue #35).
+- 🔎 Audited the exact published `dist` from the successful `main` CI artifact. Exam Mode is functional by regression tests, but source inspection found no visible way to replace an unfinished attempt without finishing it, and localStorage session-save errors were immediately hidden when feedback re-rendered. Those are product usability/reliability defects, not evidence of incorrect medical answers.
+- 🧪 Added a confirmed **Change exam** action inside the live session, preserving separately saved Weak/Mastered item progress; renamed close action to **Save & close**; retained local session-save error messages after re-render; kept four mobile actions on two compact rows. New Playwright tests cover aborting/accepting reset, persistence after reload and storage quota failures.
+- 🧪 Added reproducible exam setup/question screenshot attachments at 320px and source release `2026.10.22.3`, synced across source metadata, Service Worker and PWA client; no clinical data, original medical images or progress schema changed.
+- ✅ Published [MEQ Product Evaluation and Roadmap](MEQ_PRODUCT_ROADMAP_2026-10-22.md) based on verified catalog counts, production status, tested scope and outstanding medical-rights/security constraints. Plan prioritizes authenticated QA, source-keyed MCQ coverage, Daily Weak review and safer lecture authoring over a needless framework rewrite.
+- ⏳ **PR #46 is still a candidate** until all exact-head static/Chromium/WebKit/Cloudflare Build gates pass. Do not merge or assert a new live release without deployment/version evidence.
+
+
+### 2026-10-22 — Exam Mode 1.0, automatic Weak ratings and safe self-assessment (merged PR #45)
 
 - ✅ Added an accessible **Exam mode** action next to Start studying with a keyboard-operable native dialog, mobile reading-first layout and dark/light palettes.
 - ✅ Added **source-verified MCQ instant scoring** from `studyGuide.mcqs[].answerIndex` only: correct → **Mastered**, incorrect → **Weak**, with one irreversible selection in that attempt, source rationale, and original options. Both ratings use the existing course+subject+lecture+type+question ID and IndexedDB progress system; MCQ ratings also show in the source study guide.
@@ -8,7 +19,7 @@
 - ✅ Added 10/20/30/50 randomized question sessions, lecture/specialty scope, Weak/Review-only focus, MCQ/written/smart mix formats, optional 10/20/30/60-minute timer, saved same-device resume/history, auto vs self scores, retry mistakes, numeric-key MCQ selection and keyboard-friendly dismissal.
 - ✅ Extended My Review to include Weak/Review MCQs while preserving existing saved progress and all medical lecture files; no fabricated distractors, outside medical facts or clinical photo replacements.
 - ✅ Online PWA and standalone offline HTML include the exam's script/style and the service worker pre-caches release-aligned assets `2026.10.22.2`. Source datasets, schema and original images unchanged.
-- 🧪 Open review: [PR #45](https://github.com/Hafezalhoot/medical-meq-bank/pull/45). First Chromium run found buttons disabled during initial render and one extra hero row; both fixes are committed. Full static+Chromium+WebKit+Cloudflare Workers Build approval is required before merge/publication. Do not mark released from source-only validation.
+- ✅ [PR #45](https://github.com/Hafezalhoot/medical-meq-bank/pull/45) merged after successful static, Chromium and WebKit gates; release `2026.10.22.2` is actively serving 100% of traffic (see current entry). Original first-run rendering and layout regressions were fixed before protected merge; authenticated live browser QA remains separate.
 - ⏳ Cloudflare Access [issue #35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35) still separately blocks authenticated production screenshots/asset checks. Keep protection enabled. Release signoff requires a successful post-merge Worker deployment status report.
 - ⏭ Future: as new PDF-based lectures gain independently reviewed MCQs, they automatically become available for exam auto-grading; keep lecture-first exam policy and prevent unsupported answer inference.
 
