@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Confirm before destructive backup restore (PR #56 candidate)
+
+- 🧪 A valid imported progress backup now presents a native, accessible confirmation with counts of ratings and recorded mistakes on the current device versus the backup, and clearly warns that local study ratings, mistake notebook, recent exam history, unfinished exam and preferences will be replaced. It does **not** suggest private source photos are backed up.
+- 🧪 Cancelling never calls the destructive restore transaction; existing ratings, mistakes, history and preferences remain untouched. Invalid backups are still rejected before a confirmation appears.
+- 🧪 Added Playwright regressions covering cancelled restore, backup export retaining mistake/history records, schema V2 restore persistence, and existing rollback-failure paths. No medical questions or lesson figures change.
+- ⏳ Candidate web release `2026.10.22.7` reserved for this non-medical safety fix. The separate unapproved Bladder Cancer content draft PR #53 must be retargeted to `.8` after this change merges, to avoid duplicate release labels.
+
+
 ### 2026-10-22 — Verified release and outstanding source-content review (documentation update)
 
 - ✅ **[PR #54](https://github.com/Hafezalhoot/medical-meq-bank/pull/54) merged** to protected `main` as `424dc4ac7dc36a5c9fcbd56f336c3866d5b08ad7` following exact-head static/Chromium/WebKit/Workers Build success. Shared Study Guide companion ingestion is now available for future source-reviewed content, without publishing any new clinical facts.

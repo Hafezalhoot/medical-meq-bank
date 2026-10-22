@@ -157,3 +157,41 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
     contentType:'image/png'
   });
 });
+
+test('Safari and iPhone require confirmation before replacing a saved study history', async ({page}) => {
+  await waitForBank(page);
+  await page.evaluate(async () => {
+    await globalThis.MEQProgressStore.ready;
+    await globalThis.MEQProgressStore.replaceAll({
+      'urology-congenital-anomalies::core::safari-kept': 'weak'
+    });
+    localStorage.setItem('medicalBankReviewLogV1', JSON.stringify({
+      'urology-congenital-anomalies::core::safari-mistake': {
+        lectureId: 'urology-congenital-anomalies', type: 'core',
+        id: 'safari-mistake', mistakes: 1
+      }
+    }));
+  });
+
+  const replacement = JSON.stringify({
+    schema: 'medical-meq-progress', schemaVersion: 2,
+    progress: {'urology-congenital-anomalies::core::safari-replaced':'mastered'},
+    preferences: {}
+  });
+  const pendingDialog = page.waitForEvent('dialog');
+  const upload = page.locator('#importProgressFile').setInputFiles({
+    name: 'safari-progress.json', mimeType: 'application/json',
+    buffer: Buffer.from(replacement)
+  });
+  const dialog = await pendingDialog;
+  expect(dialog.type()).toBe('confirm');
+  expect(dialog.message()).toContain('Replace your MEQ study data');
+  await dialog.dismiss();
+  await upload;
+  await expect(page.locator('#appToast')).toContainText('Restore cancelled');
+  expect(await page.evaluate(() => globalThis.MEQProgressStore.exportAll()))
+    .toEqual({'urology-congenital-anomalies::core::safari-kept':'weak'});
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('medicalBankReviewLogV1'))[
+    'urology-congenital-anomalies::core::safari-mistake'
+  ].mistakes)).toBe(1);
+});

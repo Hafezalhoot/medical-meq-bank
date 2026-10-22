@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.22.6';
+  const APP_VERSION = '2026.10.22.7';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -346,6 +346,32 @@
         if (file.size > MAX_BACKUP_BYTES) throw new Error('Backup file is too large');
         const raw = await file.text();
         const incoming = validateBackup(JSON.parse(raw), file.size);
+        const progressStore = globalThis.MEQProgressStore;
+        if (!progressStore) throw new Error('Progress store is unavailable');
+        await progressStore.ready;
+        const current = await progressStore.exportAll();
+        const mistakeCount = value => {
+          try {
+            const log = JSON.parse(value || '{}');
+            return log && typeof log === 'object' && !Array.isArray(log)
+              ? Object.values(log).filter(item => item && Number(item.mistakes) > 0).length
+              : 'unknown';
+          } catch { return 'unknown'; }
+        };
+        const labelCount = (value, word) => value + ' ' + word + (value === 1 ? '' : 's');
+        const existingMistakes = mistakeCount(localStorage.getItem('medicalBankReviewLogV1'));
+        const restoredMistakes = mistakeCount(incoming.preferences.medicalBankReviewLogV1);
+        const confirmed = window.confirm(
+          'Replace your MEQ study data with this backup?\n\n'
+          + 'On this device: ' + labelCount(Object.keys(current).length, 'saved rating') + ', ' + labelCount(existingMistakes, 'recorded mistake') + '.\n'
+          + 'In backup: ' + labelCount(Object.keys(incoming.progress).length, 'saved rating') + ', ' + labelCount(restoredMistakes, 'recorded mistake') + '.\n\n'
+          + 'This replaces your saved ratings, mistake notebook, exam history, unfinished exam and MEQ preferences. '
+          + 'Offline downloads and privately imported photos are not restored or removed. Continue?'
+        );
+        if (!confirmed) {
+          toast('Restore cancelled. Your current progress was kept.');
+          return;
+        }
         await replaceBackupTransactionally(incoming);
         toast('Progress restored. Reloading…');
         setTimeout(() => location.reload(), 700);
