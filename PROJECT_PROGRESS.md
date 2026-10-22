@@ -1,5 +1,14 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Daily Weak 15 + Mistake Notebook (draft PR #47, unverified)
+
+- 🧪 Implemented an opt-in personal revision bar: **Daily Weak 15** draws from saved Weak / Review ratings across published course metadata, with Weak-first/oldest-activity priority and stable tie-breaking; no AI-generated medical facts.
+- 🧪 Added an additive `medicalBankReviewLogV1` activity store (identifiers, attempt counts, mistake counts, automatic vs self-assessed provenance, timestamps) independent of existing canonical ratings. The store is captured by the existing JSON backup preference mechanism; no backup schema migration or question-ID changes.
+- 🧪 Added Mistake Notebook with source answer and one-question retry, retained historical mistakes after Mastered retries, and distinct auto-scored/self-scored labels.
+- 🧪 Added Playwright regression coverage for remembered mistakes after reload, daily selected Weak questions, empty review state, and Mastered retry without erasing mistakes.
+- ⚠️ Draft [PR #47](https://github.com/Hafezalhoot/medical-meq-bank/pull/47) is deliberately not merged or deployed until all exact-head validation/Chromium/WebKit checks and screenshot QA succeed. Protected live Cloudflare Access QA and source-photo permissions remain separate release gates.
+
+
 ### 2026-10-22 — Exam session hardening and product assessment (2026.10.22.3 candidate)
 
 - ✅ Confirmed **PR #45 merged** to protected `main` as `0912ac027fe5f85809f47498293d15d65e3323e5`; release `2026.10.22.2` passed static, Chromium and WebKit checks in [Actions #39695650798](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39695650798).

@@ -144,3 +144,25 @@
 /* Source MCQs share the same Mastered/Review/Weak controls as the original bank. */
 .exam-mcq-rating{margin:15px 0 0;display:flex;gap:7px;flex-wrap:wrap}
 .exam-mcq-rating .status{min-height:44px}
+
+/* Personal revision stays compact; no new dashboard or floating overlay. */
+.my-review-body .daily-review-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:12px 0;padding:12px;background:var(--surface-soft);border:1px solid var(--line);border-radius:12px}
+.daily-review-bar strong{font-size:.96rem;color:var(--text)}
+.daily-review-bar p{margin:4px 0 0;font-size:.83rem;color:var(--muted);line-height:1.5}
+.daily-review-actions{display:flex;gap:8px;flex-wrap:wrap}
+.daily-review-actions button{margin:0;width:auto;min-width:130px;min-height:44px}
+.exam-notebook{padding:24px 28px 30px}
+.exam-notebook[hidden]{display:none!important}
+.exam-notebook h3{margin:0 0 10px;font-size:1.35rem;color:var(--text)}
+.exam-notebook-tools{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:15px 0}
+.exam-notebook-tools label{display:grid;gap:6px;font-size:.85rem;font-weight:700}
+.exam-notebook-tools select{border:1px solid var(--line);background:var(--surface-soft);color:var(--text);border-radius:9px;min-height:44px;padding:8px}
+.exam-notebook-list{display:grid;gap:12px;margin-top:14px}
+.exam-notebook-item{background:var(--surface-soft);border:1px solid var(--line);border-radius:11px;padding:15px;min-width:0;overflow-wrap:anywhere}
+.exam-notebook-heading{font-size:1rem;line-height:1.5;margin:0 0 7px}
+.exam-notebook-meta,.exam-notebook-date{display:block;color:var(--muted);font-size:.8rem;line-height:1.55;margin:0 0 7px}
+.exam-notebook-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.exam-notebook #examNotebookSummary{color:var(--muted);font-size:.86rem;line-height:1.5}
+@media(max-width:700px){.my-review-body .daily-review-bar{align-items:stretch}.daily-review-actions{width:100%}.daily-review-actions button{flex:1;min-width:0}.exam-notebook{padding:18px 17px 24px}}
+@media(max-width:360px){.daily-review-actions button{font-size:.77rem;padding:8px 6px}}
+@media print{.daily-review-bar{display:none!important}}

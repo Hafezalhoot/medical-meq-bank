@@ -9,6 +9,8 @@
 
   const SESSION='medicalBankExamSessionV1';
   const HISTORY='medicalBankExamHistoryV1';
+  const REVIEW_LOG='medicalBankReviewLogV1';
+  const DAILY_LIMIT=15;
   const TYPES={mcq:'Source MCQ',case:'Clinical MEQ',core:'Short question',image:'Image / spot',extra:'Detailed practice'};
   const allowedTypes=new Set(Object.keys(TYPES));
   const el=id=>document.getElementById(id);
@@ -32,6 +34,31 @@
   };
   const identifier=q=>q.lectureId+'::'+q.type+'::'+q.id;
   const validQuestion=q=>Boolean(q&&typeof q.lectureId==='string'&&typeof q.id==='string'&&allowedTypes.has(q.type));
+  // One compact, backed-up activity record per source question; never copy medical answers.
+  const readReviewLog=()=>{
+    const saved=safelyParse(REVIEW_LOG);
+    if(!saved||typeof saved!=='object'||Array.isArray(saved))return {};
+    return Object.fromEntries(Object.entries(saved).filter(([id,record])=>
+      typeof id==='string'&&id.length<320&&record&&typeof record==='object'&&!Array.isArray(record)&&
+      typeof record.lectureId==='string'&&typeof record.id==='string'&&allowedTypes.has(record.type)
+    ).slice(0,2500));
+  };
+  const writeReviewLog=log=>safelyWrite(REVIEW_LOG,Object.fromEntries(
+    Object.entries(log).sort((a,b)=>(Number(b[1].lastSeen)||0)-(Number(a[1].lastSeen)||0)).slice(0,2500)
+  ));
+  const recordAnswer=(q,correct,manual)=>{
+    const log=readReviewLog(),id=identifier(q),old=log[id]||{},now=Date.now();
+    log[id]={
+      lectureId:q.lectureId,type:q.type,id:q.id,
+      courseId:q.courseId||session?.course||old.courseId||'',
+      subjectKey:q.subjectKey||session?.subject||old.subjectKey||'',
+      lastSeen:now,attempts:Math.min(9999,(Number(old.attempts)||0)+1),
+      mistakes:Math.min(9999,(Number(old.mistakes)||0)+(correct?0:1)),
+      lastMistake:correct?Number(old.lastMistake)||0:now,
+      lastWrongKind:correct?old.lastWrongKind||'':(manual?'self':'auto')
+    };
+    return writeReviewLog(log);
+  };
   const history=()=>{
     const saved=safelyParse(HISTORY);
     return Array.isArray(saved)?saved.filter(x=>x&&Number.isFinite(x.answered)).slice(0,12):[];
@@ -74,11 +101,18 @@
     '<section id="examResults" class="exam-results" aria-label="Exam results" hidden>',
     '<div id="examResultContent"></div><div class="exam-result-actions">',
     '<button id="examRetry" type="button" class="exam-primary">Retry missed questions</button>',
-    '<button id="examNew" type="button" class="exam-secondary">New exam</button></div></section>'
+    '<button id="examNew" type="button" class="exam-secondary">New exam</button>',
+    '<button id="examViewNotebook" type="button" class="exam-secondary">Mistake notebook</button></div></section>',
+    '<section id="examNotebook" class="exam-notebook" aria-label="Mistake notebook" hidden>',
+    '<h3>Mistake notebook</h3><p class="exam-intro">Your missed source MCQs and written questions marked Needs review. The first mistake stays recorded after a correct retry; manual Weak ratings also remain in My Review.</p>',
+    '<div class="exam-notebook-tools"><label>Show<select id="examNotebookFilter"><option value="all">All recorded mistakes</option><option value="weak">Still Weak / Review</option><option value="mastered">Now Mastered</option></select></label>',
+    '<button id="examNotebookBack" type="button" class="exam-secondary">Back to study</button></div>',
+    '<p id="examNotebookSummary" role="status" aria-live="polite"></p><div id="examNotebookList" class="exam-notebook-list"></div></section>'
   ].join('');
 
   const showPanel=kind=>{
-    for(const id of ['examSetup','examPlay','examResults'])el(id).hidden=id!==kind;
+    for(const id of ['examSetup','examPlay','examResults','examNotebook'])el(id).hidden=id!==kind;
+    el('examTitle').textContent=kind==='examNotebook'?'Mistake notebook':session?.daily?'Daily Weak 15':'Exam mode';
     el('examAlert').hidden=true;
   };
   const alertUser=text=>{
@@ -341,8 +375,10 @@
     }
     busy=false;
     if(saved){
+      const recorded=recordAnswer(q,correct,false);
       renderQuestion();
       if(!retained)alertUser('Exam session could not be saved for reload. Ratings remain in the study-progress store.');
+      else if(!recorded)alertUser('Your rating was saved, but mistake history could not be updated. Check browser storage.');
     }
   };
   const gradeWritten=async correct=>{
@@ -357,8 +393,10 @@
     }
     busy=false;
     if(saved){
+      const recorded=recordAnswer(q,correct,true);
       renderQuestion();
       if(!retained)alertUser('Exam session could not be saved for reload. Ratings remain in the study-progress store.');
+      else if(!recorded)alertUser('Your rating was saved, but mistake history could not be updated. Check browser storage.');
     }
   };
   const recordHistory=()=>{
@@ -385,7 +423,7 @@
     const results=el('examResultContent');results.replaceChildren();
     const count=score();
     appendText(results,'span','exam-eyebrow','EXAM COMPLETED');
-    appendText(results,'h3','exam-result-title',session.timedOut?'Time is up · your results':'Your exam results');
+    appendText(results,'h3','exam-result-title',session.timedOut?'Time is up · your results':session.daily?'Daily review results':'Your exam results');
     const metrics=node('div','exam-result-grid');
     const entries=[
       [count.auto?Math.round(100*count.correct/count.auto)+'%':'—','Auto MCQ accuracy'],
@@ -432,10 +470,17 @@
     const ids=[...new Set(items.map(q=>q.lectureId))];
     const loader=globalThis.MEQLectureLoader;
     if(loader){
-      await loader.loadSubjectMetadata(session.subject,session.course);
+      const scopes=new Map();
+      items.forEach(q=>{
+        const lecture=lectures.find(l=>l.id===q.lectureId);
+        const subject=q.subjectKey||lecture?.subjectKey||session?.subject;
+        const course=q.courseId||lecture?.courseId||session?.course;
+        if(subject&&course)scopes.set(course+'::'+subject,{subject,course});
+      });
+      await Promise.all([...scopes.values()].map(scope=>loader.loadSubjectMetadata(scope.subject,scope.course)));
       await Promise.all(ids.map(id=>loader.loadLecture(id,{refresh:false,busy:false})));
     }
-    if(items.some(q=>!sourceFor(q)))throw new Error('A question was removed or the lecture was updated. Start a fresh exam.');
+    if(items.some(q=>!sourceFor(q)))throw new Error('A source question is unavailable. Your previous exam and saved ratings were not changed.');
   };
   const begin=async()=>{
     if(busy)return;
@@ -506,11 +551,160 @@
     showSetup();
     el('examBegin').focus();
   };
+  // Daily selection works from saved ratings plus catalog metadata, not fabricated clinical scoring.
+  const dailyCandidates=()=>{
+    const unique=new Map(),log=readReviewLog();
+    for(const [statusKey,level] of Object.entries(state)){
+      if(level!=='weak'&&level!=='review')continue;
+      const parts=progressKeyParts(statusKey);
+      if(!allowedTypes.has(parts.type)||!parts.itemId||!parts.lectureId)continue;
+      const lecture=lectures.find(l=>l.id===parts.lectureId);
+      if(!lecture)continue;
+      if(parts.version===2&&(parts.courseId!==lecture.courseId||parts.subjectKey!==lecture.subjectKey))continue;
+      const q={lectureId:lecture.id,type:parts.type,id:parts.itemId,courseId:lecture.courseId,subjectKey:lecture.subjectKey};
+      const id=identifier(q),previous=unique.get(id);
+      if(!previous||parts.version===2)unique.set(id,{q,level,record:log[id]||{}});
+    }
+    const day=new Date().toLocaleDateString('en-CA');
+    const dailyOrder=id=>{
+      let hash=0;for(const char of day+id)hash=(Math.imul(hash,31)+char.charCodeAt(0))|0;
+      return hash>>>0;
+    };
+    return [...unique.values()].sort((a,b)=>
+      Number(b.level==='weak')-Number(a.level==='weak')||
+      (Number(a.record.lastSeen)||0)-(Number(b.record.lastSeen)||0)||
+      (Number(b.record.mistakes)||0)-(Number(a.record.mistakes)||0)||
+      dailyOrder(identifier(a.q))-dailyOrder(identifier(b.q))
+    );
+  };
+  const startDaily=async()=>{
+    const button=el('dailyWeakBtn'),message=el('dailyReviewStatus');
+    if(busy)return;
+    if(session&&!session.finished&&!window.confirm('Start Daily Weak 15? Your unfinished exam session will be replaced, but saved ratings remain.'))return;
+    busy=true;button.disabled=true;message.textContent='Preparing saved review questions across courses…';
+    try{
+      await Promise.resolve(globalThis.MEQProgressStore?.ready);
+      const loader=globalThis.MEQLectureLoader,registry=globalThis.MEQCourseRegistry;
+      if(!loader||!registry)throw new Error('The course library is not ready. Try again.');
+      const scopes=registry.allSubjectScopes();
+      const checked=await Promise.allSettled(scopes.map(scope=>loader.loadSubjectMetadata(scope.subjectKey,scope.courseId)));
+      const questions=dailyCandidates().slice(0,DAILY_LIMIT).map(row=>row.q);
+      if(!questions.length){
+        message.textContent='No saved Weak / Review questions yet. Mark questions in a lecture or take an exam first.';
+        return;
+      }
+      await loadQuestions(questions);
+      session={schema:1,course:'mixed',subject:'Across courses',daily:true,startedAt:Date.now(),deadline:0,
+        questions,answers:{},index:0,finished:false,timedOut:false};
+      const retained=persist();
+      if(!dialog.open)dialog.showModal();
+      renderQuestion();startClock();
+      message.textContent=questions.length+' review questions selected · Weak first, then oldest attempts. Repeated mistakes break ties.';
+      if(checked.some(result=>result.status==='rejected'))alertUser('Some course catalogs were unavailable. This review uses the accessible saved questions.');
+      if(!retained)alertUser('Daily session could not be saved for reload. Saved question ratings remain unchanged.');
+    }catch(error){message.textContent='Could not prepare Daily Weak 15: '+String(error.message||error)}
+    finally{busy=false;button.disabled=false}
+  };
+  const recordedRating=q=>{
+    const canonical=key(q.lectureId,q.type,q.id);
+    return state[canonical]||state[q.lectureId+'::'+q.type+'::'+q.id]||'unrated';
+  };
+  const renderNotebookList=()=>{
+    const list=el('examNotebookList');list.replaceChildren();
+    const filter=el('examNotebookFilter').value;
+    const rows=Object.values(readReviewLog())
+      .filter(record=>Number(record.mistakes)>0)
+      .sort((a,b)=>(Number(b.lastMistake)||0)-(Number(a.lastMistake)||0));
+    const visible=rows.filter(record=>{
+      const rating=recordedRating(record);
+      return filter==='all'||(filter==='weak'?rating==='weak'||rating==='review':rating==='mastered');
+    });
+    el('examNotebookSummary').textContent=rows.length
+      ?visible.length+' of '+rows.length+' recorded mistakes · Source answers load from the published lecture.'
+      :'No exam mistakes recorded on this device yet. Wrong MCQs and written questions you self-rate Weak will appear here.';
+    for(const record of visible){
+      const q={lectureId:record.lectureId,type:record.type,id:record.id,
+        courseId:record.courseId,subjectKey:record.subjectKey};
+      const source=sourceFor(q),rating=recordedRating(record);
+      const card=node('article','exam-notebook-item');
+      const heading=appendText(card,'h4','',source?currentHeading(q,source):record.id);
+      heading.className='exam-notebook-heading';
+      const meta=(source?.lecture?.title||record.lectureId)+' · '+record.mistakes+
+        (record.mistakes===1?' mistake':' mistakes')+' · '+(record.lastWrongKind==='self'?'Self-rated':'Auto-scored')+
+        ' · '+(rating==='mastered'?'Now Mastered':rating==='weak'?'Still Weak':rating==='review'?'Needs Review':'Unrated');
+      appendText(card,'p','exam-notebook-meta',meta);
+      if(Number(record.lastMistake))appendText(card,'small','exam-notebook-date','Last mistake: '+new Date(record.lastMistake).toLocaleString());
+      const actions=node('div','exam-notebook-actions');
+      const view=node('button','exam-secondary','View source answer');view.type='button';view.disabled=!source;
+      const retry=node('button','exam-primary','Retry question');retry.type='button';retry.disabled=!source;
+      const answer=node('div','exam-model');answer.hidden=true;
+      view.addEventListener('click',()=>{
+        const opening=answer.hidden;answer.hidden=!opening;
+        view.textContent=opening?'Hide source answer':'View source answer';
+        if(opening&&!answer.childElementCount){
+          if(q.type==='mcq'){
+            appendText(answer,'strong','','Correct: '+source.item.options[source.item.answerIndex]);
+            if(source.item.rationale)appendText(answer,'p','',source.item.rationale);
+          }else modelAnswer(answer,q,source);
+          if(source.item.sourcePage)appendText(answer,'small','',source.item.sourcePage);
+          else if(source.item.page)appendText(answer,'small','','Lecture page '+source.item.page);
+        }
+      });
+      retry.addEventListener('click',()=>{
+        if(session&&!session.finished&&!window.confirm('Retry this question? Your unfinished exam session will be replaced. Saved ratings and mistake counts remain.'))return;
+        session={schema:1,course:q.courseId,subject:q.subjectKey,startedAt:Date.now(),deadline:0,
+          questions:[q],answers:{},index:0,finished:false,timedOut:false};
+        const retained=persist();renderQuestion();startClock();
+        if(!retained)alertUser('Retry session could not be saved for reload. Your saved ratings remain unchanged.');
+      });
+      actions.append(view,retry);
+      card.append(actions,answer);list.append(card);
+    }
+    if(!visible.length&&rows.length)appendText(list,'p','exam-notebook-empty','No mistakes match this filter.');
+  };
+  const openNotebook=async()=>{
+    if(!dialog.open)dialog.showModal();
+    showPanel('examNotebook');
+    el('examNotebookSummary').textContent='Loading source questions…';
+    el('examNotebookList').replaceChildren();
+    const records=Object.values(readReviewLog()).filter(record=>Number(record.mistakes)>0);
+    const loader=globalThis.MEQLectureLoader;
+    if(loader){
+      const scopes=new Map();
+      records.forEach(q=>{if(q.courseId&&q.subjectKey)scopes.set(q.courseId+'::'+q.subjectKey,q)});
+      await Promise.allSettled([...scopes.values()].map(q=>loader.loadSubjectMetadata(q.subjectKey,q.courseId)));
+      const ids=[...new Set(records.map(q=>q.lectureId))].filter(id=>lectures.some(l=>l.id===id));
+      await Promise.allSettled(ids.map(id=>loader.loadLecture(id,{refresh:false,busy:false})));
+    }
+    if(el('examNotebook').hidden||!dialog.open)return;
+    renderNotebookList();
+  };
   const open=()=>{
     if(!dialog.open)dialog.showModal();
     if(session)void resume();else showSetup();
   };
   launcher.addEventListener('click',open);
+  el('dailyWeakBtn')?.addEventListener('click',()=>void startDaily());
+  el('mistakeNotebookBtn')?.addEventListener('click',()=>void openNotebook());
+  el('examViewNotebook').addEventListener('click',()=>void openNotebook());
+  el('examNotebookFilter').addEventListener('change',renderNotebookList);
+  el('examNotebookBack').addEventListener('click',()=>{
+    if(session)void resume();else showSetup();
+  });
+  document.addEventListener('click',event=>{
+    if(!(event.target instanceof Element))return;
+    const button=event.target.closest('.status[data-key]');
+    if(!button)return;
+    queueMicrotask(()=>{
+      const parts=progressKeyParts(button.dataset.key||'');
+      if(!parts.lectureId||!parts.itemId||!allowedTypes.has(parts.type))return;
+      const id=parts.lectureId+'::'+parts.type+'::'+parts.itemId;
+      const log=readReviewLog(),old=log[id]||{},lecture=lectures.find(l=>l.id===parts.lectureId);
+      log[id]={...old,lectureId:parts.lectureId,type:parts.type,id:parts.itemId,
+        courseId:lecture?.courseId||old.courseId||'',subjectKey:lecture?.subjectKey||old.subjectKey||'',lastSeen:Date.now()};
+      writeReviewLog(log);
+    });
+  });
   el('examClose').addEventListener('click',()=>dialog.close());
   el('examBegin').addEventListener('click',()=>void begin());
   el('examResume').addEventListener('click',()=>void resume());
