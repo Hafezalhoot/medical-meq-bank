@@ -284,6 +284,8 @@ test('downloaded progress backup carries saved mistakes and recent exam history'
     localStorage.setItem('medicalBankReviewLogV1', JSON.stringify(log));
     localStorage.setItem('medicalBankExamHistoryV1', '[{"answered":3,"questions":10}]');
   }, mistakes);
+  await page.locator('#pwaToolsToggle').click();
+  await expect(page.locator('#exportProgressBtn')).toBeVisible();
   const downloadPromise = page.waitForEvent('download');
   await page.locator('#exportProgressBtn').click();
   const download = await downloadPromise;
