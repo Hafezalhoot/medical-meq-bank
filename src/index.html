@@ -124,6 +124,25 @@
   <div class="stat progress-stat"><div class="stat-label">Core rated progress</div><strong id="coreProgressText">0%</strong><div class="progress-track" id="coreProgressBar" role="progressbar" aria-label="Core rated progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="coreProgressFill"></div></div></div>
   <div class="stat progress-stat"><div class="stat-label">Overall practice</div><strong id="overallProgressText">0%</strong><div class="progress-track" id="overallProgressBar" role="progressbar" aria-label="Overall practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill overall-fill" id="overallProgressFill"></div></div></div>
 </section>
+<section class="learning-analytics" id="learningAnalytics" aria-label="Personal learning analytics">
+  <div class="learning-analytics-heading">
+    <h3>Revision by lecture</h3>
+    <p>Mastery is the share of <strong>rated</strong> questions marked Mastered. It is not an exam accuracy score. Ratings can be self-assessed.</p>
+  </div>
+  <p id="learningAnalyticsEmpty" class="learning-analytics-empty">No question ratings saved in this specialty yet. Mark a question to start tracking your progress.</p>
+  <div class="learning-analytics-table-scroll">
+    <table id="learningAnalyticsTable" hidden>
+      <caption class="sr-only">Saved question ratings grouped by lecture</caption>
+      <thead><tr><th scope="col">Lecture</th><th scope="col">Mastered</th><th scope="col">Weak</th><th scope="col">Review</th><th scope="col">Mastered / rated</th><th scope="col">Repeated mistakes</th></tr></thead>
+      <tbody id="learningAnalyticsRows"></tbody>
+    </table>
+  </div>
+  <div class="learning-analytics-heading learning-history-heading">
+    <h3>Recent exam attempts</h3>
+    <p>Automatic MCQ accuracy and written self-ratings are reported separately, never combined.</p>
+  </div>
+  <ol id="learningExamHistory" class="learning-history-list"></ol>
+</section>
 </details>
 
 <div class="nav-controls" aria-label="Navigation panels">

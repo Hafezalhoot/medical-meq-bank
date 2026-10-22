@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Transparent learning analytics (draft PR #48, release candidate 2026.10.22.5)
+
+- 🧪 Added per-lecture Mastered, Weak, Review, **Mastered / rated** and repeated-error counts inside the existing collapsed Study progress panel. Deliberately avoid interpreting self-ratings as exam accuracy or increasing first-screen height.
+- 🧪 Added recent exam history with verified-MCQ automatic accuracy and written self-rating displayed independently; no third-party charts, new medical content or progress-key changes.
+- 🧪 Added refresh events for new mistake records, empty states, responsive overflow control and focused Playwright regressions.
+- ⏳ **PR #48 depends on PR #47** and is not ready to merge until its exact-head CI and both browser engines pass. Cloudflare release and Access-authenticated live QA remain separate.
+
+
 ### 2026-10-22 — Daily Weak 15 + Mistake Notebook (draft PR #47, unverified)
 
 - 🧪 Implemented an opt-in personal revision bar: **Daily Weak 15** draws from saved Weak / Review ratings across published course metadata, with Weak-first/oldest-activity priority and stable tie-breaking; no AI-generated medical facts.

@@ -57,7 +57,9 @@
       lastMistake:correct?Number(old.lastMistake)||0:now,
       lastWrongKind:correct?old.lastWrongKind||'':(manual?'self':'auto')
     };
-    return writeReviewLog(log);
+    const saved=writeReviewLog(log);
+    if(saved)document.dispatchEvent(new CustomEvent('meq:revision-log-changed'));
+    return saved;
   };
   const history=()=>{
     const saved=safelyParse(HISTORY);
@@ -702,7 +704,7 @@
       const log=readReviewLog(),old=log[id]||{},lecture=lectures.find(l=>l.id===parts.lectureId);
       log[id]={...old,lectureId:parts.lectureId,type:parts.type,id:parts.itemId,
         courseId:lecture?.courseId||old.courseId||'',subjectKey:lecture?.subjectKey||old.subjectKey||'',lastSeen:Date.now()};
-      writeReviewLog(log);
+      if(writeReviewLog(log))document.dispatchEvent(new CustomEvent('meq:revision-log-changed'));
     });
   });
   el('examClose').addEventListener('click',()=>dialog.close());

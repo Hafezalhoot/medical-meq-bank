@@ -1,7 +1,7 @@
 # Medical MEQ Bank — Product Evaluation and Priority Roadmap
 **Audit date:** 2026-10-22
 **Observed live release before this PR:** `2026.10.22.2` (Worker `5c3fcfce-4f81-4ba7-828a-61376dc82f3c`, 100% traffic in [production status run #39695650888](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39695650888)).
-**Current feature hardening:** PR #46 (`2026.10.22.3` candidate), subject to exact-head validation.
+**Shipped session hardening:** PR #46 merged on protected `main` as `49b912d` (`2026.10.22.3`). **In-flight development:** Daily Weak / Mistake Notebook PR #47 (`2026.10.22.4` candidate) and dependent learning analytics PR #48 (`2026.10.22.5` candidate). These candidates are not production releases.
 
 ## Evidence and confidence
 
