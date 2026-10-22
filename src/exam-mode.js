@@ -41,10 +41,10 @@
     return Object.fromEntries(Object.entries(saved).filter(([id,record])=>
       typeof id==='string'&&id.length<320&&record&&typeof record==='object'&&!Array.isArray(record)&&
       typeof record.lectureId==='string'&&typeof record.id==='string'&&allowedTypes.has(record.type)
-    ).slice(0,500));
+    ).slice(0,2500));
   };
   const writeReviewLog=log=>safelyWrite(REVIEW_LOG,Object.fromEntries(
-    Object.entries(log).sort((a,b)=>(Number(b[1].lastSeen)||0)-(Number(a[1].lastSeen)||0)).slice(0,500)
+    Object.entries(log).sort((a,b)=>(Number(b[1].lastSeen)||0)-(Number(a[1].lastSeen)||0)).slice(0,2500)
   ));
   const recordAnswer=(q,correct,manual)=>{
     const log=readReviewLog(),id=identifier(q),old=log[id]||{},now=Date.now();
