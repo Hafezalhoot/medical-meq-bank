@@ -119,6 +119,14 @@ The tool saves `tmp/lecture-drafts/surgery-urology-example-review.md` without ov
 
 Next review the report against the real PDF, run `python3 tools/add_lecture.py <draft.json> --course <course>` as a safe dry-run, and **only after documented source approval** use the existing `--write --reviewed` gate. The old five practice formats and the newer Study Guide are preserved.
 
+## Source-linked MCQs on checksum-verified legacy lectures
+
+Some older Surgery lessons are rebuilt from SHA-256-verified compressed parts. **Do not directly edit generated `lectures/data/*.json` for those lessons**: the next `build.sh` rematerializes them from their original transport bytes and discards direct edits.
+
+For an approved, additive Explanation or MCQ companion, add `lectures/companions/<lecture-id>.json` with only `lectureId` and `studyGuide`. Then set the matching target's `studyGuideCompanion` field in `lectures/materialization.json`. The shared materializer validates source part hashes first, refuses to overwrite any existing `studyGuide`, verifies new question IDs against original ones and attaches the companion without modifying legacy IDs or source figures.
+
+Keep the original lecture PDF out of the public repository. Add an explicit page-to-question source checklist under `lectures/reviews/` and obtain editorial approval before merging new exam-facing medical facts. Merely passing Playwright/schema tests is **not** clinical approval.
+
 ## Optional approved Study Guide (Explanation + MCQ + Infographic)
 
 New lectures may contain an additional **studyGuide** object. It does not change the five existing arrays, saved item IDs, course catalogs or progress keys. The field is omitted completely for old lectures.

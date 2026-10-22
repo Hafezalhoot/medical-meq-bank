@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-22 — Generic source-guide companion architecture (PR #54 candidate)
+
+- 🧪 Added optional `studyGuideCompanion` handling to the shared materializer **after** existing raw compressed transport hashes and source images have been verified. The default path remains byte-for-byte equivalent for older lectures without a companion.
+- 🧪 Companion JSON must match its exact lecture-scoped path and ID, contain only `lectureId` and `studyGuide`, pass the established Study Guide schema, and never overwrite an existing guide or reuse a legacy item ID.
+- 🧪 Added focused stdlib unit tests for source preservation, duplicate IDs, mismatched identity and unsafe paths. The change does not itself add clinical content or change the published app version.
+- ⏳ Candidate pending exact-head static/Chromium/WebKit/Workers Build checks. Bladder Cancer MCQs are reviewed separately in editorial draft PR #53 and **must not be published without medical sign-off**.
+
+
 ### 2026-10-22 — Private source-review intake command (PR #52 draft)
 
 - 🧪 Added a no-dependency authoring report generator for source-backed JSON lecture drafts. It summarizes five legacy practice categories and optional Explanation / MCQ / Image sources without changing any medical questions.
