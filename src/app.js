@@ -607,9 +607,95 @@ function updateStatus(){
   const subject=subjects.find(s=>s.id===activeSubject);
   $('heroTags').innerHTML=`<span class="hero-tag">${esc(subject?.label||'Subject')}</span><span class="hero-tag">${scope.length} Lecture${scope.length===1?'':'s'}</span><span class="hero-tag">${totals.cases} MEQ Cases</span><span class="hero-tag">${totals.coreShorts} Core Shorts</span><span class="hero-tag">Saved Progress</span>`;
   updateStudyBreadcrumb();
+  renderLearningAnalytics();
   const lectureSelect=$('lectureFilter');
   if(lectureSelect)lectureSelect.title=lectureSelect.selectedOptions?.[0]?.textContent?.trim()||'';
 }
+// Transparent learner-facing statistics: saved ratings are not equivalent to tested accuracy.
+function renderLearningAnalytics(){
+  const body=$('learningAnalyticsRows');
+  if(!body)return;
+  const scope=visibleLectures();
+  const scoped=new Map(scope.map(l=>[l.id,l]));
+  const unique=new Map();
+  const eligible=new Set(['case','core','image','extra','mcq']);
+  Object.entries(state).forEach(([statusKey,level])=>{
+    if(!['mastered','weak','review'].includes(level))return;
+    const parsed=progressKeyParts(statusKey);
+    const lecture=scoped.get(parsed.lectureId);
+    if(!lecture||!eligible.has(parsed.type)||!parsed.itemId)return;
+    if(parsed.version===2&&(parsed.courseId!==lecture.courseId||parsed.subjectKey!==lecture.subjectKey))return;
+    const identity=[parsed.lectureId,parsed.type,parsed.itemId].join('::');
+    if(!unique.has(identity)||parsed.version===2)unique.set(identity,{lectureId:lecture.id,level});
+  });
+  let mistakes={};
+  try{
+    const value=JSON.parse(storage.get('medicalBankReviewLogV1')||'{}');
+    if(value&&typeof value==='object'&&!Array.isArray(value))mistakes=value;
+  }catch{}
+  const groups=new Map(scope.map(l=>[l.id,{lecture:l,mastered:0,weak:0,review:0,repeated:0}]));
+  unique.forEach((record,id)=>{
+    const row=groups.get(record.lectureId);
+    if(!row)return;
+    row[record.level]++;
+    const mistakesForItem=Number(mistakes[id]?.mistakes)||0;
+    if(mistakesForItem>=2)row.repeated++;
+  });
+  body.replaceChildren();
+  let rated=0;
+  for(const row of groups.values()){
+    const count=row.mastered+row.weak+row.review;
+    if(!count)continue;
+    rated+=count;
+    const tr=document.createElement('tr');
+    const values=[
+      row.lecture.title,String(row.mastered),String(row.weak),String(row.review),
+      Math.round(100*row.mastered/count)+'% ('+count+' rated)',String(row.repeated)
+    ];
+    values.forEach((value,index)=>{
+      const cell=document.createElement(index?'td':'th');
+      if(!index)cell.scope='row';
+      cell.textContent=value;
+      if(index===2)cell.dataset.rating='weak';
+      if(index===4)cell.dataset.metric='mastery';
+      tr.append(cell);
+    });
+    body.append(tr);
+  }
+  $('learningAnalyticsEmpty').hidden=Boolean(rated);
+  $('learningAnalyticsTable').hidden=!rated;
+  const history=$('learningExamHistory');history.replaceChildren();
+  let entries=[];
+  try{
+    const raw=JSON.parse(storage.get('medicalBankExamHistoryV1')||'[]');
+    if(Array.isArray(raw))entries=raw.filter(item=>item&&typeof item.date==='string'&&Number.isFinite(item.answered)).slice(0,5);
+  }catch{}
+  if(!entries.length){
+    const empty=document.createElement('li');
+    empty.className='learning-history-empty';
+    empty.textContent='No completed exams on this device yet.';
+    history.append(empty);
+  }
+  for(const item of entries){
+    const auto=Number.isFinite(item.auto)&&item.auto>0?
+      Math.round(100*(Number(item.correct)||0)/item.auto)+'% auto-scored MCQ accuracy ('+item.auto+' checked)':'No auto-scored MCQs';
+    const self=Number.isFinite(item.self)&&item.self>0?
+      (Number(item.selfKnown)||0)+' / '+item.self+' written self-rated correct':'No written self-ratings';
+    const li=document.createElement('li');
+    const title=document.createElement('strong');
+    title.textContent=(item.subject||'Exam')+' · '+item.answered+' / '+item.questions+' answered';
+    const stats=document.createElement('span');
+    stats.textContent=auto+' · '+self;
+    const when=document.createElement('small');
+    const date=new Date(item.date);
+    when.textContent=Number.isNaN(date.getTime())?'Saved attempt':date.toLocaleDateString();
+    li.append(title,stats,when);
+    history.append(li);
+  }
+}
+document.addEventListener('meq:progress-ready',renderLearningAnalytics);
+document.addEventListener('meq:revision-log-changed',renderLearningAnalytics);
+
 function updateTopicOptions(){const lecture=currentLecture();const list=lecture?[lecture]:[];const topics=[...new Set(list.flatMap(l=>[...l.cases.map(c=>c.topic),...l.coreShorts.map(q=>q.topic),...l.imageQuestions.map(q=>q.topic),...l.detailedShorts.map(q=>q.topic)]))].sort();const old=$('topicFilter').value;$('topicFilter').innerHTML='<option value="all">All topics</option>'+topics.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');$('topicFilter').value=topics.includes(old)?old:'all'}
 function applyFilters(){
   const q=$('search').value.toLowerCase().trim(),lf=$('lectureFilter').value,tf=$('typeFilter').value,topic=$('topicFilter').value,prio=$('priorityFilter').value;let visible=0;
