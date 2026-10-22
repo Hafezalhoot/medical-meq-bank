@@ -1,7 +1,13 @@
 # Medical MEQ Bank — Product Evaluation and Priority Roadmap
 **Audit date:** 2026-10-22
-**Observed live release before this PR:** `2026.10.22.2` (Worker `5c3fcfce-4f81-4ba7-828a-61376dc82f3c`, 100% traffic in [production status run #39695650888](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39695650888)).
-**Shipped session hardening:** PR #46 merged on protected `main` as `49b912d` (`2026.10.22.3`). **In-flight development:** Daily Weak / Mistake Notebook PR #47 (`2026.10.22.4` candidate) and dependent learning analytics PR #48 (`2026.10.22.5` candidate). These candidates are not production releases.
+**Latest independently observed active release:** `2026.10.22.3` (Worker `33f0f044-8623-4fa8-8bfe-4d9c8a2e4544`, 100% traffic in [live diagnostic #39702289851](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39702289851)).
+**Reviewed source now on `main`:** PR #46 (`2026.10.22.3`), PR #47 (Daily Weak + Mistake Notebook, `2026.10.22.4`), and PR #48 (transparent learning analytics, `2026.10.22.5`, merged commit `4247338`). Newer source releases are **not confirmed live** until explicit Cloudflare promotion and authenticated smoke.
+
+## 2026-10-22 delivery update
+
+- **Implemented and merged:** Daily Weak 15, Mistake Notebook with historic mistakes and source-backed retry, and per-lecture saved-rating / auto-vs-self exam analytics. [PR #47](https://github.com/Hafezalhoot/medical-meq-bank/pull/47) and [PR #48](https://github.com/Hafezalhoot/medical-meq-bank/pull/48) both passed their **exact-head** static, Chromium, WebKit and Cloudflare Workers Builds checks.
+- **Not yet live:** production still serves Worker `33f0f044-8623-4fa8-8bfe-4d9c8a2e4544` at 100% as of [diagnostic run #39702289851](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/39702289851). Owner-approved Cloudflare promotion to the newest source requires explicit manual action; Access-based post-login QA still fails HTTP 302 without scoped Service Auth [#35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35).
+- **Open high-impact work:** verified MCQ answer keys beyond Dermatology; source-first PDF lecture intake with approval, status and preview; validated protected live browser QA. Preserve existing doctor/lecture content and source-photo rights boundaries.
 
 ## Evidence and confidence
 
