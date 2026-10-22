@@ -1,6 +1,11 @@
 import {test,expect} from '@playwright/test';
 test.use({serviceWorkers:'block'});
 const derm='internal-medicine-ii-dermatology-introduction';
+async function openNotebook(page){
+  const panel=page.locator('#myReviewDisclosure');
+  if(!(await panel.getAttribute('open')))await panel.locator('summary').click();
+  await page.locator('#mistakeNotebookBtn').click();
+}
 async function startMcq(page){
   await page.goto('/');
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
@@ -18,7 +23,7 @@ test('Daily Weak 15 uses saved weak questions, and notebook records auto-scored 
   await page.locator('.exam-option[data-choice="'+wrong+'"]').click();
   await expect(page.locator('#examFeedback')).toContainText('Incorrect');
   await page.locator('#examClose').click();
-  await page.locator('#mistakeNotebookBtn').click();
+  await openNotebook(page);
   await expect(page.locator('#examNotebookList .exam-notebook-item')).toHaveCount(1);
   await expect(page.locator('#examNotebookList')).toContainText('Auto-scored');
   await page.locator('#examNotebookList button:has-text("View source answer")').click();
@@ -42,13 +47,13 @@ test('Notebook retry does not erase mistake history and marks successful retry M
   const mcq=await startMcq(page);
   await page.locator('.exam-option[data-choice="'+((mcq.answerIndex+1)%mcq.options.length)+'"]').click();
   await page.locator('#examClose').click();
-  await page.locator('#mistakeNotebookBtn').click();
+  await openNotebook(page);
   page.once('dialog',d=>d.accept());
   await page.locator('#examNotebookList button:has-text("Retry question")').click();
   await page.locator('.exam-option[data-choice="'+mcq.answerIndex+'"]').click();
   await expect(page.locator('#examFeedback')).toContainText('Mastered');
   await page.locator('#examClose').click();
-  await page.locator('#mistakeNotebookBtn').click();
+  await openNotebook(page);
   await expect(page.locator('#examNotebookList')).toContainText('Now Mastered');
   await expect(page.locator('#examNotebookList')).toContainText('1 mistake');
 });
