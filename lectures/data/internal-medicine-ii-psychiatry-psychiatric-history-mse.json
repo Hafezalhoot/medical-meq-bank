@@ -584,6 +584,126 @@
         "cognition"
       ],
       "section": "Source PDF p.38"
+    },
+    {
+      "id": "psyhist-short-037",
+      "q": "List the 8 items in the SIGECAPS mnemonic from the lecture image.",
+      "a": "Sleep, Interest, Guilt, Energy, Concentration, Appetite, Psychomotor agitation/slowing, Suicidality.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.12"
+    },
+    {
+      "id": "psyhist-short-038",
+      "q": "Name four manic symptoms in the source screening figure.",
+      "a": "For example impulsivity, grandiosity, decreased need for sleep, talkativeness, racing thoughts, excessive spending, excessive energy or hypersexuality.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.12"
+    },
+    {
+      "id": "psyhist-short-039",
+      "q": "Name four OCD screening behaviours on the source image.",
+      "a": "Checking, cleaning, organizing and counting (also rituals and obsessional thinking).",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.12"
+    },
+    {
+      "id": "psyhist-short-040",
+      "q": "Name four PTSD symptoms in the source checklist.",
+      "a": "Nightmares, flashbacks, startle response and avoidance.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.12"
+    },
+    {
+      "id": "psyhist-short-041",
+      "q": "Which three experiences are asked about in the 'Delusions of thought control' row?",
+      "a": "Thoughts inserted into the head, thoughts removed from the head, and other people hearing/accessing thoughts.",
+      "topic": "Thought Form and Content",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.34"
+    },
+    {
+      "id": "psyhist-short-042",
+      "q": "What is explored by questions about hints or special meanings directed at the patient?",
+      "a": "Delusions of reference.",
+      "topic": "Thought Form and Content",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.34"
+    },
+    {
+      "id": "psyhist-short-043",
+      "q": "Name six categories shown in the p.35 delusions table.",
+      "a": "Grandiose, religious, guilt, nihilistic, somatic and jealousy delusions.",
+      "topic": "Thought Form and Content",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.35"
+    },
+    {
+      "id": "psyhist-short-044",
+      "q": "Contrast circumstantiality with tangentiality using the source diagram.",
+      "a": "Circumstantiality takes a long path but reaches the answer; tangentiality moves away from the topic and does not answer.",
+      "topic": "Thought Form and Content",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.28"
+    },
+    {
+      "id": "psyhist-short-045",
+      "q": "Give two source questions for thought process and two for immediate/remote memory.",
+      "a": "Thought process: explain a proverb or compare a bird and butterfly; memory: repeat digits (immediate) and recall school/birthplace (remote).",
+      "topic": "Cognition, Insight and Judgment",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "cognition"
+      ],
+      "section": "Source PDF p.41"
+    },
+    {
+      "id": "psyhist-short-046",
+      "q": "List cognitive-assessment domains printed on the page-43 figure.",
+      "a": "Alertness, orientation, concentration, memory (immediate/recent/long-term), calculations, fund of knowledge, abstract reasoning.",
+      "topic": "Cognition, Insight and Judgment",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "cognition"
+      ],
+      "section": "Source PDF p.43"
     }
   ],
   "imageQuestions": [
@@ -777,6 +897,42 @@
         "cognition"
       ],
       "section": "Source PDF p.38"
+    },
+    {
+      "id": "psyhist-detail-011",
+      "q": "Summarize the complete screen of mood, anxiety, psychosis and other symptoms shown on the image-only slide.",
+      "a": "Mood: depressive SIGECAPS and mania (sleep, energy, grandiosity etc), irritability/lability. Anxiety: generalized worry prompts, panic somatic/anticipatory features, obsessive-compulsive symptoms, PTSD symptoms, social anxiety and simple phobias. Psychosis: hallucinations, paranoia, delusional reference/thought control with cultural context and reality testing. Other: ADHD and eating-disorder behaviours (binging/purging/excessive exercise).",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.12"
+    },
+    {
+      "id": "psyhist-detail-012",
+      "q": "Outline the full delusion-assessment table across pages 34–35.",
+      "a": "Page 34: persecutory, control/passivity, thought control (insertion/withdrawal/broadcasting), reference. Page 35: grandiose, religious, guilt, nihilistic, somatic and jealousy. Describe a source interview question for each; the questions are screening prompts and not diagnoses on their own.",
+      "topic": "Thought Form and Content",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.34"
+    },
+    {
+      "id": "psyhist-detail-013",
+      "q": "Outline the original cognitive examination table and sample tasks.",
+      "a": "Assess alertness by observation; orientation to name/place/time; concentration with serial 7s, backward alphabet/months; immediate memory with digit repetition; recent memory with breakfast/three items after minutes; remote memory with school or earlier life; calculations, fund of knowledge and abstract reasoning.",
+      "topic": "Cognition, Insight and Judgment",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "cognition"
+      ],
+      "section": "Source PDF p.43"
     }
   ],
   "rapid": [
@@ -859,6 +1015,38 @@
     [
       "Insight?",
       "Understanding problems and implications."
+    ],
+    [
+      "SIGECAPS - S?",
+      "Sleep."
+    ],
+    [
+      "SIGECAPS - G?",
+      "Guilt."
+    ],
+    [
+      "Mania screen: change in sleep?",
+      "Decreased need for sleep."
+    ],
+    [
+      "Thought insertion?",
+      "Experience of thoughts being put into one's head."
+    ],
+    [
+      "Thought withdrawal?",
+      "Experience of one's own thoughts being removed."
+    ],
+    [
+      "Thought broadcasting?",
+      "Belief that others can hear/access one's thoughts."
+    ],
+    [
+      "Delusion of reference?",
+      "Special personal meanings attributed to others' words or hints."
+    ],
+    [
+      "Circumstantial vs tangential?",
+      "Circumstantial reaches the point after digression; tangential never answers."
     ]
   ],
   "studyGuide": {
@@ -927,6 +1115,34 @@
         "sourcePage": "PDF p.11"
       },
       {
+        "heading": "Mood-screening image: depression and SIGECAPS",
+        "paragraphs": [
+          "الصورة الأصلية تسرد فحص Depression: sadness, tearfulness, sleep, appetite, energy, concentration, sexual function, guilt, psychomotor agitation/slowing, loss of interest. ويظهر اختصار SIGECAPS: Sleep, Interest, Guilt, Energy, Concentration, Appetite, Psychomotor change, Suicidality. هذا checklist من الشريحة وليس تشخيصًا وحده."
+        ],
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "heading": "Mood-screening image: mania and other mood symptoms",
+        "paragraphs": [
+          "تحت Mania تسرد الصورة impulsivity, grandiosity, recklessness, excessive energy, decreased need for sleep, increased spending beyond means, talkativeness, racing thoughts, hypersexuality. وتذكر Mixed/Other: irritability وlability. هذه أعراض يُسأل عنها أثناء الـHistory، لا تعني تلقائيًا تشخيص Mania."
+        ],
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "heading": "Anxiety-screening image: detailed interview prompts",
+        "paragraphs": [
+          "في Anxiety: اسأل Generalized anxiety عن where/when/who/how long/how frequent. وفي Panic: time to peak مع racing heart, sweating, shortness of breath, swallowing difficulty, sense of doom, fear of recurrence, agoraphobia. وفي OCD: checking, cleaning, organizing, rituals, hang-ups, obsessive thoughts, counting. كما تظهر PTSD (nightmares, flashbacks, startle response, avoidance)، Social anxiety، وSimple phobias (heights, planes, spiders)."
+        ],
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "heading": "Psychosis and other screening domains in the original image",
+        "paragraphs": [
+          "قسم Psychosis في الصورة: Hallucinations (auditory, visual, olfactory, tactile), paranoia, delusions involving TV/radio, thought broadcasting, mind control, referential thinking. كما يؤكد سؤال المريض عن spiritual/cultural context وreality testing. تحت Other: Attention-deficit/hyperactivity symptoms وEating-disorder symptoms (binging, purging, excessive exercising)."
+        ],
+        "sourcePage": "PDF p.12"
+      },
+      {
         "heading": "Past psychiatric and medical illness",
         "paragraphs": [
           "اسأل عن الأمراض النفسية السابقة وأمراض/جراحات/حوادث/إقامة بالمستشفى؛ ومن المهم تاريخ متابعة الطبيب النفسي والعلاج والدخول للمستشفى مع التواريخ، ويشمل تاريخ محاولات الانتحار."
@@ -985,44 +1201,9 @@
       {
         "heading": "Thought process/form",
         "paragraphs": [
-          "Thought Form يعني كيف تُصاغ الأفكار وتُنظَّم وتُعبّر عنها، وليس موضوع الفكرة. الجداول المصوّرة في الصفحات 27–30 تشرح مثلًا circumstantiality وtangentiality وflight of ideas وthought blocking؛ الصور الأصلية لا تُعاد نشرها هنا."
+          "Thought Form يعني كيف تُصاغ الأفكار وتُنظَّم وتُعبّر عنها، وليس موضوع الفكرة. الجداول المصوّرة في الصفحات 27–30 تشرح مثلًا circumstantiality وtangentiality وflight of ideas وthought blocking؛ تم توفير صور مختارة من الجداول الأصلية داخل المحاضرة؛ ويظل PDF المرجع الكامل."
         ],
         "sourcePage": "PDF p.26"
-      },
-      {
-        "heading": "Thought content",
-        "paragraphs": [
-          "Thought Content يعني ما الأفكار الموجودة: Delusions (معتقدات ثابتة غير مفسَّرة ثقافيًا)، Obsessions (أفكار متكررة غير مرغوبة ومقاومة)، Compulsions (سلوكيات قهرية متكررة)، suicidal/homicidal thoughts وpreoccupations."
-        ],
-        "sourcePage": "PDF p.31"
-      },
-      {
-        "heading": "Types of delusions",
-        "paragraphs": [
-          "تصنيف المحاضرة حسب المحتوى يشمل persecution، infidelity، grandiose، love، nihilistic، poverty، guilt. صفحات 34–35 مصورة بها أمثلة لأسئلة استكشاف هذه الأفكار؛ لا تُضاف أسئلة من خارج العرض."
-        ],
-        "sourcePage": "PDF p.32"
-      },
-      {
-        "heading": "Perception",
-        "paragraphs": [
-          "Hallucination هو إدراك بلا stimulus وقد يكون auditory أو visual أو tactile أو olfactory أو gustatory، وتذكر المحاضرة auditory 1st/2nd/3rd person. Illusion تفسير خاطئ لـstimulus موجود. Depersonalization تغير الإحساس بالذات؛ Derealization تغيّر غريب في الإحساس بالبيئة."
-        ],
-        "sourcePage": "PDF p.36"
-      },
-      {
-        "heading": "Cognitive examination",
-        "paragraphs": [
-          "الـCognitive Process يشمل Consciousness، Orientation للوقت والمكان والشخص، Attention/Concentration، وMemory (remote, recent, immediate)."
-        ],
-        "sourcePage": "PDF p.37"
-      },
-      {
-        "heading": "Intelligence, abstract thinking, judgment and insight",
-        "paragraphs": [
-          "تُختبر Intelligence بالحساب والمعلومات والفهم؛ Abstract Thinking بالتشابه أو الأمثال؛ Judgment بالقرارات اليومية؛ Insight هو إدراك المريض لمشكلاته والآثار المترتبة عليها. صفحات 39–43 تحتوي أسئلة تطبيقية مصوّرة."
-        ],
-        "sourcePage": "PDF p.38"
       },
       {
         "heading": "Formal thought disorders: circumstantiality and tangentiality",
@@ -1053,11 +1234,67 @@
         ]
       },
       {
+        "heading": "SAPS formal-thought table: full distinctions and examples",
+        "paragraphs": [
+          "صورة p.28: Derailment/loose associations = أفكار تفقد الاتصال المنطقي؛ Tangentiality = إجابة مائلة عن السؤال؛ Incoherence/word salad = كلمات غير مفهومة؛ Illogicality = conclusion لا يتبع logic؛ Circumstantiality = تفاصيل مطوّلة ثم الوصول للإجابة؛ Pressure of speech = زيادة إنتاج الكلام التلقائي؛ Distractibility of speech = تغيير الموضوع بسبب stimulus؛ Clanging = الربط بالصوت/القافية. الرسم p.29 يوضح الفرق: Circumstantiality تعود إلى الهدف؛ Tangentiality تبتعد دون العودة."
+        ],
+        "sourcePage": "PDF p.28"
+      },
+      {
         "heading": "Flight of ideas and grandiosity examples",
         "sourcePage": "PDF p.30",
         "paragraphs": [
           "تعرض الشريحة المصوّرة Flight of ideas بوصفها انتقالًا سريعًا من موضوع لآخر؛ Clang associations تختار الكلمات بالقافية/الصوت، وGrandiosity تعني ادعاء أهمية أو هوية مبالغ فيها. هذا تلخيص لنص الشكل في المحاضرة، وليس معايير تشخيص إضافية."
         ]
+      },
+      {
+        "heading": "Thought content",
+        "paragraphs": [
+          "Thought Content يعني ما الأفكار الموجودة: Delusions (معتقدات ثابتة غير مفسَّرة ثقافيًا)، Obsessions (أفكار متكررة غير مرغوبة ومقاومة)، Compulsions (سلوكيات قهرية متكررة)، suicidal/homicidal thoughts وpreoccupations."
+        ],
+        "sourcePage": "PDF p.31"
+      },
+      {
+        "heading": "Types of delusions",
+        "paragraphs": [
+          "تصنيف المحاضرة حسب المحتوى يشمل persecution، infidelity، grandiose، love، nihilistic، poverty، guilt. صفحات 34–35 مصورة بها أمثلة لأسئلة استكشاف هذه الأفكار؛ لا تُضاف أسئلة من خارج العرض."
+        ],
+        "sourcePage": "PDF p.32"
+      },
+      {
+        "heading": "Delusions: control, passivity, thought insertion and reference",
+        "paragraphs": [
+          "جدول p.34 يضيف أصنافًا وأسئلة ليست ضمن قائمة p.32 المختصرة: Control/passivity (هل هناك من يتحكم بك أو يفرض عليك التفكير/القول/الفعل؟)، Thought control (هل هناك أفكار ليست أفكارك تدخل رأسك؟ هل تُزال أفكارك؟ هل يسمع الآخرون أفكارك؟)، Reference (هل تشير تعليقات الآخرين أو تلميحاتهم إليك بمعنى خاص؟). هذه أسئلة استكشافية لا تُثبت التشخيص وحدها."
+        ],
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "heading": "Delusions: grandiose, religious, guilt, nihilistic, somatic and jealousy",
+        "paragraphs": [
+          "جدول p.35 يستكشف: Grandeur (special mission, abilities, powers)، Religious (very religious/especially close to God)، Guilt (crime, sin, deserved punishment)، Nihilistic (body part stopped/removed; feeling dead)، Somatic (concern about serious illness)، Jealousy (partner loyalty). السؤال المُدرج لاستكشاف فكرة ليس دليلًا أن كل إجابة إيجابية تعني delusion؛ راجع تعريف المعتقد الثابت في p.31 والسياق الثقافي."
+        ],
+        "sourcePage": "PDF p.35"
+      },
+      {
+        "heading": "Perception",
+        "paragraphs": [
+          "Hallucination هو إدراك بلا stimulus وقد يكون auditory أو visual أو tactile أو olfactory أو gustatory، وتذكر المحاضرة auditory 1st/2nd/3rd person. Illusion تفسير خاطئ لـstimulus موجود. Depersonalization تغير الإحساس بالذات؛ Derealization تغيّر غريب في الإحساس بالبيئة."
+        ],
+        "sourcePage": "PDF p.36"
+      },
+      {
+        "heading": "Cognitive examination",
+        "paragraphs": [
+          "الـCognitive Process يشمل Consciousness، Orientation للوقت والمكان والشخص، Attention/Concentration، وMemory (remote, recent, immediate)."
+        ],
+        "sourcePage": "PDF p.37"
+      },
+      {
+        "heading": "Intelligence, abstract thinking, judgment and insight",
+        "paragraphs": [
+          "تُختبر Intelligence بالحساب والمعلومات والفهم؛ Abstract Thinking بالتشابه أو الأمثال؛ Judgment بالقرارات اليومية؛ Insight هو إدراك المريض لمشكلاته والآثار المترتبة عليها. صفحات 39–43 تحتوي أسئلة تطبيقية مصوّرة."
+        ],
+        "sourcePage": "PDF p.38"
       },
       {
         "heading": "Questions during psychiatric interview — applied table",
@@ -1067,11 +1304,25 @@
         ]
       },
       {
+        "heading": "Psychiatric interview example table: source and clinical hints",
+        "paragraphs": [
+          "الجدول المصور p.39 يشمل Identification إذا كان المريض غير متعاون يمكن الرجوع إلى informant/family؛ Chief complaint بنفس كلمات المريض؛ HPI بترتيب الزمن وعلاج سابق؛ Past conditions (مثال سؤال عن seizures/loss of consciousness)؛ Personal/childhood/adolescence/adulthood والتاريخ الأسري والمهني والجنسي. الـClinical hints داخل الجدول أمثلة من مرجع المحاضرة، ولا ينبغي تحويل ارتباطاتها إلى قاعدة تشخيصية قطعية."
+        ],
+        "sourcePage": "PDF p.39"
+      },
+      {
         "heading": "MSE questions: speech, mood, affect and mental safety",
         "sourcePage": "PDF p.40",
         "paragraphs": [
           "الجدول المصوّر يقترح سؤال المريض عن شعوره ومزاجه والنوم وأفكار إيذاء النفس، مع مراقبة الـAffect من الوجه والحركة والـprosody. كما يذكر تقييم الـSpeech من نمط الكلام. هذه أمثلة للأسئلة والملاحظة لا لإثبات تشخيص من عرض واحد."
         ]
+      },
+      {
+        "heading": "MSE observational checks and question examples",
+        "paragraphs": [
+          "جدول p.40 يفصل General appearance (grooming, sitting position)، Motor behavior (زيادة أو بطء النشاط، tremor أو abnormal mannerisms)، Attitude (suspiciousness/irritation)، Mood (safety/feelings/sleep questions)، Affect (facial movement/body language/prosody ومدى مناسبة التعبير للكلام)، Speech (articulation). تفرقة الـMood الموصوف ذاتيًا عن الـAffect الملحوظ تظل أساسية."
+        ],
+        "sourcePage": "PDF p.40"
       },
       {
         "heading": "Perception and cognition: sample interview prompts",
@@ -1081,6 +1332,13 @@
         ]
       },
       {
+        "heading": "Perceptual and thought questions plus memory stations",
+        "paragraphs": [
+          "جدول p.41 يقترح سؤال Perception عن voices, visual experiences, strange smells, changed surroundings؛ Thought content عن perceived harm, special powers, influence, mind reading and TV messages؛ Thought process عن proverbs/similarities؛ Sensorium عن place/date/person؛ Remote memory عن school/birthplace؛ Immediate memory عن repeating digits. الجدول يذكر clinical hints؛ تُفهم كسياق أسئلة لا تشخيص مؤكد من عَرَض واحد."
+        ],
+        "sourcePage": "PDF p.41"
+      },
+      {
         "heading": "Serial sevens, judgment and insight applied",
         "sourcePage": "PDF p.42",
         "paragraphs": [
@@ -1088,11 +1346,25 @@
         ]
       },
       {
+        "heading": "Source image: concentration, intelligence, judgment and insight probes",
+        "paragraphs": [
+          "شريحة p.42: Concentration بالعد السريع 1–20، والحسابات البسيطة وSerial 7s؛ Intelligence/general knowledge بأسئلة تتناسب مع المستوى التعليمي؛ Judgment بسؤال ماذا تفعل إن وجدت خطابًا مغلقًا وعليه عنوان وطابع؛ Insight: هل تظن أن لديك مشكلة؟ هل تحتاج علاجًا؟ ما خططك للمستقبل؟"
+        ],
+        "sourcePage": "PDF p.42"
+      },
+      {
         "heading": "Cognitive assessment: source-page station checklist",
         "sourcePage": "PDF p.43",
         "paragraphs": [
           "الصورة الأخيرة تعرض Alertness بالملاحظة، ثم Orientation، ثم Concentration مثل عدّ الشهور أو الحروف للخلف وSerial 7s، ثم Immediate memory بتكرار أرقام، وRecent memory بسؤال عن الإفطار وما حدث صباحًا، وLong-term memory بسؤال عن الماضي، إضافة إلى Calculations وFund of knowledge وAbstract reasoning."
         ]
+      },
+      {
+        "heading": "Cognitive-assessment figure: exact source prompts",
+        "paragraphs": [
+          "رسم p.43: Alertness بالملاحظة؛ Orientation بأسئلة الاسم/الفاحص/المكان والمدينة؛ Concentration بالطرح من 100 بـ7 أو 3، الأحرف أو الشهور بالعكس؛ Immediate memory بتكرار 5 أرقام؛ Recent memory بسؤال الإفطار أو ما حدث هذا الصباح وتذكر 3 عناصر بعد دقائق؛ Long-term memory بأسئلة المدرسة والماضي؛ Calculations، Fund of knowledge، Abstract reasoning (تشابه التفاح والبرتقال مثلًا)."
+        ],
+        "sourcePage": "PDF p.43"
       }
     ],
     "mcqs": [
@@ -1640,6 +1912,136 @@
         ],
         "answerIndex": 3,
         "rationale": "The cognitive assessment chart lists digit repetition under immediate memory.",
+        "sourcePage": "PDF p.43"
+      },
+      {
+        "id": "psyhist-mcq-043",
+        "question": "In the source's SIGECAPS mnemonic, what does 'G' represent?",
+        "options": [
+          "Grandiosity",
+          "Guilt",
+          "Gait",
+          "Grooming"
+        ],
+        "answerIndex": 1,
+        "rationale": "The p.12 depression screening mnemonic expands G as Guilt.",
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "id": "psyhist-mcq-044",
+        "question": "Which symptom is explicitly listed under the slide's mania-screening prompts?",
+        "options": [
+          "Thought blocking",
+          "Immediate memory loss",
+          "Decreased need for sleep",
+          "Derealization"
+        ],
+        "answerIndex": 2,
+        "rationale": "The p.12 Mania group includes decreased need for sleep among its examples.",
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "id": "psyhist-mcq-045",
+        "question": "Which screen in the image includes nightmares, flashbacks, startle response and avoidance?",
+        "options": [
+          "Posttraumatic stress disorder",
+          "Specific phobia",
+          "Delusions of reference",
+          "Derealization"
+        ],
+        "answerIndex": 0,
+        "rationale": "These symptoms are grouped under PTSD in the Anxiety part of p.12.",
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "id": "psyhist-mcq-046",
+        "question": "Checking, cleaning, organizing and counting appear under which screening group?",
+        "options": [
+          "Cognitive sensorium",
+          "Obsessive-compulsive symptoms",
+          "Mood congruence",
+          "Nihilistic delusions"
+        ],
+        "answerIndex": 1,
+        "rationale": "The p.12 image lists checking/cleaning/organizing/rituals/counting under obsessive-compulsive symptoms.",
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "id": "psyhist-mcq-047",
+        "question": "A patient reports that thoughts not their own are being put into their head. Which source-table domain is being explored?",
+        "options": [
+          "Delusions of jealousy",
+          "Guilt delusions",
+          "Delusions of thought control",
+          "Mood assessment"
+        ],
+        "answerIndex": 2,
+        "rationale": "The p.34 thought-control row asks directly whether alien thoughts are being put into the head.",
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "id": "psyhist-mcq-048",
+        "question": "The question 'Do people drop hints that have a special meaning for you?' assesses:",
+        "options": [
+          "Premorbid personality",
+          "Motor behavior",
+          "Intelligence",
+          "Delusions of reference"
+        ],
+        "answerIndex": 3,
+        "rationale": "This is one of the example questions in the p.34 Delusions of reference row.",
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "id": "psyhist-mcq-049",
+        "question": "The interview question 'Do you feel as though you have died?' is listed under:",
+        "options": [
+          "Nihilistic delusions",
+          "Religious delusions",
+          "Thought blocking",
+          "Derealization"
+        ],
+        "answerIndex": 0,
+        "rationale": "The p.35 nihilistic row includes feeling as though one has died.",
+        "sourcePage": "PDF p.35"
+      },
+      {
+        "id": "psyhist-mcq-050",
+        "question": "Which question appears under grandiose delusions in the source table?",
+        "options": [
+          "Have you had trouble sleeping?",
+          "Do you feel you have a special mission?",
+          "What did you have for breakfast?",
+          "How are you getting on with your partner?"
+        ],
+        "answerIndex": 1,
+        "rationale": "The p.35 grandeur row asks about a special mission, abilities and powers.",
+        "sourcePage": "PDF p.35"
+      },
+      {
+        "id": "psyhist-mcq-051",
+        "question": "Asking the patient to interpret a proverb or compare a bird and a butterfly is used for:",
+        "options": [
+          "Speech articulation",
+          "Family history",
+          "Abstract thinking / thought process",
+          "Psychomotor activity"
+        ],
+        "answerIndex": 2,
+        "rationale": "The p.41 thought-process row uses proverb meaning and similarities to probe abstract thinking.",
+        "sourcePage": "PDF p.41"
+      },
+      {
+        "id": "psyhist-mcq-052",
+        "question": "Which example is explicitly used for recent-memory assessment on p.43?",
+        "options": [
+          "Do you believe people read your mind?",
+          "Have you ever taken medication?",
+          "Do you feel someone controls your actions?",
+          "What did you have for breakfast?"
+        ],
+        "answerIndex": 3,
+        "rationale": "The recent-memory section of the cognitive figure asks about breakfast and events earlier that morning.",
         "sourcePage": "PDF p.43"
       }
     ]
