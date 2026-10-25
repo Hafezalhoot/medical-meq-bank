@@ -21,16 +21,25 @@ Status: **NEEDS MEDICAL REVIEW — DRAFT ONLY.** Do not merge or activate until 
 | Both | final slides | references/thank-you treated as non-exam content |
 
 ## Deliverable inventory (all still draft)
-- Psychiatric History: 23 Explanation sections, 30 proposed source-linked MCQs, 5 cases, 36 core shorts, 10 detailed shorts, 3 original-PDF reference-only image spots, 20 rapid recall pairs.
-- Anxiety Disorders: 26 Explanation sections, 35 proposed source-linked MCQs, 5 cases (the same five teaching cases in the PDF), 40 core shorts, 10 detailed shorts, 4 original-PDF reference-only image spots, 24 rapid recall pairs.
+- Psychiatric History: 33 Explanation sections, 42 proposed source-linked MCQs, 5 cases, 36 core shorts, 10 detailed shorts, 3 original-PDF reference-only image spots, 20 rapid recall pairs.
+- Anxiety Disorders: 32 Explanation sections, 47 proposed source-linked MCQs, 5 cases (the same five teaching cases in the PDF), 40 core shorts, 10 detailed shorts, 4 original-PDF reference-only image spots, 24 rapid recall pairs.
 
 ## Explicit caveats
 - Case 2 of Anxiety Disorders does **not** state an independently confirmed six-month duration; Case 5 also does not state a specific six-month duration. The slide's teaching diagnosis is retained but the omitted criterion is not invented.
-- In Psychiatric History, several important teaching tables are raster-only (especially pp.27–30 and 39–43). The proposed text practice pack does not assert that every example within these images has been authored. Check the original pages before approval.
+- In Psychiatric History, several important teaching tables are raster-only (especially pp.27–30 and 39–43). Added explanations and test questions for p.27–28 terminology, p.30 flight/clanging and p.39–43 clinical interview/cognitive examples; source illustrations remain PDF-only and must still be checked against the original. Check the original pages before approval.
 - The multiple-choice alternatives are authored pedagogical distractors, not original verbatim PDF options. Every answer and rationale must be checked against its cited page; no automatically scored content is approved by a successful build.
 - No photos or full-page images are published. Source-page image questions require access to the original user-supplied PDF.
 
+## Additional independent source reading (2026-10-25)
+
+- User-supplied PDF SHA-256 values checked against the two actual uploaded files; page counts confirmed (44 / 43).
+- Inspected raster-only pages: History pp.27–28, 40–43 and Anxiety p.34. Expanded clinical-table definitions and interview examples using source wording; **no new classifications or outside treatment guidelines**.
+- Exam-mode answer-position skew in original draft (zero D-key MCQs) corrected by deterministic reordering of existing choices while preserving the correct answer and explanation. 42 + 47 questions now distribute answer indices evenly.
+- A new regression test validates two psychiatry lecture IDs, course catalog, every source page reference, option uniqueness and balanced answer positions; source PDFs/images remain excluded from public source control.
+- Technical build tests cannot substitute for individual educational answer-key review.
+
 ## Required acceptance
+- [x] Structural verification: 89 MCQs have distinct option texts, valid source-page links and balanced A/B/C/D correct-answer positions; this check does NOT establish clinical correctness.
 - [ ] Each MCQ answer, wording and distractor verified against source PDF.
 - [ ] Lecture criteria/durations/percentages and therapy wording checked without substituting outside guidelines.
 - [ ] Every source-page citation and hard-to-read figure confirmed.
