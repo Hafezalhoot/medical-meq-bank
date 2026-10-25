@@ -86,5 +86,50 @@ class BatchDraftTests(unittest.TestCase):
             batch_new_lectures.plan_batch([dict(self.sample("A"), approved=True)])
 
 
+    def test_cli_preview_and_write_do_not_touch_published_files(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        manifest = self.root / "batch.json"
+        manifest.write_text(json.dumps([self.sample("One"), self.sample("Two")]), encoding="utf-8")
+        original_catalog = (self.root / "lectures/catalog.json").read_bytes()
+        cli = ["batch_new_lectures.py", str(manifest)]
+        with patch.object(sys, "argv", cli), redirect_stdout(StringIO()) as output:
+            batch_new_lectures.main()
+        self.assertIn("Dry-run passed", output.getvalue())
+        self.assertFalse((self.root / "tmp").exists())
+
+        with patch.object(sys, "argv", cli + ["--write"]), redirect_stdout(StringIO()):
+            batch_new_lectures.main()
+        self.assertEqual(
+            [json.loads(path.read_text())["order"]
+             for path in sorted((self.root / "tmp/lecture-drafts").glob("*.json"))],
+            [2, 3],
+        )
+        self.assertEqual((self.root / "lectures/catalog.json").read_bytes(), original_catalog)
+
+    def test_cli_write_failure_removes_newly_created_drafts(self):
+        manifest = self.root / "batch.json"
+        manifest.write_text(json.dumps([self.sample("First"), self.sample("Second")]), encoding="utf-8")
+        original_catalog = (self.root / "lectures/catalog.json").read_bytes()
+        real_open = Path.open
+        attempts = 0
+
+        def fail_second_creation(path, *args, **kwargs):
+            nonlocal attempts
+            mode = args[0] if args else kwargs.get("mode", "r")
+            if mode == "x":
+                attempts += 1
+                if attempts == 2:
+                    raise OSError("simulated write failure")
+            return real_open(path, *args, **kwargs)
+
+        with patch.object(sys, "argv", ["batch_new_lectures.py", str(manifest), "--write"]), \
+                patch.object(Path, "open", fail_second_creation), \
+                self.assertRaisesRegex(SystemExit, "rolled back"):
+            batch_new_lectures.main()
+        self.assertEqual(list((self.root / "tmp/lecture-drafts").glob("*.json")), [])
+        self.assertEqual((self.root / "lectures/catalog.json").read_bytes(), original_catalog)
+
+
 if __name__ == "__main__":
     unittest.main()
