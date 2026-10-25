@@ -5,7 +5,7 @@
   "subject": "Psychiatry",
   "title": "Psychiatric History Taking & Mental Status Examination",
   "subtitle": "Interview structure, developmental history and stepwise MSE",
-  "sourceNote": "Lecture-first exam source: user-supplied '1- psychiatric_history_taking.pdf' (44 PDF pages; SHA-256 4eda3423372bdd57c76b40e65a1dd7c990226e7db369124a94ec9eb77dcbd2cb). All sourcePage values refer to 1-based PDF pages. Source screenshots/tables remain in the original PDF and are not redistributed. Questions and teaching scenarios are proposed study items requiring lecturer/learner medical review before production. No outside criteria or therapies introduced.",
+  "sourceNote": "Lecture-first exam source: user-supplied '1- psychiatric_history_taking.pdf' (44 PDF pages; SHA-256 4eda3423372bdd57c76b40e65a1dd7c990226e7db369124a94ec9eb77dcbd2cb). All sourcePage values refer to 1-based PDF pages. Three original teaching figure crops (pp.27, 34, 43) are hosted as source-only JPEG assets with SHA-256 integrity metadata; the full PDF remains outside this repository. Questions and teaching scenarios are proposed study items requiring lecturer/learner medical review before production. No outside criteria or therapies introduced.",
   "subtopics": [
     {
       "id": "interview",
@@ -597,7 +597,7 @@
         "thought"
       ],
       "page": "PDF p.27",
-      "prompt": "Consult the original source PDF p.27 (source table/figure not publicly hosted).",
+      "prompt": "Original teaching figure cropped from the user-supplied lecture PDF p.27; read it alongside the source-page reference.",
       "questions": [
         "What broad MSE domain does the source diagram illustrate?",
         "Name two abnormalities shown in the table."
@@ -605,7 +605,10 @@
       "answer": [
         "Thought process/form.",
         "Examples include circumstantiality and thought blocking."
-      ]
+      ],
+      "image": "./assets/lectures/psychiatry-history/psyhist-01.jpg",
+      "imageSha256": "85f607eba9e9e505e45b93ecd5447a67c7237725d7e553dbc43ca6e094140b55",
+      "imageBytes": 144584
     },
     {
       "id": "psyhist-image-002",
@@ -617,7 +620,7 @@
         "thought"
       ],
       "page": "PDF p.34",
-      "prompt": "Consult the original source PDF p.34 (source table/figure not publicly hosted).",
+      "prompt": "Original teaching figure cropped from the user-supplied lecture PDF p.34; read it alongside the source-page reference.",
       "questions": [
         "What kind of MSE feature does the page-34 table assess?",
         "Name one form of thought content listed in the associated slide."
@@ -625,7 +628,10 @@
       "answer": [
         "Delusions, within thought content.",
         "For example, delusion of persecution."
-      ]
+      ],
+      "image": "./assets/lectures/psychiatry-history/psyhist-02.jpg",
+      "imageSha256": "d90fed45f38e63d19cd876ba0f3707918549d19ea58b07205088f566873d7bde",
+      "imageBytes": 201672
     },
     {
       "id": "psyhist-image-003",
@@ -637,7 +643,7 @@
         "cognition"
       ],
       "page": "PDF p.43",
-      "prompt": "Consult the original source PDF p.43 (source table/figure not publicly hosted).",
+      "prompt": "Original teaching figure cropped from the user-supplied lecture PDF p.43; read it alongside the source-page reference.",
       "questions": [
         "Which MSE domain is the source diagram about?",
         "Name two functions assessed."
@@ -645,7 +651,10 @@
       "answer": [
         "Cognitive assessment/sensorium.",
         "For example, orientation and memory."
-      ]
+      ],
+      "image": "./assets/lectures/psychiatry-history/psyhist-03.jpg",
+      "imageSha256": "d2b4e609ea6a8c8283437b26038b03d8e9d3dec420d60dd744b3937ae992048a",
+      "imageBytes": 145264
     }
   ],
   "detailedShorts": [

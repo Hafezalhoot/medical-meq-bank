@@ -5,7 +5,7 @@
   "subject": "Psychiatry",
   "title": "Anxiety Disorders",
   "subtitle": "Case-based panic, generalized anxiety, phobias, course and treatment",
-  "sourceNote": "Lecture-first exam source: user-supplied '2- Anxiety disorders.pdf' (43 PDF pages; SHA-256 a0588e9348f9768d7a38faf7c791e281aa2b9b14a917fdf126f501b6d56f5f08). SourcePage values use 1-based PDF pages. DSM-5 image-only source slides pp.12,16,21,24 and etiology figure p.34 were read visually. Clinical criteria, percentages and treatments remain the lecture's own wording rather than external guideline updates. All questions/distractors are review drafts; do not interpret lecture teaching-case headings as proof that each case supplies every formal duration criterion. Source figures/PDF not republished; lecturer/learner review required before production.",
+  "sourceNote": "Lecture-first exam source: user-supplied '2- Anxiety disorders.pdf' (43 PDF pages; SHA-256 a0588e9348f9768d7a38faf7c791e281aa2b9b14a917fdf126f501b6d56f5f08). SourcePage values use 1-based PDF pages. DSM-5 image-only source slides pp.12,16,21,24 and etiology figure p.34 were read visually. Clinical criteria, percentages and treatments remain the lecture's own wording rather than external guideline updates. All questions/distractors are review drafts; do not interpret lecture teaching-case headings as proof that each case supplies every formal duration criterion. Four original teaching figure crops (pp.3, 16, 21, 34) are hosted as SHA-256 verified JPEG assets; the full PDF is excluded, and lecturer/learner review of authored questions is still advisable.",
   "subtopics": [
     {
       "id": "concepts",
@@ -643,7 +643,7 @@
         "concepts"
       ],
       "page": "PDF p.3",
-      "prompt": "Consult the original PDF p.3; this original diagram/table has not been hosted.",
+      "prompt": "Original teaching figure cropped from the user-supplied lecture PDF p.3; read it alongside the source-page reference.",
       "questions": [
         "What are the four anxiety symptom domains in the figure?",
         "Which domain includes avoidance?"
@@ -651,7 +651,10 @@
       "answer": [
         "Emotional, cognitive, physiological and behavioral.",
         "Behavioral symptoms."
-      ]
+      ],
+      "image": "./assets/lectures/psychiatry-anxiety/psyanx-01.jpg",
+      "imageSha256": "f17c5b5116fa50d09fda3b1ae8560b26da73b16f42b357f05c81a0e4dd13d920",
+      "imageBytes": 100227
     },
     {
       "id": "psyanx-image-002",
@@ -663,7 +666,7 @@
         "gad"
       ],
       "page": "PDF p.16",
-      "prompt": "Consult the original PDF p.16; this original diagram/table has not been hosted.",
+      "prompt": "Original teaching figure cropped from the user-supplied lecture PDF p.16; read it alongside the source-page reference.",
       "questions": [
         "What minimum worry duration is shown?",
         "How many associated symptoms are required?"
@@ -671,7 +674,10 @@
       "answer": [
         "At least six months.",
         "Three or more of six."
-      ]
+      ],
+      "image": "./assets/lectures/psychiatry-anxiety/psyanx-02.jpg",
+      "imageSha256": "2cedf6a498c4b5c3c2e6355f85297c55c0584d833c14facd30e2dca1bb883162",
+      "imageBytes": 236840
     },
     {
       "id": "psyanx-image-003",
@@ -683,7 +689,7 @@
         "agoraphobia"
       ],
       "page": "PDF p.21",
-      "prompt": "Consult the original PDF p.21; this original diagram/table has not been hosted.",
+      "prompt": "Original teaching figure cropped from the user-supplied lecture PDF p.21; read it alongside the source-page reference.",
       "questions": [
         "How many of the five situations are required?",
         "What is the typical duration?"
@@ -691,7 +697,10 @@
       "answer": [
         "Two or more.",
         "Six months or more."
-      ]
+      ],
+      "image": "./assets/lectures/psychiatry-anxiety/psyanx-03.jpg",
+      "imageSha256": "a3d7345a69aa9c304dd818926d7eb2ebe927f68540fc89b69d8694d7ea007eb3",
+      "imageBytes": 160949
     },
     {
       "id": "psyanx-image-004",
@@ -703,7 +712,7 @@
         "epidemiology"
       ],
       "page": "PDF p.34",
-      "prompt": "Consult the original PDF p.34; this original diagram/table has not been hosted.",
+      "prompt": "Original teaching figure cropped from the user-supplied lecture PDF p.34; read it alongside the source-page reference.",
       "questions": [
         "Name two etiologic categories in the figure.",
         "Does this question reproduce an external image?"
@@ -711,7 +720,10 @@
       "answer": [
         "For example biological and behavioral.",
         "No; the source PDF must be consulted."
-      ]
+      ],
+      "image": "./assets/lectures/psychiatry-anxiety/psyanx-04.jpg",
+      "imageSha256": "420848bace5d2bf5c976305929e26206c4f022ccaa1105cadf8e9dd08f8c1aa6",
+      "imageBytes": 166275
     }
   ],
   "detailedShorts": [

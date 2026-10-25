@@ -3,6 +3,7 @@
 These are structural checks, not medical editorial signoff.
 """
 import json
+import hashlib
 from pathlib import Path
 import re
 import unittest
@@ -62,8 +63,18 @@ class PsychiatrySourcePilotTests(unittest.TestCase):
                     indices[mcq["answerIndex"]] += 1
                 self.assertLessEqual(max(indices) - min(indices), 1,
                     "No predictable single correct-answer position in exam mode")
-                self.assertTrue(all("image" not in q for q in lecture["imageQuestions"]),
-                    "Source figures must not be silently republished from copyrighted PDFs")
+                # Only original JPEG crops extracted from the user-provided PDF are hosted.
+                for picture in lecture["imageQuestions"]:
+                    image_url = picture.get("image")
+                    self.assertIsInstance(image_url, str)
+                    self.assertTrue(image_url.startswith("./assets/lectures/psychiatry-"))
+                    self.assertTrue(image_url.endswith(".jpg"))
+                    image_path = ROOT / image_url.removeprefix("./")
+                    self.assertTrue(image_path.is_file(), str(image_path))
+                    image_bytes = image_path.read_bytes()
+                    self.assertTrue(image_bytes.startswith(b"\xff\xd8\xff"))
+                    self.assertEqual(picture["imageBytes"], len(image_bytes))
+                    self.assertEqual(picture["imageSha256"], hashlib.sha256(image_bytes).hexdigest())
 
 
 if __name__ == "__main__":
