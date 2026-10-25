@@ -5,7 +5,7 @@
   "subject": "Psychiatry",
   "title": "Psychiatric History Taking & Mental Status Examination",
   "subtitle": "Interview structure, developmental history and stepwise MSE",
-  "sourceNote": "Lecture-first exam source: user-supplied '1- psychiatric_history_taking.pdf' (44 PDF pages; SHA-256 4eda3423372bdd57c76b40e65a1dd7c990226e7db369124a94ec9eb77dcbd2cb). All sourcePage values refer to 1-based PDF pages. Three original teaching figure crops (pp.27, 34, 43) are hosted as source-only JPEG assets with SHA-256 integrity metadata; the full PDF remains outside this repository. Questions and teaching scenarios are proposed study items requiring lecturer/learner medical review before production. No outside criteria or therapies introduced.",
+  "sourceNote": "Lecture-first exam source: user-supplied '1- psychiatric_history_taking.pdf' (44 PDF pages; SHA-256 4eda3423372bdd57c76b40e65a1dd7c990226e7db369124a94ec9eb77dcbd2cb). All sourcePage values refer to 1-based PDF pages. Six original teaching figure crops (pp.12, 27, 28, 34, 35, 43) are hosted as source-only JPEG assets with SHA-256 integrity metadata; the full PDF remains outside this repository. Questions and teaching scenarios are proposed study items requiring lecturer/learner medical review before production. No outside criteria or therapies introduced.",
   "subtopics": [
     {
       "id": "interview",
@@ -775,6 +775,81 @@
       "image": "./assets/lectures/psychiatry-history/psyhist-03.jpg",
       "imageSha256": "d2b4e609ea6a8c8283437b26038b03d8e9d3dec420d60dd744b3937ae992048a",
       "imageBytes": 145264
+    },
+    {
+      "id": "psyhist-image-004",
+      "title": "Mood, anxiety and psychosis screening image",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "page": "PDF p.12",
+      "prompt": "Original educational figure cropped from the uploaded source PDF p.12; all facts here are drawn from that slide.",
+      "questions": [
+        "List the eight parts of SIGECAPS exactly as in the source image.",
+        "Name four screening items shown under Mania.",
+        "Which other groups beyond mood and anxiety are screened here?"
+      ],
+      "answer": [
+        "Sleep, Interest, Guilt, Energy, Concentration, Appetite, Psychomotor change, Suicidality.",
+        "For example grandiosity, decreased need for sleep, talkativeness, impulsivity or racing thoughts.",
+        "Psychosis (hallucinations, paranoia, delusional features), ADHD and eating-disorder behaviours."
+      ],
+      "image": "./assets/lectures/psychiatry-history/psyhist-04.jpg",
+      "imageSha256": "c316453d53b24c7309396ea3f69e254e409846ac7586e2c7d4e31998fc023a1a",
+      "imageBytes": 148058
+    },
+    {
+      "id": "psyhist-image-005",
+      "title": "SAPS formal thought disorder comparison table",
+      "topic": "Thought Form and Content",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "thought"
+      ],
+      "page": "PDF p.28",
+      "prompt": "Original educational figure cropped from the uploaded source PDF p.28; all facts here are drawn from that slide.",
+      "questions": [
+        "Contrast circumstantiality and tangentiality.",
+        "Which term matches meaningless word combinations?",
+        "What does the image mean by pressure of speech?"
+      ],
+      "answer": [
+        "Circumstantiality takes a long route but finally answers; tangentiality diverts without answering.",
+        "Incoherence or word salad (schizophasia).",
+        "Increased production of spontaneous speech."
+      ],
+      "image": "./assets/lectures/psychiatry-history/psyhist-05.jpg",
+      "imageSha256": "7c5da8a4f6f7cf2a330887d7af82fb5a7357d4561ed05b98e9ac5d131212fc3f",
+      "imageBytes": 154324
+    },
+    {
+      "id": "psyhist-image-006",
+      "title": "Delusions clinical-question table, part 2",
+      "topic": "Thought Form and Content",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "thought"
+      ],
+      "page": "PDF p.35",
+      "prompt": "Original educational figure cropped from the uploaded source PDF p.35; all facts here are drawn from that slide.",
+      "questions": [
+        "Name all six delusion categories listed in this table.",
+        "What source question explores a nihilistic belief?",
+        "What does asking about a special mission explore?"
+      ],
+      "answer": [
+        "Grandiose, religious, guilt, nihilistic, somatic and jealousy delusions.",
+        "For example: 'Do you feel as though you have died?'",
+        "Delusions of grandeur."
+      ],
+      "image": "./assets/lectures/psychiatry-history/psyhist-06.jpg",
+      "imageSha256": "d26b24a932159bc6d334c6126451ad1237be27889d70500e3ec7e7104ead36fa",
+      "imageBytes": 180050
     }
   ],
   "detailedShorts": [
