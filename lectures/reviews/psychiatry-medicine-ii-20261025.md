@@ -12,9 +12,9 @@
 
 | Source lecture | Explanation sections | Auto-graded MCQs | Source figure cards | Cases | Core shorts | Detailed practice | Rapid |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Psychiatric History & MSE | 48 | 52 | 6 | 5 | 46 | 13 | 28 |
-| Anxiety Disorders | 41 | 56 | 7 | 5 | 47 | 12 | 30 |
-| **Total** | **89** | **108** | **13** | **10** | **93** | **25** | **58** |
+| Psychiatric History & MSE | 49 | 52 | 6 | 5 | 46 | 13 | 28 |
+| Anxiety Disorders | 43 | 56 | 7 | 5 | 47 | 12 | 30 |
+| **Total** | **92** | **108** | **13** | **10** | **93** | **25** | **58** |
 
 Earlier published 89 MCQs were retained with identical IDs, option texts and marked answers. **19 additional source-specific MCQs** were appended; existing progress IDs remain valid.
 
@@ -28,7 +28,7 @@ Earlier published 89 MCQs were retained with identical IDs, option texts and mar
 | Psychiatric History | pp.39–43 | Real source interview prompts, mood/affect, thought, memory, attention, judgment and insight — written reconstruction, p.43 original cognitive checklist |
 | Anxiety | pp.3–5 | Four symptom domains, detailed somatic body-map, DSM-5 anxiety list — two source images + explanation/questions |
 | Anxiety | pp.11–12,16 | Panic attack symptom threshold versus Panic Disorder criteria, GAD duration and six associated symptoms — source DSM tables + explanation/questions |
-| Anxiety | pp.21,24 | Agoraphobia and Specific Phobia image-only diagnostic tables — source crops + explanation/questions |
+| Anxiety | pp.19–21,24 | Agoraphobia and Specific Phobia image-only diagnostic tables — source crops + explanation/questions |
 | Anxiety | pp.33–35 | Lecture prevalence numbers and all six named etiology perspectives, including source-labeled biological transmitters — original image + expanded explanation/questions |
 
 For page-by-page image and source coverage limits, see [Psychiatry figure coverage audit](psychiatry-source-coverage-audit-20261025.md).
