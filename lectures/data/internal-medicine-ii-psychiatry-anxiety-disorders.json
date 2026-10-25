@@ -653,8 +653,8 @@
         "Behavioral symptoms."
       ],
       "image": "./assets/lectures/psychiatry-anxiety/psyanx-01.jpg",
-      "imageSha256": "a6fd5a08b62ccb9fb97908ba57140fac0addb777359d8e009ec8bbe44b50cd3d",
-      "imageBytes": 69044
+      "imageSha256": "f17c5b5116fa50d09fda3b1ae8560b26da73b16f42b357f05c81a0e4dd13d920",
+      "imageBytes": 100227
     },
     {
       "id": "psyanx-image-002",
@@ -676,8 +676,8 @@
         "Three or more of six."
       ],
       "image": "./assets/lectures/psychiatry-anxiety/psyanx-02.jpg",
-      "imageSha256": "5a268844f6ea121a4decdb3ece56d56c80b07d5bfa0f32f718443c18b2e3705e",
-      "imageBytes": 168629
+      "imageSha256": "2cedf6a498c4b5c3c2e6355f85297c55c0584d833c14facd30e2dca1bb883162",
+      "imageBytes": 236840
     },
     {
       "id": "psyanx-image-003",
@@ -699,8 +699,8 @@
         "Six months or more."
       ],
       "image": "./assets/lectures/psychiatry-anxiety/psyanx-03.jpg",
-      "imageSha256": "e1041e12ff0c1ab9db241312a92d10aef80a732070ae3809eba227a29fe445fa",
-      "imageBytes": 114236
+      "imageSha256": "a3d7345a69aa9c304dd818926d7eb2ebe927f68540fc89b69d8694d7ea007eb3",
+      "imageBytes": 160949
     },
     {
       "id": "psyanx-image-004",
@@ -722,8 +722,8 @@
         "No; the source PDF must be consulted."
       ],
       "image": "./assets/lectures/psychiatry-anxiety/psyanx-04.jpg",
-      "imageSha256": "6238e2db45caf5606f3e3255d471a2337de37c60c74d9c6008e21698e244774f",
-      "imageBytes": 125113
+      "imageSha256": "420848bace5d2bf5c976305929e26206c4f022ccaa1105cadf8e9dd08f8c1aa6",
+      "imageBytes": 166275
     }
   ],
   "detailedShorts": [
