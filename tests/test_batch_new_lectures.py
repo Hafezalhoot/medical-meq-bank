@@ -77,6 +77,15 @@ class BatchDraftTests(unittest.TestCase):
                 dict(self.sample("A"), order=2), dict(self.sample("B"), order=2)])
         self.assertFalse((self.root / "tmp").exists())
 
+    def test_legacy_published_title_prevents_duplicate_under_new_id(self):
+        self.save("lectures/catalog.json", {"lectures": [
+            {"id": "legacy-urology-bph", "title": "BPH", "courseId": "surgery",
+             "subjectKey": "urology", "order": 1},
+        ]})
+        with self.assertRaisesRegex(SystemExit, "title already published"):
+            batch_new_lectures.plan_batch([self.sample(" bPh ")])
+        self.assertFalse((self.root / "tmp").exists())
+
     def test_rejects_unregistered_or_malformed_rows(self):
         with self.assertRaisesRegex(SystemExit, "required"):
             batch_new_lectures.plan_batch([{"course": "surgery"}])
