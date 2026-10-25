@@ -4,13 +4,18 @@
   "id": "internal-medicine-ii",
   "label": "Internal Medicine II",
   "order": 3,
-  "description": "Independent Internal Medicine II lecture-based study pack; first specialty: Dermatology.",
+  "description": "Internal Medicine II lecture study pack covering Dermatology and Psychiatry.",
   "defaultSubject": "dermatology",
   "subjects": [
     {
       "id": "dermatology",
       "label": "Dermatology",
       "order": 1
+    },
+    {
+      "id": "psychiatry",
+      "label": "Psychiatry",
+      "order": 2
     }
   ],
   "lectureCatalog": "../../lectures/catalog.json",
