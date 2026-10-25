@@ -1,4 +1,4 @@
-const APP_VERSION = '2026.10.25.1';
+const APP_VERSION = '2026.10.25.2';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
 const USER_LESSON_CACHE = 'medical-meq-bank-user-lessons-v1';
 const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
@@ -139,6 +139,11 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+
+  // Cloudflare Access owns /cdn-cgi/access/*, including its login callback.
+  // Intercepting those navigations can return cached index.html at the
+  // callback URL, breaking relative CSS/JS and preventing auth completion.
+  if (url.pathname.startsWith('/cdn-cgi/')) return;
 
   if (url.pathname.endsWith('/version.json')) {
     event.respondWith(networkOnlyVersion(request));
