@@ -6,10 +6,10 @@ test.use({serviceWorkers: 'block'});
 const SOURCE_LECTURES = [
   {id: 'internal-medicine-ii-psychiatry-psychiatric-history-mse',
     name: 'Psychiatric History Taking & Mental Status Examination',
-    mcqs: 52, explanations: 48, images: 6, cases: 5, core: 46, detailed: 13, rapid: 28},
+    mcqs: 52, explanations: 49, images: 6, cases: 5, core: 46, detailed: 13, rapid: 28},
   {id: 'internal-medicine-ii-psychiatry-anxiety-disorders',
     name: 'Anxiety Disorders',
-    mcqs: 56, explanations: 41, images: 7, cases: 5, core: 47, detailed: 12, rapid: 30}
+    mcqs: 56, explanations: 43, images: 7, cases: 5, core: 47, detailed: 12, rapid: 30}
 ];
 
 async function openPsychiatry(page) {
