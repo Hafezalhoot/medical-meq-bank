@@ -1,5 +1,16 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+
+### 2026-10-25 — Psychiatry source-image scientific coverage audit (content PR)
+
+- ✅ Located and rendered the exact original Psychiatry PDFs (History 44 pages + Anxiety 43 pages, 87 total); visually inspected information-dense source slides rather than treating embedded tables/figures as decorative.
+- ✅ Filled previously missed source notes: History p.12 SIGECAPS/mania/OCD/PTSD/psychosis, thought disorder tables pp.27–29, delusions pp.34–35, cognition pp.39–43; Anxiety body-map p.4, panic/GAD/agoraphobia/specific-phobia criteria and etiological chart.
+- ✅ Added **19 source-page MCQs** to existing 89 keys (now 108), enlarged explanation from 65 to **92 sections**, hosted **6 additional original lecture JPEG crops** (now 13) with byte-length/SHA-256 metadata; revised 17 source shorts and 5 detailed written practice items, plus 14 rapid cards.
+- ✅ Replaced non-clinical image-spot question ("Does this question reproduce an external image?") with actual source-relevant norepinephrine content, retaining original PDF-based classification and treatment facts.
+- ✅ Created [87-page figure coverage matrix](lectures/reviews/psychiatry-source-coverage-audit-20261025.md) and [108-question answer-key record](lectures/reviews/psychiatry-108-mcq-review.md). Earlier 89-question review retained as archived snapshot for traceability.
+- ✅ Existing 89 MCQ stable IDs/options/marked answers preserved to avoid invalidating student progress. Unchanged 10 other lectures and no database/rating keys modified.
+- ⏳ Pending exact-head static, Chromium, WebKit, and Workers Builds checks; no clinical lecturer/faculty certification claimed. User approved immediate personal-use release once checks pass; authenticated production smoke remains subject to Cloudflare Access issue #35.
+
 ### 2026-10-25 — Psychiatry lecture-first pilot and release verification (#59)
 
 - ✅ Added `Psychiatry` in `Internal Medicine II` while preserving Dermatology and all existing IDs/progress formats.
