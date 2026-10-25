@@ -73,6 +73,19 @@ def prepare_draft(
         # Older drafts predate the explicit draft-only courseId field.
         return item.get("courseId") is None and item["id"].startswith(f"{course}-{subject_key}-")
 
+    title_key = " ".join(title.split()).casefold()
+
+    def matches_title(item: dict) -> bool:
+        return (isinstance(item.get("title"), str)
+                and " ".join(item["title"].split()).casefold() == title_key)
+
+    if any(isinstance(item, dict) and item.get("courseId") == course
+           and item.get("subjectKey") == subject_key and matches_title(item)
+           for item in entries):
+        fail(f"lecture title already published in {course}/{subject_key}: {title.strip()}")
+    if any(same_subject(item) and matches_title(item) for item in queued):
+        fail(f"lecture title already pending in {course}/{subject_key}: {title.strip()}")
+
     used = {
         item["order"] for item in entries
         if isinstance(item, dict) and item.get("courseId") == course
