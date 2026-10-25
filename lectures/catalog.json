@@ -26,10 +26,10 @@
       "file": "data/internal-medicine-ii-psychiatry-psychiatric-history-mse.json",
       "expectedCounts": {
         "cases": 5,
-        "coreShorts": 36,
-        "imageQuestions": 3,
-        "detailedShorts": 10,
-        "rapid": 20
+        "coreShorts": 46,
+        "imageQuestions": 6,
+        "detailedShorts": 13,
+        "rapid": 28
       },
       "courseId": "internal-medicine-ii",
       "schemaVersion": 1
@@ -42,10 +42,10 @@
       "file": "data/internal-medicine-ii-psychiatry-anxiety-disorders.json",
       "expectedCounts": {
         "cases": 5,
-        "coreShorts": 40,
-        "imageQuestions": 4,
-        "detailedShorts": 10,
-        "rapid": 24
+        "coreShorts": 47,
+        "imageQuestions": 7,
+        "detailedShorts": 12,
+        "rapid": 30
       },
       "courseId": "internal-medicine-ii",
       "schemaVersion": 1
