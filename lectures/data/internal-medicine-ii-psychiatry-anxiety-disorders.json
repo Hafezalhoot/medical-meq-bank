@@ -1117,6 +1117,48 @@
           "Virtual therapy قد تحاكي المواقف مثل crowded supermarket لدى مريض agoraphobia، وتكون مفيدة عندما يصعب تمثيل الموقف في العيادة. تذكر المحاضرة أيضًا supportive therapy وgroup therapy."
         ],
         "sourcePage": "PDF p.41"
+      },
+      {
+        "heading": "Panic attack versus Panic Disorder on the source DSM-5 slide",
+        "sourcePage": "PDF p.12",
+        "paragraphs": [
+          "تفرّق الصورة بين Panic Attack كحدث، وPanic Disorder الذي يتطلب recurrent unexpected attacks ثم استمرار القلق بشأن نوبات أخرى أو النتائج أو تغير السلوك شهرًا على الأقل بعد واحدة منها. وتذكر الصورة أن PD وAgoraphobia أصبحا تشخيصين منفصلين في DSM-5. لا يكفي حدوث الأعراض الجسمية وحدها لإثبات جميع شروط الاضطراب."
+        ]
+      },
+      {
+        "heading": "GAD: distinguish lecture case from formal diagnosis",
+        "sourcePage": "PDF p.16",
+        "paragraphs": [
+          "الحالة الثانية في الصفحات 13–14 تُستخدم تمثيلًا لـGAD لكنها لا تذكر مدة مستقلة قدرها ستة أشهر. لذلك لا تستنتج مدة 6 أشهر من الحالة؛ راجع قاعدة مدة القلق (على مدار 6 أشهر وأكثر الأيام) والـ3/6 أعراض في جدول DSM-5 المصور في هذه الصفحة."
+        ]
+      },
+      {
+        "heading": "Specific-phobia figure and case interpretation",
+        "sourcePage": "PDF p.24",
+        "paragraphs": [
+          "تشرح الصورة خمس صفات أساسية للخوف المحدد: object/situation واضح، قلق فوري غالبًا عند التعرض، خوف غير متناسب مع الخطر أو السياق، استمرار عادة 6 أشهر أو أكثر، وتأثير وظيفي/معاناة معتبرة. حالة القيادة في الصفحة 22 مثال تعليمي للنوع Situational المذكور في الصفحة 25."
+        ]
+      },
+      {
+        "heading": "Etiology figure: learning, cognition and neurobiology",
+        "sourcePage": "PDF p.34",
+        "paragraphs": [
+          "يذكر الرسم عوامل Biological مثل الوراثة والجهاز العصبي الذاتي والتغيرات في norepinephrine/serotonin/GABA/glutamate والأميغدالا وقشرة الفص الجبهي. Behavioral theory تتضمن observational learning وclassical/operant conditioning. Cognitive approach يركز على ضعف perceived control والتفسيرات غير الدقيقة. كما يسرد psychodynamic وevolutionary وsociocultural perspectives؛ هذه نظريات واردة في المصدر وليست استنتاجًا مستقلًا."
+        ]
+      },
+      {
+        "heading": "Psychotherapy table: source technique comparisons",
+        "sourcePage": "PDF p.40",
+        "paragraphs": [
+          "Cognitive therapy تستهدف maladaptive thoughts، بينما Behavioral therapy تذكر graded exposure وsystematic desensitization وrelaxation وغيرها. Interpersonal psychotherapy في المحاضرة تركز على تدريب المهارات الاجتماعية لـSocial Anxiety Disorder. الصفحة التالية تضيف virtual, supportive وgroup therapy."
+        ]
+      },
+      {
+        "heading": "Case 5 and duration evidence",
+        "sourcePage": "PDF p.29",
+        "paragraphs": [
+          "الـCase 5 في الصفحتين 26–27 يوضح Social Anxiety لكنه لا يذكر مدة محددة للخوف؛ أمّا معيار المحاضرة فهو أكثر من 6 أشهر. لا تُضف المدة إلى بيانات الحالة من عندك، وافصل بين تسمية الحالة التعليمية والتحقق من كل criterion."
+        ]
       }
     ],
     "mcqs": [
@@ -1125,11 +1167,11 @@
         "question": "How does the lecture distinguish fear from anxiety?",
         "options": [
           "Fear concerns an unknown threat; anxiety a known threat",
-          "Fear is an appropriate response to a known threat; anxiety to a vague/unknown threat",
           "Both have identical definitions",
+          "Fear is an appropriate response to a known threat; anxiety to a vague/unknown threat",
           "Fear always indicates a disorder"
         ],
-        "answerIndex": 1,
+        "answerIndex": 2,
         "rationale": "Fear is linked to known threat and anxiety to unknown/vague threat.",
         "sourcePage": "PDF p.2"
       },
@@ -1137,12 +1179,12 @@
         "id": "psyanx-mcq-002",
         "question": "Which is classified as a cognitive symptom of anxiety in the diagram?",
         "options": [
-          "Worry",
           "Increased heart rate",
           "Sweating",
-          "Avoidance"
+          "Avoidance",
+          "Worry"
         ],
-        "answerIndex": 0,
+        "answerIndex": 3,
         "rationale": "The diagram places worry under cognitive symptoms.",
         "sourcePage": "PDF p.3"
       },
@@ -1151,11 +1193,11 @@
         "question": "Which is a behavioral symptom shown in the anxiety diagram?",
         "options": [
           "Muscle tension",
-          "Apprehension",
           "Avoidance of feared situations",
+          "Apprehension",
           "Tachycardia"
         ],
-        "answerIndex": 2,
+        "answerIndex": 1,
         "rationale": "Avoidance is in the behavioral box.",
         "sourcePage": "PDF p.3"
       },
@@ -1190,11 +1232,11 @@
         "question": "What did the emergency evaluation reveal in Case 1?",
         "options": [
           "Evidence of heart disease",
-          "No sign of illness on ECG and routine tests",
           "A confirmed seizure disorder",
+          "No sign of illness on ECG and routine tests",
           "Drug-induced anxiety"
         ],
-        "answerIndex": 1,
+        "answerIndex": 2,
         "rationale": "The slide reports unremarkable ECG and routine blood work.",
         "sourcePage": "PDF p.7"
       },
@@ -1202,12 +1244,12 @@
         "id": "psyanx-mcq-007",
         "question": "Which is a psychiatric symptom among the listed panic symptoms?",
         "options": [
-          "Derealization",
           "Muscle fracture",
           "Rash",
-          "Hypertension"
+          "Hypertension",
+          "Derealization"
         ],
-        "answerIndex": 0,
+        "answerIndex": 3,
         "rationale": "Derealization/depersonalization appear in the psychiatric symptom group.",
         "sourcePage": "PDF p.9"
       },
@@ -1215,12 +1257,12 @@
         "id": "psyanx-mcq-008",
         "question": "Panic symptoms in the lecture are described as:",
         "options": [
-          "Abrupt and unpredictable",
           "Always gradually evolving over years",
           "Always triggered by a single object",
-          "Only present during sleep"
+          "Only present during sleep",
+          "Abrupt and unpredictable"
         ],
-        "answerIndex": 0,
+        "answerIndex": 3,
         "rationale": "Abrupt/unpredictable is explicitly stated.",
         "sourcePage": "PDF p.9"
       },
@@ -1230,10 +1272,10 @@
         "options": [
           "At least two",
           "At least three",
-          "At least four",
-          "Exactly eight"
+          "Exactly eight",
+          "At least four"
         ],
-        "answerIndex": 2,
+        "answerIndex": 3,
         "rationale": "The panic-attack threshold on the slide is four or more symptoms.",
         "sourcePage": "PDF p.11"
       },
@@ -1243,10 +1285,10 @@
         "options": [
           "One day",
           "One week",
-          "At least one month",
-          "Two years"
+          "Two years",
+          "At least one month"
         ],
-        "answerIndex": 2,
+        "answerIndex": 3,
         "rationale": "The image says at least one attack followed by at least one month of concern, worry, or behavior change.",
         "sourcePage": "PDF p.12"
       },
@@ -1281,11 +1323,11 @@
         "question": "The minimum duration specified for GAD worry in the DSM-5 table is:",
         "options": [
           "One week",
-          "One month",
           "Six months",
+          "One month",
           "Two years"
         ],
-        "answerIndex": 2,
+        "answerIndex": 1,
         "rationale": "The source table specifies at least 6 months on more days than not.",
         "sourcePage": "PDF p.16"
       },
@@ -1293,12 +1335,12 @@
         "id": "psyanx-mcq-014",
         "question": "How many of the six listed associated GAD symptoms are required in the table?",
         "options": [
+          "Three or more",
           "One or more",
           "Two or more",
-          "Three or more",
           "All six"
         ],
-        "answerIndex": 2,
+        "answerIndex": 0,
         "rationale": "The source table specifies three or more of six.",
         "sourcePage": "PDF p.16"
       },
@@ -1332,12 +1374,12 @@
         "id": "psyanx-mcq-017",
         "question": "Agoraphobia criteria in the lecture require fear about how many listed situation categories?",
         "options": [
-          "At least one",
           "At least two",
+          "At least one",
           "At least four",
           "All five"
         ],
-        "answerIndex": 1,
+        "answerIndex": 0,
         "rationale": "The p.21 table specifies two or more of five situations.",
         "sourcePage": "PDF p.21"
       },
@@ -1371,12 +1413,12 @@
         "id": "psyanx-mcq-020",
         "question": "Case 4 is centered on fear of:",
         "options": [
-          "Driving, especially highways",
           "Speaking to a crowd",
+          "Driving, especially highways",
           "Being outside home alone",
           "Losing financial wealth"
         ],
-        "answerIndex": 0,
+        "answerIndex": 1,
         "rationale": "The lawyer fears driving, particularly highways.",
         "sourcePage": "PDF p.22"
       },
@@ -1397,12 +1439,12 @@
         "id": "psyanx-mcq-022",
         "question": "Which is listed as a specific-phobia subtype?",
         "options": [
-          "Blood–injection–injury",
           "Nihilistic",
           "Manic",
+          "Blood–injection–injury",
           "Catatonic"
         ],
-        "answerIndex": 0,
+        "answerIndex": 2,
         "rationale": "Blood–injection–injury is one of the listed specifiers.",
         "sourcePage": "PDF p.25"
       },
@@ -1424,11 +1466,11 @@
         "question": "The duration criterion on the Social Phobia slide is:",
         "options": [
           "One week",
-          "One month",
           "More than six months",
+          "One month",
           "Three years"
         ],
-        "answerIndex": 2,
+        "answerIndex": 1,
         "rationale": "The lecture slide states duration more than 6 months.",
         "sourcePage": "PDF p.29"
       },
@@ -1436,12 +1478,12 @@
         "id": "psyanx-mcq-025",
         "question": "Which specifier is explicitly mentioned for Social Anxiety?",
         "options": [
-          "Performance only",
           "Seasonal only",
+          "Performance only",
           "Postpartum only",
           "Substance induced only"
         ],
-        "answerIndex": 0,
+        "answerIndex": 1,
         "rationale": "Performance-only (performance anxiety) is listed.",
         "sourcePage": "PDF p.30"
       },
@@ -1449,12 +1491,12 @@
         "id": "psyanx-mcq-026",
         "question": "Which belongs to the differential diagnosis list?",
         "options": [
-          "Substance/medication-induced anxiety",
           "Acute appendicitis",
+          "Substance/medication-induced anxiety",
           "Glaucoma",
           "Iron deficiency"
         ],
-        "answerIndex": 0,
+        "answerIndex": 1,
         "rationale": "Substance/medication-induced anxiety is listed in the differential.",
         "sourcePage": "PDF p.31"
       },
@@ -1463,11 +1505,11 @@
         "question": "According to the lecture, the approximate 12-month prevalence of anxiety disorders is:",
         "options": [
           "3%",
-          "10%",
           "17%",
+          "10%",
           "50%"
         ],
-        "answerIndex": 2,
+        "answerIndex": 1,
         "rationale": "The epidemiology slide says about 17%.",
         "sourcePage": "PDF p.33"
       },
@@ -1475,12 +1517,12 @@
         "id": "psyanx-mcq-028",
         "question": "Which comorbid condition is explicitly listed?",
         "options": [
-          "Depression",
           "Asthma only",
           "Fracture",
-          "Hypothyroidism only"
+          "Hypothyroidism only",
+          "Depression"
         ],
-        "answerIndex": 0,
+        "answerIndex": 3,
         "rationale": "Depression is listed with 40–80% in the lecture.",
         "sourcePage": "PDF p.35"
       },
@@ -1514,12 +1556,12 @@
         "id": "psyanx-mcq-031",
         "question": "Which medication class is described for acute/short-term anxiety in the lecture?",
         "options": [
-          "Benzodiazepines",
           "Antibiotics",
           "Antivirals",
-          "Anticoagulants"
+          "Anticoagulants",
+          "Benzodiazepines"
         ],
-        "answerIndex": 0,
+        "answerIndex": 3,
         "rationale": "The slide mentions benzodiazepines for acute cases/short term, with dependence and cognitive side effects.",
         "sourcePage": "PDF p.38"
       },
@@ -1527,12 +1569,12 @@
         "id": "psyanx-mcq-032",
         "question": "Which SNRI is named in the treatment slide?",
         "options": [
-          "Venlafaxine",
           "Haloperidol",
           "Buspirone",
+          "Venlafaxine",
           "Propranolol"
         ],
-        "answerIndex": 0,
+        "answerIndex": 2,
         "rationale": "Venlafaxine is explicitly named as an SNRI.",
         "sourcePage": "PDF p.38"
       },
@@ -1540,12 +1582,12 @@
         "id": "psyanx-mcq-033",
         "question": "Which drug is assigned to GAD in the lecture?",
         "options": [
-          "Buspirone",
           "Insulin",
+          "Buspirone",
           "Furosemide",
           "Aspirin"
         ],
-        "answerIndex": 0,
+        "answerIndex": 1,
         "rationale": "The treatment slide lists buspirone for GAD.",
         "sourcePage": "PDF p.39"
       },
@@ -1553,12 +1595,12 @@
         "id": "psyanx-mcq-034",
         "question": "Which is included among the behavioral techniques in the lecture?",
         "options": [
-          "Graded exposure",
           "Thought insertion",
           "Cognitive impairment",
-          "Sleep deprivation"
+          "Sleep deprivation",
+          "Graded exposure"
         ],
-        "answerIndex": 0,
+        "answerIndex": 3,
         "rationale": "Graded exposure appears in the behavioral therapy list.",
         "sourcePage": "PDF p.40"
       },
@@ -1566,13 +1608,169 @@
         "id": "psyanx-mcq-035",
         "question": "The virtual-therapy example in the lecture depicts:",
         "options": [
-          "A crowded supermarket scenario for agoraphobia",
           "A surgical theatre for pain control",
+          "A crowded supermarket scenario for agoraphobia",
           "An endoscopy procedure",
           "A speech articulation test"
         ],
-        "answerIndex": 0,
+        "answerIndex": 1,
         "rationale": "The slide explicitly gives a supermarket crowded-space scenario.",
+        "sourcePage": "PDF p.41"
+      },
+      {
+        "id": "psyanx-mcq-036",
+        "question": "According to the image-only DSM-5 table, Panic Disorder and agoraphobia are:",
+        "options": [
+          "Always required together",
+          "Identical diagnoses",
+          "Now separate diagnoses",
+          "Diagnosed only by chest pain"
+        ],
+        "answerIndex": 2,
+        "rationale": "The p.12 table states that PD and agoraphobia are unlinked in DSM-5.",
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "id": "psyanx-mcq-037",
+        "question": "In the GAD criteria table, the anxiety and worry must be:",
+        "options": [
+          "Easily controlled",
+          "Limited to one specific object",
+          "Difficult to control",
+          "Present only during panic attacks"
+        ],
+        "answerIndex": 2,
+        "rationale": "The second criterion in the source table is difficulty controlling worry.",
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "id": "psyanx-mcq-038",
+        "question": "Which of the following is a formal exclusion in the GAD source table?",
+        "options": [
+          "Occurrence in more than one life area",
+          "Reported restlessness",
+          "A different medical condition or substance effect",
+          "Distress in work life"
+        ],
+        "answerIndex": 2,
+        "rationale": "The p.16 image specifies substance or medical causes and other mental disorders as exclusions.",
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "id": "psyanx-mcq-039",
+        "question": "Agoraphobic situations, according to the source image, generally:",
+        "options": [
+          "Never cause distress",
+          "Must involve social embarrassment",
+          "Almost always provoke fear or anxiety",
+          "Must always involve a specific animal"
+        ],
+        "answerIndex": 2,
+        "rationale": "The image says agoraphobic situations almost always provoke fear or anxiety.",
+        "sourcePage": "PDF p.21"
+      },
+      {
+        "id": "psyanx-mcq-040",
+        "question": "Which criterion from the specific-phobia slide addresses actual danger?",
+        "options": [
+          "Memory impairment",
+          "Fear is proportionate to actual danger",
+          "Fear is out of proportion to the actual danger or sociocultural context",
+          "Panic must be unexpected"
+        ],
+        "answerIndex": 2,
+        "rationale": "The p.24 criteria directly require fear to be disproportionate.",
+        "sourcePage": "PDF p.24"
+      },
+      {
+        "id": "psyanx-mcq-041",
+        "question": "According to the etiology image, what is a cognitive contribution to anxiety?",
+        "options": [
+          "Visual hallucinations",
+          "Increased renal clearance",
+          "Lack of perceived control",
+          "Broken bones"
+        ],
+        "answerIndex": 2,
+        "rationale": "The source diagram lists lack of perceived control and irrational interpretation in its cognitive column.",
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "id": "psyanx-mcq-042",
+        "question": "Observing anxious behaviours in parents is placed under which etiologic explanation?",
+        "options": [
+          "Psychodynamic",
+          "Social impairment",
+          "Behavioural learning",
+          "Gastrointestinal"
+        ],
+        "answerIndex": 2,
+        "rationale": "The behavioral column gives observational learning from parents.",
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "id": "psyanx-mcq-043",
+        "question": "Overactivity of which neurotransmitter is connected to onset of panic attacks in the lecture figure?",
+        "options": [
+          "Norepinephrine",
+          "Dopamine",
+          "Acetylcholine",
+          "Histamine"
+        ],
+        "answerIndex": 0,
+        "rationale": "The biological column connects norepinephrine overactivity to panic attacks.",
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "id": "psyanx-mcq-044",
+        "question": "Which comorbidity range is specifically given for alcohol and substance use disorders?",
+        "options": [
+          "1–4%",
+          "70–90%",
+          "100%",
+          "20–40%"
+        ],
+        "answerIndex": 3,
+        "rationale": "The source comorbidity slide lists alcohol/substance use disorders at 20–40%.",
+        "sourcePage": "PDF p.35"
+      },
+      {
+        "id": "psyanx-mcq-045",
+        "question": "Which risk is linked to benzodiazepines on the slide?",
+        "options": [
+          "No cognitive effects",
+          "Guaranteed cure",
+          "Inevitable psychosis",
+          "Dependence and cognitive side effects"
+        ],
+        "answerIndex": 3,
+        "rationale": "The p.38 treatment slide names dependence and cognitive side effects.",
+        "sourcePage": "PDF p.38"
+      },
+      {
+        "id": "psyanx-mcq-046",
+        "question": "In the lecture, interpersonal psychotherapy for social anxiety focuses on:",
+        "options": [
+          "Only medication dosage",
+          "Treating cardiac arrhythmias",
+          "Diagnostic imaging",
+          "Interpersonal skills training"
+        ],
+        "answerIndex": 3,
+        "rationale": "The psychotherapy slide specifically highlights interpersonal skills training.",
+        "sourcePage": "PDF p.40"
+      },
+      {
+        "id": "psyanx-mcq-047",
+        "question": "Why is virtual therapy described as useful in the source?",
+        "options": [
+          "It replaces all pharmacotherapy",
+          "It is solely for memory testing",
+          "It diagnoses schizophrenia",
+          "It recreates situations difficult to reproduce near the clinic"
+        ],
+        "answerIndex": 3,
+        "rationale": "The source says virtual exposure can simulate situations hard to reproduce inside or near an office.",
         "sourcePage": "PDF p.41"
       }
     ]
