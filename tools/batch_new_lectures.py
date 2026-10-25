@@ -59,7 +59,7 @@ def main():
             with path.open("x", encoding="utf-8") as output:
                 created.append(path)
                 output.write(json.dumps(draft, ensure_ascii=False, indent=2) + "\n")
-    except OSError as error:
+    except (OSError, UnicodeError) as error:
         for path in created:
             path.unlink(missing_ok=True)
         fail(f"batch creation failed; newly created files rolled back: {error}")
