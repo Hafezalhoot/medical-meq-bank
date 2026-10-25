@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+
+### 2026-10-25 — Collision-safe multi-lecture draft preparation (draft PR #58)
+
+- 🧪 Added batch planning for many incoming PDFs using one local JSON manifest, with preview-only default and explicit draft-only writes. Unpublished drafts reserve stable IDs and per-course/per-subject positions, including across one-lecture and multi-lecture workflows.
+- 🧪 Existing local drafts are never overwritten, and an incomplete batch write removes newly created files; no lecture catalog, reviewed questions, original clinical photos, user progress, Worker version or deployment settings are modified.
+- 🧪 Added stdlib regression checks for collisions, pending drafts, malformed entries, CLI preview/write and rollback; authoring steps are documented in BATCH_LECTURE_INTAKE.md.
+- ⏳ **PR #58 is a draft, not deployed or merged.** Require exact-head static/content, Chromium, WebKit and Cloudflare Workers Build success before merging. Cloudflare Access #35, release gating #50 and Workers Builds issue #57 remain separate. Real medical PDFs still require page-by-page Lecture-First content and explicit editorial signoff.
+
+
+
 ### 2026-10-22 — Verified release and outstanding source-content review (documentation update)
 
 - ✅ **[PR #54](https://github.com/Hafezalhoot/medical-meq-bank/pull/54) merged** to protected `main` as `424dc4ac7dc36a5c9fcbd56f336c3866d5b08ad7` following exact-head static/Chromium/WebKit/Workers Build success. Shared Study Guide companion ingestion is now available for future source-reviewed content, without publishing any new clinical facts.
