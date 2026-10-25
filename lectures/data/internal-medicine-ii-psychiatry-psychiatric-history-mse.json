@@ -607,8 +607,8 @@
         "Examples include circumstantiality and thought blocking."
       ],
       "image": "./assets/lectures/psychiatry-history/psyhist-01.jpg",
-      "imageSha256": "b11759292c86ab69d0de5d43d39a4b103d3f04de5d1e4d3ae719f5eac354122a",
-      "imageBytes": 107951
+      "imageSha256": "85f607eba9e9e505e45b93ecd5447a67c7237725d7e553dbc43ca6e094140b55",
+      "imageBytes": 144584
     },
     {
       "id": "psyhist-image-002",
@@ -630,8 +630,8 @@
         "For example, delusion of persecution."
       ],
       "image": "./assets/lectures/psychiatry-history/psyhist-02.jpg",
-      "imageSha256": "06a199266f2f903951019fba933ec4fbf3475c2847a2a57a72054565052b2f8a",
-      "imageBytes": 138719
+      "imageSha256": "d90fed45f38e63d19cd876ba0f3707918549d19ea58b07205088f566873d7bde",
+      "imageBytes": 201672
     },
     {
       "id": "psyhist-image-003",
@@ -653,8 +653,8 @@
         "For example, orientation and memory."
       ],
       "image": "./assets/lectures/psychiatry-history/psyhist-03.jpg",
-      "imageSha256": "a351a8f26466e1e0e8213d3de39fe922f6ca1e66ca8dfe6dfd62cf41b1471d33",
-      "imageBytes": 97377
+      "imageSha256": "d2b4e609ea6a8c8283437b26038b03d8e9d3dec420d60dd744b3937ae992048a",
+      "imageBytes": 145264
     }
   ],
   "detailedShorts": [
