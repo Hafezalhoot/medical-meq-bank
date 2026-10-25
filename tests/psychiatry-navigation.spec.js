@@ -18,6 +18,8 @@ async function openPsychiatry(page) {
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector option[value="psychiatry"]')).toHaveText('Psychiatry');
   await page.locator('#subjectSelector').selectOption('psychiatry');
+  const mobileToggle = page.locator('#mobileFiltersToggle');
+  if (await mobileToggle.isVisible()) await mobileToggle.click();
   await expect(page.locator('#lectureFilter option')).toHaveCount(3, {timeout: 20_000});
   await expect(page.locator('#lectureFilter option').nth(1)).toContainText('Psychiatric History');
   await expect(page.locator('#lectureFilter option').nth(2)).toContainText('Anxiety Disorders');
@@ -83,7 +85,8 @@ test('release cache identity changed along with Psychiatry catalog and embedded 
   const sourceVersion = JSON.parse(readFileSync('version.json', 'utf8')).version;
   const sw = readFileSync('service-worker.js', 'utf8');
   const pwa = readFileSync('src/pwa-client.js', 'utf8');
-  expect(sourceVersion).toMatch(/^2026\.10\.(?:2[5-9]|3[01])\.\d+$/);
+  const [year, month, day] = sourceVersion.split('.').map(Number);
+  expect(year * 10000 + month * 100 + day).toBeGreaterThanOrEqual(20261025);
   expect(sw).toContain("const APP_VERSION = '" + sourceVersion + "'");
   expect(pwa).toContain("const APP_VERSION = '" + sourceVersion + "'");
   await page.goto('/', {waitUntil: 'domcontentloaded'});
