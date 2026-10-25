@@ -1,6 +1,5 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
-
 ### 2026-10-25 — Psychiatry lecture-first pilot and release verification (#59)
 
 - ✅ Added `Psychiatry` in `Internal Medicine II` while preserving Dermatology and all existing IDs/progress formats.
@@ -11,6 +10,14 @@
 - ✅ Batch draft tooling PR #58 merged as `4eb3a0c52c111e2d724e76f3cb1cc52d962518cd`; both lecture content files remain an isolated **DRAFT PR #59**.
 - ⚠️ The 2026-10-25 main branch **Live Cloudflare Production Smoke** failed due to a 302 Cloudflare Access login redirect, because `MEQ_CF_ACCESS_CLIENT_ID` / `MEQ_CF_ACCESS_CLIENT_SECRET` GitHub secrets are missing. This is an authenticated production-testing gate, not a local page-render failure. Do not bypass access protection or claim production smoke passed; see workflow run 40227880667 and issue #35.
 - ⏳ Hold PR #59 from production until latest-head checks and full source-page editorial signoff, and till authenticated production release/smoke prerequisites are resolved. Cloudflare Workers Build success alone is not active-site verification.
+
+### 2026-10-25 — Collision-safe multi-lecture draft preparation (draft PR #58)
+
+- 🧪 Added batch planning for many incoming PDFs using one local JSON manifest, with preview-only default and explicit draft-only writes. Unpublished drafts reserve stable IDs and per-course/per-subject positions, including across one-lecture and multi-lecture workflows.
+- 🧪 Existing local drafts are never overwritten, and an incomplete batch write removes newly created files; no lecture catalog, reviewed questions, original clinical photos, user progress, Worker version or deployment settings are modified.
+- 🧪 Added stdlib regression checks for collisions, pending drafts, malformed entries, CLI preview/write and rollback; authoring steps are documented in BATCH_LECTURE_INTAKE.md.
+- ⏳ **PR #58 is a draft, not deployed or merged.** Require exact-head static/content, Chromium, WebKit and Cloudflare Workers Build success before merging. Cloudflare Access #35, release gating #50 and Workers Builds issue #57 remain separate. Real medical PDFs still require page-by-page Lecture-First content and explicit editorial signoff.
+
 
 
 ### 2026-10-22 — Verified release and outstanding source-content review (documentation update)
