@@ -72,7 +72,7 @@ class PsychiatrySourcePilotTests(unittest.TestCase):
                     image_path = ROOT / image_url.removeprefix("./")
                     self.assertTrue(image_path.is_file(), str(image_path))
                     image_bytes = image_path.read_bytes()
-                    self.assertTrue(image_bytes.startswith(b"\\xff\\xd8\\xff"))
+                    self.assertTrue(image_bytes.startswith(b"\xff\xd8\xff"))
                     self.assertEqual(picture["imageBytes"], len(image_bytes))
                     self.assertEqual(picture["imageSha256"], hashlib.sha256(image_bytes).hexdigest())
 
