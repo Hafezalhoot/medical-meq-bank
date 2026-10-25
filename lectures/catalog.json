@@ -19,6 +19,38 @@
       "schemaVersion": 1
     },
     {
+      "id": "internal-medicine-ii-psychiatry-psychiatric-history-mse",
+      "title": "Psychiatric History Taking & Mental Status Examination",
+      "subjectKey": "psychiatry",
+      "order": 1,
+      "file": "data/internal-medicine-ii-psychiatry-psychiatric-history-mse.json",
+      "expectedCounts": {
+        "cases": 5,
+        "coreShorts": 36,
+        "imageQuestions": 3,
+        "detailedShorts": 10,
+        "rapid": 20
+      },
+      "courseId": "internal-medicine-ii",
+      "schemaVersion": 1
+    },
+    {
+      "id": "internal-medicine-ii-psychiatry-anxiety-disorders",
+      "title": "Anxiety Disorders",
+      "subjectKey": "psychiatry",
+      "order": 2,
+      "file": "data/internal-medicine-ii-psychiatry-anxiety-disorders.json",
+      "expectedCounts": {
+        "cases": 5,
+        "coreShorts": 40,
+        "imageQuestions": 4,
+        "detailedShorts": 10,
+        "rapid": 24
+      },
+      "courseId": "internal-medicine-ii",
+      "schemaVersion": 1
+    },
+    {
       "id": "neurosurgery-traumatic-brain-injury",
       "title": "Traumatic Brain Injury",
       "subjectKey": "neurosurgery",
