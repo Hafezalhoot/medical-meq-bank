@@ -1,5 +1,15 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-25 — Psychiatry lecture-first pilot and release verification (#59)
+
+- ✅ Added `Psychiatry` in `Internal Medicine II` while preserving Dermatology and all existing IDs/progress formats.
+- ✅ Prepared the 44-page Psychiatric History/MSE and 43-page Anxiety Disorders lectures with original-PDF SHA-256 fingerprints, page-linked Arabic explanation, 10 source-based teaching cases and original-figure PAGE references (no copyrighted PDF images in the repo).
+- ✅ Extended raster-only tables in Psychiatric History (formal thought disorder examples and MSE/cognitive questions, pp.27–30 and 39–43) and anxiety diagnostic/etiology explanations. No external exam facts added.
+- ✅ Current authoring counts: 42 MCQs + 33 explanations for Psychiatric History; 47 MCQs + 32 explanations for Anxiety, alongside 10 cases, 76 shorts, 20 detailed shorts, 7 source-page image prompts and 44 rapid cards.
+- ✅ Correct-option bias removed; A/B/C/D answer positions balanced without altering correct answer text. Structural regression tests check all source pages and option uniqueness.
+- ✅ Batch draft tooling PR #58 merged as `4eb3a0c52c111e2d724e76f3cb1cc52d962518cd`; both lecture content files remain an isolated **DRAFT PR #59**.
+- ⚠️ The 2026-10-25 main branch **Live Cloudflare Production Smoke** failed due to a 302 Cloudflare Access login redirect, because `MEQ_CF_ACCESS_CLIENT_ID` / `MEQ_CF_ACCESS_CLIENT_SECRET` GitHub secrets are missing. This is an authenticated production-testing gate, not a local page-render failure. Do not bypass access protection or claim production smoke passed; see workflow run 40227880667 and issue #35.
+- ⏳ Hold PR #59 from production until latest-head checks and full source-page editorial signoff, and till authenticated production release/smoke prerequisites are resolved. Cloudflare Workers Build success alone is not active-site verification.
 
 ### 2026-10-25 — Collision-safe multi-lecture draft preparation (draft PR #58)
 

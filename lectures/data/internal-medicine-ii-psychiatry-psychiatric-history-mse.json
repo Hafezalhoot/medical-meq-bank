@@ -1,0 +1,1638 @@
+{
+  "id": "internal-medicine-ii-psychiatry-psychiatric-history-mse",
+  "order": 1,
+  "subjectKey": "psychiatry",
+  "subject": "Psychiatry",
+  "title": "Psychiatric History Taking & Mental Status Examination",
+  "subtitle": "Interview structure, developmental history and stepwise MSE",
+  "sourceNote": "Lecture-first exam source: user-supplied '1- psychiatric_history_taking.pdf' (44 PDF pages; SHA-256 4eda3423372bdd57c76b40e65a1dd7c990226e7db369124a94ec9eb77dcbd2cb). All sourcePage values refer to 1-based PDF pages. Source screenshots/tables remain in the original PDF and are not redistributed. Questions and teaching scenarios are proposed study items requiring lecturer/learner medical review before production. No outside criteria or therapies introduced.",
+  "subtopics": [
+    {
+      "id": "interview",
+      "label": "Psychiatric Interview and General Principles"
+    },
+    {
+      "id": "chief-hpi",
+      "label": "Chief Complaint, Onset and Present Illness"
+    },
+    {
+      "id": "past-treatment",
+      "label": "Past Illness, Treatment and Substance History"
+    },
+    {
+      "id": "family-personal",
+      "label": "Family and Personal History"
+    },
+    {
+      "id": "premorbid",
+      "label": "Premorbid Personality"
+    },
+    {
+      "id": "mse-overview",
+      "label": "MSE Overview, Appearance and Behaviour"
+    },
+    {
+      "id": "speech-affect",
+      "label": "Speech, Mood and Affect"
+    },
+    {
+      "id": "thought",
+      "label": "Thought Form and Content"
+    },
+    {
+      "id": "perception",
+      "label": "Perception"
+    },
+    {
+      "id": "cognition",
+      "label": "Cognition, Insight and Judgment"
+    }
+  ],
+  "cases": [
+    {
+      "id": "psyhist-case-001",
+      "title": "Two accounts during the interview",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "interview"
+      ],
+      "scenario": "The patient and an informant provide different descriptions of the same symptoms.",
+      "questions": [
+        "How should both versions be documented?",
+        "Which interviewing skill is emphasised?"
+      ],
+      "answer": [
+        "Record them separately, using their own words when feasible.",
+        "Active listening."
+      ],
+      "memory": "Source PDF p.4. Practice-only phrasing; not a verbatim patient record."
+    },
+    {
+      "id": "psyhist-case-002",
+      "title": "Classify the reported onset",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "scenario": "An interview narrative states that symptoms developed over three weeks.",
+      "questions": [
+        "Classify onset using the lecture's time categories.",
+        "List the three course categories."
+      ],
+      "answer": [
+        "Insidious/gradual onset: more than two weeks.",
+        "Continuous/stationary, episodic and fluctuating."
+      ],
+      "memory": "Source PDF p.9. Practice-only phrasing; not a verbatim patient record."
+    },
+    {
+      "id": "psyhist-case-003",
+      "title": "Reported mood versus observed affect",
+      "topic": "Speech, Mood and Affect",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "speech-affect"
+      ],
+      "scenario": "In an MSE write-up, the patient describes feeling sad; the interviewer separately records the observed emotional expression.",
+      "questions": [
+        "Which term applies to the patient's internal reported emotion?",
+        "Which term applies to the observed emotional expression?"
+      ],
+      "answer": [
+        "Mood.",
+        "Affect."
+      ],
+      "memory": "Source PDF p.25. Practice-only phrasing; not a verbatim patient record."
+    },
+    {
+      "id": "psyhist-case-004",
+      "title": "Distinguishing two perceptual terms",
+      "topic": "Perception",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "perception"
+      ],
+      "scenario": "A revision exercise asks students to distinguish a perception with no stimulus from the misinterpretation of a present stimulus.",
+      "questions": [
+        "Define hallucination.",
+        "Define illusion."
+      ],
+      "answer": [
+        "Perception without stimulus.",
+        "Misinterpretation of an actual stimulus."
+      ],
+      "memory": "Source PDF p.36. Practice-only phrasing; not a verbatim patient record."
+    },
+    {
+      "id": "psyhist-case-005",
+      "title": "Mental status station checklist",
+      "topic": "Cognition, Insight and Judgment",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "cognition"
+      ],
+      "scenario": "A student is asked to examine orientation, memory and insight during a psychiatric MSE.",
+      "questions": [
+        "Name orientation dimensions.",
+        "Name memory categories.",
+        "Define insight."
+      ],
+      "answer": [
+        "Time, place and person.",
+        "Remote, recent, immediate.",
+        "Understanding one's current problems and their implications."
+      ],
+      "memory": "Source PDF p.38. Practice-only phrasing; not a verbatim patient record."
+    }
+  ],
+  "coreShorts": [
+    {
+      "id": "psyhist-short-001",
+      "q": "What are the two purposes of the psychiatric interview?",
+      "a": "Establish a criteria-based diagnosis; shape the patient–physician relationship.",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "interview"
+      ],
+      "section": "Source PDF p.2"
+    },
+    {
+      "id": "psyhist-short-002",
+      "q": "Name the four general interview principles.",
+      "a": "Agreement as to process; privacy/confidentiality; respect/consideration; rapport/empathy.",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "interview"
+      ],
+      "section": "Source PDF p.3"
+    },
+    {
+      "id": "psyhist-short-003",
+      "q": "Should the patient or informant normally be interviewed first?",
+      "a": "The patient should be seen first.",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "interview"
+      ],
+      "section": "Source PDF p.4"
+    },
+    {
+      "id": "psyhist-short-004",
+      "q": "Can the psychiatric history and MSE be performed together?",
+      "a": "Yes, they need not be done separately.",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "interview"
+      ],
+      "section": "Source PDF p.4"
+    },
+    {
+      "id": "psyhist-short-005",
+      "q": "List key components of the psychiatric history outline.",
+      "a": "Identifying data, referral and informant, chief complaint, HPI, past psychiatric/medical and substance history, family and personal history.",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "interview"
+      ],
+      "section": "Source PDF p.5"
+    },
+    {
+      "id": "psyhist-short-006",
+      "q": "List the identification data fields.",
+      "a": "Name, age, sex, marital status, education, occupation and address.",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "interview"
+      ],
+      "section": "Source PDF p.6"
+    },
+    {
+      "id": "psyhist-short-007",
+      "q": "What two informant-related details are documented?",
+      "a": "Informant and reliability; also record source of referral.",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "interview"
+      ],
+      "section": "Source PDF p.7"
+    },
+    {
+      "id": "psyhist-short-008",
+      "q": "How should chief complaints be recorded?",
+      "a": "Briefly, chronologically, in the patient/informant's own words and in separate versions.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.8"
+    },
+    {
+      "id": "psyhist-short-009",
+      "q": "Define sudden, acute and insidious onset according to the lecture.",
+      "a": "Sudden: within 48 hours; acute: 48 hours–2 weeks; insidious: more than 2 weeks.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.9"
+    },
+    {
+      "id": "psyhist-short-010",
+      "q": "List course patterns.",
+      "a": "Continuous/stationary, episodic, fluctuating.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.9"
+    },
+    {
+      "id": "psyhist-short-011",
+      "q": "List progress patterns.",
+      "a": "Deteriorating, improving, static.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.9"
+    },
+    {
+      "id": "psyhist-short-012",
+      "q": "What is a key HPI time-anchor question?",
+      "a": "When was he/she last well?",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.10"
+    },
+    {
+      "id": "psyhist-short-013",
+      "q": "Which important effect should HPI document?",
+      "a": "Effects on all aspects of life, family reactions and consequences of complaints.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.10"
+    },
+    {
+      "id": "psyhist-short-014",
+      "q": "List the biological functions to assess.",
+      "a": "Sleep, appetite, libido, bowel and bladder functions.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.11"
+    },
+    {
+      "id": "psyhist-short-015",
+      "q": "Name example negative-history items.",
+      "a": "Substance abuse, head injury, epilepsy, suicide attempt and other major illness.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.11"
+    },
+    {
+      "id": "psyhist-short-016",
+      "q": "What should past psychiatric history include?",
+      "a": "Previous disorders, psychiatric contact, treatment and hospitalizations with dates, including past suicide attempts.",
+      "topic": "Past Illness, Treatment and Substance History",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "past-treatment"
+      ],
+      "section": "Source PDF p.13"
+    },
+    {
+      "id": "psyhist-short-017",
+      "q": "List the treatment history checklist.",
+      "a": "Current/past treatments, adherence, response, poor-compliance reasons, adverse reactions and allergies.",
+      "topic": "Past Illness, Treatment and Substance History",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "past-treatment"
+      ],
+      "section": "Source PDF p.14"
+    },
+    {
+      "id": "psyhist-short-018",
+      "q": "Which substance/behavior histories are explicitly mentioned?",
+      "a": "Alcohol, marijuana, tobacco, caffeine, gambling, eating behaviors and Internet use.",
+      "topic": "Past Illness, Treatment and Substance History",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "past-treatment"
+      ],
+      "section": "Source PDF p.15"
+    },
+    {
+      "id": "psyhist-short-019",
+      "q": "What is included in family psychiatric history?",
+      "a": "Past/current psychiatric illness, hospitalizations, suicide and substance abuse.",
+      "topic": "Family and Personal History",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "family-personal"
+      ],
+      "section": "Source PDF p.16"
+    },
+    {
+      "id": "psyhist-short-020",
+      "q": "List current social-situation areas.",
+      "a": "Caretaker/decision maker, income, support, attitudes, communication and values.",
+      "topic": "Family and Personal History",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "family-personal"
+      ],
+      "section": "Source PDF p.17"
+    },
+    {
+      "id": "psyhist-short-021",
+      "q": "Which age periods are covered in personal development history?",
+      "a": "Perinatal, early childhood, middle childhood, adolescence and adulthood.",
+      "topic": "Family and Personal History",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "family-personal"
+      ],
+      "section": "Source PDF p.18"
+    },
+    {
+      "id": "psyhist-short-022",
+      "q": "What adult personal histories are noted?",
+      "a": "Sexual/marital, occupational, military and legal history.",
+      "topic": "Family and Personal History",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "family-personal"
+      ],
+      "section": "Source PDF p.19"
+    },
+    {
+      "id": "psyhist-short-023",
+      "q": "Name three dimensions of premorbid temperament.",
+      "a": "For example: activity level, adaptability and persistence.",
+      "topic": "Premorbid Personality",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "premorbid"
+      ],
+      "section": "Source PDF p.20"
+    },
+    {
+      "id": "psyhist-short-024",
+      "q": "Name three areas of premorbid personality.",
+      "a": "For example: relationships, leisure use and predominant mood.",
+      "topic": "Premorbid Personality",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "premorbid"
+      ],
+      "section": "Source PDF p.21"
+    },
+    {
+      "id": "psyhist-short-025",
+      "q": "What are the three components of MSE?",
+      "a": "Observation, questioning and formal cognitive examination.",
+      "topic": "MSE Overview, Appearance and Behaviour",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "mse-overview"
+      ],
+      "section": "Source PDF p.22"
+    },
+    {
+      "id": "psyhist-short-026",
+      "q": "Give examples of appearance/behavior observations.",
+      "a": "Grooming, hygiene, apparent age, gait/posture, attitude, eye contact and psychomotor activity.",
+      "topic": "MSE Overview, Appearance and Behaviour",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "mse-overview"
+      ],
+      "section": "Source PDF p.23"
+    },
+    {
+      "id": "psyhist-short-027",
+      "q": "List six speech evaluation dimensions.",
+      "a": "Fluency, amount, rate, tone/volume, reaction time and articulation.",
+      "topic": "Speech, Mood and Affect",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "speech-affect"
+      ],
+      "section": "Source PDF p.24"
+    },
+    {
+      "id": "psyhist-short-028",
+      "q": "Differentiate mood and affect.",
+      "a": "Mood is subjective internal feeling; affect is the observed external emotional expression.",
+      "topic": "Speech, Mood and Affect",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "speech-affect"
+      ],
+      "section": "Source PDF p.25"
+    },
+    {
+      "id": "psyhist-short-029",
+      "q": "How is affect described?",
+      "a": "Quality, quantity/intensity, range, appropriateness, congruence.",
+      "topic": "Speech, Mood and Affect",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "speech-affect"
+      ],
+      "section": "Source PDF p.25"
+    },
+    {
+      "id": "psyhist-short-030",
+      "q": "Differentiate thought form and content.",
+      "a": "Form concerns organization/expression; content concerns what thoughts are present (pp.26,31).",
+      "topic": "Thought Form and Content",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.26"
+    },
+    {
+      "id": "psyhist-short-031",
+      "q": "Differentiate obsession from compulsion.",
+      "a": "Obsession: intrusive, unwelcome repetitive thought; compulsion: repetitive ritualized behavior driven to avoid anxiety/dread.",
+      "topic": "Thought Form and Content",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.31"
+    },
+    {
+      "id": "psyhist-short-032",
+      "q": "List three delusion types.",
+      "a": "For example persecution, grandiose and nihilistic delusions.",
+      "topic": "Thought Form and Content",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.32"
+    },
+    {
+      "id": "psyhist-short-033",
+      "q": "Differentiate hallucination and illusion.",
+      "a": "Hallucination: perception without a stimulus; illusion: misinterpretation of a stimulus.",
+      "topic": "Perception",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "perception"
+      ],
+      "section": "Source PDF p.36"
+    },
+    {
+      "id": "psyhist-short-034",
+      "q": "Differentiate depersonalization from derealization.",
+      "a": "Depersonalization concerns one's sense of self; derealization concerns the environment.",
+      "topic": "Perception",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "perception"
+      ],
+      "section": "Source PDF p.36"
+    },
+    {
+      "id": "psyhist-short-035",
+      "q": "What orientation and memory areas are examined?",
+      "a": "Orientation to time, place, person; memory remote, recent and immediate.",
+      "topic": "Cognition, Insight and Judgment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "cognition"
+      ],
+      "section": "Source PDF p.37"
+    },
+    {
+      "id": "psyhist-short-036",
+      "q": "How are judgment and insight defined?",
+      "a": "Judgment: sound everyday decisions; insight: awareness of one's problems and their implications.",
+      "topic": "Cognition, Insight and Judgment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "cognition"
+      ],
+      "section": "Source PDF p.38"
+    }
+  ],
+  "imageQuestions": [
+    {
+      "id": "psyhist-image-001",
+      "title": "Source diagram: formal thought disorder table",
+      "topic": "Thought Form and Content",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "page": "PDF p.27",
+      "prompt": "Consult the original source PDF p.27 (source table/figure not publicly hosted).",
+      "questions": [
+        "What broad MSE domain does the source diagram illustrate?",
+        "Name two abnormalities shown in the table."
+      ],
+      "answer": [
+        "Thought process/form.",
+        "Examples include circumstantiality and thought blocking."
+      ]
+    },
+    {
+      "id": "psyhist-image-002",
+      "title": "Source table: questions exploring delusion content",
+      "topic": "Thought Form and Content",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "thought"
+      ],
+      "page": "PDF p.34",
+      "prompt": "Consult the original source PDF p.34 (source table/figure not publicly hosted).",
+      "questions": [
+        "What kind of MSE feature does the page-34 table assess?",
+        "Name one form of thought content listed in the associated slide."
+      ],
+      "answer": [
+        "Delusions, within thought content.",
+        "For example, delusion of persecution."
+      ]
+    },
+    {
+      "id": "psyhist-image-003",
+      "title": "Source diagram: cognitive assessment checklist",
+      "topic": "Cognition, Insight and Judgment",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "cognition"
+      ],
+      "page": "PDF p.43",
+      "prompt": "Consult the original source PDF p.43 (source table/figure not publicly hosted).",
+      "questions": [
+        "Which MSE domain is the source diagram about?",
+        "Name two functions assessed."
+      ],
+      "answer": [
+        "Cognitive assessment/sensorium.",
+        "For example, orientation and memory."
+      ]
+    }
+  ],
+  "detailedShorts": [
+    {
+      "id": "psyhist-detail-001",
+      "q": "Describe rules for receiving patient and informant information.",
+      "a": "Interview the patient first; record patient and informant accounts separately and in their own language when feasible; actively listen; attend to safety; HPI and MSE need not be strictly separate.",
+      "topic": "Psychiatric Interview and General Principles",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "interview"
+      ],
+      "section": "Source PDF p.4"
+    },
+    {
+      "id": "psyhist-detail-002",
+      "q": "Explain the lecture's classification of onset, course and progress.",
+      "a": "Onset: sudden ≤48 h, acute 48 h–2 wk, gradual >2 wk. Course: continuous/stationary, episodic, fluctuating. Progress: deteriorating, improving or static.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.9"
+    },
+    {
+      "id": "psyhist-detail-003",
+      "q": "Give a structured HPI checklist.",
+      "a": "Last well, chief symptoms, chronological presentation/progression, explanation of each complaint, impact on life, family reaction, consequences. Avoid technical words in the narrative.",
+      "topic": "Chief Complaint, Onset and Present Illness",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "chief-hpi"
+      ],
+      "section": "Source PDF p.10"
+    },
+    {
+      "id": "psyhist-detail-004",
+      "q": "Outline family history and current social context.",
+      "a": "Family ages, occupations, personality, medical/psychiatric illness and relationships; psychiatric hospitalization, suicide and substance use; current support, caregiver, income, attitude, communication and values.",
+      "topic": "Family and Personal History",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "family-personal"
+      ],
+      "section": "Source PDF p.16"
+    },
+    {
+      "id": "psyhist-detail-005",
+      "q": "How is premorbid personality explored?",
+      "a": "Interpersonal relationships, leisure, predominant mood, attitudes to self and work, moral/religious beliefs, fantasy and habits; for <16 years document temperament dimensions from the lecture (pp.20–21).",
+      "topic": "Premorbid Personality",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "premorbid"
+      ],
+      "section": "Source PDF p.20"
+    },
+    {
+      "id": "psyhist-detail-006",
+      "q": "Describe appearance and behaviour items on MSE.",
+      "a": "Build; grooming, hygiene and dress; apparent vs chronological age; posture, gait, abnormal movements; examiner attitude; eye contact; psychomotor agitation/retardation.",
+      "topic": "MSE Overview, Appearance and Behaviour",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "mse-overview"
+      ],
+      "section": "Source PDF p.23"
+    },
+    {
+      "id": "psyhist-detail-007",
+      "q": "Explain the difference between mood and affect and how affect is rated.",
+      "a": "Mood = reported internal emotion. Affect = clinician-observed expression; note quality, quantity/intensity, range, appropriateness to setting and congruence with mood/thought.",
+      "topic": "Speech, Mood and Affect",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "speech-affect"
+      ],
+      "section": "Source PDF p.25"
+    },
+    {
+      "id": "psyhist-detail-008",
+      "q": "Outline thought content examination.",
+      "a": "Explore delusions, obsessions, compulsions, suicidal/homicidal ideas and preoccupations. Delusions are fixed unshakeable beliefs not shared by others and not explained by cultural/religious context.",
+      "topic": "Thought Form and Content",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "thought"
+      ],
+      "section": "Source PDF p.31"
+    },
+    {
+      "id": "psyhist-detail-009",
+      "q": "Outline disorders of perception in the lecture.",
+      "a": "Hallucinations without stimulus (auditory, visual, tactile, olfactory, gustatory), illusion with misinterpreted stimulus, depersonalization and derealization.",
+      "topic": "Perception",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "perception"
+      ],
+      "section": "Source PDF p.36"
+    },
+    {
+      "id": "psyhist-detail-010",
+      "q": "Outline cognitive domains, intelligence, abstract thinking, judgment and insight.",
+      "a": "Consciousness; orientation to time/place/person; attention/concentration; immediate/recent/remote memory; intelligence by calculation/knowledge/comprehension; abstraction by similarity/proverb tests; judgment for everyday choices; insight into problems and implications.",
+      "topic": "Cognition, Insight and Judgment",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "cognition"
+      ],
+      "section": "Source PDF p.38"
+    }
+  ],
+  "rapid": [
+    [
+      "Interview priority skill?",
+      "Active listening."
+    ],
+    [
+      "Record patient and informant together?",
+      "No: separately."
+    ],
+    [
+      "Sudden onset in this lecture?",
+      "Within 48 hours."
+    ],
+    [
+      "Acute onset?",
+      "48 hours to 2 weeks."
+    ],
+    [
+      "Insidious onset?",
+      "More than 2 weeks."
+    ],
+    [
+      "Onset vs course?",
+      "Onset = how fast symptoms began; course = continuous/episodic/fluctuating."
+    ],
+    [
+      "Premorbid personality?",
+      "Usual personality before illness."
+    ],
+    [
+      "MSE components?",
+      "Observation, questioning, cognitive exam."
+    ],
+    [
+      "Mood?",
+      "Subjective/internal emotional tone."
+    ],
+    [
+      "Affect?",
+      "Observed/external emotional expression."
+    ],
+    [
+      "Thought form?",
+      "How thoughts are organized and expressed."
+    ],
+    [
+      "Thought content?",
+      "What thoughts/beliefs occur."
+    ],
+    [
+      "Hallucination?",
+      "Perception without stimulus."
+    ],
+    [
+      "Illusion?",
+      "Misinterpretation of a stimulus."
+    ],
+    [
+      "Depersonalization?",
+      "Change in sense of self."
+    ],
+    [
+      "Derealization?",
+      "Change in sense of environment."
+    ],
+    [
+      "Orientation?",
+      "Time, place, person."
+    ],
+    [
+      "Memory divisions?",
+      "Immediate, recent, remote."
+    ],
+    [
+      "Judgment?",
+      "Ability to make sound everyday decisions."
+    ],
+    [
+      "Insight?",
+      "Understanding problems and implications."
+    ]
+  ],
+  "studyGuide": {
+    "explanation": [
+      {
+        "heading": "Purpose of the interview",
+        "paragraphs": [
+          "الـPsychiatric Interview له هدفان في المحاضرة: جمع معلومات تسمح بـcriteria-based diagnosis، وتشكيل طبيعة العلاقة بين المريض والطبيب (patient–physician relationship)."
+        ],
+        "sourcePage": "PDF p.2"
+      },
+      {
+        "heading": "Interview principles",
+        "paragraphs": [
+          "الـGeneral Principles هي الاتفاق على خطوات المقابلة (Agreement as to Process)، الخصوصية والسرية (Privacy and Confidentiality)، الاحترام (Respect and Consideration)، وبناء العلاقة والتعاطف (Rapport/Empathy)."
+        ],
+        "sourcePage": "PDF p.3"
+      },
+      {
+        "heading": "Practical interviewing rules",
+        "paragraphs": [
+          "اسمع Active listening، وشوف المريض أولاً، وسجّل كلام المريض والـinformant كلٌّ على حدة وبألفاظهما قدر الإمكان. يمكن أخذ History وفحص الـMSE خلال نفس المقابلة، مع التأكد من الأمان."
+        ],
+        "sourcePage": "PDF p.4"
+      },
+      {
+        "heading": "Complete psychiatric history framework",
+        "paragraphs": [
+          "الـOutline يبدأ بـidentifying data وsource of referral وinformant، ثم chief complaint وHPI وpast illnesses وsubstance history وfamily/personal history، ويشمل تاريخ الطفولة والبلوغ والعمل والعلاقات والسكن والجوانب الاجتماعية والقانونية والجنسية."
+        ],
+        "sourcePage": "PDF p.5"
+      },
+      {
+        "heading": "Identification and informant",
+        "paragraphs": [
+          "سجّل Name, Age, Sex, Marital Status, Education, Occupation, Address (p.6)، وحدد مصدر الإحالة واسم الـInformant ومدى reliability (p.7)."
+        ],
+        "sourcePage": "PDF p.6"
+      },
+      {
+        "heading": "Chief complaint",
+        "paragraphs": [
+          "الشكوى الرئيسية تُكتب باختصار، مع المدة الكلية للمرض، وبنفس كلمات المريض والـinformant، وبالترتيب الزمني، مع فصل الروايتين إن اختلفتا."
+        ],
+        "sourcePage": "PDF p.8"
+      },
+      {
+        "heading": "Onset, course and progress",
+        "paragraphs": [
+          "بحسب تقسيم المحاضرة: Sudden onset خلال 48 ساعة؛ Acute من 48 ساعة إلى أسبوعين؛ Insidious/Gradual أكثر من أسبوعين. الـCourse يكون continuous/stationary أو episodic أو fluctuating، والـProgress deteriorating أو improving أو static."
+        ],
+        "sourcePage": "PDF p.9"
+      },
+      {
+        "heading": "History of Present Illness",
+        "paragraphs": [
+          "اسأل: متى كان المريض آخر مرة بحالة جيدة؟ ما الأعراض؟ كيف بدأت وتطورت زمنيًّا؟ كيف أثّرت في جوانب الحياة؟ ما رد فعل الأسرة والنتائج؟ المحاضرة تؤكد عدم استخدام technical terms أثناء سرد الـHPI."
+        ],
+        "sourcePage": "PDF p.10"
+      },
+      {
+        "heading": "Biological function and negative history",
+        "paragraphs": [
+          "دوّن Sleep, Appetite, Libido, Bowel and bladder functions. الـNegative History يساعد في التفريق التشخيصي، مثل غياب تاريخ التعاطي أو إصابة الرأس أو الصرع أو محاولة الانتحار أو مرض كبير وفق أمثلة المحاضرة."
+        ],
+        "sourcePage": "PDF p.11"
+      },
+      {
+        "heading": "Past psychiatric and medical illness",
+        "paragraphs": [
+          "اسأل عن الأمراض النفسية السابقة وأمراض/جراحات/حوادث/إقامة بالمستشفى؛ ومن المهم تاريخ متابعة الطبيب النفسي والعلاج والدخول للمستشفى مع التواريخ، ويشمل تاريخ محاولات الانتحار."
+        ],
+        "sourcePage": "PDF p.13"
+      },
+      {
+        "heading": "Treatment and substance history",
+        "paragraphs": [
+          "في Treatment History سجّل العلاج الحالي والسابق، الالتزام (adherence)، الاستجابة، سبب ضعف الالتزام، الآثار الجانبية والحساسيات. يشمل Substance History الكحول والتبغ والكافيين والقمار وسلوك الأكل والإنترنت كما ورد في المحاضرة (p.15)."
+        ],
+        "sourcePage": "PDF p.14"
+      },
+      {
+        "heading": "Family and social context",
+        "paragraphs": [
+          "شجّع توثيق أفراد الأسرة، الأعمار والوظائف والعلاقات والمرض والعلاج. الـFamily Psychiatric History تشمل المرض النفسي أو دخول المستشفى أو الانتحار أو التعاطي. وتشمل الظروف الاجتماعية الدخل والدعم ورأي الأسرة والتواصل والقيم (pp.16–17)."
+        ],
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "heading": "Personal and developmental history",
+        "paragraphs": [
+          "يشمل الـPersonal History الحمل والولادة وما بعدها، milestones في الطفولة المبكرة، الأداء المدرسي وعلاقات الأقران في الطفولة الوسطى، المراهقة ثم التعليم والعمل والعلاقات في البلوغ، مع التاريخ الجنسي والزوجي والقانوني والعسكري حسب المحاضرة (pp.18–19)."
+        ],
+        "sourcePage": "PDF p.18"
+      },
+      {
+        "heading": "Premorbid personality",
+        "paragraphs": [
+          "الـPremorbid Personality هي السمات المعتادة قبل المرض: العلاقات الاجتماعية والهوايات والمزاج المعتاد والموقف من الذات والعمل والقيم والعادات والخيال. وتذكر المحاضرة temperament قبل 16 سنة، ويتضمن Activity وRegularity وAdaptability وDistractibility وغيرها (pp.20–21)."
+        ],
+        "sourcePage": "PDF p.20"
+      },
+      {
+        "heading": "Components of Mental Status Examination",
+        "paragraphs": [
+          "الـMSE يتضمن: observational components، وأجزاء تُجمع بالأسئلة، وformal cognitive examination. ملاحظة المظهر تشمل نظافة الملابس، body build، posture/gait، الـeye contact، التعامل مع الفاحص والـpsychomotor activity (pp.22–23)."
+        ],
+        "sourcePage": "PDF p.22"
+      },
+      {
+        "heading": "Speech evaluation",
+        "paragraphs": [
+          "في Speech قيّم Fluency وAmount وRate وTone/Volume وReaction time وArticulation. أمثلة معدل الكلام في المحاضرة pressured أو slowed أو mute."
+        ],
+        "sourcePage": "PDF p.24"
+      },
+      {
+        "heading": "Mood versus affect",
+        "paragraphs": [
+          "Mood هو الإحساس العاطفي الداخلي الذي يصفه المريض مثل sad أو anxious. Affect هو التعبير الخارجي الذي يلاحظه الفاحص؛ ويُوصف من حيث Quality, Quantity, Range, Appropriateness, Congruence."
+        ],
+        "sourcePage": "PDF p.25"
+      },
+      {
+        "heading": "Thought process/form",
+        "paragraphs": [
+          "Thought Form يعني كيف تُصاغ الأفكار وتُنظَّم وتُعبّر عنها، وليس موضوع الفكرة. الجداول المصوّرة في الصفحات 27–30 تشرح مثلًا circumstantiality وtangentiality وflight of ideas وthought blocking؛ الصور الأصلية لا تُعاد نشرها هنا."
+        ],
+        "sourcePage": "PDF p.26"
+      },
+      {
+        "heading": "Thought content",
+        "paragraphs": [
+          "Thought Content يعني ما الأفكار الموجودة: Delusions (معتقدات ثابتة غير مفسَّرة ثقافيًا)، Obsessions (أفكار متكررة غير مرغوبة ومقاومة)، Compulsions (سلوكيات قهرية متكررة)، suicidal/homicidal thoughts وpreoccupations."
+        ],
+        "sourcePage": "PDF p.31"
+      },
+      {
+        "heading": "Types of delusions",
+        "paragraphs": [
+          "تصنيف المحاضرة حسب المحتوى يشمل persecution، infidelity، grandiose، love، nihilistic، poverty، guilt. صفحات 34–35 مصورة بها أمثلة لأسئلة استكشاف هذه الأفكار؛ لا تُضاف أسئلة من خارج العرض."
+        ],
+        "sourcePage": "PDF p.32"
+      },
+      {
+        "heading": "Perception",
+        "paragraphs": [
+          "Hallucination هو إدراك بلا stimulus وقد يكون auditory أو visual أو tactile أو olfactory أو gustatory، وتذكر المحاضرة auditory 1st/2nd/3rd person. Illusion تفسير خاطئ لـstimulus موجود. Depersonalization تغير الإحساس بالذات؛ Derealization تغيّر غريب في الإحساس بالبيئة."
+        ],
+        "sourcePage": "PDF p.36"
+      },
+      {
+        "heading": "Cognitive examination",
+        "paragraphs": [
+          "الـCognitive Process يشمل Consciousness، Orientation للوقت والمكان والشخص، Attention/Concentration، وMemory (remote, recent, immediate)."
+        ],
+        "sourcePage": "PDF p.37"
+      },
+      {
+        "heading": "Intelligence, abstract thinking, judgment and insight",
+        "paragraphs": [
+          "تُختبر Intelligence بالحساب والمعلومات والفهم؛ Abstract Thinking بالتشابه أو الأمثال؛ Judgment بالقرارات اليومية؛ Insight هو إدراك المريض لمشكلاته والآثار المترتبة عليها. صفحات 39–43 تحتوي أسئلة تطبيقية مصوّرة."
+        ],
+        "sourcePage": "PDF p.38"
+      },
+      {
+        "heading": "Formal thought disorders: circumstantiality and tangentiality",
+        "sourcePage": "PDF p.27",
+        "paragraphs": [
+          "الجدول المصوّر يفرّق بين Circumstantiality (إضافة تفاصيل كثيرة ثانوية تعوق الوصول إلى المقصود؛ ويذكر جدول الصفحة 28 الوصول للإجابة بعد إطالة) وبين Tangentiality (إجابة تتعلق بالموضوع العام لكنها لا تجيب السؤال فعليًّا)."
+        ]
+      },
+      {
+        "heading": "Clang, derailment, flight of ideas and thought blocking",
+        "sourcePage": "PDF p.27",
+        "paragraphs": [
+          "Clang associations: ربط الكلمات عبر التشابه في الصوت مثل القافية لا المعنى. Derailment/loose associations: انقطاع الترابط المنطقي بين الأفكار. Flight of ideas: انتقال متسارع بين الأفكار وقد يصاحبه pressured speech. Thought blocking: توقف مفاجئ لتدفق الأفكار."
+        ]
+      },
+      {
+        "heading": "Neologism, perseveration and disorganized speech",
+        "sourcePage": "PDF p.27",
+        "paragraphs": [
+          "Neologism: ابتكار كلمات جديدة أو استعمال كلمات معروفة بطريقة خاصة غير مألوفة. Perseveration: تكرار ألفاظ/عبارات/أفكار خارج سياقها. الرسم في p.28 يضيف Incoherence أو word salad حيث تصبح الكلمات/العبارات غير مترابطة، وIllogicality حين لا تتبع الاستنتاجات المنطق الأساسي."
+        ]
+      },
+      {
+        "heading": "Speech and thought process examples in the source table",
+        "sourcePage": "PDF p.28",
+        "paragraphs": [
+          "في جدول SAPS المصوّر: Pressure of speech تعني زيادة الكلام التلقائي؛ Distractibility of speech تغيّر موضوع الحديث استجابة لمنبّه؛ Clanging اختيار الكلمات بناء على الأصوات والقوافي. راجع أمثلة الجدول الأصلي في p.28."
+        ]
+      },
+      {
+        "heading": "Flight of ideas and grandiosity examples",
+        "sourcePage": "PDF p.30",
+        "paragraphs": [
+          "تعرض الشريحة المصوّرة Flight of ideas بوصفها انتقالًا سريعًا من موضوع لآخر؛ Clang associations تختار الكلمات بالقافية/الصوت، وGrandiosity تعني ادعاء أهمية أو هوية مبالغ فيها. هذا تلخيص لنص الشكل في المحاضرة، وليس معايير تشخيص إضافية."
+        ]
+      },
+      {
+        "heading": "Questions during psychiatric interview — applied table",
+        "sourcePage": "PDF p.39",
+        "paragraphs": [
+          "جدول الأسئلة التطبيقية المصوّر في الصفحات 39–40 يرتب مقابلة المريض من identifying data والـchief complaint والـHPI إلى الماضي الطبي/النفسي، وتاريخ النمو والطفولة والمراهقة والحياة الاجتماعية. المطلوب فهم نوع السؤال المناسب لكل جزء، وليس حفظ مثال غير مطلوب كحقيقة جديدة."
+        ]
+      },
+      {
+        "heading": "MSE questions: speech, mood, affect and mental safety",
+        "sourcePage": "PDF p.40",
+        "paragraphs": [
+          "الجدول المصوّر يقترح سؤال المريض عن شعوره ومزاجه والنوم وأفكار إيذاء النفس، مع مراقبة الـAffect من الوجه والحركة والـprosody. كما يذكر تقييم الـSpeech من نمط الكلام. هذه أمثلة للأسئلة والملاحظة لا لإثبات تشخيص من عرض واحد."
+        ]
+      },
+      {
+        "heading": "Perception and cognition: sample interview prompts",
+        "sourcePage": "PDF p.41",
+        "paragraphs": [
+          "الجدول المصوّر يقدم أمثلة لاستكشاف Perception بسؤال عن رؤية أشياء أو سماع أصوات، وعن التغير في إدراك العالم والروائح. ويقترح استكشاف Thought content بسؤال عن أفكار الاضطهاد أو الأفكار المتكررة، ثم Sensory orientation والسؤال عن المكان والتاريخ."
+        ]
+      },
+      {
+        "heading": "Serial sevens, judgment and insight applied",
+        "sourcePage": "PDF p.42",
+        "paragraphs": [
+          "قياس Concentration يتضمن Serial 7s (الطرح المتكرر للعدد 7 بدءًا من 100) أو حسابات بسيطة، مع مراعاة مستوى التعليم. Judgment يُختبر بقرار حياتي مثل ماذا تفعل لو وجدت خطابًا مغلقًا وعليه عنوان؛ Insight بسؤال هل تعتقد أن لديك مشكلة وهل تحتاج علاجًا."
+        ]
+      },
+      {
+        "heading": "Cognitive assessment: source-page station checklist",
+        "sourcePage": "PDF p.43",
+        "paragraphs": [
+          "الصورة الأخيرة تعرض Alertness بالملاحظة، ثم Orientation، ثم Concentration مثل عدّ الشهور أو الحروف للخلف وSerial 7s، ثم Immediate memory بتكرار أرقام، وRecent memory بسؤال عن الإفطار وما حدث صباحًا، وLong-term memory بسؤال عن الماضي، إضافة إلى Calculations وFund of knowledge وAbstract reasoning."
+        ]
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "psyhist-mcq-001",
+        "question": "Which interview principle specifically concerns patient privacy?",
+        "options": [
+          "Rapport",
+          "Source of referral",
+          "Reaction time",
+          "Privacy and confidentiality"
+        ],
+        "answerIndex": 3,
+        "rationale": "Privacy and Confidentiality is explicitly listed under General Principles.",
+        "sourcePage": "PDF p.3"
+      },
+      {
+        "id": "psyhist-mcq-002",
+        "question": "What is the most important interviewing skill according to the lecture?",
+        "options": [
+          "Interrupting early",
+          "Giving technical labels",
+          "Active listening",
+          "Finishing MSE before history"
+        ],
+        "answerIndex": 2,
+        "rationale": "The lecture identifies active listening as the most important skill.",
+        "sourcePage": "PDF p.4"
+      },
+      {
+        "id": "psyhist-mcq-003",
+        "question": "How should patient and informant information be recorded?",
+        "options": [
+          "Merged as one account",
+          "Separately",
+          "Only the informant's version",
+          "Only after the MSE"
+        ],
+        "answerIndex": 1,
+        "rationale": "Record patient and informant versions separately.",
+        "sourcePage": "PDF p.4"
+      },
+      {
+        "id": "psyhist-mcq-004",
+        "question": "Which item is included in identification data?",
+        "options": [
+          "Thought broadcasting",
+          "Abstract thinking",
+          "Insight",
+          "Marital status"
+        ],
+        "answerIndex": 3,
+        "rationale": "Marital status is listed among identifying data.",
+        "sourcePage": "PDF p.6"
+      },
+      {
+        "id": "psyhist-mcq-005",
+        "question": "What is recommended for chief complaint wording?",
+        "options": [
+          "Always replace with medical terminology",
+          "Only use diagnostic labels",
+          "Use the patient's own words",
+          "Omit total illness duration"
+        ],
+        "answerIndex": 2,
+        "rationale": "Verbatim patient language is advised.",
+        "sourcePage": "PDF p.8"
+      },
+      {
+        "id": "psyhist-mcq-006",
+        "question": "According to this lecture, sudden onset is within:",
+        "options": [
+          "24 hours",
+          "48 hours",
+          "2 weeks",
+          "6 months"
+        ],
+        "answerIndex": 1,
+        "rationale": "The source defines sudden onset as within 48 hours.",
+        "sourcePage": "PDF p.9"
+      },
+      {
+        "id": "psyhist-mcq-007",
+        "question": "According to this lecture, insidious/gradual onset lasts:",
+        "options": [
+          "More than 2 weeks",
+          "Under 48 hours",
+          "48 hours only",
+          "Exactly 2 months"
+        ],
+        "answerIndex": 0,
+        "rationale": "The source labels gradual onset as more than two weeks.",
+        "sourcePage": "PDF p.9"
+      },
+      {
+        "id": "psyhist-mcq-008",
+        "question": "Which describes the COURSE of illness rather than its progress?",
+        "options": [
+          "Episodic",
+          "Improving",
+          "Deteriorating",
+          "Static"
+        ],
+        "answerIndex": 0,
+        "rationale": "Episodic is listed as a course pattern.",
+        "sourcePage": "PDF p.9"
+      },
+      {
+        "id": "psyhist-mcq-009",
+        "question": "Which question belongs in the HPI?",
+        "options": [
+          "What is the patient's blood group?",
+          "Which antipsychotic is always first-line?",
+          "Which screening tool score was obtained?",
+          "When was the patient last well?"
+        ],
+        "answerIndex": 3,
+        "rationale": "The HPI begins by asking when the patient was last well.",
+        "sourcePage": "PDF p.10"
+      },
+      {
+        "id": "psyhist-mcq-010",
+        "question": "Which is a biological function asked about in psychiatric history?",
+        "options": [
+          "Gait",
+          "Grandiosity",
+          "Judgment",
+          "Appetite"
+        ],
+        "answerIndex": 3,
+        "rationale": "Appetite is included with sleep, libido and bowel/bladder function.",
+        "sourcePage": "PDF p.11"
+      },
+      {
+        "id": "psyhist-mcq-011",
+        "question": "Which belongs in past psychiatric history?",
+        "options": [
+          "Only today's chief complaint",
+          "Past suicide attempts",
+          "Only educational degree",
+          "Only affect range"
+        ],
+        "answerIndex": 1,
+        "rationale": "Past suicide attempts are included in the past history slide.",
+        "sourcePage": "PDF p.13"
+      },
+      {
+        "id": "psyhist-mcq-012",
+        "question": "Which treatment-history item concerns taking prescribed treatment?",
+        "options": [
+          "Family occupation",
+          "Orientation",
+          "Thought form",
+          "Adherence"
+        ],
+        "answerIndex": 3,
+        "rationale": "Treatment adherence and reasons for poor compliance are covered.",
+        "sourcePage": "PDF p.14"
+      },
+      {
+        "id": "psyhist-mcq-013",
+        "question": "Which is explicitly included in addiction-related history?",
+        "options": [
+          "Caffeine use",
+          "Cranial nerve testing",
+          "Blood type",
+          "Skin pigmentation"
+        ],
+        "answerIndex": 0,
+        "rationale": "Tobacco, caffeine and behavioral habits appear on the slide.",
+        "sourcePage": "PDF p.15"
+      },
+      {
+        "id": "psyhist-mcq-014",
+        "question": "Which is part of family psychiatric history?",
+        "options": [
+          "Speech articulation",
+          "Family suicide history",
+          "Visual acuity",
+          "Time orientation"
+        ],
+        "answerIndex": 1,
+        "rationale": "Family psychiatric history includes suicide.",
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "id": "psyhist-mcq-015",
+        "question": "Which is a premorbid temperament dimension in the lecture?",
+        "options": [
+          "Persecution",
+          "Depersonalization",
+          "Adaptability",
+          "Flight of ideas"
+        ],
+        "answerIndex": 2,
+        "rationale": "Adaptability is listed under temperament.",
+        "sourcePage": "PDF p.20"
+      },
+      {
+        "id": "psyhist-mcq-016",
+        "question": "Which is one of the three broad MSE components?",
+        "options": [
+          "Serum electrolytes",
+          "ECG monitoring",
+          "Surgical history only",
+          "Formal cognitive examination"
+        ],
+        "answerIndex": 3,
+        "rationale": "MSE includes formal cognitive examination.",
+        "sourcePage": "PDF p.22"
+      },
+      {
+        "id": "psyhist-mcq-017",
+        "question": "Which finding is assessed under appearance and behaviour?",
+        "options": [
+          "Eye-to-eye contact",
+          "Renal function",
+          "Visual fields",
+          "Family history"
+        ],
+        "answerIndex": 0,
+        "rationale": "Eye contact is a stated observation.",
+        "sourcePage": "PDF p.23"
+      },
+      {
+        "id": "psyhist-mcq-018",
+        "question": "Which is a dimension of speech examination?",
+        "options": [
+          "Delusion content",
+          "Family occupation",
+          "Insight only",
+          "Articulation"
+        ],
+        "answerIndex": 3,
+        "rationale": "Articulation is listed under speech.",
+        "sourcePage": "PDF p.24"
+      },
+      {
+        "id": "psyhist-mcq-019",
+        "question": "Which is defined as the patient's internal emotional tone?",
+        "options": [
+          "Affect",
+          "Thought form",
+          "Mood",
+          "Insight"
+        ],
+        "answerIndex": 2,
+        "rationale": "The slide defines mood as internal emotional tone.",
+        "sourcePage": "PDF p.25"
+      },
+      {
+        "id": "psyhist-mcq-020",
+        "question": "Which is the clinician's observed external expression?",
+        "options": [
+          "Mood",
+          "Memory",
+          "Thought content",
+          "Affect"
+        ],
+        "answerIndex": 3,
+        "rationale": "Affect is the observed expression.",
+        "sourcePage": "PDF p.25"
+      },
+      {
+        "id": "psyhist-mcq-021",
+        "question": "Thought FORM primarily describes:",
+        "options": [
+          "What beliefs a patient holds",
+          "How thoughts are organized and expressed",
+          "Family psychiatric illness",
+          "Drug allergies"
+        ],
+        "answerIndex": 1,
+        "rationale": "Thought process/form concerns organization and expression.",
+        "sourcePage": "PDF p.26"
+      },
+      {
+        "id": "psyhist-mcq-022",
+        "question": "Which best describes obsessions according to the source?",
+        "options": [
+          "Welcome and voluntary thoughts",
+          "Perception without stimulus",
+          "Unwelcome repetitive intrusive thoughts",
+          "An objective memory test"
+        ],
+        "answerIndex": 2,
+        "rationale": "Obsessions are intrusive, repetitive, unwelcome thoughts.",
+        "sourcePage": "PDF p.31"
+      },
+      {
+        "id": "psyhist-mcq-023",
+        "question": "Which is specifically listed under thought content?",
+        "options": [
+          "Suicidal ideas",
+          "Grooming",
+          "Speech volume",
+          "Gait"
+        ],
+        "answerIndex": 0,
+        "rationale": "Suicidal and homicidal thoughts are included.",
+        "sourcePage": "PDF p.31"
+      },
+      {
+        "id": "psyhist-mcq-024",
+        "question": "Which is a listed delusion type by content?",
+        "options": [
+          "Illusion",
+          "Derealization",
+          "Nihilistic delusion",
+          "Pressure of speech"
+        ],
+        "answerIndex": 2,
+        "rationale": "Nihilistic delusion appears in the lecture's list.",
+        "sourcePage": "PDF p.32"
+      },
+      {
+        "id": "psyhist-mcq-025",
+        "question": "A perception WITHOUT an external stimulus is called:",
+        "options": [
+          "Hallucination",
+          "Illusion",
+          "Affect",
+          "Insight"
+        ],
+        "answerIndex": 0,
+        "rationale": "Hallucinations are perceptions without a stimulus.",
+        "sourcePage": "PDF p.36"
+      },
+      {
+        "id": "psyhist-mcq-026",
+        "question": "A misinterpretation of an actual stimulus is:",
+        "options": [
+          "Delusion",
+          "Obsession",
+          "Illusion",
+          "Mood"
+        ],
+        "answerIndex": 2,
+        "rationale": "Illusion is defined as misinterpretation of a stimulus.",
+        "sourcePage": "PDF p.36"
+      },
+      {
+        "id": "psyhist-mcq-027",
+        "question": "The feeling that the environment has changed strangely is:",
+        "options": [
+          "Derealization",
+          "Depersonalization",
+          "Thought blocking",
+          "Grandiosity"
+        ],
+        "answerIndex": 0,
+        "rationale": "Derealization concerns the environment.",
+        "sourcePage": "PDF p.36"
+      },
+      {
+        "id": "psyhist-mcq-028",
+        "question": "Which three memory categories appear in the slide?",
+        "options": [
+          "Visual, verbal, spatial",
+          "Short, middle, long sleep",
+          "Remote, recent, immediate",
+          "Auditory, tactile, olfactory"
+        ],
+        "answerIndex": 2,
+        "rationale": "Memory is divided into remote, recent and immediate.",
+        "sourcePage": "PDF p.37"
+      },
+      {
+        "id": "psyhist-mcq-029",
+        "question": "Abstract thinking can be explored using:",
+        "options": [
+          "Similarity or proverb tests",
+          "Pulse oximetry",
+          "ECG",
+          "Drug allergy testing"
+        ],
+        "answerIndex": 0,
+        "rationale": "The slide mentions similarity and proverb tests.",
+        "sourcePage": "PDF p.38"
+      },
+      {
+        "id": "psyhist-mcq-030",
+        "question": "Insight refers mainly to:",
+        "options": [
+          "Decision-making in everyday activities",
+          "Speech fluency",
+          "Understanding one's problems and implications",
+          "Physical grooming"
+        ],
+        "answerIndex": 2,
+        "rationale": "The slide defines insight as awareness of problems and implications.",
+        "sourcePage": "PDF p.38"
+      },
+      {
+        "id": "psyhist-mcq-031",
+        "question": "A patient includes extensive trivial details before ultimately reaching the answer. Which thought-form feature fits the source table?",
+        "options": [
+          "Neologism",
+          "Illusion",
+          "Perseveration",
+          "Circumstantiality"
+        ],
+        "answerIndex": 3,
+        "rationale": "The p.27–28 tables describe excessive digression with delayed arrival at the point as circumstantiality.",
+        "sourcePage": "PDF p.27"
+      },
+      {
+        "id": "psyhist-mcq-032",
+        "question": "A patient responds on the general topic but never actually answers the question. Which term is used?",
+        "options": [
+          "Tangentiality",
+          "Thought blocking",
+          "Affect congruence",
+          "Derealization"
+        ],
+        "answerIndex": 0,
+        "rationale": "The source defines tangentiality as a related reply that does not answer the question.",
+        "sourcePage": "PDF p.27"
+      },
+      {
+        "id": "psyhist-mcq-033",
+        "question": "Selecting words based on their rhyming sounds rather than meaning is:",
+        "options": [
+          "Perseveration",
+          "Clang associations",
+          "Illogicality",
+          "Thought blocking"
+        ],
+        "answerIndex": 1,
+        "rationale": "Clang associations link sounds instead of semantic meanings.",
+        "sourcePage": "PDF p.27"
+      },
+      {
+        "id": "psyhist-mcq-034",
+        "question": "A sudden interruption in the flow of thought is named:",
+        "options": [
+          "Flight of ideas",
+          "Thought blocking",
+          "Neologism",
+          "Grandiosity"
+        ],
+        "answerIndex": 1,
+        "rationale": "The source table directly defines thought blocking as sudden disruption of thinking.",
+        "sourcePage": "PDF p.27"
+      },
+      {
+        "id": "psyhist-mcq-035",
+        "question": "Inventing new words or using conventional words in idiosyncratic ways is:",
+        "options": [
+          "Neologism",
+          "Tangentiality",
+          "Circumstantiality",
+          "Derailment"
+        ],
+        "answerIndex": 0,
+        "rationale": "Neologism is defined as creating new terms or unconventional meanings.",
+        "sourcePage": "PDF p.27"
+      },
+      {
+        "id": "psyhist-mcq-036",
+        "question": "The source table calls disorganized and incoherent speech with meaningless combinations of words:",
+        "options": [
+          "Pressure of speech",
+          "Incoherence/word salad",
+          "Affect",
+          "Delusion of jealousy"
+        ],
+        "answerIndex": 1,
+        "rationale": "The p.28 SAPS table labels incoherence as word salad/schizophasia.",
+        "sourcePage": "PDF p.28"
+      },
+      {
+        "id": "psyhist-mcq-037",
+        "question": "Changing a conversation topic in response to an external stimulus exemplifies:",
+        "options": [
+          "Illusion",
+          "Derealization",
+          "Delusion",
+          "Distractibility of speech"
+        ],
+        "answerIndex": 3,
+        "rationale": "The SAPS example defines distractibility of speech as stimulus-driven topic changes.",
+        "sourcePage": "PDF p.28"
+      },
+      {
+        "id": "psyhist-mcq-038",
+        "question": "A rapid progression of thoughts from one topic to another is:",
+        "options": [
+          "Neologism",
+          "Flight of ideas",
+          "Illusion",
+          "Thought insertion"
+        ],
+        "answerIndex": 1,
+        "rationale": "The p.30 diagram describes a continuous, rapid move between subjects as flight of ideas.",
+        "sourcePage": "PDF p.30"
+      },
+      {
+        "id": "psyhist-mcq-039",
+        "question": "In the source interview table, a question about wanting to harm oneself is placed under:",
+        "options": [
+          "Mood",
+          "Appearance",
+          "Orientation",
+          "Memory"
+        ],
+        "answerIndex": 0,
+        "rationale": "The p.40 question prompts on suicidal ideas are listed under Mood.",
+        "sourcePage": "PDF p.40"
+      },
+      {
+        "id": "psyhist-mcq-040",
+        "question": "The source suggests asking about hearing voices when evaluating:",
+        "options": [
+          "Insight",
+          "Judgment",
+          "Perception",
+          "Occupation"
+        ],
+        "answerIndex": 2,
+        "rationale": "The p.41 interview table lists hearing voices under perceptual disorders.",
+        "sourcePage": "PDF p.41"
+      },
+      {
+        "id": "psyhist-mcq-041",
+        "question": "Repeatedly subtracting 7 from 100 is used in the source table to assess:",
+        "options": [
+          "Premorbid personality",
+          "Concentration",
+          "Family history",
+          "Affect"
+        ],
+        "answerIndex": 1,
+        "rationale": "The source gives the serial-seven task under concentration and calculation.",
+        "sourcePage": "PDF p.42"
+      },
+      {
+        "id": "psyhist-mcq-042",
+        "question": "Repeating a sequence of digits immediately after the examiner is intended to assess:",
+        "options": [
+          "Long-term memory",
+          "Judgment",
+          "Premorbid temperament",
+          "Immediate memory"
+        ],
+        "answerIndex": 3,
+        "rationale": "The cognitive assessment chart lists digit repetition under immediate memory.",
+        "sourcePage": "PDF p.43"
+      }
+    ]
+  }
+}
