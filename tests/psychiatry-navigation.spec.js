@@ -6,10 +6,10 @@ test.use({serviceWorkers: 'block'});
 const SOURCE_LECTURES = [
   {id: 'internal-medicine-ii-psychiatry-psychiatric-history-mse',
     name: 'Psychiatric History Taking & Mental Status Examination',
-    mcqs: 42, explanations: 33, images: 3, cases: 5, core: 36, detailed: 10, rapid: 20},
+    mcqs: 52, explanations: 49, images: 6, cases: 5, core: 46, detailed: 13, rapid: 28},
   {id: 'internal-medicine-ii-psychiatry-anxiety-disorders',
     name: 'Anxiety Disorders',
-    mcqs: 47, explanations: 32, images: 4, cases: 5, core: 40, detailed: 10, rapid: 24}
+    mcqs: 56, explanations: 43, images: 7, cases: 5, core: 47, detailed: 12, rapid: 30}
 ];
 
 async function openPsychiatry(page) {
@@ -95,7 +95,7 @@ test('iPhone layout can select Psychiatry and open Anxiety Disorders', async ({p
   await page.locator('#lectureFilter').selectOption(SOURCE_LECTURES[1].id);
   await expect(page.locator('#lecture-' + SOURCE_LECTURES[1].id)).toBeAttached();
   await expect(page.locator('#lecture-' + SOURCE_LECTURES[1].id + ' .study-guide-mcq'))
-    .toHaveCount(47);
+    .toHaveCount(56);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth))
     .toBeLessThanOrEqual(1);
 });

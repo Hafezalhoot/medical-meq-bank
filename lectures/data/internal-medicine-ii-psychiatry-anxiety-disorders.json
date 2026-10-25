@@ -5,7 +5,7 @@
   "subject": "Psychiatry",
   "title": "Anxiety Disorders",
   "subtitle": "Case-based panic, generalized anxiety, phobias, course and treatment",
-  "sourceNote": "Lecture-first exam source: user-supplied '2- Anxiety disorders.pdf' (43 PDF pages; SHA-256 a0588e9348f9768d7a38faf7c791e281aa2b9b14a917fdf126f501b6d56f5f08). SourcePage values use 1-based PDF pages. DSM-5 image-only source slides pp.12,16,21,24 and etiology figure p.34 were read visually. Clinical criteria, percentages and treatments remain the lecture's own wording rather than external guideline updates. All questions/distractors are review drafts; do not interpret lecture teaching-case headings as proof that each case supplies every formal duration criterion. Four original teaching figure crops (pp.3, 16, 21, 34) are hosted as SHA-256 verified JPEG assets; the full PDF is excluded, and lecturer/learner review of authored questions is still advisable.",
+  "sourceNote": "Lecture-first exam source: user-supplied '2- Anxiety disorders.pdf' (43 PDF pages; SHA-256 a0588e9348f9768d7a38faf7c791e281aa2b9b14a917fdf126f501b6d56f5f08). SourcePage values use 1-based PDF pages. DSM-5 image-only source slides pp.12,16,21,24 and etiology figure p.34 were read visually. Clinical criteria, percentages and treatments remain the lecture's own wording rather than external guideline updates. All questions/distractors are review drafts; do not interpret lecture teaching-case headings as proof that each case supplies every formal duration criterion. Seven original teaching figure crops (pp.3, 4, 12, 16, 21, 24, 34) are hosted as SHA-256 verified JPEG assets; the full PDF is excluded, and lecturer/learner review of authored questions is still advisable.",
   "subtopics": [
     {
       "id": "concepts",
@@ -98,7 +98,7 @@
       "subtopics": [
         "agoraphobia"
       ],
-      "scenario": "33-year-old woman has had attacks for eight years and avoids leaving home alone or busy places where escape might be difficult; needs accompaniment or her phone (pp.17–19).",
+      "scenario": "33-year-old woman has had attacks for eight years and avoids leaving home alone or busy places where escape might be difficult; needs accompaniment or her phone (pp.17–19). The case also reports insight that the avoidance is excessive, mild depression, restlessness and sleep difficulty (p.19).",
       "questions": [
         "Which anxiety disorder does the lecture discuss next?",
         "Name two relevant agoraphobic situation categories."
@@ -630,6 +630,90 @@
         "treatment"
       ],
       "section": "Source PDF p.41"
+    },
+    {
+      "id": "psyanx-short-041",
+      "q": "List six symptoms labelled on the original anxiety body map.",
+      "a": "For example racing mind, dizziness/light-headedness, breathlessness, palpitations, nausea, sweating, trembling, difficulty swallowing, disturbed sleep, restless/jelly-like legs, urge to run.",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "concepts"
+      ],
+      "section": "Source PDF p.4"
+    },
+    {
+      "id": "psyanx-short-042",
+      "q": "Which diagnoses are listed in the slide in addition to Panic Disorder, GAD and phobias?",
+      "a": "Selective mutism, separation anxiety, unspecified/other specified anxiety, anxiety due to another medical condition, and substance/medication-induced anxiety.",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "concepts"
+      ],
+      "section": "Source PDF p.5"
+    },
+    {
+      "id": "psyanx-short-043",
+      "q": "Distinguish a panic attack from Panic Disorder using the lecture's two source slides.",
+      "a": "The panic attack has ≥4 symptoms (p.11); panic disorder entails recurrent unexpected attacks and ≥1 month of concern, worry or behaviour change after one (p.12), with exclusions.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.12"
+    },
+    {
+      "id": "psyanx-short-044",
+      "q": "State why agoraphobic situations cause fear according to the DSM-5 figure.",
+      "a": "The person fears escape could be difficult or help might not be available if panic-like or other incapacitating/embarrassing symptoms occur.",
+      "topic": "Agoraphobia and Case 3",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "agoraphobia"
+      ],
+      "section": "Source PDF p.21"
+    },
+    {
+      "id": "psyanx-short-045",
+      "q": "Name all five source diagnostic features of specific phobia.",
+      "a": "Object/situation-specific marked fear, nearly immediate anxiety on exposure, disproportionate to danger/context, typically persistent ≥6 months, clinically significant distress/impairment.",
+      "topic": "Specific Phobia and Case 4",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "specific-phobia"
+      ],
+      "section": "Source PDF p.24"
+    },
+    {
+      "id": "psyanx-short-046",
+      "q": "What does the epidemiology slide say about age, sex and socioeconomic status?",
+      "a": "It notes adolescence/young adulthood, higher prevalence in women, and lower prevalence with higher socioeconomic status.",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "section": "Source PDF p.33"
+    },
+    {
+      "id": "psyanx-short-047",
+      "q": "Give four specific biological factors described on the anxiety etiology figure.",
+      "a": "Examples: familial tendency, hyperresponsive autonomic nervous system, norepinephrine overactivity, serotonin-function reduction, GABA deficiency, glutamate excess (OCD example), overactive amygdala or underactive prefrontal cortex.",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "section": "Source PDF p.34"
     }
   ],
   "imageQuestions": [
@@ -714,16 +798,87 @@
       "page": "PDF p.34",
       "prompt": "Original teaching figure cropped from the user-supplied lecture PDF p.34; read it alongside the source-page reference.",
       "questions": [
-        "Name two etiologic categories in the figure.",
-        "Does this question reproduce an external image?"
+        "Name two etiologic groups in the original figure.",
+        "Which neurotransmitter activity is linked to onset of panic attacks in the Biological column?"
       ],
       "answer": [
-        "For example biological and behavioral.",
-        "No; the source PDF must be consulted."
+        "For example Biological and Behavioral (the figure also lists Cognitive, Psychodynamic, Evolutionary and Sociocultural).",
+        "Overactivity of norepinephrine (noradrenaline)."
       ],
       "image": "./assets/lectures/psychiatry-anxiety/psyanx-04.jpg",
       "imageSha256": "420848bace5d2bf5c976305929e26206c4f022ccaa1105cadf8e9dd08f8c1aa6",
       "imageBytes": 166275
+    },
+    {
+      "id": "psyanx-image-005",
+      "title": "Anxiety symptom whole-body checklist",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "concepts"
+      ],
+      "page": "PDF p.4",
+      "prompt": "Original educational figure cropped from the uploaded source PDF p.4; all facts here are drawn from that slide.",
+      "questions": [
+        "List six somatic or autonomic symptoms labelled in the diagram.",
+        "Which sleep and cognition complaints are drawn?"
+      ],
+      "answer": [
+        "For example shortness of breath, palpitations, nausea, sweating, trembling, dizziness, swallowing difficulty or jelly-like legs.",
+        "Sleep disturbance and racing mind (with possible visual changes/light-headedness)."
+      ],
+      "image": "./assets/lectures/psychiatry-anxiety/psyanx-05.jpg",
+      "imageSha256": "cd9e94a7fdefd3528663f4be6ece2724285b51ffbea916883d8754abc30417a4",
+      "imageBytes": 159446
+    },
+    {
+      "id": "psyanx-image-006",
+      "title": "DSM-5 Panic Disorder criteria from original table",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "panic"
+      ],
+      "page": "PDF p.12",
+      "prompt": "Original educational figure cropped from the uploaded source PDF p.12; all facts here are drawn from that slide.",
+      "questions": [
+        "What number and pattern of panic attacks does the table specify?",
+        "What must follow at least one attack for at least one month?",
+        "What does it say about agoraphobia and about exclusions?"
+      ],
+      "answer": [
+        "Recurrent unexpected panic attacks.",
+        "Persistent concern about further attacks, worry about their consequences or significant behavior change.",
+        "Panic Disorder and agoraphobia are separate diagnoses; exclude direct substance/medical effects and a better explanation from another mental disorder."
+      ],
+      "image": "./assets/lectures/psychiatry-anxiety/psyanx-06.jpg",
+      "imageSha256": "424bfa7f9631704f3a484422018e1d047cef1a640b64a0fafb2985d6575bf7ae",
+      "imageBytes": 279898
+    },
+    {
+      "id": "psyanx-image-007",
+      "title": "DSM-5 Specific Phobia diagnostic-criteria figure",
+      "topic": "Specific Phobia and Case 4",
+      "priority": "High",
+      "marks": 3,
+      "subtopics": [
+        "specific-phobia"
+      ],
+      "page": "PDF p.24",
+      "prompt": "Original educational figure cropped from the uploaded source PDF p.24; all facts here are drawn from that slide.",
+      "questions": [
+        "What five diagnostic features appear on the source image?",
+        "How may marked fear be expressed in children according to this image?"
+      ],
+      "answer": [
+        "Specific marked fear; immediate fear on exposure; disproportionality to real danger/context; typical persistence ≥6 months; important distress/functional impairment.",
+        "Crying, tantrums, freezing or clinging."
+      ],
+      "image": "./assets/lectures/psychiatry-anxiety/psyanx-07.jpg",
+      "imageSha256": "4b15fe05995adccd3413d98a47172e02a5988ad2330f71209a218d7ed3150ba1",
+      "imageBytes": 160530
     }
   ],
   "detailedShorts": [
@@ -846,6 +1001,30 @@
         "treatment"
       ],
       "section": "Source PDF p.40"
+    },
+    {
+      "id": "psyanx-detail-011",
+      "q": "Describe the complete spectrum of anxiety symptoms depicted by the p.4 body map.",
+      "a": "The diagram asks about racing mind, dizziness/disorientation, blurred vision, sleeping difficulties, swallowing difficulty, breathlessness/shallow respiration, racing heart, tremors, nausea/loss of appetite, sweating/shivering, restlessness/jelly legs and urge to flee. These prompts do not diagnose a disorder independently.",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "concepts"
+      ],
+      "section": "Source PDF p.4"
+    },
+    {
+      "id": "psyanx-detail-012",
+      "q": "Compare all etiology mechanisms listed in the original figure.",
+      "a": "Biological: genetics, autonomic reactivity, norepinephrine/serotonin/GABA/glutamate changes and amygdala/prefrontal differences; Behavioral: observing anxious parents, classical and operant conditioning; Cognitive: low perceived control and irrational interpretation; Psychodynamic: ego-defense inadequacy; Evolutionary: preparedness for some fears; Sociocultural: poverty and race-related pressures. All are lecture-image descriptions, not diagnostic criteria.",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "section": "Source PDF p.34"
     }
   ],
   "rapid": [
@@ -944,6 +1123,30 @@
     [
       "Virtual-therapy example?",
       "Crowded supermarket for agoraphobia."
+    ],
+    [
+      "Panic attack vs Panic Disorder?",
+      "A panic attack is an episode; panic disorder additionally requires recurrent unexpected attacks and 1+ month concern/change after one."
+    ],
+    [
+      "Agoraphobia core concern?",
+      "Escape may be difficult or help unavailable in ≥2 of five situations."
+    ],
+    [
+      "Anxiety body-map: swallowing?",
+      "Difficulty swallowing is shown in the source illustration."
+    ],
+    [
+      "GABA in source etiology figure?",
+      "Deficiency is listed under Biological."
+    ],
+    [
+      "How is fear learned in source figure?",
+      "Observational learning and classical conditioning; operant maintenance."
+    ],
+    [
+      "Prevalence & socioeconomic status in lecture?",
+      "Reported to decrease with higher socioeconomic status."
     ]
   ],
   "studyGuide": {
@@ -963,9 +1166,23 @@
         "sourcePage": "PDF p.3"
       },
       {
+        "heading": "Anxiety physical-symptom image: complete body-map reading",
+        "paragraphs": [
+          "الرسم المصوّر في PDF p.4 يسأل عن: racing mind، dizziness/disorientation/light-headedness، blurry/strange vision، sleep disturbance، difficulty swallowing، breathlessness/fast shallow breathing، heart racing/palpitations، nausea/loss of appetite، trembling، sweating/shivering، restlessness، jelly-like legs، urge to run. الصورة تعليمية لاستكشاف الأعراض، ولا تثبت تشخيصًا من علامة واحدة."
+        ],
+        "sourcePage": "PDF p.4"
+      },
+      {
         "heading": "Anxiety disorders listed in the lecture",
         "paragraphs": [
           "قائمة DSM-5 المصورة تتضمن specific phobia، panic disorder، agoraphobia، selective mutism، separation anxiety، GAD، unspecified/other specified anxiety، social anxiety، anxiety due to medical condition، وsubstance/medication-induced anxiety. هذه قائمة المحاضرة كما وردت في الشريحة."
+        ],
+        "sourcePage": "PDF p.5"
+      },
+      {
+        "heading": "Image-only DSM-5 anxiety list: scope of the lecture",
+        "paragraphs": [
+          "الشريحة المصوّرة تسرد بالاسم: Specific phobia, Panic disorder, Agoraphobia, Selective mutism, Separation anxiety disorder, Generalized anxiety disorder, Unspecified anxiety disorder, Other specified anxiety disorder, Social anxiety disorder (social phobia), Anxiety disorder due to another medical condition, Substance/medication-induced anxiety disorder. هذه قائمة من العرض؛ ليست معايير تشخيص لكل حالة."
         ],
         "sourcePage": "PDF p.5"
       },
@@ -998,6 +1215,20 @@
         "sourcePage": "PDF p.11"
       },
       {
+        "heading": "Panic attack versus Panic Disorder on the source DSM-5 slide",
+        "sourcePage": "PDF p.12",
+        "paragraphs": [
+          "تفرّق الصورة بين Panic Attack كحدث، وPanic Disorder الذي يتطلب recurrent unexpected attacks ثم استمرار القلق بشأن نوبات أخرى أو النتائج أو تغير السلوك شهرًا على الأقل بعد واحدة منها. وتذكر الصورة أن PD وAgoraphobia أصبحا تشخيصين منفصلين في DSM-5. لا يكفي حدوث الأعراض الجسمية وحدها لإثبات جميع شروط الاضطراب."
+        ]
+      },
+      {
+        "heading": "Panic DSM-5 source table: attack vs disorder and separate agoraphobia",
+        "paragraphs": [
+          "جدول PDF p.12 يتطلب recurrent unexpected panic attacks للـPanic Disorder مع أن واحدة على الأقل يتلوها لمدة شهر أو أكثر قلق من حدوث المزيد أو من عواقب الهجمة أو تغير واضح بالسلوك. يلزم استبعاد drug/medication/substance أو condition أخرى واضطراب نفسي آخر يفسّر الأعراض. الصورة تذكر أن Panic Disorder وAgoraphobia يُشخّصان بصورة منفصلة في DSM-5. قائمة أعراض Panic Attack (≥4) في p.11، وليست وحدها كافية لتشخيص Panic Disorder."
+        ],
+        "sourcePage": "PDF p.12"
+      },
+      {
         "heading": "Case 2 — generalized worry",
         "paragraphs": [
           "رجل 28 سنة، مدرس ومتزوج، يقلق باستمرار بشأن أدائه المهني والمال رغم استقراره، مع tension, irritability, restlessness وصعوبة النوم (pp.13–14). تضع المحاضرة الحالة تحت GAD؛ لم تذكر الحالة بذاتها مدة 6 أشهر، فلا يُفترض إثبات هذا الشرط من نص الحالة وحده."
@@ -1012,6 +1243,13 @@
         "sourcePage": "PDF p.16"
       },
       {
+        "heading": "GAD: distinguish lecture case from formal diagnosis",
+        "sourcePage": "PDF p.16",
+        "paragraphs": [
+          "الحالة الثانية في الصفحات 13–14 تُستخدم تمثيلًا لـGAD لكنها لا تذكر مدة مستقلة قدرها ستة أشهر. لذلك لا تستنتج مدة 6 أشهر من الحالة؛ راجع قاعدة مدة القلق (على مدار 6 أشهر وأكثر الأيام) والـ3/6 أعراض في جدول DSM-5 المصور في هذه الصفحة."
+        ]
+      },
+      {
         "heading": "Case 3 — fear of being away from home",
         "paragraphs": [
           "سيدة 33 سنة بدأت لديها نوبات تشبه الـPanic قبل 8 سنوات؛ لاحقًا تخاف من وجود النوبة خارج المنزل، وتحتاج هاتفًا أو مرافقًا، وتتجنب المولات والسينما والبنوك والأماكن التي يصعب الخروج منها (pp.17–19). يضع العرض الحالة تحت Agoraphobia."
@@ -1019,9 +1257,30 @@
         "sourcePage": "PDF p.17"
       },
       {
+        "heading": "Case 3 — additional symptoms and impact",
+        "paragraphs": [
+          "تكملة Case 3 في PDF p.19 تقول إن التجنب والخوف سيطرا على حياة المريضة رغم وعيها بأنهما irrational/excessive؛ وتشير أيضًا إلى mild depression وrestlessness وصعوبة النوم. هذه تفاصيل من السيناريو وليست شروطًا تشخيصية منفصلة لـAgoraphobia."
+        ],
+        "sourcePage": "PDF p.19"
+      },
+      {
+        "heading": "Agoraphobia visual — five feared situations",
+        "paragraphs": [
+          "صورة p.20 توضح أمثلة الخوف من مغادرة المنزل منفردًا، والازدحام أو الوقوف في طابور، والأماكن المغلقة، والأماكن المفتوحة، واستخدام المواصلات العامة. لا تستلزم الصورة أن تكون كل المواقف الخمسة موجودة معًا؛ جدول المعايير p.21 هو الذي يحدد شرط اثنين أو أكثر."
+        ],
+        "sourcePage": "PDF p.20"
+      },
+      {
         "heading": "Agoraphobia DSM-5 criteria",
         "paragraphs": [
           "الرسم p.21 يطلب خوفًا/قلقًا واضحًا من موقفين أو أكثر من: public transport، open spaces، enclosed places، standing in line/crowd، outside home alone. المواقف تُتجنَّب أو تُحتمل بقلق، والخوف disproportionate ويستمر عادة ≥6 أشهر مع impairment، واستبعاد التفسير الأفضل باضطراب آخر."
+        ],
+        "sourcePage": "PDF p.21"
+      },
+      {
+        "heading": "Agoraphobia table: fear of escape or unavailable help",
+        "paragraphs": [
+          "صورة p.21: من خمسة سياقات (المواصلات، الأماكن المفتوحة، المغلقة، الوقوف في الصف/الزحام، الخروج منفردًا) يلزم اثنان أو أكثر. السبب هو الخوف من صعوبة الهرب أو عدم توافر المساعدة إذا ظهرت أعراض panic-like أو أعراض مُحرجة/مُعجِزة. هذه المواقف تثير القلق غالبًا، وتُتجنب أو تحتاج مرافقًا أو تُحتمل بخوف. الخوف غير متناسب، ويستمر عادة ≥6 أشهر، ويُحدث distress/impairment؛ مع مراعاة أسباب بديلة."
         ],
         "sourcePage": "PDF p.21"
       },
@@ -1033,9 +1292,30 @@
         "sourcePage": "PDF p.22"
       },
       {
+        "heading": "Specific-phobia teaching case: criteria still require independent confirmation",
+        "paragraphs": [
+          "حالة المحامي الذي يخاف القيادة على الطرق السريعة مثال تعليمي يستعمله العرض قبل Specific Phobia. الصفحة 22 لا توثّق استمرار الخوف ≥6 أشهر، لذلك لا نستنتج أن المدة مُثبتة من السيناريو. معيار المدة مأخوذ من الصورة في p.24 فقط."
+        ],
+        "sourcePage": "PDF p.22"
+      },
+      {
         "heading": "Specific phobia diagnostic features",
         "paragraphs": [
           "الصورة p.24 تذكر fear/anxiety من object/situation محدد، استجابة قلق فورية عادة، خوف غير متناسب مع الخطر/السياق، استمرارية 6 أشهر أو أكثر، وdistress أو impairment مهم. الشريحة التالية تذكر استبعاد اضطراب نفسي آخر."
+        ],
+        "sourcePage": "PDF p.24"
+      },
+      {
+        "heading": "Specific-phobia figure and case interpretation",
+        "sourcePage": "PDF p.24",
+        "paragraphs": [
+          "تشرح الصورة خمس صفات أساسية للخوف المحدد: object/situation واضح، قلق فوري غالبًا عند التعرض، خوف غير متناسب مع الخطر أو السياق، استمرار عادة 6 أشهر أو أكثر، وتأثير وظيفي/معاناة معتبرة. حالة القيادة في الصفحة 22 مثال تعليمي للنوع Situational المذكور في الصفحة 25."
+        ]
+      },
+      {
+        "heading": "Specific phobia: image-only five source conditions",
+        "paragraphs": [
+          "الشريحة المصوّرة p.24 تذكر: marked fear/anxiety about a specific object/situation؛ phobic object almost always provokes immediate fear/anxiety؛ fear out of proportion to actual danger and sociocultural context؛ persistent, typically ≥6 months؛ clinically significant distress/impairment. ولا تضع هذه البنود في سياق تشخيص غير مذكور في المصدر. وتشير صورة نفس الصفحة إلى أن الخوف لدى الأطفال قد يُعبَّر عنه بـcrying أوtantrums أوfreezing أوclinging."
         ],
         "sourcePage": "PDF p.24"
       },
@@ -1061,6 +1341,13 @@
         "sourcePage": "PDF p.29"
       },
       {
+        "heading": "Case 5 and duration evidence",
+        "sourcePage": "PDF p.29",
+        "paragraphs": [
+          "الـCase 5 في الصفحتين 26–27 يوضح Social Anxiety لكنه لا يذكر مدة محددة للخوف؛ أمّا معيار المحاضرة فهو أكثر من 6 أشهر. لا تُضف المدة إلى بيانات الحالة من عندك، وافصل بين تسمية الحالة التعليمية والتحقق من كل criterion."
+        ]
+      },
+      {
         "heading": "Differential diagnosis",
         "paragraphs": [
           "قائمة Differential Diagnosis في pp.31–32: substance/medication-induced anxiety، medical conditions، other anxiety disorders، somatic symptom، illness anxiety، delusional disorder، OCD، mood disorders with anxious features، PTSD/acute stress، adjustment disorder with anxious features."
@@ -1075,9 +1362,37 @@
         "sourcePage": "PDF p.33"
       },
       {
+        "heading": "Epidemiology slide: full lecture context",
+        "paragraphs": [
+          "المحاضرة p.33 تقول one in four meets criteria for at least one listed anxiety disorder خلال الحياة، وأن 12-month prevalence حوالي 17%. كما تسرد Panic 1.5–4%، Phobia 10%، GAD 3–8%، وتشير إلى adolescent/young adulthood، وارتفاع الانتشار في النساء، وانخفاضه مع ارتفاع socioeconomic status بحسب الشريحة. الأرقام تُحفظ كمعلومات المحاضرة ولا تُحدَّث من خارجها."
+        ],
+        "sourcePage": "PDF p.33"
+      },
+      {
         "heading": "Etiology diagram",
         "paragraphs": [
-          "الرسم p.34 يقسّم etiologies إلى Biological (genetics, autonomic and neurotransmitter factors, amygdala/prefrontal)، Behavioral (observational and conditioning learning)، Cognitive (perceived control and interpretations)، Psychodynamic وSociocultural perspectives. يُراجع الرسم الأصلي عند الدراسة ولا يُنشر هنا."
+          "الرسم p.34 يقسّم etiologies إلى Biological (genetics, autonomic and neurotransmitter factors, amygdala/prefrontal)، Behavioral (observational and conditioning learning)، Cognitive (perceived control and interpretations)، Psychodynamic وSociocultural perspectives. يمكن مراجعة الصورة الأصلية المستخرجة من ملف المحاضرة في قسم Figures، مع الرجوع إلى PDF للمصدر الكامل."
+        ],
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "heading": "Etiology figure: learning, cognition and neurobiology",
+        "sourcePage": "PDF p.34",
+        "paragraphs": [
+          "يذكر الرسم عوامل Biological مثل الوراثة والجهاز العصبي الذاتي والتغيرات في norepinephrine/serotonin/GABA/glutamate والأميغدالا وقشرة الفص الجبهي. Behavioral theory تتضمن observational learning وclassical/operant conditioning. Cognitive approach يركز على ضعف perceived control والتفسيرات غير الدقيقة. كما يسرد psychodynamic وevolutionary وsociocultural perspectives؛ هذه نظريات واردة في المصدر وليست استنتاجًا مستقلًا."
+        ]
+      },
+      {
+        "heading": "Biological etiology: precise claims from the printed figure",
+        "paragraphs": [
+          "الصورة p.34 تسرد: familial/genetic tendency؛ overly responsive autonomic nervous system؛ overactivity of norepinephrine (linked in figure to panic attacks)؛ reduced serotonin function (in figure for OCD/social phobias)؛ GABA deficiency؛ excess glutamate in OCD؛ overactive amygdala أو underactive prefrontal cortex. هذه توصيفات الرسم التعليمي تحديدًا وليست قياسات أو معايير تشخيص."
+        ],
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "heading": "Behavioral, cognitive, psychodynamic, evolutionary and sociocultural image content",
+        "paragraphs": [
+          "الصورة p.34: Behavioral = observational learning from parents, classical fear conditioning وoperant maintenance؛ Cognitive = lack of perceived control and inaccurate/irrational event interpretation؛ Psychodynamic = inadequate ego defense mechanisms؛ Evolutionary = biological preparedness for some fears؛ Sociocultural = stressors such as poverty/race. لا يُقصد من هذه النظريات علاج أو تشخيص بمفردها."
         ],
         "sourcePage": "PDF p.34"
       },
@@ -1124,41 +1439,6 @@
         "sourcePage": "PDF p.40"
       },
       {
-        "heading": "Virtual and supportive approaches",
-        "paragraphs": [
-          "Virtual therapy قد تحاكي المواقف مثل crowded supermarket لدى مريض agoraphobia، وتكون مفيدة عندما يصعب تمثيل الموقف في العيادة. تذكر المحاضرة أيضًا supportive therapy وgroup therapy."
-        ],
-        "sourcePage": "PDF p.41"
-      },
-      {
-        "heading": "Panic attack versus Panic Disorder on the source DSM-5 slide",
-        "sourcePage": "PDF p.12",
-        "paragraphs": [
-          "تفرّق الصورة بين Panic Attack كحدث، وPanic Disorder الذي يتطلب recurrent unexpected attacks ثم استمرار القلق بشأن نوبات أخرى أو النتائج أو تغير السلوك شهرًا على الأقل بعد واحدة منها. وتذكر الصورة أن PD وAgoraphobia أصبحا تشخيصين منفصلين في DSM-5. لا يكفي حدوث الأعراض الجسمية وحدها لإثبات جميع شروط الاضطراب."
-        ]
-      },
-      {
-        "heading": "GAD: distinguish lecture case from formal diagnosis",
-        "sourcePage": "PDF p.16",
-        "paragraphs": [
-          "الحالة الثانية في الصفحات 13–14 تُستخدم تمثيلًا لـGAD لكنها لا تذكر مدة مستقلة قدرها ستة أشهر. لذلك لا تستنتج مدة 6 أشهر من الحالة؛ راجع قاعدة مدة القلق (على مدار 6 أشهر وأكثر الأيام) والـ3/6 أعراض في جدول DSM-5 المصور في هذه الصفحة."
-        ]
-      },
-      {
-        "heading": "Specific-phobia figure and case interpretation",
-        "sourcePage": "PDF p.24",
-        "paragraphs": [
-          "تشرح الصورة خمس صفات أساسية للخوف المحدد: object/situation واضح، قلق فوري غالبًا عند التعرض، خوف غير متناسب مع الخطر أو السياق، استمرار عادة 6 أشهر أو أكثر، وتأثير وظيفي/معاناة معتبرة. حالة القيادة في الصفحة 22 مثال تعليمي للنوع Situational المذكور في الصفحة 25."
-        ]
-      },
-      {
-        "heading": "Etiology figure: learning, cognition and neurobiology",
-        "sourcePage": "PDF p.34",
-        "paragraphs": [
-          "يذكر الرسم عوامل Biological مثل الوراثة والجهاز العصبي الذاتي والتغيرات في norepinephrine/serotonin/GABA/glutamate والأميغدالا وقشرة الفص الجبهي. Behavioral theory تتضمن observational learning وclassical/operant conditioning. Cognitive approach يركز على ضعف perceived control والتفسيرات غير الدقيقة. كما يسرد psychodynamic وevolutionary وsociocultural perspectives؛ هذه نظريات واردة في المصدر وليست استنتاجًا مستقلًا."
-        ]
-      },
-      {
         "heading": "Psychotherapy table: source technique comparisons",
         "sourcePage": "PDF p.40",
         "paragraphs": [
@@ -1166,11 +1446,11 @@
         ]
       },
       {
-        "heading": "Case 5 and duration evidence",
-        "sourcePage": "PDF p.29",
+        "heading": "Virtual and supportive approaches",
         "paragraphs": [
-          "الـCase 5 في الصفحتين 26–27 يوضح Social Anxiety لكنه لا يذكر مدة محددة للخوف؛ أمّا معيار المحاضرة فهو أكثر من 6 أشهر. لا تُضف المدة إلى بيانات الحالة من عندك، وافصل بين تسمية الحالة التعليمية والتحقق من كل criterion."
-        ]
+          "Virtual therapy قد تحاكي المواقف مثل crowded supermarket لدى مريض agoraphobia، وتكون مفيدة عندما يصعب تمثيل الموقف في العيادة. تذكر المحاضرة أيضًا supportive therapy وgroup therapy."
+        ],
+        "sourcePage": "PDF p.41"
       }
     ],
     "mcqs": [
@@ -1784,6 +2064,123 @@
         "answerIndex": 3,
         "rationale": "The source says virtual exposure can simulate situations hard to reproduce inside or near an office.",
         "sourcePage": "PDF p.41"
+      },
+      {
+        "id": "psyanx-mcq-048",
+        "question": "Which complaint is specifically shown in the original whole-body anxiety diagram?",
+        "options": [
+          "Delusions of thought insertion",
+          "Difficulty swallowing",
+          "Flight of ideas",
+          "Disorganized speech"
+        ],
+        "answerIndex": 1,
+        "rationale": "The p.4 body-map image labels difficulty in swallowing together with autonomic and somatic symptoms.",
+        "sourcePage": "PDF p.4"
+      },
+      {
+        "id": "psyanx-mcq-049",
+        "question": "Which pair occurs in the source DSM-5 anxiety-disorder list?",
+        "options": [
+          "Selective mutism and separation anxiety disorder",
+          "Dementia and delirium",
+          "Delusions and hallucinations",
+          "Bipolar mania and depression"
+        ],
+        "answerIndex": 0,
+        "rationale": "Both selective mutism and separation anxiety are printed on the list in p.5.",
+        "sourcePage": "PDF p.5"
+      },
+      {
+        "id": "psyanx-mcq-050",
+        "question": "What must be present, in addition to panic attacks, to support the source definition of Panic Disorder?",
+        "options": [
+          "One brief episode without further concerns",
+          "Persistent concern or behaviour change for at least one month after an attack",
+          "Persistent worry only about finances",
+          "Fear of one specific animal only"
+        ],
+        "answerIndex": 1,
+        "rationale": "The p.12 table requires recurrent unexpected attacks and a month or more of concern, worry or behavior change after at least one.",
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "id": "psyanx-mcq-051",
+        "question": "Which set of symptoms belongs to the six GAD associated features in the printed table?",
+        "options": [
+          "Delusion, hallucination and illusion",
+          "Guilt, grandeur and jealousy",
+          "Fatigue, irritability and muscle tension",
+          "Mood, affect and speech"
+        ],
+        "answerIndex": 2,
+        "rationale": "The p.16 GAD table includes fatigue, irritability and muscle tension among six associated symptoms.",
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "id": "psyanx-mcq-052",
+        "question": "What explains the fear of situations in the agoraphobia figure?",
+        "options": [
+          "Loss of interest in all activities",
+          "A fixed belief about others' thoughts",
+          "Worry only about school performance",
+          "Escape may be difficult or help unavailable if panic-like symptoms occur"
+        ],
+        "answerIndex": 3,
+        "rationale": "The p.21 figure describes difficulty escaping or getting help if panic-like or incapacitating symptoms develop.",
+        "sourcePage": "PDF p.21"
+      },
+      {
+        "id": "psyanx-mcq-053",
+        "question": "How is fear expected to relate to real danger under the specific-phobia slide?",
+        "options": [
+          "It is out of proportion to the actual danger and sociocultural context",
+          "It is always proportionate to the threat",
+          "It requires thought insertion",
+          "It must be accompanied by a hallucination"
+        ],
+        "answerIndex": 0,
+        "rationale": "The p.24 image explicitly states phobic fear is disproportionate to danger and sociocultural context.",
+        "sourcePage": "PDF p.24"
+      },
+      {
+        "id": "psyanx-mcq-054",
+        "question": "Which neurotransmitter change appears in the source etiological diagram?",
+        "options": [
+          "Excess dopamine only",
+          "Deficiency of GABA",
+          "Deficiency of norepinephrine",
+          "Increase in acetylcholine"
+        ],
+        "answerIndex": 1,
+        "rationale": "The biological column of p.34 explicitly lists GABA deficiency.",
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "id": "psyanx-mcq-055",
+        "question": "Which pair of learning processes is named in the behavioral etiology figure?",
+        "options": [
+          "Remote and immediate memory",
+          "Delusional reference and thought withdrawal",
+          "Classical and operant conditioning",
+          "Mild and severe cognition"
+        ],
+        "answerIndex": 2,
+        "rationale": "The behavioral column says fear can be classically conditioned and maintained through operant conditioning.",
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "id": "psyanx-mcq-056",
+        "question": "According to the lecture's epidemiology slide, anxiety prevalence:",
+        "options": [
+          "Is always equal across sexes",
+          "Is confined to late adulthood",
+          "Never appears in adolescence",
+          "Decreases with higher socioeconomic status"
+        ],
+        "answerIndex": 3,
+        "rationale": "The final sentence of source p.33 says prevalence decreases with higher socioeconomic status.",
+        "sourcePage": "PDF p.33"
       }
     ]
   }

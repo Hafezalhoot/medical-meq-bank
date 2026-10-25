@@ -11,8 +11,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 COURSE = "internal-medicine-ii"
 CASES = {
-    "internal-medicine-ii-psychiatry-psychiatric-history-mse": (44, 42),
-    "internal-medicine-ii-psychiatry-anxiety-disorders": (43, 47),
+    "internal-medicine-ii-psychiatry-psychiatric-history-mse": (44, 52),
+    "internal-medicine-ii-psychiatry-anxiety-disorders": (43, 56),
 }
 PAGE = re.compile(r"^PDF p\.(\d+)$")
 
@@ -63,6 +63,23 @@ class PsychiatrySourcePilotTests(unittest.TestCase):
                     indices[mcq["answerIndex"]] += 1
                 self.assertLessEqual(max(indices) - min(indices), 1,
                     "No predictable single correct-answer position in exam mode")
+                expected_pages = (
+                    {12, 27, 28, 34, 35, 43}
+                    if "psychiatric-history" in lecture_id
+                    else {3, 4, 12, 16, 21, 24, 34}
+                )
+                self.assertEqual(
+                    {int(PAGE.fullmatch(picture["page"]).group(1))
+                     for picture in lecture["imageQuestions"]},
+                    expected_pages,
+                    "Informational source figures must not silently go missing",
+                )
+                covered_pages = {
+                    int(PAGE.fullmatch(section["sourcePage"]).group(1))
+                    for section in guide["explanation"]
+                }
+                self.assertTrue(expected_pages.issubset(covered_pages),
+                    "Each image-rich source page must be represented in Explanation")
                 # Only original JPEG crops extracted from the user-provided PDF are hosted.
                 for picture in lecture["imageQuestions"]:
                     image_url = picture.get("image")

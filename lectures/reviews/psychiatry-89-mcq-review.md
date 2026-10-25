@@ -1,4 +1,6 @@
-# Psychiatry — 89-question source-linked editorial review
+# Psychiatry — Original 89-MCQ answer-key snapshot
+
+> **ARCHIVED SNAPSHOT — Superseded on 2026-10-25.** This file preserves the originally published 89 MCQ keys for traceability. The current owner study bank contains **108 MCQs** with new figure-derived items. Use [the latest 108-MCQ answer-key audit](psychiatry-108-mcq-review.md) for the current content; the original full lecture PDFs remain the authority for exam facts.
 
 **Status:** Review draft, not lecturer-approved, not deployed. This is a readable view of the **exact JSON answer keys** in PR #59 as of 2026-10-25; it does not verify medical correctness automatically. Review the original uploaded PDF at each specified page before approving.
 
