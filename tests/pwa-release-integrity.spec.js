@@ -214,3 +214,67 @@ test('tablet and desktop course/specialty names are never cropped by the native 
     expect(bounds.overflow).toBeLessThanOrEqual(1);
   }
 });
+
+
+test('Cloudflare Access callback is never intercepted by the offline service worker', async () => {
+  const listeners = new Map();
+  const source = readFileSync('dist/service-worker.js', 'utf8');
+  const self = {
+    location: {origin: 'https://study.example'},
+    addEventListener: (type, handler) => listeners.set(type, handler)
+  };
+  runInNewContext(source, {
+    self, URL, Request, Response, console,
+    fetch: async () => new Response('online', {headers: {'Content-Type': 'text/html'}}),
+    caches: {
+      open: async () => ({match: async () => null, put: async () => {}}),
+      match: async () => null
+    }
+  }, {filename: 'service-worker.js'});
+
+  const handleFetch = listeners.get('fetch');
+  expect(typeof handleFetch).toBe('function');
+  for (const path of [
+    '/cdn-cgi/access/authorized?nonce=example&state=example',
+    '/cdn-cgi/access/login',
+    '/cdn-cgi/challenge-platform/test'
+  ]) {
+    let intercepted = false;
+    handleFetch({
+      request: {method: 'GET', mode: 'navigate', url: 'https://study.example' + path},
+      respondWith: () => {intercepted = true;}
+    });
+    expect(intercepted, path).toBe(false);
+  }
+  let rootResponse;
+  handleFetch({
+    request: {method: 'GET', mode: 'navigate', url: 'https://study.example/'},
+    respondWith: response => {rootResponse = response;}
+  });
+  expect(rootResponse).toBeTruthy();
+  expect((await rootResponse).ok).toBe(true);
+});
+
+test('Access login callback redirects to the real homepage with styling and lecture navigation', async ({page}) => {
+  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await expect.poll(
+    () => page.evaluate(() => Boolean(navigator.serviceWorker.controller)),
+    {timeout: 60_000}
+  ).toBe(true);
+
+  // Simulate the provider's same-origin post-login callback. The browser,
+  // not the PWA service worker, must follow this HTTP redirect to '/'.
+  await page.route(/\/cdn-cgi\/access\/authorized\?/, route =>
+    route.fulfill({status: 302, headers: {Location: '/'}, body: ''})
+  );
+  await page.goto('/cdn-cgi/access/authorized?nonce=test&state=test', {
+    waitUntil: 'domcontentloaded'
+  });
+  await expect(page).toHaveURL('http://127.0.0.1:4173/');
+  await expect(page.locator('#courseSelector')).toBeVisible();
+  await expect(page.locator('#courseSelector option')).toHaveCount(3);
+  const heroColor = await page.locator('.hero').evaluate(el => getComputedStyle(el).backgroundColor);
+  expect(heroColor).toBe('rgb(17, 57, 66)');
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await expect(page.locator('#subjectSelector option[value="psychiatry"]')).toHaveCount(1);
+});
