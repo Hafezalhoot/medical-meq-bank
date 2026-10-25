@@ -6,8 +6,6 @@ Never uploads PDFs, adds medical facts, changes catalogs, or publishes lectures.
 from argparse import ArgumentParser
 import json
 from pathlib import Path
-from tempfile import TemporaryDirectory
-import os
 
 from add_lecture import ROOT, fail
 from new_lecture import prepare_draft
