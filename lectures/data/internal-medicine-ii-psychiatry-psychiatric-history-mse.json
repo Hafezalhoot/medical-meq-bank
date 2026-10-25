@@ -5,7 +5,7 @@
   "subject": "Psychiatry",
   "title": "Psychiatric History Taking & Mental Status Examination",
   "subtitle": "Interview structure, developmental history and stepwise MSE",
-  "sourceNote": "Lecture-first exam source: user-supplied '1- psychiatric_history_taking.pdf' (44 PDF pages; SHA-256 4eda3423372bdd57c76b40e65a1dd7c990226e7db369124a94ec9eb77dcbd2cb). All sourcePage values refer to 1-based PDF pages. Seven? No: three original teaching figure crops (pp.27, 34, 43) are hosted as source-only JPEG assets with SHA-256 integrity metadata; the full PDF remains outside this repository. Questions and teaching scenarios are proposed study items requiring lecturer/learner medical review before production. No outside criteria or therapies introduced.",
+  "sourceNote": "Lecture-first exam source: user-supplied '1- psychiatric_history_taking.pdf' (44 PDF pages; SHA-256 4eda3423372bdd57c76b40e65a1dd7c990226e7db369124a94ec9eb77dcbd2cb). All sourcePage values refer to 1-based PDF pages. Three original teaching figure crops (pp.27, 34, 43) are hosted as source-only JPEG assets with SHA-256 integrity metadata; the full PDF remains outside this repository. Questions and teaching scenarios are proposed study items requiring lecturer/learner medical review before production. No outside criteria or therapies introduced.",
   "subtopics": [
     {
       "id": "interview",
