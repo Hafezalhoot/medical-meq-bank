@@ -1,0 +1,1580 @@
+{
+  "id": "internal-medicine-ii-psychiatry-anxiety-disorders",
+  "order": 2,
+  "subjectKey": "psychiatry",
+  "subject": "Psychiatry",
+  "title": "Anxiety Disorders",
+  "subtitle": "Case-based panic, generalized anxiety, phobias, course and treatment",
+  "sourceNote": "Lecture-first exam source: user-supplied '2- Anxiety disorders.pdf' (43 PDF pages; SHA-256 a0588e9348f9768d7a38faf7c791e281aa2b9b14a917fdf126f501b6d56f5f08). SourcePage values use 1-based PDF pages. DSM-5 image-only source slides pp.12,16,21,24 and etiology figure p.34 were read visually. Clinical criteria, percentages and treatments remain the lecture's own wording rather than external guideline updates. All questions/distractors are review drafts; do not interpret lecture teaching-case headings as proof that each case supplies every formal duration criterion. Source figures/PDF not republished; lecturer/learner review required before production.",
+  "subtopics": [
+    {
+      "id": "concepts",
+      "label": "Definitions and Anxiety Symptom Domains"
+    },
+    {
+      "id": "panic",
+      "label": "Panic Disorder and Case 1"
+    },
+    {
+      "id": "gad",
+      "label": "Generalized Anxiety Disorder and Case 2"
+    },
+    {
+      "id": "agoraphobia",
+      "label": "Agoraphobia and Case 3"
+    },
+    {
+      "id": "specific-phobia",
+      "label": "Specific Phobia and Case 4"
+    },
+    {
+      "id": "social-anxiety",
+      "label": "Social Anxiety Disorder and Case 5"
+    },
+    {
+      "id": "differential",
+      "label": "Differential Diagnosis"
+    },
+    {
+      "id": "epidemiology",
+      "label": "Epidemiology, Etiology and Comorbidity"
+    },
+    {
+      "id": "prognosis",
+      "label": "Course and Prognosis"
+    },
+    {
+      "id": "treatment",
+      "label": "Treatment and Psychotherapies"
+    }
+  ],
+  "cases": [
+    {
+      "id": "psyanx-case-001",
+      "title": "Case 1 — abrupt episodes at work",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "panic"
+      ],
+      "scenario": "35-year-old woman had sudden breathlessness, dizziness, tachycardia, shaking and fear of a heart attack at her desk. Emergency ECG/blood work were unrevealing; two earlier episodes occurred in the prior month (pp.6–7).",
+      "questions": [
+        "What diagnosis does the lecturer introduce after this case?",
+        "Which key post-attack course information is needed from the criteria slide?"
+      ],
+      "answer": [
+        "Panic Disorder (lecture teaching label).",
+        "Persistent concern/worry or behavior change over at least a month, with recurrent unexpected attacks (p.12)."
+      ],
+      "memory": "Original lecture case: PDF p.6 onward. Educational source case, not clinical advice."
+    },
+    {
+      "id": "psyanx-case-002",
+      "title": "Case 2 — persistent worry",
+      "topic": "Generalized Anxiety Disorder and Case 2",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "gad"
+      ],
+      "scenario": "28-year-old married teacher worries about teaching performance and finances, with irritability, tension, restlessness and sleep difficulties (pp.13–14).",
+      "questions": [
+        "Which lecture diagnosis follows this case?",
+        "Which duration and associated-symptom rules must be checked?"
+      ],
+      "answer": [
+        "Generalized Anxiety Disorder.",
+        "At least six months of excessive worry and at least three of six associated symptoms (p.16)."
+      ],
+      "memory": "Original lecture case: PDF p.13 onward. Educational source case, not clinical advice."
+    },
+    {
+      "id": "psyanx-case-003",
+      "title": "Case 3 — avoidance after panic-like attacks",
+      "topic": "Agoraphobia and Case 3",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "agoraphobia"
+      ],
+      "scenario": "33-year-old woman has had attacks for eight years and avoids leaving home alone or busy places where escape might be difficult; needs accompaniment or her phone (pp.17–19).",
+      "questions": [
+        "Which anxiety disorder does the lecture discuss next?",
+        "Name two relevant agoraphobic situation categories."
+      ],
+      "answer": [
+        "Agoraphobia.",
+        "Being outside home alone and standing in crowds/enclosed places (p.21)."
+      ],
+      "memory": "Original lecture case: PDF p.17 onward. Educational source case, not clinical advice."
+    },
+    {
+      "id": "psyanx-case-004",
+      "title": "Case 4 — fear of highway driving",
+      "topic": "Specific Phobia and Case 4",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "specific-phobia"
+      ],
+      "scenario": "Lawyer experiences fear of fatal car accident when driving, especially highways, with racing heart, nausea and sweating, interfering with his commute.",
+      "questions": [
+        "Which diagnosis follows the case?",
+        "Which phobia subtype is illustrated?"
+      ],
+      "answer": [
+        "Specific Phobia.",
+        "Situational type."
+      ],
+      "memory": "Original lecture case: PDF p.22 onward. Educational source case, not clinical advice."
+    },
+    {
+      "id": "psyanx-case-005",
+      "title": "Case 5 — public speaking and judgment",
+      "topic": "Social Anxiety Disorder and Case 5",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "social-anxiety"
+      ],
+      "scenario": "29-year-old computer programmer fears ridicule by colleagues and speaking in meetings, reporting palpitations, dry mouth, sweating and avoidance (pp.26–27).",
+      "questions": [
+        "Which diagnosis follows this case?",
+        "Which duration criterion is in the following slide?"
+      ],
+      "answer": [
+        "Social Anxiety Disorder (Social Phobia).",
+        "More than six months (p.29), which should be confirmed rather than inferred from the case text."
+      ],
+      "memory": "Original lecture case: PDF p.26 onward. Educational source case, not clinical advice."
+    }
+  ],
+  "coreShorts": [
+    {
+      "id": "psyanx-short-001",
+      "q": "Define fear and anxiety using the lecture.",
+      "a": "Fear: appropriate response to known threat; anxiety: response to unknown/vague threat.",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "concepts"
+      ],
+      "section": "Source PDF p.2"
+    },
+    {
+      "id": "psyanx-short-002",
+      "q": "Name the four anxiety symptom domains in the diagram.",
+      "a": "Emotional, cognitive, physiological, behavioral.",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "concepts"
+      ],
+      "section": "Source PDF p.3"
+    },
+    {
+      "id": "psyanx-short-003",
+      "q": "Name two physiologic anxiety symptoms in the diagram.",
+      "a": "Increased heart rate and muscle tension.",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "concepts"
+      ],
+      "section": "Source PDF p.3"
+    },
+    {
+      "id": "psyanx-short-004",
+      "q": "Give four listed DSM-5 anxiety disorders.",
+      "a": "Specific phobia, panic disorder, agoraphobia, generalized anxiety disorder (others also listed on p.5).",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "concepts"
+      ],
+      "section": "Source PDF p.5"
+    },
+    {
+      "id": "psyanx-short-005",
+      "q": "Summarize the sudden symptoms in Case 1.",
+      "a": "Sudden dyspnea, dizziness, tachycardia, shaking and fear of death from a heart attack.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.6"
+    },
+    {
+      "id": "psyanx-short-006",
+      "q": "What was the reported frequency of Case 1's previous attacks?",
+      "a": "Two additional episodes over the preceding month.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.7"
+    },
+    {
+      "id": "psyanx-short-007",
+      "q": "Name four physical panic symptoms from the slide.",
+      "a": "For example breathlessness, palpitations, nausea and sweating.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.9"
+    },
+    {
+      "id": "psyanx-short-008",
+      "q": "Name two psychiatric panic symptoms.",
+      "a": "Derealization/depersonalization and fear of losing control/dying.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.9"
+    },
+    {
+      "id": "psyanx-short-009",
+      "q": "Define anticipatory anxiety.",
+      "a": "Persistent fear of further panic attacks.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.10"
+    },
+    {
+      "id": "psyanx-short-010",
+      "q": "What is the lecture's minimum panic-attack symptom threshold?",
+      "a": "Four or more symptoms.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.11"
+    },
+    {
+      "id": "psyanx-short-011",
+      "q": "What concerns/changes after attacks contribute to Panic Disorder?",
+      "a": "Persistent concern about more attacks, worry about implications, or significant behavior change for at least a month after an attack, in the setting of recurrent unexpected attacks.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.12"
+    },
+    {
+      "id": "psyanx-short-012",
+      "q": "Which worry domains occur in Case 2?",
+      "a": "Professional teaching performance and financial security.",
+      "topic": "Generalized Anxiety Disorder and Case 2",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "gad"
+      ],
+      "section": "Source PDF p.13"
+    },
+    {
+      "id": "psyanx-short-013",
+      "q": "Name three accompanying GAD-case symptoms.",
+      "a": "Tension, irritability, restlessness and/or sleep-onset difficulty.",
+      "topic": "Generalized Anxiety Disorder and Case 2",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "gad"
+      ],
+      "section": "Source PDF p.14"
+    },
+    {
+      "id": "psyanx-short-014",
+      "q": "State GAD duration and core worry pattern.",
+      "a": "Excessive worry more days than not for at least six months across activities/events, difficult to control.",
+      "topic": "Generalized Anxiety Disorder and Case 2",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "gad"
+      ],
+      "section": "Source PDF p.16"
+    },
+    {
+      "id": "psyanx-short-015",
+      "q": "List six GAD associated symptoms.",
+      "a": "Restlessness, fatigue, difficulty concentrating, irritability, muscle tension, sleep disturbance.",
+      "topic": "Generalized Anxiety Disorder and Case 2",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "gad"
+      ],
+      "section": "Source PDF p.16"
+    },
+    {
+      "id": "psyanx-short-016",
+      "q": "How many associated GAD symptoms does the slide require?",
+      "a": "Three or more of six.",
+      "topic": "Generalized Anxiety Disorder and Case 2",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "gad"
+      ],
+      "section": "Source PDF p.16"
+    },
+    {
+      "id": "psyanx-short-017",
+      "q": "What situations are avoided by Case 3?",
+      "a": "Leaving home alone and crowded places such as malls, cinemas and banks where escape could be difficult.",
+      "topic": "Agoraphobia and Case 3",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "agoraphobia"
+      ],
+      "section": "Source PDF p.18"
+    },
+    {
+      "id": "psyanx-short-018",
+      "q": "Name the five agoraphobic situations.",
+      "a": "Public transport, open spaces, enclosed places, lines/crowds, outside home alone.",
+      "topic": "Agoraphobia and Case 3",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "agoraphobia"
+      ],
+      "section": "Source PDF p.21"
+    },
+    {
+      "id": "psyanx-short-019",
+      "q": "How many situation categories and how long are in the agoraphobia criteria?",
+      "a": "Two or more situations; typically six months or more.",
+      "topic": "Agoraphobia and Case 3",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "agoraphobia"
+      ],
+      "section": "Source PDF p.21"
+    },
+    {
+      "id": "psyanx-short-020",
+      "q": "What is the feared situation in Case 4?",
+      "a": "Driving, particularly on highways.",
+      "topic": "Specific Phobia and Case 4",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "specific-phobia"
+      ],
+      "section": "Source PDF p.22"
+    },
+    {
+      "id": "psyanx-short-021",
+      "q": "Describe specific phobia criteria from p.24.",
+      "a": "Marked immediate object/situation-specific fear, disproportionate, persistent ≥6 months with meaningful impairment/distress.",
+      "topic": "Specific Phobia and Case 4",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "specific-phobia"
+      ],
+      "section": "Source PDF p.24"
+    },
+    {
+      "id": "psyanx-short-022",
+      "q": "Name the specific-phobia subtypes.",
+      "a": "Animal, natural environment, blood–injection–injury and situational.",
+      "topic": "Specific Phobia and Case 4",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "specific-phobia"
+      ],
+      "section": "Source PDF p.25"
+    },
+    {
+      "id": "psyanx-short-023",
+      "q": "What feared social situations trouble Case 5?",
+      "a": "Meeting unfamiliar staff and public speaking, due to fear of ridicule.",
+      "topic": "Social Anxiety Disorder and Case 5",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "social-anxiety"
+      ],
+      "section": "Source PDF p.26"
+    },
+    {
+      "id": "psyanx-short-024",
+      "q": "List physical symptoms reported in Case 5.",
+      "a": "Palpitations, dry mouth and sweating.",
+      "topic": "Social Anxiety Disorder and Case 5",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "social-anxiety"
+      ],
+      "section": "Source PDF p.27"
+    },
+    {
+      "id": "psyanx-short-025",
+      "q": "What is the Social Phobia duration rule in the lecture?",
+      "a": "More than six months.",
+      "topic": "Social Anxiety Disorder and Case 5",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "social-anxiety"
+      ],
+      "section": "Source PDF p.29"
+    },
+    {
+      "id": "psyanx-short-026",
+      "q": "Which Social Anxiety specifier is listed?",
+      "a": "Performance only.",
+      "topic": "Social Anxiety Disorder and Case 5",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "social-anxiety"
+      ],
+      "section": "Source PDF p.30"
+    },
+    {
+      "id": "psyanx-short-027",
+      "q": "Name three differential diagnoses for anxiety symptoms.",
+      "a": "Substance/medication-induced anxiety, medical condition-induced anxiety and other anxiety disorders (examples).",
+      "topic": "Differential Diagnosis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "differential"
+      ],
+      "section": "Source PDF p.31"
+    },
+    {
+      "id": "psyanx-short-028",
+      "q": "Name two additional differential diagnoses from slide 32.",
+      "a": "OCD and PTSD/acute stress disorder (also mood, delusional and adjustment disorders).",
+      "topic": "Differential Diagnosis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "differential"
+      ],
+      "section": "Source PDF p.32"
+    },
+    {
+      "id": "psyanx-short-029",
+      "q": "State the lecture's 12-month anxiety prevalence.",
+      "a": "About 17%.",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "section": "Source PDF p.33"
+    },
+    {
+      "id": "psyanx-short-030",
+      "q": "Give the lecture's prevalence figures for panic, phobia and GAD.",
+      "a": "Panic 1.5–4%; phobia 10%; GAD 3–8%.",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "section": "Source PDF p.33"
+    },
+    {
+      "id": "psyanx-short-031",
+      "q": "List four etiologic perspectives in the source diagram.",
+      "a": "Biological, behavioral, cognitive, psychodynamic (also evolutionary and sociocultural).",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "section": "Source PDF p.34"
+    },
+    {
+      "id": "psyanx-short-032",
+      "q": "List the three comorbidities highlighted.",
+      "a": "Depression, alcohol/substance-use disorders and OCD.",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "section": "Source PDF p.35"
+    },
+    {
+      "id": "psyanx-short-033",
+      "q": "Give the lecture's panic disorder long-term outcome proportions.",
+      "a": "30–40% symptom-free, ~50% mild symptoms, 10–20% significant symptoms.",
+      "topic": "Course and Prognosis",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "prognosis"
+      ],
+      "section": "Source PDF p.36"
+    },
+    {
+      "id": "psyanx-short-034",
+      "q": "What complicates anxiety disorder prognosis?",
+      "a": "Comorbid alcohol or substance use and long-term relapsing course; monitor suicide risk.",
+      "topic": "Course and Prognosis",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "prognosis"
+      ],
+      "section": "Source PDF p.37"
+    },
+    {
+      "id": "psyanx-short-035",
+      "q": "Which medication categories are listed for GAD/PD/SAD?",
+      "a": "Short-term benzodiazepines, SSRIs, SNRIs including venlafaxine and tricyclic antidepressants.",
+      "topic": "Treatment and Psychotherapies",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "treatment"
+      ],
+      "section": "Source PDF p.38"
+    },
+    {
+      "id": "psyanx-short-036",
+      "q": "Which benzodiazepine side effects are noted?",
+      "a": "Dependence and cognitive side effects.",
+      "topic": "Treatment and Psychotherapies",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "treatment"
+      ],
+      "section": "Source PDF p.38"
+    },
+    {
+      "id": "psyanx-short-037",
+      "q": "Which conditions are buspirone and beta blockers assigned to?",
+      "a": "Buspirone for GAD; beta blockers for social anxiety.",
+      "topic": "Treatment and Psychotherapies",
+      "priority": "High",
+      "marks": 2,
+      "subtopics": [
+        "treatment"
+      ],
+      "section": "Source PDF p.39"
+    },
+    {
+      "id": "psyanx-short-038",
+      "q": "List the psychotherapy categories from p.40.",
+      "a": "Cognitive, behavioral, and interpersonal psychotherapy.",
+      "topic": "Treatment and Psychotherapies",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "treatment"
+      ],
+      "section": "Source PDF p.40"
+    },
+    {
+      "id": "psyanx-short-039",
+      "q": "Name three behavioral techniques from the source.",
+      "a": "For example, systematic desensitization, graded exposure and relaxation.",
+      "topic": "Treatment and Psychotherapies",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "treatment"
+      ],
+      "section": "Source PDF p.40"
+    },
+    {
+      "id": "psyanx-short-040",
+      "q": "What example illustrates virtual therapy?",
+      "a": "Virtual crowded supermarket exposure for agoraphobia.",
+      "topic": "Treatment and Psychotherapies",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "treatment"
+      ],
+      "section": "Source PDF p.41"
+    }
+  ],
+  "imageQuestions": [
+    {
+      "id": "psyanx-image-001",
+      "title": "Anxiety diagram — symptom domains",
+      "topic": "Definitions and Anxiety Symptom Domains",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "concepts"
+      ],
+      "page": "PDF p.3",
+      "prompt": "Consult the original PDF p.3; this original diagram/table has not been hosted.",
+      "questions": [
+        "What are the four anxiety symptom domains in the figure?",
+        "Which domain includes avoidance?"
+      ],
+      "answer": [
+        "Emotional, cognitive, physiological and behavioral.",
+        "Behavioral symptoms."
+      ]
+    },
+    {
+      "id": "psyanx-image-002",
+      "title": "Original DSM-5 table — GAD",
+      "topic": "Generalized Anxiety Disorder and Case 2",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "gad"
+      ],
+      "page": "PDF p.16",
+      "prompt": "Consult the original PDF p.16; this original diagram/table has not been hosted.",
+      "questions": [
+        "What minimum worry duration is shown?",
+        "How many associated symptoms are required?"
+      ],
+      "answer": [
+        "At least six months.",
+        "Three or more of six."
+      ]
+    },
+    {
+      "id": "psyanx-image-003",
+      "title": "Original DSM-5 figure — agoraphobia",
+      "topic": "Agoraphobia and Case 3",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "agoraphobia"
+      ],
+      "page": "PDF p.21",
+      "prompt": "Consult the original PDF p.21; this original diagram/table has not been hosted.",
+      "questions": [
+        "How many of the five situations are required?",
+        "What is the typical duration?"
+      ],
+      "answer": [
+        "Two or more.",
+        "Six months or more."
+      ]
+    },
+    {
+      "id": "psyanx-image-004",
+      "title": "Source image — anxiety etiology",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "Core",
+      "marks": 2,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "page": "PDF p.34",
+      "prompt": "Consult the original PDF p.34; this original diagram/table has not been hosted.",
+      "questions": [
+        "Name two etiologic categories in the figure.",
+        "Does this question reproduce an external image?"
+      ],
+      "answer": [
+        "For example biological and behavioral.",
+        "No; the source PDF must be consulted."
+      ]
+    }
+  ],
+  "detailedShorts": [
+    {
+      "id": "psyanx-detail-001",
+      "q": "Outline the panic-attack symptom clusters shown in the lecture.",
+      "a": "Cardiopulmonary: dyspnea/palpitations/chest discomfort. GI: nausea. Skin/systemic: sweating/chills/flushing. Neurologic: tremor/dizziness/paresthesia. Psychiatric: depersonalization/derealization and fear of dying/losing control; sudden onset.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.9"
+    },
+    {
+      "id": "psyanx-detail-002",
+      "q": "Describe the panic disorder criteria and exclusions as presented.",
+      "a": "Recurrent unexpected panic attacks; at least one followed for a month by persistent concern, worry about consequences or marked behavior change. A panic attack is described with ≥4 symptoms. Exclude effects of substances, medical conditions and a better explanatory psychiatric disorder.",
+      "topic": "Panic Disorder and Case 1",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "panic"
+      ],
+      "section": "Source PDF p.12"
+    },
+    {
+      "id": "psyanx-detail-003",
+      "q": "State GAD criteria listed in the original DSM-5 table.",
+      "a": "Excessive and difficult-to-control worry on more days than not for ≥6 months across areas; ≥3/6 symptoms (restlessness, fatigue, poor concentration, irritability, muscle tension, sleep disturbance); clinically significant impairment/distress; not due to substances/medical condition or another mental illness.",
+      "topic": "Generalized Anxiety Disorder and Case 2",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "gad"
+      ],
+      "section": "Source PDF p.16"
+    },
+    {
+      "id": "psyanx-detail-004",
+      "q": "Outline agoraphobia situations and persistence criteria.",
+      "a": "Marked fear of at least two of public transit, open spaces, enclosed spaces, queues/crowds, being outside alone; situations provoke fear and are avoided/endured with distress; disproportionate to actual danger; typically ≥6 months with impairment; exclude better explanations.",
+      "topic": "Agoraphobia and Case 3",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "agoraphobia"
+      ],
+      "section": "Source PDF p.21"
+    },
+    {
+      "id": "psyanx-detail-005",
+      "q": "Explain characteristic features and categories of specific phobia.",
+      "a": "Marked object- or situation-specific fear with almost immediate response, disproportionate to danger and sociocultural context, typically ≥6 months with impairment/distress; source specifiers: animals, natural environment, blood-injection-injury, situational (p.25).",
+      "topic": "Specific Phobia and Case 4",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "specific-phobia"
+      ],
+      "section": "Source PDF p.24"
+    },
+    {
+      "id": "psyanx-detail-006",
+      "q": "Describe the diagnostic features of social phobia and one specifier.",
+      "a": "Fear of social judgment or embarrassment, avoidance and fear out of proportion, >6 months with distress/impairment, exclusions; performance-only specifier mentioned on p.30.",
+      "topic": "Social Anxiety Disorder and Case 5",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "social-anxiety"
+      ],
+      "section": "Source PDF p.29"
+    },
+    {
+      "id": "psyanx-detail-007",
+      "q": "Group the lecture's differential diagnoses.",
+      "a": "Substance/medication or other medical causes; other anxiety disorders; somatic/illness anxiety; delusional, OCD, mood with anxious features, PTSD/acute stress, and adjustment anxiety.",
+      "topic": "Differential Diagnosis",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "differential"
+      ],
+      "section": "Source PDF p.32"
+    },
+    {
+      "id": "psyanx-detail-008",
+      "q": "Outline the etiological categories diagrammed in the slide.",
+      "a": "Biological/genetic/autonomic/neurotransmitter and limbic factors; behavioral learning/conditioning; cognitive perceived control/interpretation; psychodynamic defense mechanisms; sociocultural pressures; evolutionary predisposition.",
+      "topic": "Epidemiology, Etiology and Comorbidity",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "epidemiology"
+      ],
+      "section": "Source PDF p.34"
+    },
+    {
+      "id": "psyanx-detail-009",
+      "q": "What long-term outcomes and modifiers are described?",
+      "a": "Panic chronic with variable outcome (30–40% symptom-free, ~50% mild, 10–20% significant); agoraphobia may improve as panic improves, but can remain disabling without panic history; comorbidity worsens course and good premorbid function/brief duration favors prognosis.",
+      "topic": "Course and Prognosis",
+      "priority": "High",
+      "marks": 4,
+      "subtopics": [
+        "prognosis"
+      ],
+      "section": "Source PDF p.36"
+    },
+    {
+      "id": "psyanx-detail-010",
+      "q": "Summarize medications and psychotherapies in the source lecture.",
+      "a": "Outpatient usually; hospitalize selected severe risk/comorbidity. Medications include short-term benzodiazepines, SSRIs, SNRIs, TCAs; buspirone for GAD, beta blockers for social anxiety, and resistant-case options. Psychotherapies include cognitive, behavioral, interpersonal, virtual, supportive and group approaches (pp.38–41).",
+      "topic": "Treatment and Psychotherapies",
+      "priority": "Core",
+      "marks": 4,
+      "subtopics": [
+        "treatment"
+      ],
+      "section": "Source PDF p.40"
+    }
+  ],
+  "rapid": [
+    [
+      "Fear vs anxiety?",
+      "Known threat vs unknown/vague threat."
+    ],
+    [
+      "Anxiety symptom domains?",
+      "Emotional, cognitive, physiological, behavioral."
+    ],
+    [
+      "Panic symptoms threshold?",
+      "Four or more during panic attack."
+    ],
+    [
+      "Panic attack onset?",
+      "Abrupt and unpredictable."
+    ],
+    [
+      "Panic disorder post-attack criterion?",
+      "At least one month concern/worry/behavior change after an attack."
+    ],
+    [
+      "Anticipatory anxiety?",
+      "Fear of further attacks."
+    ],
+    [
+      "GAD minimum duration?",
+      "Six months."
+    ],
+    [
+      "GAD associated symptoms required?",
+      "At least three of six."
+    ],
+    [
+      "Agoraphobia number of situations?",
+      "At least two of five."
+    ],
+    [
+      "Agoraphobia usual duration?",
+      "At least six months."
+    ],
+    [
+      "Specific phobia response?",
+      "Fear almost always provoked by the specific object/situation."
+    ],
+    [
+      "Specific phobia duration?",
+      "Usually six months or more."
+    ],
+    [
+      "Specific phobia subtypes?",
+      "Animals, natural environment, blood–injection–injury, situational."
+    ],
+    [
+      "Social anxiety feared consequence?",
+      "Negative judgment, embarrassment or rejection."
+    ],
+    [
+      "Social anxiety duration?",
+      "More than six months."
+    ],
+    [
+      "Social Anxiety specifier?",
+      "Performance only."
+    ],
+    [
+      "Anxiety 12-month prevalence in lecture?",
+      "About 17%."
+    ],
+    [
+      "Comorbidity list?",
+      "Depression, alcohol/substance use and OCD."
+    ],
+    [
+      "Panic symptom-free long-term?",
+      "About 30–40% in source slide."
+    ],
+    [
+      "Buspirone in lecture?",
+      "GAD."
+    ],
+    [
+      "Beta blockers in lecture?",
+      "Social anxiety."
+    ],
+    [
+      "Benzodiazepines note?",
+      "Short-term/acute; dependence and cognitive side effects."
+    ],
+    [
+      "Interpersonal therapy in lecture?",
+      "Social skills training for social anxiety."
+    ],
+    [
+      "Virtual-therapy example?",
+      "Crowded supermarket for agoraphobia."
+    ]
+  ],
+  "studyGuide": {
+    "explanation": [
+      {
+        "heading": "Fear versus anxiety",
+        "paragraphs": [
+          "Fear في المحاضرة استجابة مناسبة لتهديد معروف (known threat)، بينما Anxiety استجابة لتهديد مبهم أو غير معروف (unknown/vague threat). العرض يميز كذلك normal وpathological anxiety دون معيار رقمي في شريحة التعريف."
+        ],
+        "sourcePage": "PDF p.2"
+      },
+      {
+        "heading": "Symptom domains",
+        "paragraphs": [
+          "في الرسم المرفق: Emotional = tension وapprehension؛ Cognitive = worry وأفكار عن عدم القدرة على المواجهة؛ Physiological = زيادة النبض وتوتر العضلات وautonomic arousal؛ Behavioral = avoidance وضعف إنجاز المهام وزيادة startle response."
+        ],
+        "sourcePage": "PDF p.3"
+      },
+      {
+        "heading": "Anxiety disorders listed in the lecture",
+        "paragraphs": [
+          "قائمة DSM-5 المصورة تتضمن specific phobia، panic disorder، agoraphobia، selective mutism، separation anxiety، GAD، unspecified/other specified anxiety، social anxiety، anxiety due to medical condition، وsubstance/medication-induced anxiety. هذه قائمة المحاضرة كما وردت في الشريحة."
+        ],
+        "sourcePage": "PDF p.5"
+      },
+      {
+        "heading": "Case 1 — sudden attacks",
+        "paragraphs": [
+          "سيدة عمرها 35 سنة ظهرت لها فجأة أثناء العمل صعوبة تنفّس ودوخة وتسرّع القلب ورعشة وخوف من موت بسبب أزمة قلبية. تقييم الطوارئ كان دون دليل مرض، وذكرت حدوث نوبتين أخريين خلال الشهر السابق (pp.6–7). يضع العرض الحالة تحت Panic Disorder؛ اكتمال جميع المعايير يعتمد على بقية المعطيات."
+        ],
+        "sourcePage": "PDF p.6"
+      },
+      {
+        "heading": "Panic attack symptom groups",
+        "paragraphs": [
+          "أعراض الـPanic في المحاضرة تشمل cardiopulmonary (dyspnea, palpitations, chest discomfort)، GI (nausea)، skin/systemic (sweating, chills/flushing)، neurologic (tremor, dizziness, tingling)، psychiatric (derealization/depersonalization, fear of death/loss of control). البداية abrupt وunpredictable."
+        ],
+        "sourcePage": "PDF p.9"
+      },
+      {
+        "heading": "Panic disorder: concern and duration",
+        "paragraphs": [
+          "بعد النوبات قد توجد Anticipatory Anxiety أي الخوف من تكرارها، وAvoidance Behaviors. تذكر المحاضرة شهرًا أو أكثر من القلق أو تغير السلوك بعد النوبة (pp.10–12)، مع تكرار النوبات غير المتوقعة حسب جدول DSM-5 المصور."
+        ],
+        "sourcePage": "PDF p.10"
+      },
+      {
+        "heading": "Panic criteria and exclusions",
+        "paragraphs": [
+          "تُسرد أربع أعراض على الأقل للـPanic Attack في شريحة المعايير، مع القلق/التجنّب واستمرار شهر أو أكثر للـPanic Disorder كما يوضّح الجدول المصور في p.12. يُستبعد أن تفسَّر الحالة بتعاطي/دواء أو مرض طبي أو اضطراب نفسي آخر."
+        ],
+        "sourcePage": "PDF p.11"
+      },
+      {
+        "heading": "Case 2 — generalized worry",
+        "paragraphs": [
+          "رجل 28 سنة، مدرس ومتزوج، يقلق باستمرار بشأن أدائه المهني والمال رغم استقراره، مع tension, irritability, restlessness وصعوبة النوم (pp.13–14). تضع المحاضرة الحالة تحت GAD؛ لم تذكر الحالة بذاتها مدة 6 أشهر، فلا يُفترض إثبات هذا الشرط من نص الحالة وحده."
+        ],
+        "sourcePage": "PDF p.13"
+      },
+      {
+        "heading": "GAD DSM-5 criteria",
+        "paragraphs": [
+          "جدول p.16: Excessive anxiety/worry في مجالات متعددة أكثر الأيام لمدة 6 أشهر على الأقل؛ صعوبة التحكم؛ ثلاثة أو أكثر من restlessness, fatigue, poor concentration, irritability, muscle tension, sleep disturbance؛ مع distress/impairment واستبعاد substance/medical condition أو اضطراب نفسي آخر."
+        ],
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "heading": "Case 3 — fear of being away from home",
+        "paragraphs": [
+          "سيدة 33 سنة بدأت لديها نوبات تشبه الـPanic قبل 8 سنوات؛ لاحقًا تخاف من وجود النوبة خارج المنزل، وتحتاج هاتفًا أو مرافقًا، وتتجنب المولات والسينما والبنوك والأماكن التي يصعب الخروج منها (pp.17–19). يضع العرض الحالة تحت Agoraphobia."
+        ],
+        "sourcePage": "PDF p.17"
+      },
+      {
+        "heading": "Agoraphobia DSM-5 criteria",
+        "paragraphs": [
+          "الرسم p.21 يطلب خوفًا/قلقًا واضحًا من موقفين أو أكثر من: public transport، open spaces، enclosed places، standing in line/crowd، outside home alone. المواقف تُتجنَّب أو تُحتمل بقلق، والخوف disproportionate ويستمر عادة ≥6 أشهر مع impairment، واستبعاد التفسير الأفضل باضطراب آخر."
+        ],
+        "sourcePage": "PDF p.21"
+      },
+      {
+        "heading": "Case 4 — situational phobia",
+        "paragraphs": [
+          "محام يخاف بشدة من القيادة على الطرق السريعة ويخشى موتًا في حادث، مع racing heart وغثيان وتعرق؛ يؤثر ذلك على الوصول للعمل بعد انتقال المكتب (p.22). يقدم العرض الحالة كـSpecific Phobia (situational)."
+        ],
+        "sourcePage": "PDF p.22"
+      },
+      {
+        "heading": "Specific phobia diagnostic features",
+        "paragraphs": [
+          "الصورة p.24 تذكر fear/anxiety من object/situation محدد، استجابة قلق فورية عادة، خوف غير متناسب مع الخطر/السياق، استمرارية 6 أشهر أو أكثر، وdistress أو impairment مهم. الشريحة التالية تذكر استبعاد اضطراب نفسي آخر."
+        ],
+        "sourcePage": "PDF p.24"
+      },
+      {
+        "heading": "Specific phobia specifiers",
+        "paragraphs": [
+          "تسرد المحاضرة أنواعًا: animals، natural environment، blood–injection–injury، situational. مثال قيادة السيارة في الحالة الرابعة situational."
+        ],
+        "sourcePage": "PDF p.25"
+      },
+      {
+        "heading": "Case 5 — fear of scrutiny",
+        "paragraphs": [
+          "موظفة كمبيوتر 29 سنة تخشى التفاعل مع أناس جدد والتحدث أمام مجموعة بسبب احتمال السخرية أو الإحراج، وتظهر palpitations, dry mouth, sweating، وبدأت تتجنب الاجتماعات (pp.26–27). يسمي العرض الحالة Social Anxiety Disorder؛ مدة 6 أشهر مطلوبة بحسب معايير p.29، ولا ترد مدة محددة في الحالة."
+        ],
+        "sourcePage": "PDF p.26"
+      },
+      {
+        "heading": "Social anxiety criteria",
+        "paragraphs": [
+          "تتضمن معايير Social Phobia قلقًا من judgment/scrutiny في المواقف الاجتماعية، وخوفًا من ظهور القلق بما يسبب الحرج، وتجنّبًا وسلوكًا غير متناسب مع الخطر، واستمرارًا لأكثر من 6 أشهر، وdistress/impairment. يذكر العرض performance-only specifier في p.30."
+        ],
+        "sourcePage": "PDF p.29"
+      },
+      {
+        "heading": "Differential diagnosis",
+        "paragraphs": [
+          "قائمة Differential Diagnosis في pp.31–32: substance/medication-induced anxiety، medical conditions، other anxiety disorders، somatic symptom، illness anxiety، delusional disorder، OCD، mood disorders with anxious features، PTSD/acute stress، adjustment disorder with anxious features."
+        ],
+        "sourcePage": "PDF p.31"
+      },
+      {
+        "heading": "Epidemiology: lecture figures",
+        "paragraphs": [
+          "بحسب شريحة المحاضرة: anxiety disorders أكثر مجموعات الاضطرابات النفسية شيوعًا؛ one in four ever meets criteria، نحو 17% 12-month prevalence. الأرقام المعروضة: panic disorder 1.5–4%، phobia 10%، GAD 3–8%. النساء أكثر تأثرًا حسب المحاضرة. هذه الأرقام تعليمية من المصدر دون تحديث خارجي."
+        ],
+        "sourcePage": "PDF p.33"
+      },
+      {
+        "heading": "Etiology diagram",
+        "paragraphs": [
+          "الرسم p.34 يقسّم etiologies إلى Biological (genetics, autonomic and neurotransmitter factors, amygdala/prefrontal)، Behavioral (observational and conditioning learning)، Cognitive (perceived control and interpretations)، Psychodynamic وSociocultural perspectives. يُراجع الرسم الأصلي عند الدراسة ولا يُنشر هنا."
+        ],
+        "sourcePage": "PDF p.34"
+      },
+      {
+        "heading": "Comorbid conditions",
+        "paragraphs": [
+          "المحاضرة تسرد Depression 40–80%، Alcohol/substance use disorders 20–40%، وOCD كـComorbidity. استخدم النسب كما في الشريحة ولا تُعدَّل بمراجع حديثة أثناء المذاكرة."
+        ],
+        "sourcePage": "PDF p.35"
+      },
+      {
+        "heading": "Course and prognosis: panic and agoraphobia",
+        "paragraphs": [
+          "المحاضرة تصف Panic Disorder بأنه chronic مع course متغير؛ أرقام المتابعة: 30–40% بلا أعراض، نحو 50% أعراض خفيفة، 10–20% أعراض مهمة. تحسّن panic قد يحسّن agoraphobia المصاحب؛ agoraphobia دون panic قد يكون مزمنًا ومعيقًا."
+        ],
+        "sourcePage": "PDF p.36"
+      },
+      {
+        "heading": "General prognosis and risk",
+        "paragraphs": [
+          "غالبية اضطرابات القلق لها مسارات طويلة مع انتكاسات، وتؤكد المحاضرة الانتباه لخطر الانتحار. Comorbid alcohol/substance disorders تُعقّد المسار؛ good premorbid functioning وقِصر المدة يرتبطان بتكهن أفضل."
+        ],
+        "sourcePage": "PDF p.37"
+      },
+      {
+        "heading": "Treatment setting and medications",
+        "paragraphs": [
+          "تذكر المحاضرة غالبًا outpatient مع استثناءات تحتاج hospitalization بسبب الانتحار أو الأمراض المصاحبة؛ ومن الأدوية لـGAD/PD/SAD: Benzodiazepines للحالات الحادة والاستخدام القصير (dependence وcognitive adverse effects)، SSRIs، SNRIs مثل venlafaxine، وTCAs."
+        ],
+        "sourcePage": "PDF p.38"
+      },
+      {
+        "heading": "Other pharmacologic options",
+        "paragraphs": [
+          "تسرد شريحة المحاضرة Buspirone لـGAD، Beta blockers للـSocial Anxiety، وAntipsychotics/Anticonvulsants للحالات المقاومة؛ هذه مراجعة لما في السلايد وليست توصية علاجية مستقلة."
+        ],
+        "sourcePage": "PDF p.39"
+      },
+      {
+        "heading": "Psychotherapy",
+        "paragraphs": [
+          "الـPsychotherapy المذكور يشمل Cognitive therapy لتحدي maladaptive thoughts، وBehavioral therapy (reinforcement, systematic desensitization, flooding, implosion, graded exposure, response prevention, thought stopping, relaxation) وInterpersonal psychotherapy مع مهارات العلاقات."
+        ],
+        "sourcePage": "PDF p.40"
+      },
+      {
+        "heading": "Virtual and supportive approaches",
+        "paragraphs": [
+          "Virtual therapy قد تحاكي المواقف مثل crowded supermarket لدى مريض agoraphobia، وتكون مفيدة عندما يصعب تمثيل الموقف في العيادة. تذكر المحاضرة أيضًا supportive therapy وgroup therapy."
+        ],
+        "sourcePage": "PDF p.41"
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "psyanx-mcq-001",
+        "question": "How does the lecture distinguish fear from anxiety?",
+        "options": [
+          "Fear concerns an unknown threat; anxiety a known threat",
+          "Fear is an appropriate response to a known threat; anxiety to a vague/unknown threat",
+          "Both have identical definitions",
+          "Fear always indicates a disorder"
+        ],
+        "answerIndex": 1,
+        "rationale": "Fear is linked to known threat and anxiety to unknown/vague threat.",
+        "sourcePage": "PDF p.2"
+      },
+      {
+        "id": "psyanx-mcq-002",
+        "question": "Which is classified as a cognitive symptom of anxiety in the diagram?",
+        "options": [
+          "Worry",
+          "Increased heart rate",
+          "Sweating",
+          "Avoidance"
+        ],
+        "answerIndex": 0,
+        "rationale": "The diagram places worry under cognitive symptoms.",
+        "sourcePage": "PDF p.3"
+      },
+      {
+        "id": "psyanx-mcq-003",
+        "question": "Which is a behavioral symptom shown in the anxiety diagram?",
+        "options": [
+          "Muscle tension",
+          "Apprehension",
+          "Avoidance of feared situations",
+          "Tachycardia"
+        ],
+        "answerIndex": 2,
+        "rationale": "Avoidance is in the behavioral box.",
+        "sourcePage": "PDF p.3"
+      },
+      {
+        "id": "psyanx-mcq-004",
+        "question": "Which disorder appears in the slide's DSM-5 anxiety list?",
+        "options": [
+          "Social Anxiety Disorder",
+          "Bipolar I Disorder",
+          "Delirium",
+          "Schizophrenia"
+        ],
+        "answerIndex": 0,
+        "rationale": "Social Anxiety Disorder appears in the list.",
+        "sourcePage": "PDF p.5"
+      },
+      {
+        "id": "psyanx-mcq-005",
+        "question": "Which symptom in Case 1 started suddenly at work?",
+        "options": [
+          "Loss of hearing",
+          "Difficulty breathing and tachycardia",
+          "Chronic leg swelling",
+          "Persistent fever"
+        ],
+        "answerIndex": 1,
+        "rationale": "The case describes sudden dyspnea and tachycardia.",
+        "sourcePage": "PDF p.6"
+      },
+      {
+        "id": "psyanx-mcq-006",
+        "question": "What did the emergency evaluation reveal in Case 1?",
+        "options": [
+          "Evidence of heart disease",
+          "No sign of illness on ECG and routine tests",
+          "A confirmed seizure disorder",
+          "Drug-induced anxiety"
+        ],
+        "answerIndex": 1,
+        "rationale": "The slide reports unremarkable ECG and routine blood work.",
+        "sourcePage": "PDF p.7"
+      },
+      {
+        "id": "psyanx-mcq-007",
+        "question": "Which is a psychiatric symptom among the listed panic symptoms?",
+        "options": [
+          "Derealization",
+          "Muscle fracture",
+          "Rash",
+          "Hypertension"
+        ],
+        "answerIndex": 0,
+        "rationale": "Derealization/depersonalization appear in the psychiatric symptom group.",
+        "sourcePage": "PDF p.9"
+      },
+      {
+        "id": "psyanx-mcq-008",
+        "question": "Panic symptoms in the lecture are described as:",
+        "options": [
+          "Abrupt and unpredictable",
+          "Always gradually evolving over years",
+          "Always triggered by a single object",
+          "Only present during sleep"
+        ],
+        "answerIndex": 0,
+        "rationale": "Abrupt/unpredictable is explicitly stated.",
+        "sourcePage": "PDF p.9"
+      },
+      {
+        "id": "psyanx-mcq-009",
+        "question": "How many panic-attack symptoms are specified on the slide?",
+        "options": [
+          "At least two",
+          "At least three",
+          "At least four",
+          "Exactly eight"
+        ],
+        "answerIndex": 2,
+        "rationale": "The panic-attack threshold on the slide is four or more symptoms.",
+        "sourcePage": "PDF p.11"
+      },
+      {
+        "id": "psyanx-mcq-010",
+        "question": "What post-attack duration is shown in the panic disorder DSM-5 table?",
+        "options": [
+          "One day",
+          "One week",
+          "At least one month",
+          "Two years"
+        ],
+        "answerIndex": 2,
+        "rationale": "The image says at least one attack followed by at least one month of concern, worry, or behavior change.",
+        "sourcePage": "PDF p.12"
+      },
+      {
+        "id": "psyanx-mcq-011",
+        "question": "Which phrase best describes anticipatory anxiety?",
+        "options": [
+          "Fear of another panic attack",
+          "Sudden loss of consciousness",
+          "A delusion of reference",
+          "A compulsive ritual"
+        ],
+        "answerIndex": 0,
+        "rationale": "Anticipatory anxiety is fear of subsequent attacks.",
+        "sourcePage": "PDF p.10"
+      },
+      {
+        "id": "psyanx-mcq-012",
+        "question": "What kinds of worry are emphasized in Case 2?",
+        "options": [
+          "Job performance and finances",
+          "Travel and snakes",
+          "Crowds and flying only",
+          "Infection and contamination only"
+        ],
+        "answerIndex": 0,
+        "rationale": "The teacher worries about teaching performance and loss of money.",
+        "sourcePage": "PDF p.13"
+      },
+      {
+        "id": "psyanx-mcq-013",
+        "question": "The minimum duration specified for GAD worry in the DSM-5 table is:",
+        "options": [
+          "One week",
+          "One month",
+          "Six months",
+          "Two years"
+        ],
+        "answerIndex": 2,
+        "rationale": "The source table specifies at least 6 months on more days than not.",
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "id": "psyanx-mcq-014",
+        "question": "How many of the six listed associated GAD symptoms are required in the table?",
+        "options": [
+          "One or more",
+          "Two or more",
+          "Three or more",
+          "All six"
+        ],
+        "answerIndex": 2,
+        "rationale": "The source table specifies three or more of six.",
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "id": "psyanx-mcq-015",
+        "question": "Which is included among GAD associated symptoms?",
+        "options": [
+          "Muscle tension",
+          "Visual hallucinations",
+          "Fixed delusions",
+          "Loss of consciousness"
+        ],
+        "answerIndex": 0,
+        "rationale": "Muscle tension is one of six associated symptoms.",
+        "sourcePage": "PDF p.16"
+      },
+      {
+        "id": "psyanx-mcq-016",
+        "question": "Why does the woman in Case 3 avoid crowded places?",
+        "options": [
+          "Fear of an attack where escape may be difficult",
+          "Fear of a specific animal",
+          "Fear of eating",
+          "Concern about finances alone"
+        ],
+        "answerIndex": 0,
+        "rationale": "Case 3 links avoidance to fear of attacks outside home/difficulty escaping.",
+        "sourcePage": "PDF p.18"
+      },
+      {
+        "id": "psyanx-mcq-017",
+        "question": "Agoraphobia criteria in the lecture require fear about how many listed situation categories?",
+        "options": [
+          "At least one",
+          "At least two",
+          "At least four",
+          "All five"
+        ],
+        "answerIndex": 1,
+        "rationale": "The p.21 table specifies two or more of five situations.",
+        "sourcePage": "PDF p.21"
+      },
+      {
+        "id": "psyanx-mcq-018",
+        "question": "Which is one of the five listed agoraphobic situations?",
+        "options": [
+          "Standing in line or being in a crowd",
+          "Eating an unfamiliar food",
+          "Talking to a doctor only",
+          "Sleeping alone"
+        ],
+        "answerIndex": 0,
+        "rationale": "Standing in line/being in a crowd is listed.",
+        "sourcePage": "PDF p.21"
+      },
+      {
+        "id": "psyanx-mcq-019",
+        "question": "The usual persistence threshold on the agoraphobia slide is:",
+        "options": [
+          "Two weeks",
+          "One month",
+          "Six months or more",
+          "Five years"
+        ],
+        "answerIndex": 2,
+        "rationale": "The slide specifies typically 6 months or more.",
+        "sourcePage": "PDF p.21"
+      },
+      {
+        "id": "psyanx-mcq-020",
+        "question": "Case 4 is centered on fear of:",
+        "options": [
+          "Driving, especially highways",
+          "Speaking to a crowd",
+          "Being outside home alone",
+          "Losing financial wealth"
+        ],
+        "answerIndex": 0,
+        "rationale": "The lawyer fears driving, particularly highways.",
+        "sourcePage": "PDF p.22"
+      },
+      {
+        "id": "psyanx-mcq-021",
+        "question": "Specific phobia commonly produces:",
+        "options": [
+          "Immediate fear when exposed to the object or situation",
+          "Only delayed mood changes",
+          "No distress or avoidance",
+          "No response to its stimulus"
+        ],
+        "answerIndex": 0,
+        "rationale": "The photographed criteria note nearly always immediate fear/anxiety.",
+        "sourcePage": "PDF p.24"
+      },
+      {
+        "id": "psyanx-mcq-022",
+        "question": "Which is listed as a specific-phobia subtype?",
+        "options": [
+          "Blood–injection–injury",
+          "Nihilistic",
+          "Manic",
+          "Catatonic"
+        ],
+        "answerIndex": 0,
+        "rationale": "Blood–injection–injury is one of the listed specifiers.",
+        "sourcePage": "PDF p.25"
+      },
+      {
+        "id": "psyanx-mcq-023",
+        "question": "Case 5 is most concerned about:",
+        "options": [
+          "Being ridiculed or judged socially",
+          "Being stuck in public transport",
+          "Cardiac arrest at rest only",
+          "Intrusive contamination rituals"
+        ],
+        "answerIndex": 0,
+        "rationale": "Fear of ridicule/embarrassment is the core of the source case.",
+        "sourcePage": "PDF p.27"
+      },
+      {
+        "id": "psyanx-mcq-024",
+        "question": "The duration criterion on the Social Phobia slide is:",
+        "options": [
+          "One week",
+          "One month",
+          "More than six months",
+          "Three years"
+        ],
+        "answerIndex": 2,
+        "rationale": "The lecture slide states duration more than 6 months.",
+        "sourcePage": "PDF p.29"
+      },
+      {
+        "id": "psyanx-mcq-025",
+        "question": "Which specifier is explicitly mentioned for Social Anxiety?",
+        "options": [
+          "Performance only",
+          "Seasonal only",
+          "Postpartum only",
+          "Substance induced only"
+        ],
+        "answerIndex": 0,
+        "rationale": "Performance-only (performance anxiety) is listed.",
+        "sourcePage": "PDF p.30"
+      },
+      {
+        "id": "psyanx-mcq-026",
+        "question": "Which belongs to the differential diagnosis list?",
+        "options": [
+          "Substance/medication-induced anxiety",
+          "Acute appendicitis",
+          "Glaucoma",
+          "Iron deficiency"
+        ],
+        "answerIndex": 0,
+        "rationale": "Substance/medication-induced anxiety is listed in the differential.",
+        "sourcePage": "PDF p.31"
+      },
+      {
+        "id": "psyanx-mcq-027",
+        "question": "According to the lecture, the approximate 12-month prevalence of anxiety disorders is:",
+        "options": [
+          "3%",
+          "10%",
+          "17%",
+          "50%"
+        ],
+        "answerIndex": 2,
+        "rationale": "The epidemiology slide says about 17%.",
+        "sourcePage": "PDF p.33"
+      },
+      {
+        "id": "psyanx-mcq-028",
+        "question": "Which comorbid condition is explicitly listed?",
+        "options": [
+          "Depression",
+          "Asthma only",
+          "Fracture",
+          "Hypothyroidism only"
+        ],
+        "answerIndex": 0,
+        "rationale": "Depression is listed with 40–80% in the lecture.",
+        "sourcePage": "PDF p.35"
+      },
+      {
+        "id": "psyanx-mcq-029",
+        "question": "According to the lecture's long-term panic disorder estimates, what proportion are symptom-free?",
+        "options": [
+          "10–20%",
+          "30–40%",
+          "70–80%",
+          "100%"
+        ],
+        "answerIndex": 1,
+        "rationale": "The source slide gives approximately 30–40% symptom-free.",
+        "sourcePage": "PDF p.36"
+      },
+      {
+        "id": "psyanx-mcq-030",
+        "question": "Which factor in the lecture is associated with more favorable prognosis?",
+        "options": [
+          "Good premorbid functioning",
+          "Long untreated symptoms",
+          "Alcohol comorbidity",
+          "Persistent severe impairment"
+        ],
+        "answerIndex": 0,
+        "rationale": "Good premorbid functioning and brief duration tend toward a favorable course.",
+        "sourcePage": "PDF p.37"
+      },
+      {
+        "id": "psyanx-mcq-031",
+        "question": "Which medication class is described for acute/short-term anxiety in the lecture?",
+        "options": [
+          "Benzodiazepines",
+          "Antibiotics",
+          "Antivirals",
+          "Anticoagulants"
+        ],
+        "answerIndex": 0,
+        "rationale": "The slide mentions benzodiazepines for acute cases/short term, with dependence and cognitive side effects.",
+        "sourcePage": "PDF p.38"
+      },
+      {
+        "id": "psyanx-mcq-032",
+        "question": "Which SNRI is named in the treatment slide?",
+        "options": [
+          "Venlafaxine",
+          "Haloperidol",
+          "Buspirone",
+          "Propranolol"
+        ],
+        "answerIndex": 0,
+        "rationale": "Venlafaxine is explicitly named as an SNRI.",
+        "sourcePage": "PDF p.38"
+      },
+      {
+        "id": "psyanx-mcq-033",
+        "question": "Which drug is assigned to GAD in the lecture?",
+        "options": [
+          "Buspirone",
+          "Insulin",
+          "Furosemide",
+          "Aspirin"
+        ],
+        "answerIndex": 0,
+        "rationale": "The treatment slide lists buspirone for GAD.",
+        "sourcePage": "PDF p.39"
+      },
+      {
+        "id": "psyanx-mcq-034",
+        "question": "Which is included among the behavioral techniques in the lecture?",
+        "options": [
+          "Graded exposure",
+          "Thought insertion",
+          "Cognitive impairment",
+          "Sleep deprivation"
+        ],
+        "answerIndex": 0,
+        "rationale": "Graded exposure appears in the behavioral therapy list.",
+        "sourcePage": "PDF p.40"
+      },
+      {
+        "id": "psyanx-mcq-035",
+        "question": "The virtual-therapy example in the lecture depicts:",
+        "options": [
+          "A crowded supermarket scenario for agoraphobia",
+          "A surgical theatre for pain control",
+          "An endoscopy procedure",
+          "A speech articulation test"
+        ],
+        "answerIndex": 0,
+        "rationale": "The slide explicitly gives a supermarket crowded-space scenario.",
+        "sourcePage": "PDF p.41"
+      }
+    ]
+  }
+}
