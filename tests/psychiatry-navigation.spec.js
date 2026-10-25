@@ -79,11 +79,11 @@ test('Psychiatry appears in the actual course selector and both published lectur
     expect(assets).toHaveLength(source.images);
     for (const image of assets) {
       expect(image.ok).toBe(true);
-      expect(image.type).toMatch(/image\\/jpeg/);
+      expect(image.type).toMatch(/image\/jpeg/);
       expect(image.bytes).toBeGreaterThan(300);
       expect(image.bytes).toBe(image.expected);
       expect(image.hashLength).toBe(64);
-      expect(image.page).toMatch(/^PDF p\\.\\d+$/);
+      expect(image.page).toMatch(/^PDF p\.\d+$/);
     }
     await expect(page.locator('#dataAlert')).toBeHidden();
   }
