@@ -55,17 +55,36 @@ test('Psychiatry appears in the actual course selector and both published lectur
       mcqs: source.mcqs, explanations: source.explanations,
       cases: source.cases, core: source.core,
       detailed: source.detailed, rapid: source.rapid,
-      imageQuestions: source.images, missingImageSources: source.images
+      imageQuestions: source.images, missingImageSources: 0
     });
     await expect(page.locator('#lecture-' + source.id + ' .study-guide-mcq'))
       .toHaveCount(source.mcqs);
     await expect(page.locator('#lecture-' + source.id + ' .image-card'))
       .toHaveCount(source.images);
-    // The original PDF figures are not yet hosted. Never show a fake substituted clinical image.
+    // Verify actual original PDF-crop JPEG assets, not placeholders or substituted AI art.
+    const images = page.locator('#lecture-' + source.id + ' .image-card img');
+    await expect(images).toHaveCount(source.images);
     await expect(page.locator('#lecture-' + source.id + ' .visual-placeholder'))
-      .toHaveCount(source.images);
-    await expect(page.locator('#lecture-' + source.id + ' .image-card img'))
       .toHaveCount(0);
+    const assets = await page.evaluate(async id => {
+      const lecture = lectures.find(item => item.id === id);
+      return Promise.all(lecture.imageQuestions.map(async item => {
+        const response = await fetch(item.image);
+        const data = await response.arrayBuffer();
+        return {ok: response.ok, type: response.headers.get('content-type'),
+          bytes: data.byteLength, expected: item.imageBytes,
+          hashLength: item.imageSha256?.length, page: item.page};
+      }));
+    }, source.id);
+    expect(assets).toHaveLength(source.images);
+    for (const image of assets) {
+      expect(image.ok).toBe(true);
+      expect(image.type).toMatch(/image\\/jpeg/);
+      expect(image.bytes).toBeGreaterThan(300);
+      expect(image.bytes).toBe(image.expected);
+      expect(image.hashLength).toBe(64);
+      expect(image.page).toMatch(/^PDF p\\.\\d+$/);
+    }
     await expect(page.locator('#dataAlert')).toBeHidden();
   }
 });
