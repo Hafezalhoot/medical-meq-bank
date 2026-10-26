@@ -1563,3 +1563,24 @@ details.original-figure-tools{
     min-width:0;font-size:14px;padding-left:7px;padding-right:18px
   }
 }
+
+
+/* Final V5 layout gate: show the full native course/specialty name on phones.
+   Stack only the two selectors; keep Start and Exam paired for quick access. */
+@media(max-width:540px){
+  .hero p{display:none}
+  .hero .hero-panel{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 8px}
+  .hero .hero-panel .course-panel-label{grid-column:1/-1;grid-row:1}
+  .hero .hero-panel #courseSelector{grid-column:1/-1;grid-row:2}
+  .hero .hero-panel label[for="subjectSelector"]{grid-column:1/-1;grid-row:3}
+  .hero .hero-panel #subjectSelector{grid-column:1/-1;grid-row:4}
+  .hero .hero-panel #resumeStudyBtn{grid-column:1;grid-row:5}
+  .hero .hero-panel #examModeBtn{grid-column:2;grid-row:5}
+  .hero .subject-select,.hero .course-select{
+    min-width:0;font-size:16px;padding-left:11px;padding-right:30px
+  }
+}
+@media(min-width:701px) and (max-width:980px){
+  .hero{padding:14px 18px}
+  .studio-masthead{margin-bottom:9px}
+}
