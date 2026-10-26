@@ -14,7 +14,9 @@ async function selectPsychiatry(page){
   const drawer=page.locator('#mobileFiltersToggle');
   if(await drawer.isVisible())await drawer.click();
   await page.locator('#lectureFilter').selectOption('internal-medicine-ii-psychiatry-anxiety-disorders');
-  if(await drawer.isVisible())await page.locator('#closeMobileFiltersBtn').click();
+  const backdrop=page.locator('#mobileFilterBackdrop');
+  if(await backdrop.isVisible())await page.locator('#applyMobileFiltersBtn').click();
+  await expect(backdrop).toBeHidden();
   await expect(page.locator('.original-atlas-item')).toHaveCount(7,{timeout:20000});
 }
 
