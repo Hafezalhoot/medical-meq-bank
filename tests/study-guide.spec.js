@@ -75,17 +75,20 @@ test('legacy lectures show no empty study guide section and preserve original co
   await expect(page.locator('.study-item').first()).toBeAttached();
 });
 
-test('mixed Arabic and English source text follows natural direction without overflow', async ({page}) => {
+test('mixed Arabic and English source text follows script-aware RTL direction without overflow', async ({page}) => {
   await openWithOptionalGuide(page);
   await page.setViewportSize({width:320,height:700});
   await page.locator('.learning-companion .study-guide-part').first().locator('summary').click();
   const paragraphs=page.locator('.study-guide-explanation > p');
   await expect(paragraphs).toHaveCount(3);
-  for (const paragraph of await paragraphs.all()) {
-    await expect(paragraph).toHaveAttribute('dir','auto');
-  }
+  const attributes=await paragraphs.evaluateAll(nodes=>nodes.map(el=>({dir:el.dir,lang:el.lang})));
+  expect(attributes).toEqual([
+    {dir:'auto',lang:''},
+    {dir:'rtl',lang:'ar'},
+    {dir:'rtl',lang:'ar'}
+  ]);
   const directions=await paragraphs.evaluateAll(nodes=>nodes.map(el=>getComputedStyle(el).direction));
-  expect(directions).toEqual(['ltr','ltr','rtl']);
+  expect(directions).toEqual(['ltr','rtl','rtl']);
   const fits=await paragraphs.evaluateAll(nodes=>nodes.every(el=>el.scrollWidth<=el.clientWidth+1));
   expect(fits).toBe(true);
   const heading=page.locator('.study-guide-explanation h3').first();
