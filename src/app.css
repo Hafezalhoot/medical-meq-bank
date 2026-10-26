@@ -1448,9 +1448,16 @@ details.original-figure-tools{
 
 /* Practical reflow, consistent hit targets and real 320px typography. */
 @media(min-width:981px){
-  .layout{grid-template-columns:194px 216px minmax(0,1fr)}
-  .layout.hide-lectures{grid-template-columns:216px minmax(0,1fr)}
-  .layout.hide-subtopics{grid-template-columns:194px minmax(0,1fr)}
+  /* One navigation wrapper + one reader; never allocate an unused third column. */
+  .layout,.layout.hide-lectures,.layout.hide-subtopics{
+    display:grid;grid-template-columns:minmax(218px,242px) minmax(0,1fr);
+    gap:18px;align-items:start
+  }
+  .layout main{grid-column:2;min-width:0}
+  .layout.hide-lectures.hide-subtopics{
+    grid-template-columns:minmax(0,1fr)
+  }
+  .layout.hide-lectures.hide-subtopics main{grid-column:1}
 }
 @media(min-width:701px) and (max-width:980px){
   .hero-grid{grid-template-columns:minmax(0,1fr) minmax(290px,345px);gap:17px}

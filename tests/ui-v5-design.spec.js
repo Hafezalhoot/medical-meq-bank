@@ -145,3 +145,26 @@ test('V5 retains meaningful focus-mode reading and restores the full shell',asyn
   await expect(page.locator('.studio-masthead')).toBeVisible();
   await expect(page.locator('.hero')).toBeVisible();
 });
+
+
+test('V5 desktop selected lecture uses the real reading column, never a phantom third grid track',async({page})=>{
+  await ready(page,1440,900);
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await page.locator('#subjectSelector').selectOption('dermatology');
+  await page.locator('#lectureFilter').selectOption('internal-medicine-ii-dermatology-introduction');
+  await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
+  const boxes=await page.evaluate(()=>{
+    const nav=document.querySelector('.study-navigation-column').getBoundingClientRect();
+    const main=document.querySelector('#mainContent').getBoundingClientRect();
+    const card=document.querySelector('.lecture-head').getBoundingClientRect();
+    return {
+      navRight:nav.right,mainLeft:main.left,mainWidth:main.width,
+      cardWidth:card.width,appWidth:document.querySelector('.app').getBoundingClientRect().width,
+      overflow:document.documentElement.scrollWidth-innerWidth
+    };
+  });
+  expect(boxes.mainWidth).toBeGreaterThanOrEqual(780);
+  expect(boxes.cardWidth).toBeGreaterThanOrEqual(700);
+  expect(boxes.mainLeft).toBeGreaterThanOrEqual(boxes.navRight);
+  expect(boxes.overflow).toBeLessThanOrEqual(1);
+});
