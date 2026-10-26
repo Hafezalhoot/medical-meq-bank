@@ -2,8 +2,8 @@
 
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
-**Baseline main:** `80721a552f2d44abae82c0fb07fe93289b3a722e` (app `2026.10.25.3`)  
-**Working branch:** `ui/v4-reader-first-progress-20261026`  
+**Baseline main:** `e3c289d7ddf516c182392aea95c2faf210c1eb86` (V4 release `2026.10.26.1`)  
+**Working branch:** `ui/v4-lecture-discovery-20261026`  
 **Production status:** Changes on this branch are **not live** until exact-head verification, PR merge, and independent confirmation of active Cloudflare Worker traffic.
 **Source of design evidence:** owner screenshots of Psychiatry and source figure cards; Chromium visual evidence artifact from main GitHub Actions run `40235201300` (320/390/768/1280/1440 desktop, mobile, dark and reading states); `src/index.html`, `src/app.js`, `src/app.css`, existing Playwright/axe/visual tests.
 
@@ -29,10 +29,10 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 | ID | Priority | Status | Work package | Acceptance criteria |
 | --- | --- | --- | --- | --- |
 | V4-00 | P0 | DONE | Baseline design/feature audit | Inspect actual current CSS/JS and representative GitHub Playwright screenshots; record baseline and immutable feature list |
-| V4-01 | P0 | IN PROGRESS | Faster entrance into learning | Shorten mobile hero and secondary chrome; retain Course/Specialty + Start/Exam actions; next question immediately discoverable; no removed controls or overflow at 320/390px |
-| V4-02 | P0 | IN PROGRESS | Dark-mode contrast and keyboard focus | All visible navigation labels readable in both themes, normal text >=4.5:1; focus obvious; automated theme/contrast regression |
-| V4-03 | P0 | IN PROGRESS | Original figure **study reader** | Original source images legible beyond thumbnails; keyboard-accessible full-size viewer with zoom, close/Escape, original-source link and jump to associated image question; no substitutes; mobile responsive |
-| V4-04 | P1 | TODO | Unify overlapping navigation | One obvious study route Course → Specialty → Lecture → Study; hide secondary controls in progressive disclosure without deleting Course Library, sidebar or search |
+| V4-01 | P0 | DONE | Faster entrance into learning | Shorten mobile hero and secondary chrome; retain Course/Specialty + Start/Exam actions; next question immediately discoverable; no removed controls or overflow at 320/390px |
+| V4-02 | P0 | DONE | Dark-mode contrast and keyboard focus | All visible navigation labels readable in both themes, normal text >=4.5:1; focus obvious; automated theme/contrast regression |
+| V4-03 | P0 | DONE | Original figure **study reader** | Original source images legible beyond thumbnails; keyboard-accessible full-size viewer with zoom, close/Escape, original-source link and jump to associated image question; no substitutes; mobile responsive |
+| V4-04 | P1 | IN PROGRESS | Unify overlapping navigation | One obvious study route Course → Specialty → Lecture → Study; hide secondary controls in progressive disclosure without deleting Course Library, sidebar or search |
 | V4-05 | P1 | TODO | Question-first daily study session | Clear Resume, Weak queue, reveal, rating and question-progress states; consistent behavior between study/Exam and across refresh |
 | V4-06 | P1 | TODO | Reading typography & visual hierarchy | Arabic/English readable width, mobile font >=16px for long reading, scientific tables scroll/zoom, consistent headings and source labels |
 | V4-07 | P1 | TODO | Consolidate V2/V3 CSS cascade | Audit redundant selectors/overrides; shared semantic tokens + dark variants; screenshots stable in 320/390/768/1280/1440 and zoom |
@@ -44,17 +44,24 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 | V4-13 | P0 | BLOCKED | Correct production promotion gate | Ensure Cloudflare Build uses `npx wrangler versions upload` until GitHub checks pass and explicit promotion succeeds (issue #50); avoid unreviewed automatic activation |
 | V4-14 | P2 | TODO | Final whole-product review | Real lecture + figure + Exam + backup + print journeys, independent dark/mobile visual approval, issue triage, rollback evidence |
 
-## V4 first implementation increment (on this branch)
+## First implementation increment — merged in PR #63
 - **Scope:** V4-01/02/03; strengthen first viewport, legible dark controls and an original-source image reader, plus automated regression. The remaining board is *not* being silently marked completed.
 - **Entry:** existing `Start studying` button (which already selects a saved Weak/Review item or next unrated item), course/specialty selector and actual image atlas.
 - **Exit / definition of done:** exact PR-head static + Chromium + WebKit + Workers Builds green; screenshot check across 320/390/768/1440, light/dark; existing Dermatology and Psychiatry image assets intact; legacy ratings and course switching pass. Only then consider merge.
 - **Why this scope first:** student currently encounters a large header and repeated navigation before a question; dark controls can fail readable contrast; information-rich DSM tables are difficult to read as thumbnails.
 
+
+## V4 second implementation increment — lecture discovery
+- **Stage 1 shipped source:** [PR #63](https://github.com/Hafezalhoot/medical-meq-bank/pull/63) merged into `main` as `e3c289d7ddf516c182392aea95c2faf210c1eb86`. [PR-head checks](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40252330860) static, Chromium, WebKit and Workers Builds all succeeded. Cloudflare Worker `fe4e34c8-aa4d-483a-9985-c5d37aeb56fb` showed **100% traffic** in [main read-only release smoke](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40252680199); the authenticated URL test still failed HTTP 302 due to Access #35. **Do not call authenticated production QA complete**.
+- **In this increment:** add lightweight, specialty-scoped **Find a lecture** input when a specialty has at least five lectures; nonmatching titles are filtered in the existing nav without loading their bodies or changing saved ratings. A match-count, accessible empty state and Escape-to-clear keep selection predictable.
+- **Acceptance:** desktop and narrow phone can reach a lecture with a title query and keyboard; empty query restores full list; course/specialty switching resets search rather than accidentally concealing lectures. All existing content, search, source JPEGs, offline features and current topic selection unaffected.
+- **Status:** V4-04 remains IN PROGRESS (this completes only lecture discovery; simplifying other overlapping navigation remains TODO).
+
 ## Evidence log
 | Date | Commit / PR | Work | Evidence | Outcome |
 | --- | --- | --- | --- | --- |
 | 2026-10-26 | Baseline `80721a55` | Reviewed current V3 UI, screenshots and code | Chromium Actions artifact `40235201300`, `UI_V3_REDESIGN.md`, `src/app.css`, `src/app.js`, `tests/layout.spec.js` | DONE — 7/10 subjective starting point; risk inventory above |
-| 2026-10-26 | `ui/v4-reader-first-progress-20261026` | V4-01/02/03 implementation | Awaiting exact-head checks | IN PROGRESS |
+| 2026-10-26 | [#63](https://github.com/Hafezalhoot/medical-meq-bank/pull/63) | V4-01/02/03 hero, dark mode, source figure viewer | PR-head run 40252330860: all four checks passed; main `e3c289d`; Cloudflare Worker 100%, Access 302 | DONE (source and deployment; authenticated smoke blocked) |
 
 ## Release checklist for each iteration
 - [ ] User-facing design changes match actual screenshots, with no fabricated visuals or data.

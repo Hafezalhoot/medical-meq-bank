@@ -52,3 +52,9 @@ A personal, offline-capable medical-exam preparation workspace. The user visits 
 - Use Playwright Chromium + WebKit + axe, screenshots at important sizes, actual original-source imagery; evaluate focus, contrast, overflow, data and interaction separately.
 - Cloudflare release verification is independent from GitHub source checks. Protected Access production smoke issue #35 and gated promotion issue #50 remain tracked.
 - Amend this document only when the implemented design language actually changes. Record task-level status in the companion progress tracker.
+
+## Progressive lecture discovery (V4-04a)
+- Keep the existing course/specialty controls and sidebar lecture links as the familiar path; don't substitute a large new dashboard.
+- For a specialty with 5 or more lectures, add a local **Find a lecture** input inside the lecture-navigation rail, filtering only titles/orders. This is distinct from the central question search and never loads a lecture just to find its title.
+- Result count is announced with a polite status; the empty state offers Clear search. Escape clears without navigating. Switching course/specialty resets the query.
+- The input stays hidden for short specialties to avoid adding clutter; on mobile the existing Lectures toggle reveals this same control. Do not store the query in progress/backup storage.

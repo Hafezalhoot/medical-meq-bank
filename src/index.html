@@ -159,7 +159,12 @@
   <aside class="sidebar lecture-sidebar">
     <h2>Lectures</h2>
     <div class="sidebar-caption">Choose a lecture or return to the subject overview.</div>
-    <nav id="lectureNav"></nav>
+    <div class="lecture-nav-search" id="lectureNavSearchWrap" hidden>
+      <label class="sr-only" for="lectureNavSearch">Find a lecture in this specialty</label>
+      <input id="lectureNavSearch" type="search" class="control" placeholder="Find a lecture..." autocomplete="off" aria-label="Find a lecture in this specialty" aria-controls="lectureNav">
+      <small id="lectureNavResult" role="status" aria-live="polite"></small>
+    </div>
+    <nav id="lectureNav" aria-label="Lectures in selected specialty"></nav>
     <div class="side-note"><b>How to study</b><br>Attempt first → reveal the answer → mark Mastered, Review, or Weak. Your progress is saved automatically.</div>
     <button class="btn btn-soft" id="printCenterSidebarBtn" type="button" aria-haspopup="dialog" style="width:100%;margin-top:12px">Print / Save as PDF</button>
   </aside>

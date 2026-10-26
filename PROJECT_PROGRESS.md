@@ -1,6 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
 
+### 2026-10-26 — MEQ V4 reader-first release and searchable lecture discovery
+
+- ✅ [PR #63](https://github.com/Hafezalhoot/medical-meq-bank/pull/63) merged after exact-head static, Chromium, Safari/WebKit and Cloudflare Workers Builds passed; app release `2026.10.26.1`. Fully original PDF source media, existing 108 psychiatry MCQ keys, saved ratings and backup were unchanged by UI work.
+- ✅ Main read-only status reported Cloudflare Worker `fe4e34c8-aa4d-483a-9985-c5d37aeb56fb` at 100% traffic; external browser smoke remains blocked at Cloudflare Access 302 (#35), not claimed successful.
+- 🧪 Second phase adds **Find a lecture** scoped to subject navigation when >=5 lectures. Work is on `ui/v4-lecture-discovery-20261026` and is **not yet merged/published**. No additional lecture files or exams were modified.
+- 📋 [V4 status board](MEQ_UI_UX_V4_PROGRESS.md) marks V4-01/02/03 DONE, V4-04 IN PROGRESS, remaining packages and Cloudflare #35/#50 BLOCKED/TODO truthfully.
+
 ### 2026-10-26 — V4 product-wide UI/UX redesign tracker (active branch)
 
 - ✅ Established a **single owner-visible V4 tracker** at [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md) with DONE / IN PROGRESS / TODO / BLOCKED status, acceptance criteria, CI and release evidence.
