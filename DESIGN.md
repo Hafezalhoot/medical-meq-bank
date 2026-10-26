@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank — Design System V4
 
-**Stage:** Established V4 design contract; verified V4.3 source `2026.10.26.3`, V4.4 bilingual-reader increment pending exact-head verification.  
+**Stage:** Established V4 design contract; V4.4 `2026.10.26.4` merged after full CI, V4.5 source-MCQ resume candidate `2026.10.26.5` awaiting final head validation.  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
 
 ## Product and primary job

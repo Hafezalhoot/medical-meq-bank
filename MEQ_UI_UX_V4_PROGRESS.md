@@ -3,8 +3,8 @@
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
 **Baseline main:** `5197bdd2685b2457db27b068d4c45a2a1a37a72f` (V4.3 release `2026.10.26.3`)  
-**Working branch:** `ui/v4-question-first-resume-20261026` (based on pending V4.4 PR #66)  
-**Production status:** V4.3 source is merged; independent read-only run `40253993643` reports active Worker `0b173e69-741c-4c79-8da0-568787e5a61f` at **100% traffic**, but protected browser smoke remains Access-blocked (HTTP 302, issue #35). **V4.4 PR #66 and follow-on V4.5 branch are not live** until each exact-head quality gate, merge and new Worker confirmation.
+**Working branch:** `ui/v4-question-first-resume-20261026` (integrates merged V4.4 PR #66)  
+**Production status:** V4.3 source is merged; independent read-only run `40253993643` reports active Worker `0b173e69-741c-4c79-8da0-568787e5a61f` at **100% traffic**, but protected browser smoke remains Access-blocked (HTTP 302, issue #35). **V4.4 PR #66 has merged into main; V4.5 branch is not live** until its exact-head quality gate, merge and independent Worker confirmation.
 **Source of design evidence:** owner screenshots of Psychiatry and source figure cards; Chromium visual evidence artifact from main GitHub Actions run `40235201300` (320/390/768/1280/1440 desktop, mobile, dark and reading states); `src/index.html`, `src/app.js`, `src/app.css`, existing Playwright/axe/visual tests.
 
 ## Status legend and update rules
@@ -80,7 +80,11 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 - A discreet `N source MCQs` count joins the existing lecture-count metadata only when the current lecture has reviewed authored questions. This clarifies discoverability without adding a new dashboard or changing a single source fact.
 - Active filters still cause Start studying to select from visible MEQ/short/image items only, preserving the existing filtered study journey. A real Psychiatry MCQ + core-only filter browser regression guards both states.
 - **Honest status:** V4-05 stays IN PROGRESS. Full saved-session resume, state recovery and exam transitions have not been changed in this iteration. V4-04, V4-06 and the other work packages retain their own statuses.
-- **Release:** dependent on V4.4 PR #66 being merged. Do not merge or deploy this follow-on until exact-head static, Chromium, WebKit and Workers Builds checks pass; authenticated production smoke remains blocked by Access #35.
+- **Release:** V4.4 PR #66 merged after all four exact-head checks passed. V4.5 requires fresh checks on its post-main-sync head before merge; authenticated production smoke remains blocked by Access #35.
+
+## V4.4 source merge evidence
+- [PR #66](https://github.com/Hafezalhoot/medical-meq-bank/pull/66) merged into main as `e6c0fb0723a5f29acc521dcdd7e4181cd3408c66` following repaired exact-head run [40255440798](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40255440798), Static, Chromium, WebKit and Workers Builds all successful. The legacy RTL tests were updated to assert script-aware direction; existing content and overflow assertions remain.
+- Live Worker traffic and the protected authenticated browser smoke are separate from PR source validation. Access #35 remains blocked; #50 production promotion risk remains open.
 
 ## Evidence log
 | Date | Commit / PR | Work | Evidence | Outcome |
