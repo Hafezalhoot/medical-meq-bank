@@ -243,7 +243,12 @@ test('Impeccable: desktop chrome is compact while lecture and utility controls r
   expect(lectureWidth).toBeGreaterThanOrEqual(205);
 
   const heroHeight = await page.locator('.hero').evaluate(el => el.getBoundingClientRect().height);
-  expect(heroHeight).toBeLessThanOrEqual(225);
+  expect(heroHeight).toBeLessThanOrEqual(285);
+  const masthead = page.locator('.studio-masthead');
+  await expect(masthead).toBeVisible();
+  await expect(masthead.locator('#pwaToolsToggle')).toBeVisible();
+  const headerHeight = await masthead.evaluate(el => el.getBoundingClientRect().height);
+  expect(headerHeight).toBeLessThanOrEqual(88);
 
   const utilities = page.locator('#pwaToolsToggle');
   await expect(utilities).toBeVisible();
@@ -257,15 +262,19 @@ test('Impeccable: desktop chrome is compact while lecture and utility controls r
   await expect(page.locator('#exportProgressBtn')).toBeHidden();
 });
 
-test('Impeccable: phone dark mode toggle shares header row with the title', async ({page}) => {
+test('Impeccable V5: phone theme and backup tools stay in a real app bar', async ({page}) => {
   await openBank(page, {width: 390, height: 844});
   const layout = await page.evaluate(() => {
-    const title = document.querySelector('.hero h1').getBoundingClientRect();
+    const masthead = document.querySelector('.studio-masthead').getBoundingClientRect();
+    const hero = document.querySelector('.hero').getBoundingClientRect();
     const theme = document.getElementById('darkBtn').getBoundingClientRect();
-    return {titleY: title.top, themeY: theme.top, themeHeight: theme.height};
+    return {mastheadTop: masthead.top, mastheadBottom:masthead.bottom,
+      heroTop: hero.top, themeBottom: theme.bottom, themeHeight: theme.height};
   });
-  expect(Math.abs(layout.titleY - layout.themeY)).toBeLessThan(35);
+  expect(layout.mastheadTop).toBeLessThan(layout.heroTop);
+  expect(layout.themeBottom).toBeLessThanOrEqual(layout.heroTop);
   expect(layout.themeHeight).toBeGreaterThanOrEqual(44);
+  await expect(page.locator('.studio-masthead #pwaToolsToggle')).toBeVisible();
   await page.locator('#darkBtn').click();
   await expect(page.locator('body')).toHaveClass(/dark/);
 });

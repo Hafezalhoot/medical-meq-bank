@@ -19,8 +19,8 @@
 .filter-chip-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(280px,62vw)}
 .filter-chip-remove{font-size:1.1rem;line-height:1}
 .reset-filter-chips-button{min-height:34px;border-radius:999px;padding:4px 11px;font-size:.82rem}
-.dark .mobile-filter-toggle,.dark .mobile-filter-close,.dark .reset-filters-button,.dark .reset-filter-chips-button{background:#101c2e}
-.dark .filter-chip{background:color-mix(in srgb,var(--brand) 18%,#101c2e)}
+.dark .mobile-filter-toggle,.dark .mobile-filter-close,.dark .reset-filters-button,.dark .reset-filter-chips-button{background:var(--card)}
+.dark .filter-chip{background:color-mix(in srgb,var(--brand) 14%,var(--surface-soft))}
 
 @media(max-width:700px){
   .mobile-filter-shell{position:sticky;top:max(6px,env(safe-area-inset-top));z-index:40;margin:12px 0}

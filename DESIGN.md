@@ -1,18 +1,35 @@
-# Medical MEQ Review Bank — Design System V4
+# Medical MEQ Review Bank — Design System V5
 
-**Stage:** Established V4 design contract; V4.7 `2026.10.26.7` merged and Worker at 100%; V4.8 progress scope candidate.  
+**Stage:** Owner-requested full redesign in progress on `design/v5-mineral-blue-studio-20261026` (candidate `2026.10.26.9`; not yet live).  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
 
 ## Product and primary job
 A personal, offline-capable medical-exam preparation workspace. The user visits to **resume studying the next relevant question**, view source-based teaching material, correct mistakes and start an exam—not to browse a promotional landing page. Build around **Operate** for selectors, filters, saving and exam sessions; use **Read** for bilingual explanation, dense diagnostic tables and original PDF figures.
 
-## Established visual language (preserve)
-- **Brand:** quiet clinical ink teal rather than unrelated blue/purple gradients.
-- **Light:** background `#f4f7f6`, cards `#fff`, text `#17343e`, muted `#566c72`, lines `#d9e5e3`, primary teal `#0d6267`, soft teal `#e7f4f3`.
-- **Dark:** background `#101c20`, surfaces `#16262b`, text `#eaf5f3`, secondary `#b5c9c9`, line `#32464a`, accent `#82d2c8`. All ordinary text/control labels target WCAG AA 4.5:1; visible focus and selected states require additional non-color cues.
-- **Type:** familiar Inter / Segoe UI / Tahoma / Arial fallback; medical body text >=16px where reading matters, roughly 1.6 English line-height, about 2.0 for long Arabic notes, constrained reading measure ~70–80ch. Do not over-style headings at the expense of scanning.
-- **Depth:** light borders and restrained shadows, no generic shadow-on-shadow cards. Source figures themselves are the important visual media; **do not generate substitute clinical images**.
-- **Motion:** subtle state feedback only; obey `prefers-reduced-motion`.
+## V5 new visual direction — Mineral Blue Studio (replaces V4 teal)
+
+**Design intent:** a premium, calm clinical learning workspace that evokes thoughtful study, not a dark corporate dashboard. Inspired by disciplined editorial hierarchy and modern productivity software, not decorative clinic/AI templates.
+
+**Application mode:** Operate for selection, rating, filters and exams; Read for bilingual explanations, original lecture figures and clinical questions. One clear primary action (**Start/Continue studying**), one secondary (**Exam mode**), and reversible progressive disclosure for advanced tools.
+
+**Tokens (source of truth in `src/app.css`):**
+- Light background `#F5F7FC`, card `#FFFFFF`, ink `#24304B`, supporting copy `#596782`, border `#E0E6F1`.
+- Blue-violet action `#4F63A8` (white text, >5.5:1), secondary `#667BC1`, soft selected surface `#E9EDFB`; avoid large saturated gradient blocks.
+- Dark background `#121828`, card `#1D2740`, text `#F1F4FF`, secondary `#BAC5DC`, accent `#AABBFF`, selected `#2B3861`.
+- Status Weak/Review/Mastered keep distinct semantic red/amber/green; decorative brand blue never substitutes status color.
+- Font stack uses system/Inter fallbacks for offline reliability; 16px medical reading, approximately 2.0 Arabic line-height and <=74ch explanation measure; display title tracking -0.04em at most.
+- Backgrounds and borders communicate levels; shadows restrained. No AI-generated medical figures, ornamental sparklines, fake clinical metrics or new font CDN.
+- Motion only for hover/state feedback (up to 180ms), with reduced-motion fallback.
+
+**New architecture:** dedicated app masthead for brand, theme, backup and online status; clean tinted study canvas for source/subject selectors and genuine Start+Exam actions; compact two-column course/Review utilities; context breadcrumb; Search/Lecture/More filters; real progress; navigation rails; uninterrupted medical reading and full exam dialogue.
+
+**Responsive contract:** 320/390px app bar wraps without overlap; native selectors and bottom-sheet filters remain reachable, 44px+ controls; 768 tablet, 1024 laptop and 1440 desktop preserve reading width and data hierarchy. Focus mode hides decorative shell, but restores all controls when exited. Print/PDF excludes app chrome.
+
+**Accessibility contract:** contrast >=4.5:1 for normal text (where custom colors introduced), focus ring visible, logical reading order, semantic summary/region controls, accessible names unchanged. All real user workflow ID targets remain stable.
+
+**Non-negotiable data contract:** no alteration to medical lecture truth, diagrams/source photos, MCQ keys, progress storage or migration, Review/Daily Weak/Exam mode/backup/print/offline.
+
+## Archived V4 refinements (historical context; V5 visuals supersede teal requirements)
 
 ## V4.6 overview → genuine study first
 - Lecture overview is a selection surface, not the main reader. The card title, source-linked question counts, rated progress and Open lecture action must be scannable and grounded in the real catalog; don't fake Explanation/MCQ counts for metadata-only lecture entries.
