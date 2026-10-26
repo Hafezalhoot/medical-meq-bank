@@ -24,9 +24,11 @@ test('progress is scoped to the current specialty while My Review spans all cour
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
   await expect(page.locator('#myReviewCount')).toContainText('1 to revisit');
   await expect(page.locator('.insights-title')).toContainText('Specialty progress');
-  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('medicalBankStatusV2'))[
-    'neurosurgery-traumatic-brain-injury::case::tbi-m01'
-  ])).toBe('weak');
+  // A valid migration can clear the legacy localStorage key. Check the
+  // actual question rating rather than insisting that the old key survives.
+  await page.locator('#lectureFilter').selectOption('neurosurgery-traumatic-brain-injury');
+  const savedWeak=page.locator('#neurosurgery-traumatic-brain-injury-case-tbi-m01 .status.weak');
+  await expect(savedWeak).toHaveClass(/active/,{timeout:20000});
 });
 
 test('320px dark progress scope is readable without overflow',async({page})=>{
