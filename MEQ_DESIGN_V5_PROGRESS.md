@@ -35,3 +35,9 @@
 - On failing CI or inaccessible production Worker, do **not** claim merged/live; keep previous V4.8 production running.
 - Cloudflare Access still prevents unauthenticated production browser smoke (issue #35). Build success ≠ proof of logged-in UI.
 - Main auto-deployment before post-merge quality is separately tracked in issue #50. Respect safe-release dependency.
+
+### 2026-10-26 — Exact-head QA pass: vertical rhythm (in progress)
+
+- Chromium report on `5d9017f` had 149 tests passing, 1 failure: first lecture starts at y=771px at 1280px, exceeding the preserved y<750px first-screen contract by 21px. Mobile full-name selectors, real reader width, revision history and Safari/WebKit passed.
+- Fix the root composition rather than weakening the test: reduce excessive desktop masthead, study canvas, quick-link, insight and navigation margins by about 35–40px while retaining 44px controls, all features and source images. No medical data or progress storage changes.
+- **Release gate:** this is not marked DONE or LIVE until the exact candidate head passes all tests and production Worker traffic is independently verified.
