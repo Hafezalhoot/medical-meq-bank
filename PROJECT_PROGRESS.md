@@ -1,5 +1,12 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-26 — V4.5 question-first Source MCQ resume (fifth increment)
+
+- 🧪 Follow-on branch `ui/v4-question-first-resume-20261026` depends on pending V4.4 PR #66. Start/Continue now reaches authored source MCQs in a selected unfiltered lecture, opens their native disclosure and focuses the question; Weak/Review-first saved ratings remain intact.
+- 🧪 When a search, question-type, topic, priority, review or subtopic filter is set, resume continues using the originally visible MEQ/short/image cards. Lecture headers now show the actual number of source MCQs when present.
+- 🧪 One real Psychiatry Playwright regression tests the source-MCQ path and the filtered core-short path, including mobile overflow.
+- ⏳ This is not yet merged or live. V4-05 remains IN PROGRESS; await V4.4 source checks and dependency merge before separate exact-head validation, PR review and Cloudflare release verification.
+
 ### 2026-10-26 — V4.4 bilingual scientific reading and original figure UX (fourth increment)
 
 - 🧪 Working branch `ui/v4-bilingual-source-reading-20261026`: right-to-left Arabic explanation/understanding paragraphs even when a Latin clinical term appears first; 76ch reading measure and larger source image/page captions on 320px phones.

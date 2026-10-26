@@ -175,3 +175,20 @@ test('V4 reader opens source-verified private blob figure in the same zoom dialo
   await expect(viewer).toBeHidden();
   await page.evaluate(url=>URL.revokeObjectURL(url),blobUrl);
 });
+
+test('V4 resume reaches real source MCQs and preserves filtered short-question navigation',async ({page})=>{
+  await openBank(page,390,844);
+  await selectPsychiatry(page);
+  await expect(page.locator('.lecture-counts')).toContainText('56 source MCQs');
+  await page.locator('#resumeStudyBtn').click();
+  await expect.poll(()=>page.evaluate(()=>document.activeElement?.classList.contains('study-guide-mcq'))).toBe(true);
+  await expect(page.locator('.learning-companion .study-guide-part').nth(1)).toHaveAttribute('open','');
+  const mcq=page.locator('.study-guide-mcq').first();
+  await expect(mcq).toBeVisible();
+  await page.locator('#mobileFiltersToggle').click();
+  await page.locator('#typeFilter').selectOption('core');
+  await page.locator('#applyMobileFiltersBtn').click();
+  await page.locator('#resumeStudyBtn').click();
+  await expect.poll(()=>page.evaluate(()=>document.activeElement?.dataset.type)).toBe('core');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+});

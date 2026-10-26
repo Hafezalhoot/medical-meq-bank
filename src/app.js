@@ -642,6 +642,13 @@ function render(){
   const studyGuide=createStudyGuide(l);
   if(studyGuide){
     sec.querySelector('.cases-section').before(studyGuide);
+    const mcqCount=l.studyGuide?.mcqs?.length||0;
+    if(mcqCount){
+      const pill=document.createElement('span');
+      pill.className='count-pill';
+      pill.textContent=mcqCount+' source MCQs';
+      sec.querySelector('.lecture-counts')?.append(pill);
+    }
     const jump=document.createElement('button');jump.type='button';
     jump.className='study-guide-jump';jump.textContent=l.imageQuestions.some(isOriginalSourceFigure)?'Explanation / MCQ / Original Photos':'Explanation / MCQ / Infographic';
     jump.addEventListener('click',()=>{
@@ -868,7 +875,19 @@ function setFocusMode(enabled){
 // Enter the real study flow; prefer items marked Review/Weak, then unrated items.
 const resumeStudy=$('resumeStudyBtn');
 resumeStudy?.addEventListener('click',()=>{
-  const items=[...document.querySelectorAll('#mainContent .study-item:not(.hidden)')];
+  // Source-linked Study Guide MCQs are first-class questions when no filters
+  // restrict the session. Preserve the older MEQ/shorts-only filtered flow.
+  const includeGuide=$('lectureFilter').value!=='all' &&
+    !$('search').value.trim() &&
+    $('typeFilter').value==='all' &&
+    $('topicFilter').value==='all' &&
+    $('priorityFilter').value==='all' &&
+    (document.getElementById('reviewFilter')?.value||'all')==='all' &&
+    activeSubtopic==='all';
+  const selector=includeGuide
+    ?'#mainContent .study-item:not(.hidden),#mainContent .study-guide-mcq'
+    :'#mainContent .study-item:not(.hidden)';
+  const items=[...document.querySelectorAll(selector)];
   const rating=item=>{
     const key=item.querySelector('.status')?.dataset.key;
     return key?state[key]||'':'';

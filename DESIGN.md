@@ -22,6 +22,12 @@ A personal, offline-capable medical-exam preparation workspace. The user visits 
 5. **Study content** in a single reading column: source-first Explanation/MCQ, exact original Figure Gallery, MEQ, Shorts, Rapid. Rich source pages remain readable without horizontal document overflow.
 6. **Error/recovery**: PWA updates, offline, source unavailable, no matching items and backup/restore tell the student what to do next, not silently fail.
 
+## Source MCQs in question-first study
+- An active lecture's authored Study Guide MCQs are real study questions and must be reachable from the existing Start/Continue studying action, not only a collapsed secondary disclosure.
+- The existing rating priority (saved Weak/Review, then unrated), filter scope and progress storage keys must remain unchanged. Only include authored MCQs in the general unfiltered lecture path; a restricted type/search/topic session continues to resume visible legacy question cards.
+- Show the exact count of authored MCQs with the existing quiet lecture-count pills instead of adding another toolbar. Use the existing native `details` to reveal the focused question, with keyboard focus following the scroll.
+- This is a V4-05 increment rather than a claim of full session-restoration completion.
+
 ## V4 original-figure study reader
 - Keep existing original figures and page metadata; never rewrite/crop them at runtime or fetch unsourced replacement images.
 - The gallery previews should be readable and selectable; use two columns on typical desktop reading width, one on phones.
