@@ -1070,3 +1070,9 @@ details.original-figure-tools{display:block;padding:0!important;margin:2px 0 15p
 @media(prefers-reduced-motion:reduce){
   .lecture-overview-card{transition:none}
 }
+
+/* V4.8: Explicitly distinguish selected-specialty progress from all-course review. */
+.my-review-heading .my-review-scope{margin-inline-start:6px;color:var(--muted);font-size:.73rem;font-weight:700;white-space:nowrap}
+@media(max-width:380px){
+  .my-review-heading .my-review-scope{display:block;margin-inline-start:0;font-size:.7rem;line-height:1.4}
+}

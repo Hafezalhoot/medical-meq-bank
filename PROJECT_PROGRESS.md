@@ -1,11 +1,18 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
-### 2026-10-26 — V4.7 progressive desktop study filters (candidate)
+### 2026-10-26 — V4.8 clear specialty progress vs all-course review (candidate)
+
+- 🧪 Branch `ui/v4-progress-scope-20261026`: change the progress summary wording to `Specialty progress` and `N% rated • N mastered`, and make the `All courses` scope visible beside My Review (including narrow phones).
+- 🧪 No rating arithmetic or counters changed: MEQ bank progress remains the selected specialty; My Review remains all courses. Add a cross-course Weak fixture and 320px dark/overflow regression, retain all existing exact IDs and storage formats.
+- ⏳ Release `2026.10.26.8` is a **branch candidate**, not live until full exact-head Static/Chromium/WebKit/Workers Builds checks pass, merge and independent Worker verification.
+- ✅ Baseline V4.7 [PR #69](https://github.com/Hafezalhoot/medical-meq-bank/pull/69) merged as `855bad0` after exact-head checks green. Initial production smoke raced unfinished main Cloudflare build, but its read-only rerun verified Worker `aca0ed0a` at **100% traffic**. HTTP 302 Cloudflare Access remains (issue #35); promotion gate #50 remains unresolved.
+
+### 2026-10-26 — V4.7 progressive desktop study filters (merged PR #69)
 
 - 🧪 Branch `ui/v4-desktop-filter-disclosure-20261026`: compact Search/Lecture/More filters/Random desktop toolbar; existing Type/Topic/Priority/Review and Reveal all controls stay available in an accessible on-demand panel. No duplicated filter values or new storage keys.
 - 🧪 Active advanced filters remain indicated in the More filters count even when collapsed; saved Weak/Review selection persists, chips remain clearable; Escape restores keyboard focus. The 320/390px mobile bottom sheet is unchanged.
 - 🧪 Browser regressions cover desktop disclosure, Rapid Recall (existing suite), 768/1024/1440px overflow and touch target bounds, saved Weak state, dark phone and existing mobile bottom-sheet behavior.
-- ⏳ Version `2026.10.26.7` is **branch candidate**, not merged/published until exact PR-head Static, Chromium, WebKit and Workers Build checks, then independent active Worker verification.
+- ✅ Version `2026.10.26.7` merged as `855bad0` with exact PR-head Static, Chromium, WebKit, Workers Builds all green; rerun of read-only Cloudflare smoke confirmed Worker `aca0ed0a` at 100% live traffic (authenticated Access smoke still 302).
 - ✅ Baseline V4.6 PR #68 merged as `c62df16` after full exact-head checks; post-merge Cloudflare Worker `01c596bf` at 100% traffic. Authenticated production browser smoke still blocked by Access HTTP 302 (#35); automatic promotion risk still tracked in #50.
 
 ### 2026-10-26 — V4.6 owner-screenshot-led overview and Start-to-question navigation (merged PR #68)

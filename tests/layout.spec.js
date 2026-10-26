@@ -196,7 +196,8 @@ test('study progress summary remains readable and all detailed metrics can be re
   await openBank(page, {width: 1440, height: 900});
   const insights = page.locator('#studyInsights');
   await expect(insights).not.toHaveAttribute('open', '');
-  await expect(page.locator('#insightsHeadline')).toContainText('overall practice');
+  await expect(page.locator('#insightsHeadline')).toContainText('rated');
+  await expect(insights.locator('.insights-title')).toContainText('Specialty progress');
   await insights.locator('summary').click();
   await expect(insights).toHaveAttribute('open', '');
   await expect(page.locator('#lectureCount')).not.toBeEmpty();

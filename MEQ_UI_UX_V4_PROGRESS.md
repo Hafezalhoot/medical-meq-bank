@@ -2,9 +2,9 @@
 
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
-**Baseline main:** `c62df16f8cc64e3d15730c5443cd77d0571d31ae` (V4.6 release `2026.10.26.6`)  
-**Working branch:** `ui/v4-desktop-filter-disclosure-20261026` (V4.7 progressive-disclosure increment)  
-**Production status:** V4.6 [PR #68](https://github.com/Hafezalhoot/medical-meq-bank/pull/68) merged as `c62df16`; [read-only Cloudflare run `40257297095`](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40257297095) reported Worker `01c596bf-19ae-46e0-ada2-250a2488cae2` receiving **100% traffic**. Authenticated production smoke still redirects to Access login (HTTP 302, issue #35). **V4.7 working branch is not live** until exact-head QA, merge and independent Worker verification.
+**Baseline main:** `855bad0f0cefa666bc5d62c0cecab4c1f0a10888` (V4.7 release `2026.10.26.7`)  
+**Working branch:** `ui/v4-progress-scope-20261026` (V4.8 honest progress/review scopes)  
+**Production status:** V4.7 [PR #69](https://github.com/Hafezalhoot/medical-meq-bank/pull/69) merged as `855bad0`; independent read-only rerun of [Cloudflare smoke `40258513004`](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40258513004) verified Worker `aca0ed0a-d163-45d4-8b75-105276c6eeac` at **100% live traffic** after main Workers Build completed. Authenticated browser request remains Access-blocked (HTTP 302, issue #35). **V4.8 working branch is not live** until exact-head QA, merge and independent Worker verification.
 **Source of design evidence:** owner screenshots of Psychiatry and source figure cards; Chromium visual evidence artifact from main GitHub Actions run `40235201300` (320/390/768/1280/1440 desktop, mobile, dark and reading states); `src/index.html`, `src/app.js`, `src/app.css`, existing Playwright/axe/visual tests.
 
 ## Status legend and update rules
@@ -37,7 +37,7 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 | V4-05 | P1 | IN PROGRESS | Question-first daily study session | Clear Resume, Weak queue, reveal, rating and question-progress states; consistent behavior between study/Exam and across refresh |
 | V4-06 | P1 | IN PROGRESS | Reading typography & visual hierarchy | Arabic/English readable width, mobile font >=16px for long reading, scientific tables scroll/zoom, consistent headings and source labels |
 | V4-07 | P1 | TODO | Consolidate V2/V3 CSS cascade | Audit redundant selectors/overrides; shared semantic tokens + dark variants; screenshots stable in 320/390/768/1280/1440 and zoom |
-| V4-08 | P1 | TODO | Robust feedback/empty/recovery states | Course without lectures, image unavailable, offline, search no-match, outdated PWA, failed backup, interrupted exam all give useful next action |
+| V4-08 | P1 | IN PROGRESS | Robust feedback/empty/recovery states | Course without lectures, image unavailable, offline, search no-match, outdated PWA, failed backup, interrupted exam all give useful next action |
 | V4-09 | P1 | TODO | Accessibility, responsive and visual gate | CI axe + keyboard/Escape/focus, screen reader semantics, touch targets, 200% zoom, RTL, light/dark; record screenshot evidence |
 | V4-10 | P1 | TODO | Source-first lecture intake UX | Draft/Review/Ready/Published pipeline for adding many PDFs; ensure image facts are explained and question-mapped; no public publication of unreviewed facts |
 | V4-11 | P1 | TODO | PWA/performance & offline media | Check image budget, lazy loading, app shell and source figures offline; loading/caching clear, no lost progress |
@@ -101,7 +101,14 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 - **Implementation candidate:** reuse the exact existing native selects, handlers, status chips and storage IDs. Keep Search, Lecture, **More filters** and Random item in the compact desktop row (701px+); reveal Type, Topic, Priority, Status and Reveal all on demand in a clearly grouped second/third row. No new filtering logic, no independent saved state.
 - **Critical safety behavior:** a collapsed More filters button displays a visible count of active **advanced** filters; status chips remain visible and clearable. Collapsing never resets Weak/Review, type, topic or priority. Escape closes advanced controls, restores keyboard focus, and does not interfere with the Exam dialog.
 - **Responsive:** retain unchanged native phone filter bottom sheet at 320/390px; check 768/1024/1440 desktop/tablet, dark mode, 44px targets, no document overflow, persisted Weak filter and Rapid Recall disabling.
-- **Status:** V4-04 remains IN PROGRESS (this is the desktop filter subtask), V4-07 CSS consolidation remains TODO. New candidate `2026.10.26.7` **NOT LIVE** until exact-head Static/Chromium/WebKit/Workers Builds pass and verified Worker activation; issue #35/#50 still open.
+- **Status:** V4-04 remains IN PROGRESS (desktop filter subtask DONE); V4-07 CSS consolidation remains TODO. V4.7 `2026.10.26.7` merged in [PR #69](https://github.com/Hafezalhoot/medical-meq-bank/pull/69) as `855bad0`, exact-head Static/Chromium/WebKit/Workers Builds passed in `40258209573`; read-only rerun of live smoke reported Worker `aca0ed0a` at 100%. Access #35 and promotion gate #50 remain open.
+
+## Eighth increment — V4.8 honest progress scope and review labels
+
+- **Observed confusion:** the screenshot simultaneously displayed “0% overall practice” in the selected Psychiatry specialty and “54 to revisit” in My Review spanning **all courses**. These numbers are not inherently inconsistent, but the labels obscure the different denominators.
+- **Implementation candidate:** the collapsed summary now says **Specialty progress** and **N% rated • N mastered**; the My Review title keeps its familiar name with a visible small **All courses** scope, including on 320px phones. This is a label/clarity change, **not** a change to calculations, progress IDs, or study ratings.
+- **Regression:** cross-course saved Weak item remains counted in My Review while the currently selected untouched specialty remains at 0% rated; switching specialty does not drop the saved rating. Check 320px dark mode and no horizontal overflow, existing analytics and disclosure tests.
+- **Status:** V4-08 IN PROGRESS (this increment covers truthful scope text, not all offline/backup/error recovery scenarios). Candidate `2026.10.26.8` **NOT LIVE** pending exact-head full CI, merge, and independent Worker status. Issues #35/#50 remain open.
 
 ## Evidence log
 | Date | Commit / PR | Work | Evidence | Outcome |
@@ -113,6 +120,7 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 | 2026-10-26 | [#66](https://github.com/Hafezalhoot/medical-meq-bank/pull/66) | V4.4 bilingual source + image reader | Exact-head Static/Chromium/WebKit/Workers Builds passed; main `e6c0fb0`; Worker `3ddfb76f` 100% (Access 302) | DONE (V4-06 wider work remains) |
 | 2026-10-26 | [#67](https://github.com/Hafezalhoot/medical-meq-bank/pull/67) | V4.5 source-MCQ resume | Exact-head Static/Chromium/WebKit/Workers Builds passed; main `cffde8f`; Worker `49e63c77` 100% (Access 302) | DONE increment (V4-05 wider work remains) |
 | 2026-10-26 | [#68](https://github.com/Hafezalhoot/medical-meq-bank/pull/68) | V4.6 Psychiatry overview | Exact-head checks passed in `40256922136`; main `c62df16`; Worker `01c596bf` 100% in `40257297095`, Access 302 | DONE increment (V4-04/05 wider work remains) |
+| 2026-10-26 | [#69](https://github.com/Hafezalhoot/medical-meq-bank/pull/69) | V4.7 desktop disclosure | Exact-head four checks green `40258209573`; main `855bad0`; initial smoke raced deploy, rerun Worker `aca0ed0a` 100% (Access 302) | DONE increment (V4-04 wider work remains) |
 
 ## Release checklist for each iteration
 - [ ] User-facing design changes match actual screenshots, with no fabricated visuals or data.

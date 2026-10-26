@@ -20,7 +20,8 @@ test('mobile presents active lecture context without repeating course and specia
   expect(breadcrumb.height).toBeLessThanOrEqual(56);
   const summary=page.locator('#studyInsights > summary');
   await expect(summary).toBeVisible();
-  await expect(summary).toContainText('overall practice');
+  await expect(summary).toContainText('Specialty progress');
+  await expect(summary).toContainText('rated');
   expect((await summary.boundingBox()).height).toBeLessThanOrEqual(75);
   await summary.click();
   await expect(page.locator('#studyInsights')).toHaveAttribute('open','');
