@@ -85,3 +85,62 @@
     max-width:min(220px,calc(100vw - 164px))
   }
 }
+
+
+/* V4.7: Desktop progressive disclosure, using the exact same filters and chips.
+   Mobile still uses the established full-screen bottom sheet. */
+.desktop-filters-toggle{
+  display:none;align-items:center;justify-content:center;gap:7px;
+  min-height:44px;padding:8px 12px;min-width:0;
+  border:1px solid var(--line);border-radius:9px;
+  color:var(--text);background:var(--surface-soft);
+  font:inherit;font-size:.83rem;font-weight:780;white-space:nowrap;cursor:pointer;
+}
+.desktop-filters-toggle:hover{border-color:var(--brand);color:var(--brand)}
+.desktop-filters-toggle[aria-expanded="true"]{
+  color:var(--brand);border-color:var(--brand);background:var(--brand-soft)
+}
+.desktop-filters-toggle:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.desktop-filter-count{
+  display:inline-grid;place-items:center;min-width:20px;height:20px;
+  padding:0 5px;border-radius:99px;
+  color:#fff;background:var(--brand);font-size:.75rem;line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.desktop-filter-count[hidden]{display:none}
+.dark .desktop-filters-toggle{color:var(--text);background:var(--surface-soft)}
+.dark .desktop-filters-toggle[aria-expanded="true"]{
+  color:var(--brand);border-color:var(--brand);background:var(--brand-soft)
+}
+@media(min-width:701px){
+  .mobile-filter-shell .toolbar{
+    grid-template-columns:minmax(0,2.1fr) minmax(190px,1.3fr) minmax(120px,.75fr) minmax(145px,.85fr);
+    gap:9px;align-items:center;min-width:0
+  }
+  .mobile-filter-shell .toolbar #search{grid-column:1;grid-row:1;min-width:0}
+  .mobile-filter-shell .toolbar #lectureFilter{grid-column:2;grid-row:1;min-width:0}
+  .mobile-filter-shell .toolbar #desktopFiltersToggle{
+    display:inline-flex;grid-column:3;grid-row:1;width:100%
+  }
+  .mobile-filter-shell .toolbar #randomBtn{grid-column:4;grid-row:1;width:100%}
+  .mobile-filter-shell .toolbar .review-filter{min-width:0;width:100%}
+  .mobile-filter-shell .toolbar:not(.desktop-filters-expanded)
+    :is(#typeFilter,#topicFilter,#priorityFilter,#reviewFilter,#revealBtn){display:none!important}
+  .mobile-filter-shell .toolbar.desktop-filters-expanded #typeFilter{grid-column:1;grid-row:2}
+  .mobile-filter-shell .toolbar.desktop-filters-expanded #topicFilter{grid-column:2;grid-row:2}
+  .mobile-filter-shell .toolbar.desktop-filters-expanded #priorityFilter{grid-column:3;grid-row:2}
+  .mobile-filter-shell .toolbar.desktop-filters-expanded #reviewFilter{grid-column:4;grid-row:2}
+  .mobile-filter-shell .toolbar.desktop-filters-expanded #randomBtn{grid-column:3;grid-row:3}
+  .mobile-filter-shell .toolbar.desktop-filters-expanded #revealBtn{grid-column:4;grid-row:3;width:100%}
+}
+@media(min-width:701px) and (max-width:850px){
+  .mobile-filter-shell .toolbar{
+    grid-template-columns:minmax(0,1.3fr) minmax(165px,1.2fr) minmax(112px,.75fr) minmax(110px,.7fr);
+    gap:7px
+  }
+  .mobile-filter-shell .toolbar #desktopFiltersToggle{font-size:.77rem;padding-inline:8px}
+  .mobile-filter-shell .toolbar #randomBtn{font-size:.78rem;padding-inline:8px}
+}
+@media(max-width:700px){
+  .desktop-filters-toggle{display:none!important}
+}
