@@ -11,7 +11,10 @@ async function openBank(page,width=390,height=844){
 async function selectPsychiatry(page){
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await page.locator('#subjectSelector').selectOption('psychiatry');
+  const drawer=page.locator('#mobileFiltersToggle');
+  if(await drawer.isVisible())await drawer.click();
   await page.locator('#lectureFilter').selectOption('internal-medicine-ii-psychiatry-anxiety-disorders');
+  if(await drawer.isVisible())await page.locator('#closeMobileFiltersBtn').click();
   await expect(page.locator('.original-atlas-item')).toHaveCount(7,{timeout:20000});
 }
 
@@ -64,7 +67,7 @@ test('V4 dark navigation labels meet normal-text contrast also when inactive',as
   await expect(page.locator('#toggleLectures')).not.toHaveClass(/active/);
 });
 
-test('V4 original Anxiety table opens a keyboard-accessible zoom reader',async ({page})=>{
+test('V4 original Anxiety table opens a keyboard-accessible zoom reader',async ({page},testInfo)=>{
   await openBank(page,1440,900);
   await selectPsychiatry(page);
   const atlas=await showAtlas(page);
@@ -72,6 +75,7 @@ test('V4 original Anxiety table opens a keyboard-accessible zoom reader',async (
   await atlas.locator('.source-figure-full').first().click();
   const viewer=page.locator('#sourceFigureViewer');
   await expect(viewer).toBeVisible();
+  await testInfo.attach('v4-original-source-reader-desktop',{body:await page.screenshot({animations:'disabled'}),contentType:'image/png'});
   await expect(viewer.locator('img')).toHaveAttribute('src',/assets\/lectures\/psychiatry-anxiety\/.+\.jpg/);
   await expect.poll(()=>viewer.locator('img').evaluate(img=>img.naturalWidth)).toBeGreaterThan(100);
   await viewer.locator('[data-source-in]').click();
@@ -90,7 +94,7 @@ test('V4 original Anxiety table opens a keyboard-accessible zoom reader',async (
     .toBe(true);
 });
 
-test('V4 source viewer is readable and escapable on a narrow phone',async ({page})=>{
+test('V4 source viewer is readable and escapable on a narrow phone',async ({page},testInfo)=>{
   await openBank(page,390,844);
   await selectPsychiatry(page);
   const atlas=await showAtlas(page);
@@ -98,6 +102,7 @@ test('V4 source viewer is readable and escapable on a narrow phone',async ({page
   await atlas.locator('.source-figure-full').first().click();
   const viewer=page.locator('#sourceFigureViewer');
   await expect(viewer).toBeVisible();
+  await testInfo.attach('v4-original-source-reader-phone',{body:await page.screenshot({animations:'disabled'}),contentType:'image/png'});
   const rect=await viewer.boundingBox();
   expect(rect.width).toBeLessThanOrEqual(390);
   expect(rect.height).toBeLessThanOrEqual(844);
