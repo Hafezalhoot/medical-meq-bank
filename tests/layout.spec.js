@@ -206,7 +206,7 @@ test('study progress summary remains readable and all detailed metrics can be re
   await expect(insights).not.toHaveAttribute('open', '');
 });
 
-test('mobile shows compact utilities and two-column medical study selectors', async ({page}) => {
+test('mobile shows compact utilities and full-width readable medical study selectors', async ({page}) => {
   await openBank(page, {width: 390, height: 844});
   const tools = page.locator('#pwaToolsToggle');
   await expect(tools).toBeVisible();
@@ -228,9 +228,10 @@ test('mobile shows compact utilities and two-column medical study selectors', as
   expect(Math.max(...navButtons.map(box => box.right))).toBeLessThanOrEqual(391);
   const rectangles = await page.evaluate(() => ['courseSelector', 'subjectSelector'].map(id => {
     const box = document.getElementById(id).getBoundingClientRect();
-    return {left: box.left, right: box.right, height: box.height};
+    return {left: box.left, right: box.right, top:box.top, bottom:box.bottom, height: box.height};
   }));
-  expect(rectangles[0].right).toBeLessThanOrEqual(rectangles[1].left + 1);
+  expect(rectangles[1].top).toBeGreaterThanOrEqual(rectangles[0].bottom - 1);
+  expect(Math.abs(rectangles[0].left - rectangles[1].left)).toBeLessThanOrEqual(1);
   expect(rectangles[0].height).toBeGreaterThanOrEqual(44);
   expect(rectangles[1].height).toBeGreaterThanOrEqual(44);
 });
