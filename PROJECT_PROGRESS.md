@@ -1,5 +1,12 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-26 — V4.4 bilingual scientific reading and original figure UX (fourth increment)
+
+- 🧪 Working branch `ui/v4-bilingual-source-reading-20261026`: right-to-left Arabic explanation/understanding paragraphs even when a Latin clinical term appears first; 76ch reading measure and larger source image/page captions on 320px phones.
+- 🧪 Verified private JPEGs imported into IndexedDB now use the same in-app source viewer for same-origin `blob:` links, instead of falling back to new tabs. Hosted source JPEGs continue working. All PDF images and content remain unmodified.
+- 🧪 Three Playwright regressions cover mixed-script Anxiety prose, mobile caption readability in dark/light, and private source-blob image zoom. All work remains **not live until CI + merge + active Worker verification**; V4-06 stays IN PROGRESS.
+- ✅ V4.3 [PR #65](https://github.com/Hafezalhoot/medical-meq-bank/pull/65) merged as `5197bdd`; read-only run `40253993643` saw Cloudflare Worker `0b173e69` at 100% traffic. Full logged-in production browser verification still fails Access HTTP 302 (issue #35).
+
 
 ### 2026-10-26 — V4.3 mobile reading hierarchy (third UI increment)
 

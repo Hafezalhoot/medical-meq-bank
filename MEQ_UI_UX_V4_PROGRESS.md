@@ -2,9 +2,9 @@
 
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
-**Baseline main:** `dd44aa4d0bcb0c69866d882ab4c03908b74c2771` (V4 release `2026.10.26.2`)  
-**Working branch:** `ui/v4-mobile-study-density-20261026`  
-**Production status:** Changes on this branch are **not live** until exact-head verification, PR merge, and independent confirmation of active Cloudflare Worker traffic.
+**Baseline main:** `5197bdd2685b2457db27b068d4c45a2a1a37a72f` (V4.3 release `2026.10.26.3`)  
+**Working branch:** `ui/v4-bilingual-source-reading-20261026`  
+**Production status:** V4.3 source is merged; independent read-only run `40253993643` reports active Worker `0b173e69-741c-4c79-8da0-568787e5a61f` at **100% traffic**, but protected browser smoke remains Access-blocked (HTTP 302, issue #35). **V4.4 branch is not live** until exact-head tests, merge and new Worker confirmation.
 **Source of design evidence:** owner screenshots of Psychiatry and source figure cards; Chromium visual evidence artifact from main GitHub Actions run `40235201300` (320/390/768/1280/1440 desktop, mobile, dark and reading states); `src/index.html`, `src/app.js`, `src/app.css`, existing Playwright/axe/visual tests.
 
 ## Status legend and update rules
@@ -62,9 +62,17 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 ## Third increment — compact mobile reading context
 
 - **Stage 2 DONE:** [PR #64](https://github.com/Hafezalhoot/medical-meq-bank/pull/64) merged as `dd44aa4d0bcb0c69866d882ab4c03908b74c2771`, after exact-head Static Validation, Chromium, WebKit and Workers Builds passed. [Read-only release smoke](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40253332340) saw Worker `eafde86f-94ea-4815-b932-454ef47323ea` at 100% of Cloudflare traffic. The protected endpoint still returned Access HTTP 302 (#35): not a logged-in browser pass.
-- **Stage 3 IN PROGRESS:** mobile 320/390px duplicates course/specialty in both the hero selectors and a multi-row breadcrumb; reduce the redundant breadcrumb to the active lecture, keep the complete path on wider screens and retain both native selectors. Compact the Study progress disclosure without hiding the percentage or its expand/collapse interaction. Preserve all existing nav, ratings, reading sections and original figures.
+- **Stage 3 DONE:** [PR #65](https://github.com/Hafezalhoot/medical-meq-bank/pull/65) merged as `5197bdd2685b2457db27b068d4c45a2a1a37a72f` after Static, Chromium, WebKit and Workers Builds passed. Mobile breadcrumb now prioritizes the active lecture while course/specialty selectors remain; progress summary keeps the percentage and expanded stats. The read-only Worker check saw 100% active traffic; the authenticated browser test remains blocked by Access #35.
 - **Accept:** first lecture enters the reader sooner at 320/390px; narrow mobile no horizontal scroll for long lecture titles; progress stat summary keyboard/touch-operable and content unchanged; desktop 768/1440 full breadcrumb remains, dark mode readable.
 - **Scope honesty:** V4-06 stays IN PROGRESS: this is a targeted hierarchy/density pass, not an assertion that typography and every source table are final.
+
+## Fourth increment — V4.4 bilingual source reading and private original-figure UX
+
+- **On working branch, pending exact-head CI:** Arabic Explanation and Understanding Aid paragraphs use RTL and `lang=ar` even when the first word is a Latin medical term (for example "Fear"); English-only prose retains `dir=auto`. No medical text or MCQ key is rewritten.
+- Tighten Explanation/MCQ reading measure from 80ch to 76ch. Increase original-source PDF captions, source-page labels and image-viewer metadata, including the 320px mobile overrides, without adding visual clutter.
+- Fix source zoom viewer for **same-origin blob URLs representing validated private IndexedDB JPEGs**: the V4 reader previously accepted only hosted `./assets/lectures/...jpg` links, so verified imported source pictures were opening outside the in-app zoom viewer. The viewer now accepts both paths while maintaining the original new-tab fallback and the source-only card requirement.
+- New Playwright regressions check real Anxiety PDF prose that begins with a Latin term, RTL/size/overflow, 320px caption legibility in light/dark, and a byte-identical source figure loaded through a private blob URL.
+- **Gates:** full exact-head static, Chromium, WebKit, Workers Builds; no deployment or authenticated production browser pass is claimed until independently verified. V4-06 and V4-04 remain IN PROGRESS; the remaining roadmap stays TODO/BLOCKED.
 
 ## Evidence log
 | Date | Commit / PR | Work | Evidence | Outcome |
@@ -72,6 +80,7 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 | 2026-10-26 | Baseline `80721a55` | Reviewed current V3 UI, screenshots and code | Chromium Actions artifact `40235201300`, `UI_V3_REDESIGN.md`, `src/app.css`, `src/app.js`, `tests/layout.spec.js` | DONE — 7/10 subjective starting point; risk inventory above |
 | 2026-10-26 | [#63](https://github.com/Hafezalhoot/medical-meq-bank/pull/63) | V4-01/02/03 hero, dark mode, source figure viewer | PR-head run 40252330860: all four checks passed; main `e3c289d`; Cloudflare Worker 100%, Access 302 | DONE (source and deployment; authenticated smoke blocked) |
 | 2026-10-26 | [#64](https://github.com/Hafezalhoot/medical-meq-bank/pull/64) | V4-04a title search | PR-head Static/Chromium/WebKit/Workers Builds passed, main `dd44aa4d`; Cloudflare eafde86f 100% (Access 302) | DONE (V4-04 wider work remains) |
+| 2026-10-26 | [#65](https://github.com/Hafezalhoot/medical-meq-bank/pull/65) | V4.3 mobile study context | Exact-head Static/Chromium/WebKit/Workers Builds passed; main `5197bdd`; read-only run `40253993643` Worker `0b173e69` 100% (Access 302) | DONE source + active Worker; authenticated browser QA BLOCKED |
 
 ## Release checklist for each iteration
 - [ ] User-facing design changes match actual screenshots, with no fabricated visuals or data.
