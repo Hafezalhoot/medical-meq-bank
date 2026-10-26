@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank — Design System V4
 
-**Stage:** Established V4 design contract; V4.6 `2026.10.26.6` merged, Worker at 100%; V4.7 desktop filters in review.  
+**Stage:** Established V4 design contract; V4.7 `2026.10.26.7` merged and Worker at 100%; V4.8 progress scope candidate.  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
 
 ## Product and primary job
@@ -26,6 +26,12 @@ A personal, offline-capable medical-exam preparation workspace. The user visits 
 - Preserve visual/keyboard order by putting the filters directly after the disclosure and the less-used actions last when expanded. Allow Escape to close and return focus, while keeping open native exam dialogs unaffected.
 - At phone widths <=700px reuse the existing accessible bottom sheet. At intermediate 701–850px native selects must fit without document overflow or 44px hit targets becoming smaller.
 - Typography/colors use the existing teal design tokens; no new icon library, medical artwork or dashboard cards.
+
+## V4.8 progress denominators are explicit
+- The collapsed progress heading refers only to the **current specialty**, not all the courses. “Rated” reports the existing MEQ/short/image bank review-status fraction; it is **not** exam accuracy, a percent of all courses, or a claim about source-MCQ accuracy.
+- **My Review** totals Weak and Review questions across **all courses**; show “All courses” adjacent to its title even when mobile hides its longer explanatory subtitle.
+- Keep the metrics, stored status keys, counts, backup formats and exam results unchanged. Clarify scope through visible wording rather than introducing a new data aggregation system or conflicting progress widget.
+- Validate a user with a Weak item in a different specialty: their current specialty progress can accurately show 0% while My Review still offers the saved item.
 
 ## Study information hierarchy
 1. **Course & Specialty** (existing selectors) with one prominent **Start/Continue studying** CTA.

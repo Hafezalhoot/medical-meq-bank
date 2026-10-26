@@ -742,7 +742,7 @@ function updateStatus(){
   $('coreProgressText').textContent=cp+'%';$('coreProgressFill').style.width=cp+'%';$('coreProgressBar')?.setAttribute('aria-valuenow',String(cp));
   $('overallProgressText').textContent=op+'%';$('overallProgressFill').style.width=op+'%';$('overallProgressBar')?.setAttribute('aria-valuenow',String(op));
   const headline=$('insightsHeadline'),summaryFill=$('insightsOverallFill');
-  if(headline)headline.textContent=op+'% overall practice • '+mastered+' mastered';
+  if(headline)headline.textContent=op+'% rated • '+mastered+' mastered';
   if(summaryFill)summaryFill.style.width=op+'%';
   const resume=$('resumeStudyBtn');
   if(resume){
