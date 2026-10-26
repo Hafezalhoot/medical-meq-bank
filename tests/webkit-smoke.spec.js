@@ -142,6 +142,16 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
   const first=figures.first();
   await first.scrollIntoViewIfNeeded();
   await expect.poll(()=>first.evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+  // V4 must work in both desktop Safari and iPhone WebKit, not only Chromium.
+  const originalLink=guide.locator('.original-atlas-item .source-figure-full').first();
+  await originalLink.click();
+  const viewer=page.locator('#sourceFigureViewer');
+  await expect(viewer).toBeVisible();
+  await expect(viewer.locator('img')).toHaveAttribute('src',/assets\/lectures\/dermatology.+\.jpg/);
+  await viewer.locator('[data-source-in]').click();
+  await expect(viewer.locator('.source-viewer-zoom output')).toHaveText('150%');
+  await viewer.locator('[data-source-close]').click();
+  await expect(viewer).toBeHidden();
   await expect(guide.locator('.study-guide-figure img')).toHaveCount(0);
 
   if (testInfo.project.name === 'webkit-mobile') {

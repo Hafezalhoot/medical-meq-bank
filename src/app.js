@@ -438,7 +438,7 @@ function createStudyGuide(lecture) {
   if(sourceQuestions.length){
     const details=disclosure('Original lecture figures',sourceQuestions.length);
     const copy=document.createElement('p');copy.className='original-guide-copy';
-    copy.textContent=sourceQuestions.every(item=>Boolean(imageSource(item)))?'Original lecture tables and figures, including information-dense study material. Open any figure to zoom and jump to its study questions. No AI or external substitutes.':'Original lecture figures. Hosted figures open here; private-only originals require importing exact source JPEGs on your device.';
+    copy.textContent=sourceQuestions.every(item=>Boolean(imageSource(item)))?'These are the original printed lecture photographs and information-dense source figures. Open any figure to zoom and jump to its study questions. No AI or external substitutes.':'Original lecture figures. Hosted figures open here; private-only originals require importing exact source JPEGs on your device.';
     const jump=document.createElement('a');jump.className='original-guide-link';
     jump.href='#'+lecture.id+'-images';jump.textContent='Open original figure questions';
     const atlas=document.createElement('div');
