@@ -949,3 +949,15 @@ details.original-figure-tools{display:block;padding:0!important;margin:2px 0 15p
 .learning-history-list li small{color:var(--muted)}
 @media(max-width:700px){.learning-analytics{padding:14px}.learning-analytics th,.learning-analytics td{padding:10px 8px}.learning-history-list li{display:grid;gap:4px}.learning-history-list li span{min-width:0}}
 @media print{.learning-analytics{display:none!important}}
+
+
+/* V4: Local lecture discovery is distinct from question search. It stays out
+   of the way for small specialties, and preserves the selected lecture. */
+.lecture-nav-search{display:grid;gap:6px;margin:10px 0 12px;min-width:0}
+.lecture-nav-search[hidden]{display:none}
+.lecture-nav-search .control{width:100%;min-width:0;min-height:44px;background:var(--card);color:var(--text);border-color:var(--line);font-size:.89rem}
+.lecture-nav-search .control::placeholder{color:var(--muted)}
+.lecture-nav-search .control:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.lecture-nav-search small{font-size:.77rem;color:var(--muted)}
+.lecture-nav-clear{display:inline;margin:6px 0 0;padding:5px 2px;border:0;background:none;color:var(--brand);font-weight:750;text-decoration:underline;cursor:pointer}
+.lecture-nav-clear:focus-visible{outline:2px solid var(--brand);outline-offset:2px}

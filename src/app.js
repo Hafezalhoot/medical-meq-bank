@@ -232,26 +232,58 @@ function selectLecture(id,scroll=true){
   }).catch(()=>{})
 }
 function selectSubtopic(lectureId,subtopicId){if($('lectureFilter').value!==lectureId)$('lectureFilter').value=lectureId;activeSubtopic=subtopicId;updateTopicOptions();renderLectureNav();renderSubtopicNav();applyFilters();const first=[...document.querySelectorAll(`.study-item[data-lecture="${lectureId}"]`)].find(it=>!it.classList.contains('hidden'));first?.scrollIntoView({behavior:scrollBehavior(),block:'center'})}
+let lectureNavSearchScope='';
 function renderLectureNav(){
-  const nav=$('lectureNav'),list=visibleLectures(),selected=$('lectureFilter').value;nav.innerHTML='';
+  const nav=$('lectureNav'),list=visibleLectures(),selected=$('lectureFilter').value;
+  const wrap=$('lectureNavSearchWrap'),field=$('lectureNavSearch'),status=$('lectureNavResult');
+  const scope=activeCourseId()+':'+activeSubject;
+  if(scope!==lectureNavSearchScope){lectureNavSearchScope=scope;field.value='';}
+  wrap.hidden=list.length<5;
+  if(wrap.hidden)field.value='';
+  const query=field.value.trim().toLocaleLowerCase();
+  const filtered=query?list.filter(l=>l.title.toLocaleLowerCase().includes(query)||String(l.order).includes(query)):list;
+  nav.replaceChildren();
+  status.textContent=wrap.hidden?'':query?`${filtered.length} of ${list.length} lectures`:`${list.length} lectures`;
   if(!list.length){nav.innerHTML='<div class="sidebar-empty">No lectures have been added to this subject yet.</div>';return}
-  if(list.length>1){
+  if(!query&&list.length>1){
     const all=document.createElement('button');
+    all.type='button';
     all.className='lecture-link '+(selected==='all'?'active':'');
     if(selected==='all')all.setAttribute('aria-current','page');
     all.innerHTML=`<strong>All lectures</strong><small>${list.length} lecture overviews</small>`;
     all.onclick=()=>selectLecture('all',false);
     nav.appendChild(all)
   }
-  list.forEach(l=>{
+  filtered.forEach(l=>{
     const b=document.createElement('button');
+    b.type='button';
+    b.dataset.lectureId=l.id;
     b.className='lecture-link '+(selected===l.id?'active':'');
     if(selected===l.id)b.setAttribute('aria-current','page');
     b.innerHTML=`<strong>${String(l.order).padStart(2,'0')}. ${esc(l.title)}</strong><small>${lectureCount(l,'cases')} cases • ${lectureCount(l,'coreShorts')} core shorts</small><div class="subnav"><span>MEQ</span><span>Shorts</span><span>Images</span><span>Rapid</span></div>`;
     b.onclick=()=>selectLecture(l.id,true);
     nav.appendChild(b)
-  })
+  });
+  if(!filtered.length){
+    const empty=document.createElement('div');
+    empty.className='sidebar-empty';
+    empty.textContent='No lectures match this search.';
+    const clear=document.createElement('button');
+    clear.type='button';clear.className='lecture-nav-clear';
+    clear.textContent='Clear lecture search';
+    clear.onclick=()=>{field.value='';renderLectureNav();field.focus()};
+    empty.append(' ',clear);
+    nav.appendChild(empty)
+  }
 }
+$('lectureNavSearch').addEventListener('input',renderLectureNav);
+$('lectureNavSearch').addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&event.currentTarget.value){
+    event.currentTarget.value='';
+    renderLectureNav();
+    event.preventDefault()
+  }
+});
 function metricHtml(counts){const bits=[];if(counts.case)bits.push(`<span class="subtopic-metric">C ${counts.case}</span>`);if(counts.core)bits.push(`<span class="subtopic-metric">S ${counts.core}</span>`);if(counts.image)bits.push(`<span class="subtopic-metric">I ${counts.image}</span>`);return bits.join('')||'<span class="subtopic-metric">0</span>'}
 function subtopicCounts(l,sid){const out={case:0,core:0,image:0,extra:0};lectureItems(l).forEach(({type,x})=>{if(itemSubtopics(x).includes(sid))out[type]++});return out}
 function renderSubtopicSet(nav,l,grouped=false){
