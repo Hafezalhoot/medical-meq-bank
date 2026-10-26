@@ -1167,7 +1167,7 @@ button,select,.lecture-overview-card,.course-library-card,.status,.study-guide-c
 .workspace-brandline{display:flex;align-items:center;gap:8px}
 .hero .eyebrow{
   font-size:.66rem;line-height:1.4;letter-spacing:.13em;text-transform:uppercase;
-  font-weight:820;color:#566cae
+  font-weight:820;color:#5266a4
 }
 .hero h1{
   margin:9px 0 9px;max-width:23ch;
@@ -1529,3 +1529,11 @@ details.original-figure-tools{
   button,select,.lecture-overview-card,.course-library-card,.status,.study-guide-choices label{transition:none!important}
 }
 
+
+/* Hide non-study chrome in deliberate Focus Mode, restore on exit. */
+.app.study-focus .studio-masthead{display:none}
+.studio-masthead .connection-pill{width:auto;flex:0 0 auto}
+.studio-masthead .pwa-btn{flex:none}
+@media(max-width:700px){
+  .hero .subject-select,.hero .course-select,.mobile-filter-shell #search{font-size:16px}
+}
