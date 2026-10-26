@@ -1,5 +1,7 @@
 # MEQ Review Bank — UI/UX V4 Development & Progress Tracker
 
+> **Historical V4 record.** The owner explicitly requested a complete new visual direction after V4.8. V4 color-preservation instructions are superseded by [MEQ_DESIGN_V5_PROGRESS.md](MEQ_DESIGN_V5_PROGRESS.md). Medical source/progress preservation remains mandatory.
+
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
 **Baseline main:** `855bad0f0cefa666bc5d62c0cecab4c1f0a10888` (V4.7 release `2026.10.26.7`)  

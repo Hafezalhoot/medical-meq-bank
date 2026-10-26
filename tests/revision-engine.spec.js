@@ -72,8 +72,11 @@ test('Notebook history retains more than 500 distinct prior records without eras
   });
   const mcq=await startMcq(page);
   await page.locator('.exam-option[data-choice="'+((mcq.answerIndex+1)%mcq.options.length)+'"]').click();
-  const count=await page.evaluate(()=>Object.keys(JSON.parse(localStorage.getItem('medicalBankReviewLogV1'))).length);
-  expect(count).toBe(601);
+  // The revision log is persisted asynchronously; assert the final durable
+  // count instead of racing its write immediately after the exam choice click.
+  await expect.poll(()=>page.evaluate(()=>
+    Object.keys(JSON.parse(localStorage.getItem('medicalBankReviewLogV1')||'{}')).length
+  ),{timeout:15000}).toBe(601);
 });
 
 test('Daily Weak 15 skips obsolete saved question IDs without erasing Weak progress',async({page})=>{

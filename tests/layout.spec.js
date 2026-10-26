@@ -206,7 +206,7 @@ test('study progress summary remains readable and all detailed metrics can be re
   await expect(insights).not.toHaveAttribute('open', '');
 });
 
-test('mobile shows compact utilities and two-column medical study selectors', async ({page}) => {
+test('mobile shows compact utilities and full-width readable medical study selectors', async ({page}) => {
   await openBank(page, {width: 390, height: 844});
   const tools = page.locator('#pwaToolsToggle');
   await expect(tools).toBeVisible();
@@ -228,9 +228,10 @@ test('mobile shows compact utilities and two-column medical study selectors', as
   expect(Math.max(...navButtons.map(box => box.right))).toBeLessThanOrEqual(391);
   const rectangles = await page.evaluate(() => ['courseSelector', 'subjectSelector'].map(id => {
     const box = document.getElementById(id).getBoundingClientRect();
-    return {left: box.left, right: box.right, height: box.height};
+    return {left: box.left, right: box.right, top:box.top, bottom:box.bottom, height: box.height};
   }));
-  expect(rectangles[0].right).toBeLessThanOrEqual(rectangles[1].left + 1);
+  expect(rectangles[1].top).toBeGreaterThanOrEqual(rectangles[0].bottom - 1);
+  expect(Math.abs(rectangles[0].left - rectangles[1].left)).toBeLessThanOrEqual(1);
   expect(rectangles[0].height).toBeGreaterThanOrEqual(44);
   expect(rectangles[1].height).toBeGreaterThanOrEqual(44);
 });
@@ -243,7 +244,12 @@ test('Impeccable: desktop chrome is compact while lecture and utility controls r
   expect(lectureWidth).toBeGreaterThanOrEqual(205);
 
   const heroHeight = await page.locator('.hero').evaluate(el => el.getBoundingClientRect().height);
-  expect(heroHeight).toBeLessThanOrEqual(225);
+  expect(heroHeight).toBeLessThanOrEqual(285);
+  const masthead = page.locator('.studio-masthead');
+  await expect(masthead).toBeVisible();
+  await expect(masthead.locator('#pwaToolsToggle')).toBeVisible();
+  const headerHeight = await masthead.evaluate(el => el.getBoundingClientRect().height);
+  expect(headerHeight).toBeLessThanOrEqual(88);
 
   const utilities = page.locator('#pwaToolsToggle');
   await expect(utilities).toBeVisible();
@@ -257,15 +263,19 @@ test('Impeccable: desktop chrome is compact while lecture and utility controls r
   await expect(page.locator('#exportProgressBtn')).toBeHidden();
 });
 
-test('Impeccable: phone dark mode toggle shares header row with the title', async ({page}) => {
+test('Impeccable V5: phone theme and backup tools stay in a real app bar', async ({page}) => {
   await openBank(page, {width: 390, height: 844});
   const layout = await page.evaluate(() => {
-    const title = document.querySelector('.hero h1').getBoundingClientRect();
+    const masthead = document.querySelector('.studio-masthead').getBoundingClientRect();
+    const hero = document.querySelector('.hero').getBoundingClientRect();
     const theme = document.getElementById('darkBtn').getBoundingClientRect();
-    return {titleY: title.top, themeY: theme.top, themeHeight: theme.height};
+    return {mastheadTop: masthead.top, mastheadBottom:masthead.bottom,
+      heroTop: hero.top, themeBottom: theme.bottom, themeHeight: theme.height};
   });
-  expect(Math.abs(layout.titleY - layout.themeY)).toBeLessThan(35);
+  expect(layout.mastheadTop).toBeLessThan(layout.heroTop);
+  expect(layout.themeBottom).toBeLessThanOrEqual(layout.heroTop);
   expect(layout.themeHeight).toBeGreaterThanOrEqual(44);
+  await expect(page.locator('.studio-masthead #pwaToolsToggle')).toBeVisible();
   await page.locator('#darkBtn').click();
   await expect(page.locator('body')).toHaveClass(/dark/);
 });

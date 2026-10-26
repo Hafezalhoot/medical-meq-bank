@@ -18,7 +18,7 @@ test('fresh online HTML loads one coherent version of every CSS and JS asset', a
     return {
       release,urls:urls.map(u=>u.searchParams.get('v')),
       allSameOrigin:urls.every(u=>u.origin===location.origin),
-      cssHero:getComputedStyle(hero).backgroundColor,
+      cssHero:getComputedStyle(hero).backgroundImage,
       iconWidth:svg?.getBoundingClientRect().width,
       libraryHeight:library?.getBoundingClientRect().height,
       skip:getComputedStyle(document.querySelector('.skip-link')).transform,
@@ -28,7 +28,7 @@ test('fresh online HTML loads one coherent version of every CSS and JS asset', a
   expect(result.urls.length).toBeGreaterThanOrEqual(14);
   expect(result.urls.every(v=>v===result.release)).toBe(true);
   expect(result.allSameOrigin).toBe(true);
-  expect(result.cssHero).toBe('rgb(17, 57, 66)');
+  expect(result.cssHero).toContain('linear-gradient');
   expect(result.iconWidth).toBeLessThanOrEqual(24);
   expect(result.libraryHeight).toBeGreaterThan(38);
   expect(result.libraryHeight).toBeLessThan(125);
@@ -51,8 +51,11 @@ test('cached obsolete CSS cannot corrupt the released page after reload', async 
   await expect.poll(()=>page.evaluate(()=>
     Math.round(document.querySelector('.pwa-tools-toggle .ui-icon svg').getBoundingClientRect().width)
   )).toBe(18);
-  await expect.poll(()=>page.evaluate(()=>getComputedStyle(document.querySelector('.hero')).backgroundColor))
-    .toBe('rgb(17, 57, 66)');
+  // The shipped V5 hero uses a real CSS gradient; an old cached red override
+  // must never replace the current bundled stylesheet on service-worker reload.
+  await expect.poll(()=>page.evaluate(()=>
+    getComputedStyle(document.querySelector('.hero')).backgroundImage))
+    .toContain('linear-gradient');
 });
 
 test('SW upgrade migrates students downloaded lessons but never obsolete app CSS', async () => {
@@ -205,12 +208,10 @@ test('tablet and desktop course/specialty names are never cropped by the native 
     });
     expect(bounds.course.textWidth).toBeLessThanOrEqual(bounds.course.availableWidth);
     expect(bounds.specialty.textWidth).toBeLessThanOrEqual(bounds.specialty.availableWidth);
-    if(width<=980){
-      expect(bounds.specialty.top).toBeGreaterThan(bounds.course.bottom);
-      expect(bounds.resumeTop).toBeGreaterThan(bounds.specialty.bottom);
-    }else{
-      expect(bounds.specialty.left).toBeGreaterThanOrEqual(bounds.course.right);
-    }
+    // V5's intentionally paired selectors are legible from tablet to desktop.
+    // Preserve the full label and ensure the CTA follows the selectors.
+    expect(bounds.specialty.left).toBeGreaterThanOrEqual(bounds.course.right);
+    expect(bounds.resumeTop).toBeGreaterThan(bounds.specialty.bottom);
     expect(bounds.overflow).toBeLessThanOrEqual(1);
   }
 });
@@ -273,8 +274,8 @@ test('Access login callback redirects to the real homepage with styling and lect
   await expect(page).toHaveURL('http://127.0.0.1:4173/');
   await expect(page.locator('#courseSelector')).toBeVisible();
   await expect(page.locator('#courseSelector option')).toHaveCount(3);
-  const heroColor = await page.locator('.hero').evaluate(el => getComputedStyle(el).backgroundColor);
-  expect(heroColor).toBe('rgb(17, 57, 66)');
+  const heroVisual = await page.locator('.hero').evaluate(el => getComputedStyle(el).backgroundImage);
+  expect(heroVisual).toContain('linear-gradient');
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector option[value="psychiatry"]')).toHaveCount(1);
 });

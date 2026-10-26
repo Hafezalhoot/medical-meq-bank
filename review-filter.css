@@ -1,12 +1,12 @@
 /* Review-level and Rapid Recall filter extension */
 /* Give the current lecture its full readable title before secondary filters. */
 .toolbar{grid-template-columns:minmax(200px,1.4fr) minmax(225px,1.25fr) repeat(3,minmax(106px,.75fr)) minmax(182px,.9fr) auto auto}
-.review-filter{font-weight:850;transition:.18s;min-width:182px}
+.review-filter{font-weight:730;transition:.18s;min-width:182px}
 .review-filter[data-level="unrated"]{background:#f8fafc;border-color:#cbd5e1;color:#475467}
 .review-filter[data-level="mastered"]{background:#ecfdf3;border-color:#75e0a7;color:#05603a}
 .review-filter[data-level="review"]{background:#fffaeb;border-color:#fec84b;color:#93370d}
 .review-filter[data-level="weak"]{background:#fff1f0;border-color:#fda29b;color:#912018}
-.dark .review-filter[data-level="unrated"]{background:#172033;border-color:#475467;color:#d0d5dd}
+.dark .review-filter[data-level="unrated"]{background:var(--surface-soft);border-color:var(--line);color:var(--muted)}
 .dark .review-filter[data-level="mastered"]{background:#073b2a;border-color:#16875f;color:#a6f4c5}
 .dark .review-filter[data-level="review"]{background:#3b2c0b;border-color:#b54708;color:#fedf89}
 .dark .review-filter[data-level="weak"]{background:#461c1a;border-color:#b42318;color:#fecdca}

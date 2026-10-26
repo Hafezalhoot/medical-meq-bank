@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-26 — V5 Mineral Blue Studio: full visual redesign (candidate)
+
+- 🎨 Owner brief supersedes V4 teal brand: **new** calm mineral blue / blue-violet / pearl design system, actual top-bar layout, new study canvas, rebuilt selection-card hierarchy and coherent source reader, exam and dark-mode styling.
+- 🧪 Branch `design/v5-mineral-blue-studio-20261026` preserves every existing medical content record, source image hash, question answer/rating, ID, data persistence, backup/restore, Exam mode, PWA, print and filters; changes are markup/CSS, native controls, design docs and dedicated UI/browser tests.
+- 🧪 Verify 320/390/768/1024/1440 desktop/mobile, real Psychiatry lecture reading, keyboard/Escape, focus mode, offline path, contrast, form hit targets and no overflow. Capture visual evidence artifacts on GitHub Actions; browser access to production is separately Cloudflare Access-protected (#35).
+- ⏳ Candidate release `2026.10.26.9` **not merged and not live** until exact-head Static, Chromium, Safari/WebKit and Cloudflare Workers Build pass, a safe PR merge is completed and active Worker traffic is independently confirmed. Automatic main promotion issue #50 remains open. Track work packages in [MEQ_DESIGN_V5_PROGRESS.md](MEQ_DESIGN_V5_PROGRESS.md).
+
+
 ### 2026-10-26 — V4.8 clear specialty progress vs all-course review (candidate)
 
 - 🧪 Branch `ui/v4-progress-scope-20261026`: change the progress summary wording to `Specialty progress` and `N% rated • N mastered`, and make the `All courses` scope visible beside My Review (including narrow phones).
