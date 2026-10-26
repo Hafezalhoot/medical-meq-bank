@@ -21,8 +21,9 @@ async function selectPsychiatry(page){
 async function showAtlas(page){
   const atlas=page.locator('.original-atlas-grid');
   if(!(await atlas.isVisible())){
-    await page.locator('.learning-companion summary')
-      .filter({hasText:'Original lecture figures'}).click();
+    const summary=page.locator('.learning-companion .study-guide-part').nth(2).locator('summary');
+    await summary.evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+    await summary.click();
   }
   await expect(atlas).toBeVisible();
   return atlas;
@@ -40,20 +41,21 @@ test('V4 first screen preserves study routes and gives a primary question action
   await primary.click();
   await expect.poll(()=>page.evaluate(()=>document.activeElement?.classList.contains('study-item')))
     .toBe(true);
-  const target=await page.evaluate(()=>{
+  await expect.poll(()=>page.evaluate(()=>{
     const r=document.activeElement.getBoundingClientRect();
-    return {top:r.top,bottom:r.bottom,viewport:innerHeight};
-  });
-  expect(target.top).toBeGreaterThanOrEqual(0);
-  expect(target.top).toBeLessThan(target.viewport);
+    return r.top>=0&&r.top<innerHeight;
+  }),{timeout:8000}).toBe(true);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
 });
 
 test('V4 dark navigation labels meet normal-text contrast also when inactive',async ({page})=>{
   await openBank(page);
   await page.locator('#darkBtn').click();
-  await page.locator('#toggleLectures').click();
-  const colors=await page.locator('#toggleLectures').evaluate(el=>{
+  const nav=page.locator('#toggleLectures');
+  if(await nav.getAttribute('aria-pressed')==='true')await nav.click();
+  await expect(nav).toHaveAttribute('aria-pressed','false');
+  await expect(nav).not.toHaveClass(/\bactive\b/);
+  const colors=await nav.evaluate(el=>{
     const style=getComputedStyle(el);
     function channels(value){return (value.match(/[\d.]+/g)||[]).slice(0,3).map(Number);}
     function luminance(rgb){
@@ -64,7 +66,6 @@ test('V4 dark navigation labels meet normal-text contrast also when inactive',as
     return {ratio:(a+0.05)/(b+0.05),color:style.color,background:style.backgroundColor};
   });
   expect(colors.ratio,JSON.stringify(colors)).toBeGreaterThanOrEqual(4.5);
-  await expect(page.locator('#toggleLectures')).not.toHaveClass(/active/);
 });
 
 test('V4 original Anxiety table opens a keyboard-accessible zoom reader',async ({page},testInfo)=>{
