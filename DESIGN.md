@@ -58,3 +58,8 @@ A personal, offline-capable medical-exam preparation workspace. The user visits 
 - For a specialty with 5 or more lectures, add a local **Find a lecture** input inside the lecture-navigation rail, filtering only titles/orders. This is distinct from the central question search and never loads a lecture just to find its title.
 - Result count is announced with a polite status; the empty state offers Clear search. Escape clears without navigating. Switching course/specialty resets the query.
 - The input stays hidden for short specialties to avoid adding clutter; on mobile the existing Lectures toggle reveals this same control. Do not store the query in progress/backup storage.
+
+## Mobile study density — third increment
+- The 320–390px hero already contains Course + Specialty selectors; avoid repeating both labels in a multi-line breadcrumb immediately below. Show the current lecture name prominently and leave the complete Course / Specialty / Lecture breadcrumb at >=701px.
+- Progress disclosure keeps its text percentage and native expand/collapse action; on mobile remove the redundant tiny decorative progress track from the summary, **not** the detailed stats or accessible values.
+- Long lecture titles may wrap naturally. Never truncate medical terms into ambiguous labels or change the PDF-source content just to fit the layout.

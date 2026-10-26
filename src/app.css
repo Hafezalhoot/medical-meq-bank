@@ -961,3 +961,32 @@ details.original-figure-tools{display:block;padding:0!important;margin:2px 0 15p
 .lecture-nav-search small{font-size:.77rem;color:var(--muted)}
 .lecture-nav-clear{display:inline;margin:6px 0 0;padding:5px 2px;border:0;background:none;color:var(--brand);font-weight:750;text-decoration:underline;cursor:pointer}
 .lecture-nav-clear:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+
+/* V4: compress duplicate mobile location chrome; keep Course/Specialty native
+   selectors above and full breadcrumb on tablet/desktop. Reading comes first. */
+@media(max-width:700px){
+  .study-breadcrumb{margin:6px 2px 5px;padding:0}
+  .study-breadcrumb ol{display:block}
+  .study-breadcrumb li:not([aria-current="page"]){display:none}
+  .study-breadcrumb li[aria-current="page"]{
+    display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;min-width:0
+  }
+  .study-breadcrumb li[aria-current="page"] strong{
+    font-size:.82rem;max-width:none;min-width:0;white-space:normal;
+    overflow:visible;text-overflow:clip;overflow-wrap:anywhere
+  }
+  .study-insights .insights-summary{
+    display:flex;align-items:center;flex-wrap:wrap;
+    min-height:44px;padding:8px 10px;gap:5px 9px
+  }
+  .study-insights .insights-summary-value{
+    display:inline;flex:1 1 145px;min-width:0;
+    font-size:.75rem;line-height:1.35
+  }
+  .study-insights .insights-summary-track{display:none}
+  .study-insights .insights-detail-action{
+    margin-left:auto;flex:0 0 auto;font-size:.73rem
+  }
+  .nav-controls{margin-top:5px;margin-bottom:7px}
+}

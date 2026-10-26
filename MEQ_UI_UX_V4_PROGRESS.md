@@ -2,8 +2,8 @@
 
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
-**Baseline main:** `e3c289d7ddf516c182392aea95c2faf210c1eb86` (V4 release `2026.10.26.1`)  
-**Working branch:** `ui/v4-lecture-discovery-20261026`  
+**Baseline main:** `dd44aa4d0bcb0c69866d882ab4c03908b74c2771` (V4 release `2026.10.26.2`)  
+**Working branch:** `ui/v4-mobile-study-density-20261026`  
 **Production status:** Changes on this branch are **not live** until exact-head verification, PR merge, and independent confirmation of active Cloudflare Worker traffic.
 **Source of design evidence:** owner screenshots of Psychiatry and source figure cards; Chromium visual evidence artifact from main GitHub Actions run `40235201300` (320/390/768/1280/1440 desktop, mobile, dark and reading states); `src/index.html`, `src/app.js`, `src/app.css`, existing Playwright/axe/visual tests.
 
@@ -33,8 +33,9 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 | V4-02 | P0 | DONE | Dark-mode contrast and keyboard focus | All visible navigation labels readable in both themes, normal text >=4.5:1; focus obvious; automated theme/contrast regression |
 | V4-03 | P0 | DONE | Original figure **study reader** | Original source images legible beyond thumbnails; keyboard-accessible full-size viewer with zoom, close/Escape, original-source link and jump to associated image question; no substitutes; mobile responsive |
 | V4-04 | P1 | IN PROGRESS | Unify overlapping navigation | One obvious study route Course → Specialty → Lecture → Study; hide secondary controls in progressive disclosure without deleting Course Library, sidebar or search |
+| V4-04a | P1 | DONE | Find lectures by title | Scoped title search for large specialties, results, empty state, keyboard and mobile verified in PR #64 | 
 | V4-05 | P1 | TODO | Question-first daily study session | Clear Resume, Weak queue, reveal, rating and question-progress states; consistent behavior between study/Exam and across refresh |
-| V4-06 | P1 | TODO | Reading typography & visual hierarchy | Arabic/English readable width, mobile font >=16px for long reading, scientific tables scroll/zoom, consistent headings and source labels |
+| V4-06 | P1 | IN PROGRESS | Reading typography & visual hierarchy | Arabic/English readable width, mobile font >=16px for long reading, scientific tables scroll/zoom, consistent headings and source labels |
 | V4-07 | P1 | TODO | Consolidate V2/V3 CSS cascade | Audit redundant selectors/overrides; shared semantic tokens + dark variants; screenshots stable in 320/390/768/1280/1440 and zoom |
 | V4-08 | P1 | TODO | Robust feedback/empty/recovery states | Course without lectures, image unavailable, offline, search no-match, outdated PWA, failed backup, interrupted exam all give useful next action |
 | V4-09 | P1 | TODO | Accessibility, responsive and visual gate | CI axe + keyboard/Escape/focus, screen reader semantics, touch targets, 200% zoom, RTL, light/dark; record screenshot evidence |
@@ -53,15 +54,24 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 
 ## V4 second implementation increment — lecture discovery
 - **Stage 1 shipped source:** [PR #63](https://github.com/Hafezalhoot/medical-meq-bank/pull/63) merged into `main` as `e3c289d7ddf516c182392aea95c2faf210c1eb86`. [PR-head checks](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40252330860) static, Chromium, WebKit and Workers Builds all succeeded. Cloudflare Worker `fe4e34c8-aa4d-483a-9985-c5d37aeb56fb` showed **100% traffic** in [main read-only release smoke](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40252680199); the authenticated URL test still failed HTTP 302 due to Access #35. **Do not call authenticated production QA complete**.
-- **In this increment:** add lightweight, specialty-scoped **Find a lecture** input when a specialty has at least five lectures; nonmatching titles are filtered in the existing nav without loading their bodies or changing saved ratings. A match-count, accessible empty state and Escape-to-clear keep selection predictable.
+- **DONE in [PR #64](https://github.com/Hafezalhoot/medical-meq-bank/pull/64):** added lightweight, specialty-scoped **Find a lecture** input when a specialty has at least five lectures; nonmatching titles are filtered in the existing nav without loading their bodies or changing saved ratings. A match-count, accessible empty state and Escape-to-clear keep selection predictable.
 - **Acceptance:** desktop and narrow phone can reach a lecture with a title query and keyboard; empty query restores full list; course/specialty switching resets search rather than accidentally concealing lectures. All existing content, search, source JPEGs, offline features and current topic selection unaffected.
 - **Status:** V4-04 remains IN PROGRESS (this completes only lecture discovery; simplifying other overlapping navigation remains TODO).
+
+
+## Third increment — compact mobile reading context
+
+- **Stage 2 DONE:** [PR #64](https://github.com/Hafezalhoot/medical-meq-bank/pull/64) merged as `dd44aa4d0bcb0c69866d882ab4c03908b74c2771`, after exact-head Static Validation, Chromium, WebKit and Workers Builds passed. [Read-only release smoke](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40253332340) saw Worker `eafde86f-94ea-4815-b932-454ef47323ea` at 100% of Cloudflare traffic. The protected endpoint still returned Access HTTP 302 (#35): not a logged-in browser pass.
+- **Stage 3 IN PROGRESS:** mobile 320/390px duplicates course/specialty in both the hero selectors and a multi-row breadcrumb; reduce the redundant breadcrumb to the active lecture, keep the complete path on wider screens and retain both native selectors. Compact the Study progress disclosure without hiding the percentage or its expand/collapse interaction. Preserve all existing nav, ratings, reading sections and original figures.
+- **Accept:** first lecture enters the reader sooner at 320/390px; narrow mobile no horizontal scroll for long lecture titles; progress stat summary keyboard/touch-operable and content unchanged; desktop 768/1440 full breadcrumb remains, dark mode readable.
+- **Scope honesty:** V4-06 stays IN PROGRESS: this is a targeted hierarchy/density pass, not an assertion that typography and every source table are final.
 
 ## Evidence log
 | Date | Commit / PR | Work | Evidence | Outcome |
 | --- | --- | --- | --- | --- |
 | 2026-10-26 | Baseline `80721a55` | Reviewed current V3 UI, screenshots and code | Chromium Actions artifact `40235201300`, `UI_V3_REDESIGN.md`, `src/app.css`, `src/app.js`, `tests/layout.spec.js` | DONE — 7/10 subjective starting point; risk inventory above |
 | 2026-10-26 | [#63](https://github.com/Hafezalhoot/medical-meq-bank/pull/63) | V4-01/02/03 hero, dark mode, source figure viewer | PR-head run 40252330860: all four checks passed; main `e3c289d`; Cloudflare Worker 100%, Access 302 | DONE (source and deployment; authenticated smoke blocked) |
+| 2026-10-26 | [#64](https://github.com/Hafezalhoot/medical-meq-bank/pull/64) | V4-04a title search | PR-head Static/Chromium/WebKit/Workers Builds passed, main `dd44aa4d`; Cloudflare eafde86f 100% (Access 302) | DONE (V4-04 wider work remains) |
 
 ## Release checklist for each iteration
 - [ ] User-facing design changes match actual screenshots, with no fabricated visuals or data.

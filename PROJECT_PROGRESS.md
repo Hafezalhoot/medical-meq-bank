@@ -1,6 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
 
+### 2026-10-26 — V4.3 mobile reading hierarchy (third UI increment)
+
+- ✅ [PR #64](https://github.com/Hafezalhoot/medical-meq-bank/pull/64) merged with exact-head quality checks green; lecture-title navigation search is now published in `2026.10.26.2` without changing study progress.
+- ✅ Read-only Cloudflare release check saw Worker `eafde86f-94ea-4815-b932-454ef47323ea` at 100% traffic; authenticated browser smoke blocked at Access HTTP 302.
+- 🧪 This new branch narrows the **mobile study chrome**: one compact active-lecture breadcrumb (full course/specialty still selectable above) and a slimmer study-progress summary. Wider screens and expanded study stats are unchanged.
+- 📋 [V4 progress board](MEQ_UI_UX_V4_PROGRESS.md): V4-04a DONE, parent V4-04 and V4-06 IN PROGRESS, rest TODO/BLOCKED; no claims of complete design before verified CI and manual protected production use.
+
 ### 2026-10-26 — MEQ V4 reader-first release and searchable lecture discovery
 
 - ✅ [PR #63](https://github.com/Hafezalhoot/medical-meq-bank/pull/63) merged after exact-head static, Chromium, Safari/WebKit and Cloudflare Workers Builds passed; app release `2026.10.26.1`. Fully original PDF source media, existing 108 psychiatry MCQ keys, saved ratings and backup were unchanged by UI work.
