@@ -2,9 +2,9 @@
 
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
-**Baseline main:** `cffde8f45c274001fef616d56aec4cb83b85fa32` (V4.5 release `2026.10.26.5`)  
-**Working branch:** `ui/v4-overview-first-20261026` (V4.6 owner-screenshot response)  
-**Production status:** V4.5 source is merged in `main`; independent read-only Cloudflare run `40256200178` reported Worker `49e63c77-af50-4440-a013-cc3ec50010c4` receiving **100% traffic**. The authenticated production smoke still redirects to Access login (HTTP 302, issue #35). **V4.6 branch changes are not live** pending exact-head QA, merge and new read-only Worker confirmation.
+**Baseline main:** `c62df16f8cc64e3d15730c5443cd77d0571d31ae` (V4.6 release `2026.10.26.6`)  
+**Working branch:** `ui/v4-desktop-filter-disclosure-20261026` (V4.7 progressive-disclosure increment)  
+**Production status:** V4.6 [PR #68](https://github.com/Hafezalhoot/medical-meq-bank/pull/68) merged as `c62df16`; [read-only Cloudflare run `40257297095`](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40257297095) reported Worker `01c596bf-19ae-46e0-ada2-250a2488cae2` receiving **100% traffic**. Authenticated production smoke still redirects to Access login (HTTP 302, issue #35). **V4.7 working branch is not live** until exact-head QA, merge and independent Worker verification.
 **Source of design evidence:** owner screenshots of Psychiatry and source figure cards; Chromium visual evidence artifact from main GitHub Actions run `40235201300` (320/390/768/1280/1440 desktop, mobile, dark and reading states); `src/index.html`, `src/app.js`, `src/app.css`, existing Playwright/axe/visual tests.
 
 ## Status legend and update rules
@@ -93,7 +93,15 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 - **Visual pass:** custom subject-led overview heading and clear source/question availability copy; more legible lecture cards with stronger title/order, unchanged sourced MEQ/core/image counts, true rated progress, obvious open action. Widen the overview when both navigation rails are hidden, but keep the narrower reading column inside a lecture.
 - **Tests:** desktop real Psychiatry overview and Start-to-question, Weak rating in Anxiety influencing overview resume, 320px dark card and no horizontal overflow. Keep full feature and progress inventory unchanged.
 - **Scope honesty:** V4-04 and V4-05 remain IN PROGRESS; the screenshot exposes additional toolbar/context clutter for a later visual pass. This first change does not remove or silently hide existing search, filters, Exam, My Review, focus or print controls.
-- **Release:** V4.6 `2026.10.26.6` is **candidate only**, not merged/live. All four exact-head checks must pass, followed by independent Cloudflare traffic confirmation. Access #35 and release promotion #50 are still unresolved.
+- **Release:** V4.6 `2026.10.26.6` DONE: [PR #68](https://github.com/Hafezalhoot/medical-meq-bank/pull/68), exact-head run [`40256922136`](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40256922136) passed Static, Chromium, WebKit and Workers Builds; live Worker `01c596bf` 100% in read-only smoke. Access #35 and release promotion #50 remain unresolved.
+
+## Seventh increment — V4.7 declutter the desktop study filters
+
+- **Root cause:** on desktop the full toolbar rendered Search, Lecture, Type, Topic, Priority, Status, Random and Reveal simultaneously—even on Psychiatry's two-lecture overview. The existing phone bottom-sheet already had proper progressive disclosure; adding another custom filter system would duplicate state.
+- **Implementation candidate:** reuse the exact existing native selects, handlers, status chips and storage IDs. Keep Search, Lecture, **More filters** and Random item in the compact desktop row (701px+); reveal Type, Topic, Priority, Status and Reveal all on demand in a clearly grouped second/third row. No new filtering logic, no independent saved state.
+- **Critical safety behavior:** a collapsed More filters button displays a visible count of active **advanced** filters; status chips remain visible and clearable. Collapsing never resets Weak/Review, type, topic or priority. Escape closes advanced controls, restores keyboard focus, and does not interfere with the Exam dialog.
+- **Responsive:** retain unchanged native phone filter bottom sheet at 320/390px; check 768/1024/1440 desktop/tablet, dark mode, 44px targets, no document overflow, persisted Weak filter and Rapid Recall disabling.
+- **Status:** V4-04 remains IN PROGRESS (this is the desktop filter subtask), V4-07 CSS consolidation remains TODO. New candidate `2026.10.26.7` **NOT LIVE** until exact-head Static/Chromium/WebKit/Workers Builds pass and verified Worker activation; issue #35/#50 still open.
 
 ## Evidence log
 | Date | Commit / PR | Work | Evidence | Outcome |
@@ -102,6 +110,9 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 | 2026-10-26 | [#63](https://github.com/Hafezalhoot/medical-meq-bank/pull/63) | V4-01/02/03 hero, dark mode, source figure viewer | PR-head run 40252330860: all four checks passed; main `e3c289d`; Cloudflare Worker 100%, Access 302 | DONE (source and deployment; authenticated smoke blocked) |
 | 2026-10-26 | [#64](https://github.com/Hafezalhoot/medical-meq-bank/pull/64) | V4-04a title search | PR-head Static/Chromium/WebKit/Workers Builds passed, main `dd44aa4d`; Cloudflare eafde86f 100% (Access 302) | DONE (V4-04 wider work remains) |
 | 2026-10-26 | [#65](https://github.com/Hafezalhoot/medical-meq-bank/pull/65) | V4.3 mobile study context | Exact-head Static/Chromium/WebKit/Workers Builds passed; main `5197bdd`; read-only run `40253993643` Worker `0b173e69` 100% (Access 302) | DONE source + active Worker; authenticated browser QA BLOCKED |
+| 2026-10-26 | [#66](https://github.com/Hafezalhoot/medical-meq-bank/pull/66) | V4.4 bilingual source + image reader | Exact-head Static/Chromium/WebKit/Workers Builds passed; main `e6c0fb0`; Worker `3ddfb76f` 100% (Access 302) | DONE (V4-06 wider work remains) |
+| 2026-10-26 | [#67](https://github.com/Hafezalhoot/medical-meq-bank/pull/67) | V4.5 source-MCQ resume | Exact-head Static/Chromium/WebKit/Workers Builds passed; main `cffde8f`; Worker `49e63c77` 100% (Access 302) | DONE increment (V4-05 wider work remains) |
+| 2026-10-26 | [#68](https://github.com/Hafezalhoot/medical-meq-bank/pull/68) | V4.6 Psychiatry overview | Exact-head checks passed in `40256922136`; main `c62df16`; Worker `01c596bf` 100% in `40257297095`, Access 302 | DONE increment (V4-04/05 wider work remains) |
 
 ## Release checklist for each iteration
 - [ ] User-facing design changes match actual screenshots, with no fabricated visuals or data.

@@ -36,6 +36,8 @@ test('All study items search includes matching Rapid Recall cards', async ({page
   await openBank(page);
 
   const typeFilter = page.locator('#typeFilter');
+  await expect(typeFilter).toBeHidden();
+  await page.locator('#desktopFiltersToggle').click();
   await typeFilter.selectOption('rapid');
 
   await expect(page.locator('#topicFilter')).toBeDisabled();

@@ -58,6 +58,23 @@
     <span class="mobile-filter-count" aria-label="Active filters" hidden>0</span>`;
   toolbar.insertBefore(toggle, lectureFilter);
 
+  // Keep the frequent search/lecture/random actions on one desktop row.
+  // Reuse the existing select controls and filter chips; no duplicate state.
+  const desktopToggle = document.createElement('button');
+  desktopToggle.id = 'desktopFiltersToggle';
+  desktopToggle.type = 'button';
+  desktopToggle.className = 'desktop-filters-toggle';
+  desktopToggle.setAttribute('aria-controls', toolbar.id);
+  desktopToggle.setAttribute('aria-expanded', 'false');
+  const desktopLabel = document.createElement('span');
+  desktopLabel.textContent = 'More filters';
+  const desktopCount = document.createElement('span');
+  desktopCount.className = 'desktop-filter-count';
+  desktopCount.setAttribute('aria-hidden', 'true');
+  desktopCount.hidden = true;
+  desktopToggle.append(desktopLabel, desktopCount);
+  toolbar.insertBefore(desktopToggle, typeFilter);
+
   const resetButton = document.createElement('button');
   resetButton.id = 'resetFiltersBtn';
   resetButton.type = 'button';
@@ -157,6 +174,17 @@
   let bodyStyleSnapshot = null;
   let lastFocusedElement = null;
 
+  const setDesktopExpanded = (open, {restoreFocus = false} = {}) => {
+    const expanded = Boolean(open && !mobileViewport.matches);
+    toolbar.classList.toggle('desktop-filters-expanded', expanded);
+    desktopToggle.setAttribute('aria-expanded', String(expanded));
+    desktopLabel.textContent = expanded ? 'Fewer filters' : 'More filters';
+    const count = Number(desktopCount.textContent) || 0;
+    desktopToggle.setAttribute('aria-label',
+      `${desktopLabel.textContent}${count ? `, ${count} active` : ''}`);
+    if (!expanded && restoreFocus) desktopToggle.focus({preventScroll: true});
+  };
+
   const refresh = () => {
     refreshQueued = false;
     const activeFilters = getActiveFilters();
@@ -166,6 +194,12 @@
       countBadge.textContent = String(activeFilters.length);
       countBadge.hidden = activeFilters.length === 0;
     }
+    const advancedCount = activeFilters.filter(({key}) =>
+      ['type', 'topic', 'priority', 'review'].includes(key)).length;
+    desktopCount.textContent = String(advancedCount);
+    desktopCount.hidden = advancedCount === 0;
+    desktopToggle.setAttribute('aria-label',
+      `${desktopLabel.textContent}${advancedCount ? `, ${advancedCount} active` : ''}`);
 
     if (!activeFilters.length) {
       if (lastFilterSignature || chips.childElementCount) chips.replaceChildren();
@@ -396,12 +430,21 @@
   };
 
   toggle.addEventListener('click', () => setExpanded(true));
+  desktopToggle.addEventListener('click', () =>
+    setDesktopExpanded(!toolbar.classList.contains('desktop-filters-expanded')));
   closeButton.addEventListener('click', () => setExpanded(false));
   applyButton.addEventListener('click', () => setExpanded(false));
   backdrop.addEventListener('click', () => setExpanded(false));
   resetButton.addEventListener('click', resetFilters);
   chipsResetButton.addEventListener('click', resetFilters);
   document.addEventListener('keydown', trapFocus);
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || mobileViewport.matches ||
+        !toolbar.classList.contains('desktop-filters-expanded') ||
+        document.querySelector('dialog[open]')) return;
+    event.preventDefault();
+    setDesktopExpanded(false, {restoreFocus: true});
+  });
 
   chips.addEventListener('click', event => {
     if (!(event.target instanceof Element)) return;

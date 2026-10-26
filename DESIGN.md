@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank — Design System V4
 
-**Stage:** Established V4 design contract; V4.5 `2026.10.26.5` merged and Worker at 100%; V4.6 owner-screenshot-led overview refinement under review.  
+**Stage:** Established V4 design contract; V4.6 `2026.10.26.6` merged, Worker at 100%; V4.7 desktop filters in review.  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
 
 ## Product and primary job
@@ -19,6 +19,13 @@ A personal, offline-capable medical-exam preparation workspace. The user visits 
 - From overview, `Start studying` must enter an available lecture and focus a question, prioritizing a saved Weak/Review lecture in the current course/specialty, then remembered lecture, then first. It must never stop on a decorative overview card.
 - When both navigation rails are hidden at desktop width, allow the overview list up to 1250px, without widening the inside-lecture reader. Keep existing course selector, study search/filters, and all question actions usable.
 - Visual direction: restrained clinical ink and teal, clear hierarchy, no ornamental badges or new generated medical imagery. Verify real 320px and desktop content, light/dark and keyboard focus.
+
+## V4.7 desktop filter disclosure
+- The default desktop toolbar should present only the frequent controls: **Search this specialty**, **Lecture**, **More filters**, and **Random item**. Additional native Type/Topic/Priority/Review selects and Reveal all remain accessible behind the button; they must not be recreated or lose IDs, events or saved values.
+- More filters is a real button with `aria-expanded`; its visible count reports active *advanced* filters, not the already visible lecture or search. When closed, existing active-filter chips let the learner see and clear retained filters instead of hiding a surprise study scope.
+- Preserve visual/keyboard order by putting the filters directly after the disclosure and the less-used actions last when expanded. Allow Escape to close and return focus, while keeping open native exam dialogs unaffected.
+- At phone widths <=700px reuse the existing accessible bottom sheet. At intermediate 701–850px native selects must fit without document overflow or 44px hit targets becoming smaller.
+- Typography/colors use the existing teal design tokens; no new icon library, medical artwork or dashboard cards.
 
 ## Study information hierarchy
 1. **Course & Specialty** (existing selectors) with one prominent **Start/Continue studying** CTA.

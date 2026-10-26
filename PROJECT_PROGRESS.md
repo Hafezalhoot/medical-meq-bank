@@ -1,11 +1,19 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
-### 2026-10-26 — V4.6 owner-screenshot-led overview and Start-to-question navigation (candidate)
+### 2026-10-26 — V4.7 progressive desktop study filters (candidate)
+
+- 🧪 Branch `ui/v4-desktop-filter-disclosure-20261026`: compact Search/Lecture/More filters/Random desktop toolbar; existing Type/Topic/Priority/Review and Reveal all controls stay available in an accessible on-demand panel. No duplicated filter values or new storage keys.
+- 🧪 Active advanced filters remain indicated in the More filters count even when collapsed; saved Weak/Review selection persists, chips remain clearable; Escape restores keyboard focus. The 320/390px mobile bottom sheet is unchanged.
+- 🧪 Browser regressions cover desktop disclosure, Rapid Recall (existing suite), 768/1024/1440px overflow and touch target bounds, saved Weak state, dark phone and existing mobile bottom-sheet behavior.
+- ⏳ Version `2026.10.26.7` is **branch candidate**, not merged/published until exact PR-head Static, Chromium, WebKit and Workers Build checks, then independent active Worker verification.
+- ✅ Baseline V4.6 PR #68 merged as `c62df16` after full exact-head checks; post-merge Cloudflare Worker `01c596bf` at 100% traffic. Authenticated production browser smoke still blocked by Access HTTP 302 (#35); automatic promotion risk still tracked in #50.
+
+### 2026-10-26 — V4.6 owner-screenshot-led overview and Start-to-question navigation (merged PR #68)
 
 - 🧪 Desktop source screenshot 1535×1023: the Psychiatry overview's two lecture cards are discoverable, but the first-screen information hierarchy and a misleading Start studying action need improvement.
 - 🧪 Branch `ui/v4-overview-first-20261026`: source-scoped Psychiatry heading, more legible lecture-choice cards with real question counts/rated progress, wider overview when sidebars are hidden. Reader layout, course selection and all secondary tools remain present.
 - 🧪 Fix Start studying from All lecture overviews to enter a lecture and focus the next question; saved Weak/Review in the current subject wins, then the remembered lecture, then first. Add real Psychiatry desktop/mobile and 320px dark/overflow browser regressions.
-- ⏳ Branch release `2026.10.26.6` is **not yet merged or published** until exact-head Static, Chromium, WebKit, Workers Builds and independent Worker status. V4-04/05/06 stay IN PROGRESS. Cloudflare Access #35 and promotion gate #50 remain open.
+- ✅ Release `2026.10.26.6` merged as `c62df16`, full PR-head Static/Chromium/WebKit/Workers Builds green, active Worker `01c596bf` 100% verified; authenticated Access smoke remains HTTP 302. V4-04/05/06 stay IN PROGRESS, issues #35/#50 open.
 - ✅ Baseline V4.5 PR #67 main commit `cffde8f`, read-only Worker `49e63c77` at 100% (access smoke HTTP 302), and main Chromium quality gate green.
 
 ### 2026-10-26 — V4.5 question-first Source MCQ resume (fifth increment)
