@@ -103,3 +103,34 @@ test('current progress can be downloaded before confirming a restore', async ({p
   expect(await page.evaluate(() => globalThis.MEQProgressStore.exportAll())).toEqual(current);
   await page.locator('#restorePreviewCancel').click();
 });
+
+test('a confirmed in-flight restore cannot be dismissed as if it were cancelled', async ({page}) => {
+  await ready(page);
+  await page.evaluate(async ratings => {
+    const original = globalThis.MEQProgressStore;
+    await original.replaceAll(ratings);
+    globalThis.MEQProgressStore = {
+      ...original,
+      replaceAll: async next => {
+        await new Promise(resolve => { window.__finishRestore = resolve; });
+        return original.replaceAll(next);
+      }
+    };
+  }, current);
+
+  await page.locator('#importProgressFile').setInputFiles(backup());
+  await expect(page.locator('#restorePreviewDialog')).toBeVisible();
+  await page.locator('#restorePreviewConfirm').click();
+  await expect(page.locator('#restorePreviewDialog')).toHaveAttribute('aria-busy', 'true');
+  await expect.poll(() => page.evaluate(() => typeof window.__finishRestore)).toBe('function');
+
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#restorePreviewDialog')).toBeVisible();
+  await expect(page.locator('#restorePreviewCancel')).toBeDisabled();
+  await expect(page.locator('#restorePreviewBackup')).toBeDisabled();
+
+  await page.evaluate(() => window.__finishRestore());
+  await expect(page.locator('#appToast')).toContainText('Progress restored');
+  await expect.poll(() => page.evaluate(() => globalThis.MEQProgressStore.exportAll()))
+    .toEqual(imported);
+});

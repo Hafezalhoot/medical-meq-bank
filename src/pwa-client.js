@@ -353,7 +353,12 @@
     };
 
     restoreCancel.addEventListener('click', closeRestorePreview);
-    restoreDialog.addEventListener('cancel', () => { pendingRestore = null; });
+    restoreDialog.addEventListener('cancel', event => {
+      // A restore already approved cannot be dismissed while the write is
+      // active; never imply Cancel reversed an in-flight IndexedDB change.
+      if (restoreDialog.hasAttribute('aria-busy')) event.preventDefault();
+      else pendingRestore = null;
+    });
     restoreDialog.addEventListener('close', () => { pendingRestore = null; });
     restoreDownload.addEventListener('click', async () => {
       restoreDownload.disabled = true;
@@ -373,6 +378,8 @@
       const incoming = pendingRestore;
       pendingRestore = null;
       restoreConfirm.disabled = true;
+      restoreCancel.disabled = true;
+      restoreDownload.disabled = true;
       restoreDialog.setAttribute('aria-busy', 'true');
       try {
         await replaceBackupTransactionally(incoming);
@@ -389,6 +396,8 @@
         );
       } finally {
         restoreConfirm.disabled = false;
+        restoreCancel.disabled = false;
+        restoreDownload.disabled = false;
         restoreDialog.removeAttribute('aria-busy');
       }
     });
