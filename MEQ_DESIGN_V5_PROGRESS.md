@@ -41,3 +41,9 @@
 - Chromium report on `5d9017f` had 149 tests passing, 1 failure: first lecture starts at y=771px at 1280px, exceeding the preserved y<750px first-screen contract by 21px. Mobile full-name selectors, real reader width, revision history and Safari/WebKit passed.
 - Fix the root composition rather than weakening the test: reduce excessive desktop masthead, study canvas, quick-link, insight and navigation margins by about 35–40px while retaining 44px controls, all features and source images. No medical data or progress storage changes.
 - **Release gate:** this is not marked DONE or LIVE until the exact candidate head passes all tests and production Worker traffic is independently verified.
+
+### 2026-10-26 — Shortcuts instead of redundant headings (QA candidate)
+
+- Re-run `1745348`: **150 Chromium tests passed, 1 failed** solely because first study item was at 722px on a 1440×900 viewport (limit 700px). 320/390/768/1024/1280 layout checks, source readers, 601-record history, dark mode, accessibility and WebKit passed.
+- Condensed **Explore your courses** and **My Review** to compact ≥56px disclosures (retain titles, counts, keyboard access and expanded details). Removed duplicated descriptive lines from the closed shortcuts. Reduced expanded-overview progress bar chrome, leaving actual study content, medical images, study controls and progress logic unchanged.
+- Verify exact-head Chromium + WebKit + Cloudflare Workers Build before merging. Previous live Worker remains unchanged until explicitly confirmed.
