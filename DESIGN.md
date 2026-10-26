@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank — Design System V4
 
-**Stage:** Established V4 design contract; verified V4.3 source `2026.10.26.3`, V4.4 bilingual-reader increment pending exact-head verification.  
+**Stage:** Established V4 design contract; V4.4 `2026.10.26.4` merged after full CI, V4.5 source-MCQ resume candidate `2026.10.26.5` awaiting final head validation.  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
 
 ## Product and primary job
@@ -21,6 +21,12 @@ A personal, offline-capable medical-exam preparation workspace. The user visits 
 4. **Lecture & Topics** rail / mobile nav, stable across filter changes and refresh.
 5. **Study content** in a single reading column: source-first Explanation/MCQ, exact original Figure Gallery, MEQ, Shorts, Rapid. Rich source pages remain readable without horizontal document overflow.
 6. **Error/recovery**: PWA updates, offline, source unavailable, no matching items and backup/restore tell the student what to do next, not silently fail.
+
+## Source MCQs in question-first study
+- An active lecture's authored Study Guide MCQs are real study questions and must be reachable from the existing Start/Continue studying action, not only a collapsed secondary disclosure.
+- The existing rating priority (saved Weak/Review, then unrated), filter scope and progress storage keys must remain unchanged. Only include authored MCQs in the general unfiltered lecture path; a restricted type/search/topic session continues to resume visible legacy question cards.
+- Show the exact count of authored MCQs with the existing quiet lecture-count pills instead of adding another toolbar. Use the existing native `details` to reveal the focused question, with keyboard focus following the scroll.
+- This is a V4-05 increment rather than a claim of full session-restoration completion.
 
 ## V4 original-figure study reader
 - Keep existing original figures and page metadata; never rewrite/crop them at runtime or fetch unsourced replacement images.

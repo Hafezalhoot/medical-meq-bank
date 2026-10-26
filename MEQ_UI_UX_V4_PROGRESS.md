@@ -3,8 +3,8 @@
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
 **Baseline main:** `5197bdd2685b2457db27b068d4c45a2a1a37a72f` (V4.3 release `2026.10.26.3`)  
-**Working branch:** `ui/v4-bilingual-source-reading-20261026`  
-**Production status:** V4.3 source is merged; independent read-only run `40253993643` reports active Worker `0b173e69-741c-4c79-8da0-568787e5a61f` at **100% traffic**, but protected browser smoke remains Access-blocked (HTTP 302, issue #35). **V4.4 branch is not live** until exact-head tests, merge and new Worker confirmation.
+**Working branch:** `ui/v4-question-first-resume-20261026` (integrates merged V4.4 PR #66)  
+**Production status:** V4.3 source is merged; independent read-only run `40253993643` reports active Worker `0b173e69-741c-4c79-8da0-568787e5a61f` at **100% traffic**, but protected browser smoke remains Access-blocked (HTTP 302, issue #35). **V4.4 PR #66 has merged into main; V4.5 branch is not live** until its exact-head quality gate, merge and independent Worker confirmation.
 **Source of design evidence:** owner screenshots of Psychiatry and source figure cards; Chromium visual evidence artifact from main GitHub Actions run `40235201300` (320/390/768/1280/1440 desktop, mobile, dark and reading states); `src/index.html`, `src/app.js`, `src/app.css`, existing Playwright/axe/visual tests.
 
 ## Status legend and update rules
@@ -34,7 +34,7 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 | V4-03 | P0 | DONE | Original figure **study reader** | Original source images legible beyond thumbnails; keyboard-accessible full-size viewer with zoom, close/Escape, original-source link and jump to associated image question; no substitutes; mobile responsive |
 | V4-04 | P1 | IN PROGRESS | Unify overlapping navigation | One obvious study route Course → Specialty → Lecture → Study; hide secondary controls in progressive disclosure without deleting Course Library, sidebar or search |
 | V4-04a | P1 | DONE | Find lectures by title | Scoped title search for large specialties, results, empty state, keyboard and mobile verified in PR #64 | 
-| V4-05 | P1 | TODO | Question-first daily study session | Clear Resume, Weak queue, reveal, rating and question-progress states; consistent behavior between study/Exam and across refresh |
+| V4-05 | P1 | IN PROGRESS | Question-first daily study session | Clear Resume, Weak queue, reveal, rating and question-progress states; consistent behavior between study/Exam and across refresh |
 | V4-06 | P1 | IN PROGRESS | Reading typography & visual hierarchy | Arabic/English readable width, mobile font >=16px for long reading, scientific tables scroll/zoom, consistent headings and source labels |
 | V4-07 | P1 | TODO | Consolidate V2/V3 CSS cascade | Audit redundant selectors/overrides; shared semantic tokens + dark variants; screenshots stable in 320/390/768/1280/1440 and zoom |
 | V4-08 | P1 | TODO | Robust feedback/empty/recovery states | Course without lectures, image unavailable, offline, search no-match, outdated PWA, failed backup, interrupted exam all give useful next action |
@@ -73,6 +73,18 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 - Fix source zoom viewer for **same-origin blob URLs representing validated private IndexedDB JPEGs**: the V4 reader previously accepted only hosted `./assets/lectures/...jpg` links, so verified imported source pictures were opening outside the in-app zoom viewer. The viewer now accepts both paths while maintaining the original new-tab fallback and the source-only card requirement.
 - New Playwright regressions check real Anxiety PDF prose that begins with a Latin term, RTL/size/overflow, 320px caption legibility in light/dark, and a byte-identical source figure loaded through a private blob URL.
 - **Gates:** full exact-head static, Chromium, WebKit, Workers Builds; no deployment or authenticated production browser pass is claimed until independently verified. V4-06 and V4-04 remain IN PROGRESS; the remaining roadmap stays TODO/BLOCKED.
+
+## Fifth increment — V4.5 source MCQs in the primary study route
+
+- **On follow-on branch, not live:** the existing Start/Continue studying button now considers authored Study Guide MCQs alongside MEQ/short/image questions when the active lecture has no restrictive search/type/topic/priority/review/subtopic filters. The same Weak/Review-first rating choice is preserved, and MCQ details open automatically when a chosen source MCQ receives focus.
+- A discreet `N source MCQs` count joins the existing lecture-count metadata only when the current lecture has reviewed authored questions. This clarifies discoverability without adding a new dashboard or changing a single source fact.
+- Active filters still cause Start studying to select from visible MEQ/short/image items only, preserving the existing filtered study journey. A real Psychiatry MCQ + core-only filter browser regression guards both states.
+- **Honest status:** V4-05 stays IN PROGRESS. Full saved-session resume, state recovery and exam transitions have not been changed in this iteration. V4-04, V4-06 and the other work packages retain their own statuses.
+- **Release:** V4.4 PR #66 merged after all four exact-head checks passed. V4.5 requires fresh checks on its post-main-sync head before merge; authenticated production smoke remains blocked by Access #35.
+
+## V4.4 source merge evidence
+- [PR #66](https://github.com/Hafezalhoot/medical-meq-bank/pull/66) merged into main as `e6c0fb0723a5f29acc521dcdd7e4181cd3408c66` following repaired exact-head run [40255440798](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40255440798), Static, Chromium, WebKit and Workers Builds all successful. The legacy RTL tests were updated to assert script-aware direction; existing content and overflow assertions remain.
+- Live Worker traffic and the protected authenticated browser smoke are separate from PR source validation. Access #35 remains blocked; #50 production promotion risk remains open.
 
 ## Evidence log
 | Date | Commit / PR | Work | Evidence | Outcome |
