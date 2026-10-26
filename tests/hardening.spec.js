@@ -165,6 +165,9 @@ test('backup import rolls back progress and preferences when progress replacemen
     buffer: Buffer.from(backup)
   });
 
+  await expect(page.locator('#restorePreviewDialog')).toBeVisible();
+  await page.locator('#restorePreviewConfirm').click();
+
   await expect(page.locator('#appToast')).toContainText('current progress was kept');
   await expect.poll(
     () => page.evaluate(() => globalThis.MEQProgressStore?.exportAll?.())
@@ -217,6 +220,9 @@ test('backup import reports when automatic rollback also fails', async ({page}) 
     buffer: Buffer.from(backup)
   });
 
+  await expect(page.locator('#restorePreviewDialog')).toBeVisible();
+  await page.locator('#restorePreviewConfirm').click();
+
   await expect(page.locator('#appToast')).toContainText('automatic rollback could not complete');
   await expect.poll(
     () => page.evaluate(() => globalThis.MEQProgressStore?.exportAll?.())
@@ -246,6 +252,9 @@ test('backup schema v2 restores progress and preferences transactionally', async
     mimeType: 'application/json',
     buffer: Buffer.from(backup)
   });
+
+  await expect(page.locator('#restorePreviewDialog')).toBeVisible();
+  await page.locator('#restorePreviewConfirm').click();
 
   await expect(page.locator('#appToast')).toContainText('Progress restored');
   await expect.poll(

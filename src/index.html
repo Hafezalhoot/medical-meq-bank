@@ -226,6 +226,25 @@
 </div>
 <div id="appToast" class="toast" role="status" aria-live="polite"></div>
 <dialog id="examDialog" class="exam-dialog" aria-labelledby="examTitle" aria-modal="true"><div id="examRoot"><h2 id="examTitle">Exam mode</h2></div></dialog>
+<dialog id="restorePreviewDialog" class="restore-preview-dialog" aria-labelledby="restorePreviewTitle" aria-describedby="restorePreviewNotice">
+  <div class="restore-preview-inner">
+    <p class="restore-preview-kicker">RESTORE SAFELY</p>
+    <h2 id="restorePreviewTitle">Review your backup</h2>
+    <p class="restore-preview-file">Selected file: <strong id="restorePreviewFile"></strong></p>
+    <dl class="restore-preview-counts" aria-label="Progress comparison">
+      <div><dt>Saved on this device</dt><dd id="restoreCurrentCount">0</dd></div>
+      <div><dt>Ratings in backup</dt><dd id="restoreIncomingCount">0</dd></div>
+      <div><dt>Current ratings removed</dt><dd id="restoreRemovedCount">0</dd></div>
+      <div><dt>Ratings changed</dt><dd id="restoreChangedCount">0</dd></div>
+    </dl>
+    <p id="restorePreviewNotice" class="restore-preview-notice">Restoring replaces ratings and preferences on this device.</p>
+    <div class="restore-preview-actions">
+      <button type="button" id="restorePreviewCancel" class="btn btn-soft">Cancel</button>
+      <button type="button" id="restorePreviewBackup" class="btn btn-soft">Download current backup</button>
+      <button type="button" id="restorePreviewConfirm" class="btn btn-primary">Replace my progress</button>
+    </div>
+  </div>
+</dialog>
 <script src="./app.js"></script>
 
 <script src="./pwa-client.js"></script>

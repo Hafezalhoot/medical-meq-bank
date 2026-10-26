@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank — Design System V5
 
-**Stage:** Owner-requested full redesign in progress on `design/v5-mineral-blue-studio-20261026` (candidate `2026.10.26.9`; not yet live).  
+**Stage:** V5 Mineral Blue Studio shipped in `2026.10.26.9` (PR #71, main `dc3819f`), Cloudflare Worker `b873bcb3` verified at 100% traffic. V5.1 backup safety under development; production Access issue #35 and Cloudflare-side build-only configuration issue #50 remain open.  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
 
 ## Product and primary job
