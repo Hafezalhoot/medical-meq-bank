@@ -204,7 +204,7 @@ function populateLectureFilter(){
         :list[0].id;
   lf.value=candidate
 }
-function selectLecture(id,scroll=true){
+function selectLecture(id,scroll=true,resume=false){
   const lf=$('lectureFilter');
   lf.value=id;
   activeSubtopic='all';
@@ -220,7 +220,8 @@ function selectLecture(id,scroll=true){
   render();
   const loader=globalThis.MEQLectureLoader?.loadLecture;
   if(typeof loader!=='function'){
-    if(scroll)document.getElementById('lecture-'+id)?.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+    if(resume)focusNextStudyItem();
+    else if(scroll)document.getElementById('lecture-'+id)?.scrollIntoView({behavior:scrollBehavior(),block:'start'});
     return
   }
   loader(id,{refresh:false}).then(()=>{
@@ -228,7 +229,8 @@ function selectLecture(id,scroll=true){
     updateTopicOptions();
     render();
     validateBank();
-    if(scroll)document.getElementById('lecture-'+id)?.scrollIntoView({behavior:scrollBehavior(),block:'start'})
+    if(resume)focusNextStudyItem();
+    else if(scroll)document.getElementById('lecture-'+id)?.scrollIntoView({behavior:scrollBehavior(),block:'start'})
   }).catch(()=>{})
 }
 function selectSubtopic(lectureId,subtopicId){if($('lectureFilter').value!==lectureId)$('lectureFilter').value=lectureId;activeSubtopic=subtopicId;updateTopicOptions();renderLectureNav();renderSubtopicNav();applyFilters();const first=[...document.querySelectorAll(`.study-item[data-lecture="${lectureId}"]`)].find(it=>!it.classList.contains('hidden'));first?.scrollIntoView({behavior:scrollBehavior(),block:'center'})}
@@ -306,18 +308,23 @@ function renderSubtopicNav(){
 function renderLectureOverview(container,list){
   const section=document.createElement('section');
   section.className='lecture-overview-panel';
-  section.innerHTML='<div class="section-head"><div><h2>Lecture overview</h2><p>Choose one lecture to load its full study content. This keeps the bank fast as more lectures are added.</p></div></div><div class="lecture-overview-grid"></div>';
+  const subjectName=subjects.find(subject=>subject.id===activeSubject)?.label||'Selected specialty';
+  section.innerHTML=`<div class="section-head"><div><h2>${esc(subjectName)} lectures</h2><p>Choose a lecture to open its available explanations, practice questions and original source figures.</p></div><span class="lecture-overview-total">${list.length} ${list.length===1?'lecture':'lectures'}</span></div><div class="lecture-overview-grid"></div>`;
   const grid=section.querySelector('.lecture-overview-grid');
   list.forEach(lecture=>{
     const button=document.createElement('button');
     button.type='button';
     button.className='lecture-overview-card';
+    button.setAttribute('aria-label','Open lecture: '+lecture.title);
     const progress=lectureProgressPercent(lecture);
-    button.innerHTML=`<strong>${String(lecture.order).padStart(2,'0')}. ${esc(lecture.title)}</strong><span>${lectureCount(lecture,'cases')} MEQ cases • ${lectureCount(lecture,'coreShorts')} core shorts • ${lectureCount(lecture,'imageQuestions')} image questions</span><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Start lecture'}</span>`;
+    const cases=lectureCount(lecture,'cases');
+    const shorts=lectureCount(lecture,'coreShorts');
+    const images=lectureCount(lecture,'imageQuestions');
+    button.innerHTML=`<span class="lecture-overview-top"><span class="lecture-overview-index" aria-hidden="true">${String(lecture.order).padStart(2,'0')}</span><strong class="lecture-overview-name">${esc(lecture.title)}</strong></span><span class="lecture-overview-meta">${cases} MEQ cases · ${shorts} core shorts · ${images} image questions</span><span class="lecture-overview-bottom"><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Open lecture'} <span aria-hidden="true">→</span></span></span>`;
     button.onclick=()=>selectLecture(lecture.id,true);
-    grid.appendChild(button)
+    grid.appendChild(button);
   });
-  container.appendChild(section)
+  container.appendChild(section);
 }
 // Arabic notes may start with a Latin clinical term: use the source prose's script for reading direction.
 const studyReadingDirection = text => /[\u0600-\u06ff]/.test(text) ? 'rtl' : 'auto';
@@ -611,6 +618,7 @@ document.addEventListener('click',event=>{
 
 function render(){
   const container=$('lectureContainer');container.innerHTML='';const list=visibleLectures();
+  $('mainLayout').classList.toggle('lecture-overview-active',$('lectureFilter').value==='all');
   if(!list.length){renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();return}
   const selected=$('lectureFilter').value;
   if(selected==='all'){
@@ -874,7 +882,7 @@ function setFocusMode(enabled){
 }
 // Enter the real study flow; prefer items marked Review/Weak, then unrated items.
 const resumeStudy=$('resumeStudyBtn');
-resumeStudy?.addEventListener('click',()=>{
+function focusNextStudyItem(){
   // Source-linked Study Guide MCQs are first-class questions when no filters
   // restrict the session. Preserve the older MEQ/shorts-only filtered flow.
   const includeGuide=$('lectureFilter').value!=='all' &&
@@ -895,7 +903,6 @@ resumeStudy?.addEventListener('click',()=>{
   const target=items.find(item=>['review','weak'].includes(rating(item)))
     ||items.find(item=>!rating(item))
     ||items[0]
-    ||document.querySelector('#mainContent .lecture-overview-card')
     ||$('mainContent');
   if(!target)return;
   const parentDetails=target.closest('details');
@@ -909,6 +916,24 @@ resumeStudy?.addEventListener('click',()=>{
     target.scrollIntoView({behavior:'instant',block:'start'});
     target.focus({preventScroll:true});
   });
+}
+// The overview is a lecture picker, not a question. One click should enter a lesson.
+resumeStudy?.addEventListener('click',()=>{
+  if($('lectureFilter').value==='all'){
+    const candidates=visibleLectures();
+    const hasReview=lecture=>Object.entries(state).some(([statusKey,rating])=>{
+      if(rating!=='review'&&rating!=='weak')return false;
+      const parsed=progressKeyParts(statusKey);
+      return parsed.lectureId===lecture.id && (parsed.version!==2 || (
+        parsed.subjectKey===lecture.subjectKey &&
+        parsed.courseId===(lecture.courseId||activeCourseId())
+      ));
+    });
+    const remembered=storage.get(`medicalBankLectureV2:${activeCourseId()}:${activeSubject}`);
+    const selected=candidates.find(hasReview)||candidates.find(l=>l.id===remembered)||candidates[0];
+    if(selected){selectLecture(selected.id,false,true);return}
+  }
+  focusNextStudyItem();
 });
 const pwaToolsToggle=$('pwaToolsToggle');
 if(pwaToolsToggle){
