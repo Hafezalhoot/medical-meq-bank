@@ -1537,3 +1537,29 @@ details.original-figure-tools{
 @media(max-width:700px){
   .hero .subject-select,.hero .course-select,.mobile-filter-shell #search{font-size:16px}
 }
+
+
+/* V5 rendered-layout QA: long medical names remain readable at every width,
+   while the first study question stays near the first screen. */
+@media(min-width:701px) and (max-width:980px){
+  .hero-grid{grid-template-columns:minmax(0,1fr) minmax(355px,385px);gap:14px}
+  .hero .hero-panel{padding:12px}
+  .hero .subject-select,.hero .course-select{
+    font-size:.84rem;padding-left:8px;padding-right:20px
+  }
+}
+@media(max-width:700px){
+  .studio-masthead{padding-top:0;padding-bottom:7px;margin-bottom:6px;gap:6px}
+  .hero{padding:12px 13px}
+  .hero-grid{gap:9px}
+  .hero h1{margin:4px 0 5px;font-size:1.54rem}
+  .hero p{font-size:.84rem;line-height:1.55}
+  .study-launch-row{margin:7px 0 4px}
+  .study-launch-row .course-library-toggle{min-height:54px}
+}
+@media(max-width:360px){
+  .hero .hero-panel{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+  .hero .subject-select,.hero .course-select{
+    min-width:0;font-size:14px;padding-left:7px;padding-right:18px
+  }
+}

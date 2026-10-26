@@ -37,7 +37,7 @@ test('V4 first screen preserves study routes and gives a primary question action
   await expect(page.locator('#subjectSelector')).toBeVisible();
   const primary=page.locator('#resumeStudyBtn');
   await expect(primary).toBeVisible();
-  await expect(primary).toHaveCSS('background-color','rgb(13, 98, 103)');
+  await expect(primary).toHaveCSS('background-color','rgb(79, 99, 168)');
   const hero=await page.locator('.hero').boundingBox();
   expect(hero.height).toBeLessThan(360);
   await primary.click();
