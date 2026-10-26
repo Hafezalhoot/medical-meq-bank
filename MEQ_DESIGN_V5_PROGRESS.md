@@ -53,3 +53,10 @@
 - `21327db` browser QA: **150/151 Chromium checks passed**; only the first-lecture offset at 1440px failed by **1.125px** (701.125px vs strict <700px). WebKit and Static remained green.
 - Keep the same meaningful reader-first contract. Tighten only redundant breadcrumb and filter block spacing (roughly 10px), without shrinking any text or changing student actions.
 - Final merge remains gated on new exact-head Static, Chromium, WebKit and Cloudflare Workers Build results.
+
+### 2026-10-26 — Protected automatic Cloudflare promotion (release candidate)
+
+- Exact-head V5 visual quality **passed** on `4df95ce`: all Static, Chromium, WebKit and Cloudflare Workers Build checks green. 151 browser tests included. Source content and progress stores unchanged.
+- The existing GitHub `promote-production.yml` is extended to respond to successful **main-push `Validate Medical MEQ Bank` workflow_run only**, not untrusted pull-request results.
+- Production is fail-closed: require main ref and same repository, exact current main SHA, full validate/Chromium/WebKit success, an exact matching successful Cloudflare Workers version, and valid stored secrets. Manual dispatch with explicit confirmation stays available.
+- **Not live at commit time.** Verify post-merge main CI, promotion workflow execution and active Worker at 100% before marking DONE/LIVE. Cloudflare Access browser smoke still needs owner-provided service credentials (issue #35), not an access bypass.
