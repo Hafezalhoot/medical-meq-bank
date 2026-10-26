@@ -990,3 +990,83 @@ details.original-figure-tools{display:block;padding:0!important;margin:2px 0 15p
   }
   .nav-controls{margin-top:5px;margin-bottom:7px}
 }
+
+
+/* V4.6: Lecture overview is a study decision, not a miniature dashboard.
+   This style is scoped to the overview only; the lecture reader is unchanged. */
+@media (min-width:981px){
+  .layout.lecture-overview-active.hide-lectures.hide-subtopics main{max-width:1250px}
+}
+.lecture-overview-panel .section-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:12px 24px;margin:0 0 18px;padding:0 0 16px;
+  border-bottom:1px solid var(--line)
+}
+.lecture-overview-panel .section-head h2{
+  font-size:clamp(1.3rem,2vw,1.65rem);font-weight:800;
+  line-height:1.25;letter-spacing:-.025em;color:var(--text);margin:0 0 5px
+}
+.lecture-overview-panel .section-head p{
+  max-width:68ch;font-size:.91rem;line-height:1.55;color:var(--muted)
+}
+.lecture-overview-total{
+  color:var(--muted);font-size:.84rem;font-weight:750;
+  white-space:nowrap;font-variant-numeric:tabular-nums
+}
+.lecture-overview-grid{gap:14px}
+.lecture-overview-card{
+  display:flex;flex-direction:column;align-items:stretch;
+  gap:15px;min-width:0;min-height:190px;padding:20px;
+  border:1px solid var(--line);border-radius:15px;
+  background:var(--card);box-shadow:none;text-align:start;
+  transition:border-color .15s ease,background-color .15s ease
+}
+.lecture-overview-card:hover{border-color:var(--brand);background:var(--surface-soft)}
+.lecture-overview-card:focus-visible{
+  outline:3px solid var(--brand);outline-offset:3px;border-color:var(--brand)
+}
+.lecture-overview-top{display:flex;align-items:flex-start;gap:12px;color:var(--text)}
+.lecture-overview-index{
+  color:var(--brand);font-size:.79rem;line-height:1.65;
+  font-weight:800;letter-spacing:.035em;flex:none;font-variant-numeric:tabular-nums
+}
+.lecture-overview-card .lecture-overview-name{
+  font-size:clamp(1.06rem,1.35vw,1.2rem);line-height:1.42;
+  font-weight:780;color:var(--text);overflow-wrap:anywhere
+}
+.lecture-overview-card .lecture-overview-meta{
+  color:var(--muted);font-size:.85rem;line-height:1.6;overflow-wrap:anywhere
+}
+.lecture-overview-bottom{
+  display:flex;align-items:end;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;margin-top:auto;padding-top:12px;
+  border-top:1px solid var(--line);width:100%
+}
+.lecture-overview-progress{width:min(52%,230px);min-width:140px;gap:7px}
+.lecture-overview-progress>span:first-child{
+  font-size:.83rem;color:var(--muted);font-weight:600
+}
+.lecture-overview-progress b{font-weight:800;color:var(--text)}
+.lecture-overview-card .mini-progress{height:6px;background:var(--surface-subtle)}
+.lecture-overview-card .mini-progress i{background:var(--brand)}
+.lecture-overview-card .lecture-overview-action{
+  display:inline-flex;align-items:center;gap:9px;min-height:30px;
+  color:var(--brand);font-size:.88rem;font-weight:800;white-space:nowrap
+}
+@media(max-width:700px){
+  .lecture-overview-panel .section-head{align-items:flex-start;flex-wrap:wrap;margin-bottom:13px;padding-bottom:13px}
+  .lecture-overview-panel .section-head h2{font-size:1.28rem}
+  .lecture-overview-panel .section-head p{font-size:.87rem}
+  .lecture-overview-total{font-size:.8rem}
+  .lecture-overview-card{min-height:165px;padding:16px;gap:12px}
+  .lecture-overview-card .lecture-overview-name{font-size:1.04rem}
+  .lecture-overview-card .lecture-overview-meta{font-size:.83rem}
+}
+@media(max-width:350px){
+  .lecture-overview-card{padding:13px}
+  .lecture-overview-bottom{align-items:flex-start;flex-direction:column;gap:7px}
+  .lecture-overview-progress{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .lecture-overview-card{transition:none}
+}

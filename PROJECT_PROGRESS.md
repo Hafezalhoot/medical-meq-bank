@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-26 — V4.6 owner-screenshot-led overview and Start-to-question navigation (candidate)
+
+- 🧪 Desktop source screenshot 1535×1023: the Psychiatry overview's two lecture cards are discoverable, but the first-screen information hierarchy and a misleading Start studying action need improvement.
+- 🧪 Branch `ui/v4-overview-first-20261026`: source-scoped Psychiatry heading, more legible lecture-choice cards with real question counts/rated progress, wider overview when sidebars are hidden. Reader layout, course selection and all secondary tools remain present.
+- 🧪 Fix Start studying from All lecture overviews to enter a lecture and focus the next question; saved Weak/Review in the current subject wins, then the remembered lecture, then first. Add real Psychiatry desktop/mobile and 320px dark/overflow browser regressions.
+- ⏳ Branch release `2026.10.26.6` is **not yet merged or published** until exact-head Static, Chromium, WebKit, Workers Builds and independent Worker status. V4-04/05/06 stay IN PROGRESS. Cloudflare Access #35 and promotion gate #50 remain open.
+- ✅ Baseline V4.5 PR #67 main commit `cffde8f`, read-only Worker `49e63c77` at 100% (access smoke HTTP 302), and main Chromium quality gate green.
+
 ### 2026-10-26 — V4.5 question-first Source MCQ resume (fifth increment)
 
 - 🧪 Follow-on branch `ui/v4-question-first-resume-20261026` builds on merged V4.4 PR #66. Start/Continue now reaches authored source MCQs in a selected unfiltered lecture, opens their native disclosure and focuses the question; Weak/Review-first saved ratings remain intact.

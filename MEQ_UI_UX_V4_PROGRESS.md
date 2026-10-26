@@ -2,9 +2,9 @@
 
 **Owner request:** a professionally refined, beautiful, fast medical study workspace with the simplest path to the next lecture/question; preserve every existing feature and every stored rating.  
 **Last updated:** 2026-10-26 (Africa/Cairo)  
-**Baseline main:** `5197bdd2685b2457db27b068d4c45a2a1a37a72f` (V4.3 release `2026.10.26.3`)  
-**Working branch:** `ui/v4-question-first-resume-20261026` (integrates merged V4.4 PR #66)  
-**Production status:** V4.3 source is merged; independent read-only run `40253993643` reports active Worker `0b173e69-741c-4c79-8da0-568787e5a61f` at **100% traffic**, but protected browser smoke remains Access-blocked (HTTP 302, issue #35). **V4.4 PR #66 has merged into main; V4.5 branch is not live** until its exact-head quality gate, merge and independent Worker confirmation.
+**Baseline main:** `cffde8f45c274001fef616d56aec4cb83b85fa32` (V4.5 release `2026.10.26.5`)  
+**Working branch:** `ui/v4-overview-first-20261026` (V4.6 owner-screenshot response)  
+**Production status:** V4.5 source is merged in `main`; independent read-only Cloudflare run `40256200178` reported Worker `49e63c77-af50-4440-a013-cc3ec50010c4` receiving **100% traffic**. The authenticated production smoke still redirects to Access login (HTTP 302, issue #35). **V4.6 branch changes are not live** pending exact-head QA, merge and new read-only Worker confirmation.
 **Source of design evidence:** owner screenshots of Psychiatry and source figure cards; Chromium visual evidence artifact from main GitHub Actions run `40235201300` (320/390/768/1280/1440 desktop, mobile, dark and reading states); `src/index.html`, `src/app.js`, `src/app.css`, existing Playwright/axe/visual tests.
 
 ## Status legend and update rules
@@ -85,6 +85,15 @@ Clinical-quiet teal/ink, restrained off-white surfaces, original lecture media o
 ## V4.4 source merge evidence
 - [PR #66](https://github.com/Hafezalhoot/medical-meq-bank/pull/66) merged into main as `e6c0fb0723a5f29acc521dcdd7e4181cd3408c66` following repaired exact-head run [40255440798](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/40255440798), Static, Chromium, WebKit and Workers Builds all successful. The legacy RTL tests were updated to assert script-aware direction; existing content and overflow assertions remain.
 - Live Worker traffic and the protected authenticated browser smoke are separate from PR source validation. Access #35 remains blocked; #50 production promotion risk remains open.
+
+## Sixth increment — screenshot-led Psychiatry overview redesign (V4.6)
+
+- **Evidence:** Owner's 2026-10-26 desktop screenshot (~1535×1023 pixels) showing Internal Medicine II → Psychiatry → Lecture overview. The screen has two actionable lecture cards but substantial high-chrome controls and no explicit class/visual distinction for overview.
+- **Confirmed UX bug:** `Start studying` from the *All lecture overviews* state previously scrolled/focused the first overview card instead of opening a lecture. It now opens the most relevant lecture (one with saved Weak/Review first; otherwise remembered/first lecture), loads it and focuses the next genuine question, including source-based MCQs when unfiltered.
+- **Visual pass:** custom subject-led overview heading and clear source/question availability copy; more legible lecture cards with stronger title/order, unchanged sourced MEQ/core/image counts, true rated progress, obvious open action. Widen the overview when both navigation rails are hidden, but keep the narrower reading column inside a lecture.
+- **Tests:** desktop real Psychiatry overview and Start-to-question, Weak rating in Anxiety influencing overview resume, 320px dark card and no horizontal overflow. Keep full feature and progress inventory unchanged.
+- **Scope honesty:** V4-04 and V4-05 remain IN PROGRESS; the screenshot exposes additional toolbar/context clutter for a later visual pass. This first change does not remove or silently hide existing search, filters, Exam, My Review, focus or print controls.
+- **Release:** V4.6 `2026.10.26.6` is **candidate only**, not merged/live. All four exact-head checks must pass, followed by independent Cloudflare traffic confirmation. Access #35 and release promotion #50 are still unresolved.
 
 ## Evidence log
 | Date | Commit / PR | Work | Evidence | Outcome |

@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank — Design System V4
 
-**Stage:** Established V4 design contract; V4.4 `2026.10.26.4` merged after full CI, V4.5 source-MCQ resume candidate `2026.10.26.5` awaiting final head validation.  
+**Stage:** Established V4 design contract; V4.5 `2026.10.26.5` merged and Worker at 100%; V4.6 owner-screenshot-led overview refinement under review.  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
 
 ## Product and primary job
@@ -13,6 +13,12 @@ A personal, offline-capable medical-exam preparation workspace. The user visits 
 - **Type:** familiar Inter / Segoe UI / Tahoma / Arial fallback; medical body text >=16px where reading matters, roughly 1.6 English line-height, about 2.0 for long Arabic notes, constrained reading measure ~70–80ch. Do not over-style headings at the expense of scanning.
 - **Depth:** light borders and restrained shadows, no generic shadow-on-shadow cards. Source figures themselves are the important visual media; **do not generate substitute clinical images**.
 - **Motion:** subtle state feedback only; obey `prefers-reduced-motion`.
+
+## V4.6 overview → genuine study first
+- Lecture overview is a selection surface, not the main reader. The card title, source-linked question counts, rated progress and Open lecture action must be scannable and grounded in the real catalog; don't fake Explanation/MCQ counts for metadata-only lecture entries.
+- From overview, `Start studying` must enter an available lecture and focus a question, prioritizing a saved Weak/Review lecture in the current course/specialty, then remembered lecture, then first. It must never stop on a decorative overview card.
+- When both navigation rails are hidden at desktop width, allow the overview list up to 1250px, without widening the inside-lecture reader. Keep existing course selector, study search/filters, and all question actions usable.
+- Visual direction: restrained clinical ink and teal, clear hierarchy, no ornamental badges or new generated medical imagery. Verify real 320px and desktop content, light/dark and keyboard focus.
 
 ## Study information hierarchy
 1. **Course & Specialty** (existing selectors) with one prominent **Start/Continue studying** CTA.
