@@ -1,6 +1,6 @@
 # Medical MEQ Review Bank — Design System V4
 
-**Stage:** Working proposal; version `2026.10.26.1` is not necessarily live.  
+**Stage:** Established V4 design contract; verified V4.3 source `2026.10.26.3`, V4.4 bilingual-reader increment pending exact-head verification.  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
 
 ## Product and primary job
@@ -28,6 +28,12 @@ A personal, offline-capable medical-exam preparation workspace. The user visits 
 - A native, focus-trapped `<dialog>` shows the **exact original JPEG** with its source page. Buttons provide **Zoom in, Zoom out, Fit, Close, Open original file and Study figure questions**. Escape closes it; link modifier-clicks still open the original as before.
 - Zoom is display-only; it never modifies content. Users may scroll the enlarged image within the dialog rather than expanding the entire page.
 - Use button titles, keyboard focus, visible state, no guessed answer keys, no image replacements.
+
+## Bilingual scientific reading & original media
+- Arabic Explanation and Understanding Aid paragraphs frequently begin with Latin medical terms. `dir=auto` alone makes those paragraphs LTR; use explicit `dir=rtl` and `lang=ar` when they contain Arabic script, while preserving the exact lecture source wording and genuinely English-only paragraphs.
+- Scientific source-page references and image captions are study content, not decorative metadata. Aim for at least ~14px at 320px mobile size and >=16px for body notes. Constrain longer reading sections near 76ch and preserve readable line heights.
+- Original image zoom must accept both hosted trusted JPEG URLs and **locally verified same-origin blob URLs** used after importing approved private source JPEGs. Never accept arbitrary remote external image replacements.
+- Evidence requires the real mixed-script Anxiety paragraph, original printed figures, dark/light mobile reading, keyboard and 320px document overflow checks.
 
 ## Component contracts and states
 | Surface | Intent | Important states |

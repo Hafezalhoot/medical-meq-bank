@@ -115,3 +115,63 @@ test('V4 source viewer is readable and escapable on a narrow phone',async ({page
   await expect(viewer).toBeHidden();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
 });
+
+test('V4 mixed Arabic prose retains correct RTL reading even when a medical term is first',async ({page})=>{
+  await openBank(page,390,844);
+  await selectPsychiatry(page);
+  const explanation=page.locator('.learning-companion .study-guide-part').first();
+  await explanation.locator('summary').click();
+  const paragraph=explanation.locator('.study-guide-explanation p').filter({hasText:/^Fear في المحاضرة/}).first();
+  await expect(paragraph).toBeVisible();
+  await expect(paragraph).toHaveAttribute('dir','rtl');
+  await expect(paragraph).toHaveAttribute('lang','ar');
+  const reading=await paragraph.evaluate(el=>{
+    const s=getComputedStyle(el);
+    return {direction:s.direction,align:s.textAlign,size:parseFloat(s.fontSize),lineHeight:parseFloat(s.lineHeight)};
+  });
+  expect(reading.direction).toBe('rtl');
+  expect(reading.align).toBe('right');
+  expect(reading.size).toBeGreaterThanOrEqual(16);
+  expect(reading.lineHeight).toBeGreaterThanOrEqual(30);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+});
+
+test('V4 original source captions are legible on the smallest supported phone',async ({page})=>{
+  await openBank(page,320,720);
+  await selectPsychiatry(page);
+  const atlas=await showAtlas(page);
+  for(const label of [
+    atlas.locator('.source-figure-caption').first(),
+    atlas.locator('.original-atlas-item>figcaption strong').first(),
+    atlas.locator('.original-atlas-item>figcaption small').first()
+  ]){
+    await expect(label).toBeVisible();
+    expect(await label.evaluate(el=>parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(13.5);
+  }
+  await page.locator('#darkBtn').click();
+  await expect(atlas.locator('.original-atlas-item')).toHaveCount(7);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+});
+
+test('V4 reader opens source-verified private blob figure in the same zoom dialog',async ({page})=>{
+  await openBank(page,390,844);
+  await selectPsychiatry(page);
+  const atlas=await showAtlas(page);
+  const link=atlas.locator('.source-figure-full').first();
+  const blobUrl=await link.evaluate(async el=>{
+    const bytes=await (await fetch(el.href)).blob();
+    const url=URL.createObjectURL(bytes);
+    el.href=url;
+    return url;
+  });
+  await link.click();
+  const viewer=page.locator('#sourceFigureViewer');
+  await expect(viewer).toBeVisible();
+  await expect(viewer.locator('img')).toHaveAttribute('src',/^blob:/);
+  await expect.poll(()=>viewer.locator('img').evaluate(img=>img.naturalWidth)).toBeGreaterThan(100);
+  await viewer.locator('[data-source-in]').click();
+  await expect(viewer.locator('.source-viewer-zoom output')).toHaveText('150%');
+  await viewer.locator('[data-source-close]').click();
+  await expect(viewer).toBeHidden();
+  await page.evaluate(url=>URL.revokeObjectURL(url),blobUrl);
+});

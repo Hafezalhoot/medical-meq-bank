@@ -319,6 +319,8 @@ function renderLectureOverview(container,list){
   });
   container.appendChild(section)
 }
+// Arabic notes may start with a Latin clinical term: use the source prose's script for reading direction.
+const studyReadingDirection = text => /[\u0600-\u06ff]/.test(text) ? 'rtl' : 'auto';
 function createStudyGuide(lecture) {
   const guide=lecture.studyGuide||{};
   // A lecture with original clinical photos still deserves its source atlas
@@ -358,14 +360,14 @@ function createStudyGuide(lecture) {
       const article=document.createElement('article');article.className='study-guide-explanation';
       const heading=document.createElement('h3');heading.textContent=part.heading;heading.dir='auto';article.append(heading);
       for(const text of part.paragraphs){
-        const p=document.createElement('p');p.textContent=text;p.dir='auto';article.append(p);
+        const p=document.createElement('p');p.textContent=text;p.dir=studyReadingDirection(text);if(p.dir==='rtl')p.lang='ar';article.append(p);
       }
       if(part.understandingAids?.length){
         const aid=document.createElement('aside');aid.className='study-guide-understanding';
         const title=document.createElement('strong');
         title.textContent='Understanding Aid — Not an additional exam fact';
         aid.append(title);
-        for(const text of part.understandingAids){const p=document.createElement('p');p.textContent=text;p.dir='auto';aid.append(p);}
+        for(const text of part.understandingAids){const p=document.createElement('p');p.textContent=text;p.dir=studyReadingDirection(text);if(p.dir==='rtl')p.lang='ar';aid.append(p);}
         article.append(aid);
       }
       sourceLabel(article,part.sourcePage);
@@ -521,7 +523,11 @@ function createStudyGuide(lecture) {
 function openSourceFigureViewer(link){
   if(typeof HTMLDialogElement==='undefined'||!HTMLDialogElement.prototype.showModal)return false;
   const source=link.getAttribute('href')||'';
-  if(!/^\.\/assets\/lectures\/[a-z0-9_-]+\/[a-z0-9_-]+\.jpe?g$/i.test(source))return false;
+  const hosted=/^\.\/assets\/lectures\/[a-z0-9_-]+\/[a-z0-9_-]+\.jpe?g$/i.test(source);
+  // Verified private originals are loaded from IndexedDB as same-origin blob URLs.
+  let privateOriginal=false;
+  if(source.startsWith('blob:'))try{privateOriginal=new URL(source).origin===location.origin;}catch(e){}
+  if(!hosted&&!privateOriginal)return false;
   let dialog=document.getElementById('sourceFigureViewer');
   if(!dialog){
     dialog=document.createElement('dialog');
