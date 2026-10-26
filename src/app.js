@@ -171,7 +171,11 @@ function imagePlaceholderHtml(q){const page=imagePage(q);const reference=page?`L
 function imageVisualHtml(q){
   if(isOriginalSourceFigure(q)&&!imageSource(q))return `<div class="original-source-placeholder" role="note"><strong>Original lecture figure · ${esc(imagePage(q))}</strong><span>Import the figure from your printed lecture. No generated or substitute clinical image is shown.</span></div>`;
   const source=imageSource(q);
-  return source?`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`:imagePlaceholderHtml(q);
+  if(!source)return imagePlaceholderHtml(q);
+  const image=`<img src="${esc(source)}" alt="${esc(q.title)}" loading="lazy" decoding="async" fetchpriority="low">`;
+  return isOriginalSourceFigure(q)
+    ?`<a class="source-figure-full source-spot-open" href="${esc(source)}" target="_blank" rel="noopener noreferrer" aria-label="Study full-size original lecture figure: ${esc(q.title)}">${image}</a>`
+    :image;
 }
 function imageCard(l,q,i){const a=document.createElement('article');const source=imageSource(q);a.className='image-card study-item';a.id=l.id+'-image-'+q.id;a.dataset.type='image';a.dataset.lecture=l.id;a.dataset.topic=q.topic;a.dataset.priority=q.priority;a.dataset.visualSource=source?(isOriginalSourceFigure(q)?'original-pdf':'embedded'):'lecture-reference';if(isOriginalSourceFigure(q)&&!source){a.dataset.originalFigureId=q.id;a.dataset.originalFigureSha256=q.imageSha256;}a.dataset.search=(l.title+' '+q.title+' '+q.prompt+' '+q.questions.join(' ')+' '+q.answer.join(' ')).toLowerCase();a.innerHTML=`<div class="case-head"><div><h3 class="case-title">${i+1}. ${esc(q.title)}</h3><div class="meta"><span class="pill ${q.priority==='High'?'high':'core'}">${q.priority}</span><span class="pill">${esc(q.topic)}</span><span class="pill marks">${q.marks} marks</span><span class="pill page">${esc(imagePage(q)||'Lecture source')}</span></div></div></div><div class="visual">${imageVisualHtml(q)}</div><div class="case-body"><div class="visual-prompt">${esc(q.prompt)}</div><ol class="q-list">${q.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="answer-area"><div class="answer-card"><h4>Model answer</h4>${answerHtml(q.answer)}</div></div></div>${actions(l.id,'image',q.id,'Show answer')}`;const image=a.querySelector('img');image?.addEventListener('error',()=>{const visual=a.querySelector('.visual');if(visual){visual.innerHTML=imagePlaceholderHtml(q);a.dataset.visualSource='lecture-reference'}});return setSubtopicData(a,q)}
 
@@ -434,7 +438,7 @@ function createStudyGuide(lecture) {
   if(sourceQuestions.length){
     const details=disclosure('Original lecture figures',sourceQuestions.length);
     const copy=document.createElement('p');copy.className='original-guide-copy';
-    copy.textContent=sourceQuestions.every(item=>Boolean(imageSource(item)))?'These are the original printed lecture photographs, served directly from the lecture and available when the lecture is saved offline. No generated or external substitutes.':'These are original printed-source figures. Hosted images appear automatically; for private-only figures, import the exact matching source JPEGs on your device.';
+    copy.textContent=sourceQuestions.every(item=>Boolean(imageSource(item)))?'These are the original printed lecture photographs and information-dense source figures. Open any figure to zoom and jump to its study questions. No AI or external substitutes.':'Original lecture figures. Hosted figures open here; private-only originals require importing exact source JPEGs on your device.';
     const jump=document.createElement('a');jump.className='original-guide-link';
     jump.href='#'+lecture.id+'-images';jump.textContent='Open original figure questions';
     const atlas=document.createElement('div');
@@ -443,6 +447,7 @@ function createStudyGuide(lecture) {
     sourceQuestions.forEach((item,index)=>{
       const entry=document.createElement('figure');
       entry.className='original-atlas-item';
+      entry.dataset.studyCardId=lecture.id+'-image-'+item.id;
       const media=document.createElement('div');
       media.className='original-atlas-frame';
       const hosted=imageSource(item);
@@ -455,7 +460,7 @@ function createStudyGuide(lecture) {
         picture.src=hosted;picture.alt='Original printed lecture photograph: '+item.title;
         picture.loading='lazy';picture.decoding='async';
         const caption=document.createElement('span');caption.className='source-figure-caption';
-        caption.textContent='Original PDF · '+(item.page||'Printed lecture')+' · open full size';
+        caption.textContent='Original PDF · '+(item.page||'Printed lecture')+' · zoom / study';
         link.append(picture,caption);media.append(link);
       }else{
         entry.dataset.originalFigureId=item.id;
@@ -477,6 +482,94 @@ function createStudyGuide(lecture) {
   }
   return section;
 }
+
+
+/* One native, keyboard-operable viewer for the exact original PDF JPEGs.
+   Keep the existing new-tab link as a fallback and for modifier-clicks. */
+function openSourceFigureViewer(link){
+  if(typeof HTMLDialogElement==='undefined'||!HTMLDialogElement.prototype.showModal)return false;
+  const source=link.getAttribute('href')||'';
+  if(!/^\.\/assets\/lectures\/[a-z0-9_-]+\/[a-z0-9_-]+\.jpe?g$/i.test(source))return false;
+  let dialog=document.getElementById('sourceFigureViewer');
+  if(!dialog){
+    dialog=document.createElement('dialog');
+    dialog.id='sourceFigureViewer';
+    dialog.className='source-figure-viewer';
+    dialog.setAttribute('aria-labelledby','sourceFigureViewerTitle');
+    dialog.innerHTML=[
+      '<header class="source-viewer-header"><div class="source-viewer-heading">',
+      '<span class="source-viewer-overline">ORIGINAL LECTURE FIGURE</span>',
+      '<h2 id="sourceFigureViewerTitle"></h2><span class="source-viewer-page"></span>',
+      '</div><button type="button" class="source-viewer-close" data-source-close>Close <span aria-hidden="true">×</span></button></header>',
+      '<div class="source-viewer-viewport" role="region" tabindex="0" aria-label="Original lecture figure; scroll to inspect zoomed content">',
+      '<img alt="" decoding="async"></div>',
+      '<footer class="source-viewer-footer"><div class="source-viewer-zoom" aria-label="Image zoom">',
+      '<button type="button" data-source-out aria-label="Zoom out">−</button>',
+      '<output aria-live="polite">100%</output>',
+      '<button type="button" data-source-in aria-label="Zoom in">+</button>',
+      '<button type="button" data-source-fit>Fit image</button></div>',
+      '<div class="source-viewer-actions">',
+      '<a class="source-viewer-original" data-source-original target="_blank" rel="noopener noreferrer">Open original file</a>',
+      '<button type="button" class="source-viewer-questions" data-source-questions>Study figure questions</button>',
+      '</div></footer>'
+    ].join('');
+    document.body.append(dialog);
+    const image=dialog.querySelector('.source-viewer-viewport img');
+    const viewport=dialog.querySelector('.source-viewer-viewport');
+    let scale=1;
+    const applyScale=next=>{
+      scale=Math.min(3,Math.max(1,next));
+      image.style.width=(scale*100)+'%';
+      image.style.maxWidth='none';
+      dialog.querySelector('.source-viewer-zoom output').textContent=Math.round(scale*100)+'%';
+      viewport.scrollTo({top:0,left:0,behavior:'instant'});
+    };
+    dialog.resetZoom=()=>applyScale(1);
+    dialog.querySelector('[data-source-in]').addEventListener('click',()=>applyScale(scale+0.5));
+    dialog.querySelector('[data-source-out]').addEventListener('click',()=>applyScale(scale-0.5));
+    dialog.querySelector('[data-source-fit]').addEventListener('click',()=>applyScale(1));
+    dialog.querySelector('[data-source-close]').addEventListener('click',()=>dialog.close());
+    dialog.querySelector('[data-source-questions]').addEventListener('click',()=>{
+      const id=dialog.dataset.studyCardId;
+      dialog.close();
+      let target=id?document.getElementById(id):null;
+      if(!target)return;
+      if(target.classList.contains('hidden'))document.getElementById('resetFiltersBtn')?.click();
+      target=id?document.getElementById(id):null;
+      if(!target)return;
+      const details=target.closest('details');
+      if(details)details.open=true;
+      target.setAttribute('tabindex','-1');
+      requestAnimationFrame(()=>{
+        target.focus({preventScroll:true});
+        target.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+      });
+    });
+    dialog.addEventListener('close',()=>image.removeAttribute('src'));
+  }
+  const item=link.closest('.original-atlas-item,.image-card');
+  const title=item?.querySelector('figcaption strong,.case-title')?.textContent?.trim()
+    ||link.querySelector('img')?.alt||'Original lecture figure';
+  const page=item?.querySelector('figcaption small,.pill.page')?.textContent?.trim()||'Original PDF';
+  dialog.querySelector('#sourceFigureViewerTitle').textContent=title;
+  dialog.querySelector('.source-viewer-page').textContent=page;
+  const picture=dialog.querySelector('.source-viewer-viewport img');
+  picture.src=source;
+  picture.alt=title+' — '+page;
+  dialog.querySelector('[data-source-original]').href=source;
+  dialog.dataset.studyCardId=item?.dataset.studyCardId
+    ||(item?.classList.contains('image-card')?item.id:'');
+  dialog.querySelector('[data-source-questions]').hidden=!document.getElementById(dialog.dataset.studyCardId);
+  dialog.resetZoom();
+  dialog.showModal();
+  return true;
+}
+document.addEventListener('click',event=>{
+  const link=event.target.closest?.('a.source-figure-full');
+  if(!link||!link.closest('.original-atlas-item,.image-card'))return;
+  if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  if(openSourceFigureViewer(link))event.preventDefault();
+});
 
 function render(){
   const container=$('lectureContainer');container.innerHTML='';const list=visibleLectures();
@@ -751,11 +844,13 @@ resumeStudy?.addEventListener('click',()=>{
   const parentDetails=target.closest('details');
   if(parentDetails)parentDetails.open=true;
   if(!target.matches('button,a,input,select,textarea,[tabindex]'))target.setAttribute('tabindex','-1');
-  // Run after the button click's native focus behavior so it cannot restore the old scroll position.
+  // Immediately bring the first useful question into view on small screens.
+  // Smooth scrolling in the old handler could leave a focused answer below the
+  // viewport after a long, newly loaded lecture; focus should follow the scroll.
   requestAnimationFrame(()=>{
     if(!target.isConnected)return;
+    target.scrollIntoView({behavior:'instant',block:'start'});
     target.focus({preventScroll:true});
-    target.scrollIntoView({behavior:scrollBehavior(),block:'start'});
   });
 });
 const pwaToolsToggle=$('pwaToolsToggle');
