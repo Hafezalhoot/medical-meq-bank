@@ -1,6 +1,14 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
 
+### 2026-10-26 — V4 product-wide UI/UX redesign tracker (active branch)
+
+- ✅ Established a **single owner-visible V4 tracker** at [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md) with DONE / IN PROGRESS / TODO / BLOCKED status, acceptance criteria, CI and release evidence.
+- ✅ Defined durable visual/interaction patterns in [DESIGN.md](DESIGN.md) using the existing clinical teal design language; source evidence includes owner screenshots and Chromium Playwright screenshot artifacts from the latest V3.
+- 🧪 First implementation increment is **on the V4 working branch, not yet in production**: compact learning entry, primary Start/Continue CTA, dark navigation contrast, readable original-figure atlas and full-size keyboard-enabled original-source viewer that links directly to the corresponding image-question card.
+- 🧪 Added `tests/ui-v4-reader.spec.js` to verify the primary study action, mobile layout, contrast, true source images, modal zoom, Escape and question navigation. Await exact PR-head static/Chromium/WebKit/Workers Builds checks before deciding on merge.
+- 🔒 Preserve all lecture/MCQ/MEQ IDs, original-source JPEGs, user ratings and backup. Cloudflare Access issue #35 and release promotion issue #50 still need owner-side configuration; source CI is not a substitute for authenticated production browser evidence.
+
 ### 2026-10-25 — Psychiatry source-image scientific coverage audit (content PR)
 
 - ✅ Located and rendered the exact original Psychiatry PDFs (History 44 pages + Anxiety 43 pages, 87 total); visually inspected information-dense source slides rather than treating embedded tables/figures as decorative.
