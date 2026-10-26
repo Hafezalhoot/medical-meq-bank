@@ -1591,3 +1591,35 @@ details.original-figure-tools{
   .hero{padding:14px 18px}
   .studio-masthead{margin-bottom:9px}
 }
+
+
+/* V5 mobile operate mode: a single compact utility header frees the first
+   viewport for studying without compromising full-width native field names. */
+@media(max-width:540px){
+  .studio-masthead{display:flex;align-items:center;gap:8px;min-height:53px;padding:2px 1px 8px;margin-bottom:6px}
+  .studio-identity{gap:7px;flex:0 1 auto}
+  .studio-brandmark{width:34px;height:34px;border-radius:10px}
+  .studio-brandmark svg{width:20px;height:20px}
+  .studio-wordmark strong{font-size:.9rem}
+  .studio-wordmark small{display:none}
+  .studio-masthead-tools{display:flex;flex:0 0 auto;width:auto;margin-left:auto;gap:5px}
+  .studio-masthead .pwa-tools{display:flex;flex:0 0 auto;min-width:0;gap:5px}
+  .studio-masthead .theme-toggle,
+  .studio-masthead .pwa-tools-toggle{
+    display:inline-flex;flex:0 0 auto;width:44px;min-width:44px;min-height:44px;
+    padding:9px;gap:0;font-size:0
+  }
+  .studio-masthead .pwa-tools-toggle .ui-icon:last-child{display:none}
+  .studio-masthead .connection-pill{
+    width:13px;min-width:13px;height:44px;min-height:44px;
+    flex:0 0 13px;margin:0;padding:0;border:0;background:transparent
+  }
+  .studio-masthead .connection-pill #connectionText{
+    position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap
+  }
+  .hero{padding:9px 11px}
+  .hero-grid{gap:6px}
+  .hero .eyebrow{display:none}
+  .hero h1{font-size:1.18rem;line-height:1.22;margin:0;letter-spacing:-.027em}
+  .hero .hero-panel{padding:10px}
+}
