@@ -47,3 +47,9 @@
 - Re-run `1745348`: **150 Chromium tests passed, 1 failed** solely because first study item was at 722px on a 1440×900 viewport (limit 700px). 320/390/768/1024/1280 layout checks, source readers, 601-record history, dark mode, accessibility and WebKit passed.
 - Condensed **Explore your courses** and **My Review** to compact ≥56px disclosures (retain titles, counts, keyboard access and expanded details). Removed duplicated descriptive lines from the closed shortcuts. Reduced expanded-overview progress bar chrome, leaving actual study content, medical images, study controls and progress logic unchanged.
 - Verify exact-head Chromium + WebKit + Cloudflare Workers Build before merging. Previous live Worker remains unchanged until explicitly confirmed.
+
+### Final spacing refinement — CI candidate
+
+- `21327db` browser QA: **150/151 Chromium checks passed**; only the first-lecture offset at 1440px failed by **1.125px** (701.125px vs strict <700px). WebKit and Static remained green.
+- Keep the same meaningful reader-first contract. Tighten only redundant breadcrumb and filter block spacing (roughly 10px), without shrinking any text or changing student actions.
+- Final merge remains gated on new exact-head Static, Chromium, WebKit and Cloudflare Workers Build results.

@@ -1241,12 +1241,12 @@ button,select,.lecture-overview-card,.course-library-card,.status,.study-guide-c
 .course-library-card:hover{border-color:var(--brand)}
 
 /* Deliberate information hierarchy: location / search / progress / reader. */
-.study-breadcrumb{margin:11px 3px 7px;padding:1px 0;color:var(--muted)}
+.study-breadcrumb{margin:5px 3px 4px;padding:1px 0;color:var(--muted)}
 .study-breadcrumb li span{color:var(--muted);font-size:.67rem;font-weight:750}
 .study-breadcrumb li strong{color:var(--text);font-size:.8rem;font-weight:760}
 .study-breadcrumb li[aria-current="page"] strong{color:var(--brand)}
 .toolbar{
-  position:static;top:auto;margin:10px 0 13px;padding:10px;
+  position:static;top:auto;margin:8px 0 12px;padding:10px;
   background:var(--card);border:1px solid var(--line);
   border-radius:15px;box-shadow:none;backdrop-filter:none
 }
