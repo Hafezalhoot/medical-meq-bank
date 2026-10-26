@@ -48,7 +48,7 @@ test('choosing a backup previews losses and changes without touching saved ratin
   await expect(page.locator('#restoreIncomingCount')).toHaveText('2');
   await expect(page.locator('#restoreRemovedCount')).toHaveText('1');
   await expect(page.locator('#restoreChangedCount')).toHaveText('1');
-  await expect(page.locator('#restorePreviewNotice')).toContainText('replaces');
+  await expect(page.locator('#restorePreviewNotice')).toContainText('Restoring will replace');
   expect(await page.evaluate(() => globalThis.MEQProgressStore.exportAll())).toEqual(current);
   expect(await page.evaluate(() => localStorage.getItem('medicalBankDarkV4'))).toBe('0');
 
