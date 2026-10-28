@@ -70,3 +70,12 @@
 - **P2 accuracy:** Update the stale README (10 → 12 lectures) and stale V5 ship status. Rename offline connectivity pill to "Offline" rather than suggesting every lecture is available offline without saving it.
 - **Outstanding:** #50 Cloudflare Workers Builds can deploy before post-merge tests (needs owner configuration of production deploy command to build-only); #35 authenticated Access smoke blocked by missing service token; #53 editorial review of Bladder Cancer MCQs; #24/#25/#26 lecture ingestion workflow.
 - **Release gate:** V5.1 is not considered published until required static, Chromium, WebKit and Cloudflare build checks are green, and read-only active Worker version is independently verified. Authenticated production QA remains a separately acknowledged limitation.
+
+
+## V5.2 — Study-history-safe restores (2026-10-28)
+
+- **Release state:** candidate `2026.10.28.1`, branch `hardening/v5-2-restore-study-history-20261028`, NOT LIVE until full CI/merge/Worker traffic proof. V5.1 `2026.10.26.10` was merged as main `3f8def77` (PR #72), pre-merge Static/Chromium/WebKit/Workers Builds green, and read-only Wrangler saw active Worker `46a8c66c-9ef4-4acd-9b30-fc061973f27a` at 100% traffic.
+- **User-impact gap:** a backup can replace mistake-notebook entries, completed exam history and a saved unfinished exam even when the summary of per-question ratings looks harmless. The prior preview mentioned preferences but did not show study-history counts.
+- **Change:** compact `Other saved study history being replaced` comparison: distinct mistaken-source questions, completed exams and unfinished exam yes/no, each from current storage versus imported backup. Missing records count zero; malformed stored JSON shows `?` rather than silently displaying zero.
+- **Regression:** browser tests prove exact comparative values, 390px modal/Cancel with zero mutation, confirmed replacement, missing/invalid history safe defaults and Escape at 320px. Original medical answers, images and progress storage formats remain unchanged.
+- **Release blockers outside this candidate:** owner-side Cloudflare build-only Deploy command (#50) and scoped Cloudflare Access service token for authenticated live browser smoke (#35); do not disable Access.

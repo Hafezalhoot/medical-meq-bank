@@ -134,3 +134,61 @@ test('a confirmed in-flight restore cannot be dismissed as if it were cancelled'
   await expect.poll(() => page.evaluate(() => globalThis.MEQProgressStore.exportAll()))
     .toEqual(imported);
 });
+
+
+test('restore previews notebook and exam history, and cancelling preserves both', async ({page}) => {
+  await ready(page, 390);
+  const saved = {
+    medicalBankReviewLogV1: JSON.stringify({
+      first: {mistakes: 2}, second: {mistakes: 0}
+    }),
+    medicalBankExamHistoryV1: JSON.stringify([{answered: 5}, {answered: 2}]),
+    medicalBankExamSessionV1: JSON.stringify({schema: 1, finished: false})
+  };
+  const fromBackup = {
+    medicalBankReviewLogV1: JSON.stringify({
+      third: {mistakes: 1}, fourth: {mistakes: 3}
+    }),
+    medicalBankExamHistoryV1: JSON.stringify([{answered: 1}])
+  };
+  await page.evaluate(items => {
+    for (const [key, value] of Object.entries(items)) localStorage.setItem(key, value);
+  }, saved);
+
+  await page.locator('#importProgressFile').setInputFiles(backup({}, fromBackup));
+  const modal = page.locator('#restorePreviewDialog');
+  await expect(modal).toBeVisible();
+  await expect(page.locator('#restorePreviewMistakes')).toHaveText('1 now → 2 in backup');
+  await expect(page.locator('#restorePreviewExams')).toHaveText('2 now → 1 in backup');
+  await expect(page.locator('#restorePreviewUnfinished')).toHaveText('Yes now → No in backup');
+  await page.locator('#restorePreviewCancel').click();
+  await expect(modal).toBeHidden();
+  const unchanged = await page.evaluate(keys =>
+    Object.fromEntries(keys.map(key => [key, localStorage.getItem(key)])),
+    Object.keys(saved)
+  );
+  expect(unchanged).toEqual(saved);
+
+  await page.locator('#importProgressFile').setInputFiles(backup({}, fromBackup));
+  await expect(modal).toBeVisible();
+  await page.locator('#restorePreviewConfirm').click();
+  await expect(page.locator('#appToast')).toContainText('Progress restored');
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('medicalBankReviewLogV1')))
+    .toBe(fromBackup.medicalBankReviewLogV1);
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('medicalBankExamHistoryV1')))
+    .toBe(fromBackup.medicalBankExamHistoryV1);
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('medicalBankExamSessionV1')))
+    .toBeNull();
+});
+
+test('unreadable saved notebook is never displayed as zero records', async ({page}) => {
+  await ready(page, 320);
+  await page.evaluate(() => localStorage.setItem('medicalBankReviewLogV1', '{malformed'));
+  await page.locator('#importProgressFile').setInputFiles(backup({}, {}));
+  await expect(page.locator('#restorePreviewDialog')).toBeVisible();
+  await expect(page.locator('#restorePreviewMistakes')).toHaveText('? now → 0 in backup');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#restorePreviewDialog')).toBeHidden();
+  expect(await page.evaluate(() => localStorage.getItem('medicalBankReviewLogV1')))
+    .toBe('{malformed');
+});

@@ -1,5 +1,12 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-28 — V5.2 study history visible before restore (candidate)
+
+- ✅ V5.1 PR #72 merged into `main` as `3f8def77`, with exact-head static, Chromium, WebKit and Workers Builds green; Worker version `46a8c66c-9ef4-4acd-9b30-fc061973f27a` reported at 100% active traffic by Wrangler. Cloudflare Access still 302 and early auto-activation #50 remains unsolved outside GitHub.
+- 🧪 Candidate `2026.10.28.1`: extend the safe backup preview to show **mistake notebook source-question count, exam history count, and any unfinished exam**, comparing current device against the incoming file. Cancel/Escape must not mutate stored activity; malformed saved history is displayed as unknown, not an invented zero.
+- 🧪 Update 320px/390px UI regression tests and current documentation. All 12 reviewed source lecture files, 138 source-indexed MCQs, original figures and student item IDs remain untouched.
+- ⏳ Not merged/published pending exact-head tests and worker confirmation. [V5 progress board](MEQ_DESIGN_V5_PROGRESS.md).
+
 ### 2026-10-26 — V5.1 project audit + safe progress restore (candidate)
 
 - ✅ Baseline V5.0 `2026.10.26.9` merged in PR #71 as `dc3819f`, 151 Chromium tests, WebKit/static/Cloudflare checks green; Worker `b873bcb3` verified at 100% traffic. Production browser smoke still blocked by Cloudflare Access 302 (#35).

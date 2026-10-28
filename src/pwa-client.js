@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.26.10';
+  const APP_VERSION = '2026.10.28.1';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -338,6 +338,26 @@
     }
   });
 
+  const describeSavedStudyHistory = preferences => {
+    // Some older backups omit activity records. Count only valid study
+    // history entries; malformed stored JSON is marked unknown, never zero.
+    const parse = key => {
+      if (!Object.prototype.hasOwnProperty.call(preferences, key)) return null;
+      try { return JSON.parse(preferences[key]); } catch { return undefined; }
+    };
+    const reviewLog = parse('medicalBankReviewLogV1');
+    const examHistory = parse('medicalBankExamHistoryV1');
+    const examSession = parse('medicalBankExamSessionV1');
+    return {
+      mistakes: reviewLog === undefined ? '?' : reviewLog && typeof reviewLog === 'object' && !Array.isArray(reviewLog)
+        ? Object.values(reviewLog).filter(record => record && Number(record.mistakes) > 0).length : 0,
+      exams: examHistory === undefined ? '?' : Array.isArray(examHistory)
+        ? examHistory.filter(attempt => attempt && Number.isFinite(attempt.answered)).length : 0,
+      unfinished: examSession === undefined ? '?' : examSession?.schema === 1 && examSession.finished !== true
+        ? 'Yes' : 'No'
+    };
+  };
+
   const importBtn = $p('importProgressBtn');
   const importFile = $p('importProgressFile');
   const restoreDialog = $p('restorePreviewDialog');
@@ -423,6 +443,12 @@
         const changed = currentKeys.filter(key =>
           Object.prototype.hasOwnProperty.call(incoming.progress, key) &&
           current[key] !== incoming.progress[key]).length;
+
+        const presentHistory = describeSavedStudyHistory(safeStorageKeys());
+        const backedHistory = describeSavedStudyHistory(incoming.preferences);
+        $p('restorePreviewMistakes').textContent = `${presentHistory.mistakes} now → ${backedHistory.mistakes} in backup`;
+        $p('restorePreviewExams').textContent = `${presentHistory.exams} now → ${backedHistory.exams} in backup`;
+        $p('restorePreviewUnfinished').textContent = `${presentHistory.unfinished} now → ${backedHistory.unfinished} in backup`;
 
         $p('restorePreviewFile').textContent = file.name;
         $p('restoreCurrentCount').textContent = String(currentKeys.length);
