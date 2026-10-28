@@ -1,5 +1,14 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-10-26 — V5.1 project audit + safe progress restore (candidate)
+
+- ✅ Baseline V5.0 `2026.10.26.9` merged in PR #71 as `dc3819f`, 151 Chromium tests, WebKit/static/Cloudflare checks green; Worker `b873bcb3` verified at 100% traffic. Production browser smoke still blocked by Cloudflare Access 302 (#35).
+- 🔍 Published scientific inventory verified: 12 lecture packs, 3 medical course registrations, 138 author-reviewed auto-scored MCQs across Dermatology Introduction and two Psychiatry lectures; original media paths checked. No medical explanations, source figures or answer keys edited in this increment.
+- 🧪 Branch `hardening/v5-safe-backup-restore-20261026` introduces a **required restore preview** (current/incoming counts, lost/changed values), Cancel/Escape and current-backup download before any irreversible action. Existing IndexedDB transaction rollback remains. Regression tests cover confirmation, cancellation, empty backup and rollback.
+- 🛠 README and V5 tracker corrected to actual current lecture/release counts; offline status wording no longer promises that unsaved lectures are cached.
+- ⏳ V5.1 candidate `2026.10.26.10` **not live** pending exact-head CI, PR merge and active Worker proof. #50 Cloudflare-side auto-promotion and #35 authenticated browser smoke remain blocked by external Access/Cloudflare settings.
+- 📋 [Audit and prioritized backlog](MEQ_PROJECT_AUDIT_2026-10-26.md) • [Live V5 board](MEQ_DESIGN_V5_PROGRESS.md).
+
 ### 2026-10-26 — V5 Mineral Blue Studio: full visual redesign (candidate)
 
 - 🎨 Owner brief supersedes V4 teal brand: **new** calm mineral blue / blue-violet / pearl design system, actual top-bar layout, new study canvas, rebuilt selection-card hierarchy and coherent source reader, exam and dark-mode styling.

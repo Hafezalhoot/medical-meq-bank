@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.26.9';
+  const APP_VERSION = '2026.10.26.10';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -311,22 +311,26 @@
     }
   };
 
-  $p('exportProgressBtn')?.addEventListener('click', async () => {
+  // A backup restore replaces the existing device record. Require an explicit
+  // review and confirmation rather than treating file selection as consent.
+  const downloadCurrentProgressBackup = async () => {
     const progressStore = globalThis.MEQProgressStore;
-    if (!progressStore) {
-      toast('Progress backup is unavailable in this browser.');
-      return;
-    }
+    if (!progressStore) throw new Error('Progress backup is unavailable');
+    const status = await progressStore.ready;
+    if (status?.available === false) throw new Error('Progress storage is unavailable');
+    downloadJson(`medical-meq-progress-${new Date().toISOString().slice(0, 10)}.json`, {
+      schema: BACKUP_SCHEMA,
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      appVersion: APP_VERSION,
+      exportedAt: new Date().toISOString(),
+      preferences: safeStorageKeys(),
+      progress: await progressStore.exportAll()
+    });
+  };
+
+  $p('exportProgressBtn')?.addEventListener('click', async () => {
     try {
-      await progressStore.ready;
-      downloadJson(`medical-meq-progress-${new Date().toISOString().slice(0, 10)}.json`, {
-        schema: BACKUP_SCHEMA,
-        schemaVersion: BACKUP_SCHEMA_VERSION,
-        appVersion: APP_VERSION,
-        exportedAt: new Date().toISOString(),
-        preferences: safeStorageKeys(),
-        progress: await progressStore.exportAll()
-      });
+      await downloadCurrentProgressBackup();
       toast('Progress backup downloaded.');
     } catch (error) {
       console.warn('Could not export progress:', error);
@@ -336,7 +340,68 @@
 
   const importBtn = $p('importProgressBtn');
   const importFile = $p('importProgressFile');
-  if (importBtn && importFile) {
+  const restoreDialog = $p('restorePreviewDialog');
+  const restoreCancel = $p('restorePreviewCancel');
+  const restoreConfirm = $p('restorePreviewConfirm');
+  const restoreDownload = $p('restorePreviewBackup');
+  let pendingRestore = null;
+
+  if (importBtn && importFile && restoreDialog && restoreCancel && restoreConfirm && restoreDownload) {
+    const closeRestorePreview = () => {
+      if (restoreDialog.open) restoreDialog.close();
+      pendingRestore = null;
+    };
+
+    restoreCancel.addEventListener('click', closeRestorePreview);
+    restoreDialog.addEventListener('cancel', event => {
+      // A restore already approved cannot be dismissed while the write is
+      // active; never imply Cancel reversed an in-flight IndexedDB change.
+      if (restoreDialog.hasAttribute('aria-busy')) event.preventDefault();
+      else pendingRestore = null;
+    });
+    restoreDialog.addEventListener('close', () => { pendingRestore = null; });
+    restoreDownload.addEventListener('click', async () => {
+      restoreDownload.disabled = true;
+      try {
+        await downloadCurrentProgressBackup();
+        toast('Current progress backup downloaded.');
+      } catch (error) {
+        console.warn('Could not back up progress before restore:', error);
+        toast('Could not download your current progress. Restore has not started.');
+      } finally {
+        restoreDownload.disabled = false;
+      }
+    });
+
+    restoreConfirm.addEventListener('click', async () => {
+      if (!pendingRestore) return;
+      const incoming = pendingRestore;
+      pendingRestore = null;
+      restoreConfirm.disabled = true;
+      restoreCancel.disabled = true;
+      restoreDownload.disabled = true;
+      restoreDialog.setAttribute('aria-busy', 'true');
+      try {
+        await replaceBackupTransactionally(incoming);
+        closeRestorePreview();
+        toast('Progress restored. Reloading…');
+        setTimeout(() => location.reload(), 700);
+      } catch (error) {
+        closeRestorePreview();
+        console.warn('Progress restore failed:', error);
+        toast(
+          error?.name === 'ProgressRollbackError'
+            ? 'Progress restore failed and automatic rollback could not complete. Reload and verify your progress before continuing.'
+            : 'The backup was rejected and your current progress was kept.'
+        );
+      } finally {
+        restoreConfirm.disabled = false;
+        restoreCancel.disabled = false;
+        restoreDownload.disabled = false;
+        restoreDialog.removeAttribute('aria-busy');
+      }
+    });
+
     importBtn.addEventListener('click', () => importFile.click());
     importFile.addEventListener('change', async () => {
       const file = importFile.files?.[0];
@@ -346,16 +411,33 @@
         if (file.size > MAX_BACKUP_BYTES) throw new Error('Backup file is too large');
         const raw = await file.text();
         const incoming = validateBackup(JSON.parse(raw), file.size);
-        await replaceBackupTransactionally(incoming);
-        toast('Progress restored. Reloading…');
-        setTimeout(() => location.reload(), 700);
+        const progressStore = globalThis.MEQProgressStore;
+        if (!progressStore) throw new Error('Progress store is unavailable');
+        const status = await progressStore.ready;
+        if (status?.available === false) throw new Error('Progress storage is unavailable');
+        const current = await progressStore.exportAll();
+        const currentKeys = Object.keys(current);
+        const importedKeys = Object.keys(incoming.progress);
+        const lost = currentKeys.filter(key =>
+          !Object.prototype.hasOwnProperty.call(incoming.progress, key)).length;
+        const changed = currentKeys.filter(key =>
+          Object.prototype.hasOwnProperty.call(incoming.progress, key) &&
+          current[key] !== incoming.progress[key]).length;
+
+        $p('restorePreviewFile').textContent = file.name;
+        $p('restoreCurrentCount').textContent = String(currentKeys.length);
+        $p('restoreIncomingCount').textContent = String(importedKeys.length);
+        $p('restoreRemovedCount').textContent = String(lost);
+        $p('restoreChangedCount').textContent = String(changed);
+        $p('restorePreviewNotice').textContent = !importedKeys.length && currentKeys.length
+          ? 'This backup has no rated questions. Restoring it will erase every current rating and replace your saved preferences on this device.'
+          : 'Restoring will replace this device’s current ratings and saved preferences, including any active exam session. Your original lecture images are not replaced.';
+        pendingRestore = incoming;
+        restoreDialog.showModal();
       } catch (error) {
+        pendingRestore = null;
         console.warn('Progress import rejected:', error);
-        toast(
-          error?.name === 'ProgressRollbackError'
-            ? 'Progress restore failed and automatic rollback could not complete. Reload and verify your progress before continuing.'
-            : 'The backup was rejected and your current progress was kept.'
-        );
+        toast('The backup was rejected and your current progress was kept.');
       } finally {
         importBtn.disabled = false;
         importFile.value = '';
@@ -368,7 +450,7 @@
   const updateConnection = () => {
     const online = navigator.onLine;
     connectionPill?.classList.toggle('offline', !online);
-    if (connectionText) connectionText.textContent = online ? 'Online' : 'Offline ready';
+    if (connectionText) connectionText.textContent = online ? 'Online' : 'Offline';
   };
   window.addEventListener('online', () => { updateConnection(); toast('Back online.'); });
   window.addEventListener('offline', () => { updateConnection(); toast('Offline mode is active.'); });

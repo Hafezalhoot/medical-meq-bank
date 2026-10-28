@@ -1623,3 +1623,76 @@ details.original-figure-tools{
   .hero h1{font-size:1.18rem;line-height:1.22;margin:0;letter-spacing:-.027em}
   .hero .hero-panel{padding:10px}
 }
+
+
+/* V5.1 — non-destructive backup review before any replacement. */
+.restore-preview-dialog{
+  width:min(540px,calc(100vw - 24px));max-height:min(86dvh,730px);
+  padding:0;border:1px solid var(--line);border-radius:20px;
+  background:var(--card);color:var(--text);
+  box-shadow:0 25px 90px rgba(17,24,42,.24);overflow:auto;
+}
+.restore-preview-dialog::backdrop{background:rgba(17,24,42,.63)}
+.restore-preview-inner{padding:clamp(18px,3vw,28px)}
+.restore-preview-kicker{
+  margin:0 0 8px;color:var(--brand);
+  font-size:.72rem;letter-spacing:.12em;font-weight:850
+}
+.restore-preview-inner h2{
+  margin:0 0 8px;font-size:clamp(1.35rem,3vw,1.75rem);
+  line-height:1.25;letter-spacing:-.025em
+}
+.restore-preview-file{
+  margin:0 0 18px;color:var(--muted);
+  font-size:.87rem;line-height:1.6;overflow-wrap:anywhere
+}
+.restore-preview-file strong{color:var(--text);font-weight:750}
+.restore-preview-counts{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;margin:0 0 17px
+}
+.restore-preview-counts>div{
+  display:flex;flex-direction:column;justify-content:space-between;
+  gap:8px;padding:13px;border:1px solid var(--line);
+  border-radius:12px;background:var(--surface-soft)
+}
+.restore-preview-counts dt{
+  font-size:.78rem;line-height:1.4;color:var(--muted)
+}
+.restore-preview-counts dd{
+  margin:0;color:var(--text);font-size:1.55rem;
+  line-height:1.2;font-weight:820;font-variant-numeric:tabular-nums
+}
+.restore-preview-notice{
+  margin:0 0 18px;padding:12px 14px;
+  border-inline-start:3px solid var(--brand2);
+  border-radius:8px;background:var(--brand-soft);
+  color:var(--text);font-size:.86rem;line-height:1.6
+}
+.restore-preview-actions{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);
+  gap:9px;align-items:stretch
+}
+.restore-preview-actions button{
+  min-height:46px;max-width:100%;padding:10px 12px;
+  font-size:.85rem;font-weight:740;border-radius:10px
+}
+.restore-preview-actions #restorePreviewBackup{
+  grid-column:1/-1;grid-row:1
+}
+.restore-preview-actions #restorePreviewCancel{grid-column:1;grid-row:2}
+.restore-preview-actions #restorePreviewConfirm{grid-column:2;grid-row:2}
+.restore-preview-actions button:disabled{cursor:progress;opacity:.65}
+@media(max-width:370px){
+  .restore-preview-counts{gap:7px}
+  .restore-preview-counts>div{padding:10px}
+  .restore-preview-actions{grid-template-columns:1fr}
+  .restore-preview-actions button,
+  .restore-preview-actions #restorePreviewBackup,
+  .restore-preview-actions #restorePreviewCancel,
+  .restore-preview-actions #restorePreviewConfirm{grid-column:1;grid-row:auto}
+}
+@media(prefers-reduced-motion:reduce){
+  .restore-preview-dialog button{transition:none}
+}
+

@@ -4,9 +4,9 @@ Public source repository for the Medical MEQ Review Bank.
 
 The project is an offline-first Progressive Web App containing lecture-based MEQ cases, high-yield short questions, image/spot questions, detailed practice, Rapid Recall, saved progress, dark mode, printing, and lecture/subtopic navigation.
 
-## Current lecture content — 10 published lectures
+## Current lecture content — 12 published lectures
 
-The published catalog has **3 medical courses**, with study content in the specialties listed below.
+The published catalog has **3 registered medical courses**, with **12 reviewable lectures** across Surgery (9) and Internal Medicine II (3). Internal Medicine has no published lectures yet.
 
 ### Surgery — 9 lectures
 
@@ -16,16 +16,20 @@ The published catalog has **3 medical courses**, with study content in the speci
 
 General Surgery and GIT Surgery are registered specialties with no published lecture payloads yet.
 
-### Internal Medicine II — 1 lecture
+### Internal Medicine II — 3 lectures
 
-**Dermatology (1):** Introduction to Dermatology. Its lecture-based companion includes Explanation, 30 MCQs and 14 source-original image/spot questions with reviewed JPEG fingerprints.
+**Dermatology (1):** Introduction to Dermatology. Its lecture companion includes Explanation, 30 source-linked MCQs and 14 original-source image/spot questions with reviewed JPEG fingerprints.
+
+**Psychiatry (2):** Psychiatric History Taking & Mental Status Examination (52 MCQs), and Anxiety Disorders (56 MCQs). Both lectures retain detailed source-based explanation and image/spot questions.
+
+**MCQ safety:** Only these 3 reviewed lecture packs currently contain published source-answer-indexed MCQs (**138 total**). The other 9 lectures still have MEQ, short and/or image practice but must never be presented as automatically scored MCQ exams without reviewed MCQ source data.
 
 ### Internal Medicine — awaiting lectures
 
 Cardiology, Chest Medicine, Gastroenterology, Nephrology, Endocrinology, Hematology and Rheumatology are registered specialties without published lectures. Do not display a draft as exam-ready content.
 
 
-The uploaded lecture remains the exam-content authority. The application build verifies every reviewable lecture source and confirms that the published and standalone study banks are identical to the committed JSON.
+**Backup restore safety (V5.1):** Choosing a backup now opens a comparison preview showing the current and incoming rating counts, ratings removed and ratings changed. Nothing is replaced until **Replace my progress** is explicitly selected; Cancel/Escape leaves progress untouched, and **Download current backup** is available before approval. Imported preferences and active exam state are replaced on confirmation.\n\nThe uploaded lecture remains the exam-content authority. The application build verifies every reviewable lecture source and confirms that the published and standalone study banks are identical to the committed JSON.
 
 ## Exam Mode — source-verified practice
 

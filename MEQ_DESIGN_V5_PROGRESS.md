@@ -3,8 +3,8 @@
 **Design brief:** Replace the teal corporate/dashboard feel with a distinct, serene, premium study application. User provided actual 1535×1023 desktop screenshot of Psychiatry overview and requested world-class color, composition, sizing, layout, organization and interaction—not a minor CSS polish.
 
 **Baseline:** main `8745ae812d971328f8da0a1f099be7d25728be18` (V4.8, 2026-10-26).  
-**Working branch:** `design/v5-mineral-blue-studio-20261026`  
-**Candidate:** `2026.10.26.9` — **NOT LIVE** pending source/CI checks and independent Cloudflare traffic proof.  
+**V5 shipped:** PR #71, main `dc3819f16b9bd9f6680d3ebe39246ce795710aa7`, Worker `b873bcb3-067b-4478-8943-d354f46f2eff` at **100%** (read-only Cloudflare report on 2026-10-26 13:11 UTC). Source CI: **151 Chromium tests passed**, WebKit, static and Workers Builds green.  
+**V5.1 working branch:** `hardening/v5-safe-backup-restore-20261026`. Candidate `2026.10.26.10` — **NOT LIVE** until full exact-head CI, merge and live Worker confirmation.  
 **Design system:** [DESIGN.md](DESIGN.md)
 
 ## Direction
@@ -19,14 +19,14 @@
 | ID | Priority | Status | Work | Acceptance |
 | --- | --- | --- | --- | --- |
 | D5-01 | P0 | DONE | User screenshot and code/state audit | Real source screenshot and deployed V4.8 repository reviewed; all preserved IDs/features listed |
-| D5-02 | P0 | IN PROGRESS | New visual system and app masthead | Light/dark blue palette; separate keyboard-accessible utility bar; real course+subject buttons reachable |
-| D5-03 | P0 | IN PROGRESS | New study canvas, overview & wayfinding | Disciplined typography/spacing; lecture cards and selection; Start/Exam discoverable without more clicks |
-| D5-04 | P0 | IN PROGRESS | Reader and source imagery | Comfortable 74ch measure; original figures unchanged, bilingual RTL notes and MCQs legible |
-| D5-05 | P0 | IN PROGRESS | Exam/print/PWA dark system | Exam and print screens use same restrained design tokens; offline install and storage unaffected |
-| D5-06 | P0 | IN PROGRESS | Responsive/a11y/visual regression | Check 320/390/768/1024/1440, dark, focus, keyboard, no overflow, original source reader; pass full CI |
-| D5-07 | P0 | TODO | Safe code merge & Cloudflare release verification | Exact PR SHA green: Static, Chromium, WebKit, Workers Builds; independently verified active Worker 100% |
-| D5-08 | P1 | TODO | Authenticated production browser verification | Cloudflare Access service token issue #35 resolved without changing access policy |
-| D5-09 | P1 | TODO | Subsequent visual audit using actual V5 screenshots | Compare source CI screenshot artifacts and owner screenshots; polish genuine breakpoints |
+| D5-02 | P0 | DONE | New visual system and app masthead | Light/dark blue palette; separate keyboard-accessible utility bar; real course+subject buttons reachable |
+| D5-03 | P0 | DONE | New study canvas, overview & wayfinding | Disciplined typography/spacing; lecture cards and selection; Start/Exam discoverable without more clicks |
+| D5-04 | P0 | DONE | Reader and source imagery | Comfortable 74ch measure; original figures unchanged, bilingual RTL notes and MCQs legible |
+| D5-05 | P0 | DONE | Exam/print/PWA dark system | Exam and print screens use same restrained design tokens; offline install and storage unaffected |
+| D5-06 | P0 | DONE | Responsive/a11y/visual regression | Check 320/390/768/1024/1440, dark, focus, keyboard, no overflow, original source reader; pass full CI |
+| D5-07 | P0 | DONE | Safe code merge & Cloudflare release verification | Exact PR SHA green: Static, Chromium, WebKit, Workers Builds; independently verified active Worker 100% |
+| D5-08 | P1 | BLOCKED | Authenticated production browser verification | Cloudflare Access service token issue #35 resolved without changing access policy |
+| D5-09 | P1 | IN PROGRESS | Subsequent visual audit using actual V5 screenshots | Compare source CI screenshot artifacts and owner screenshots; polish genuine breakpoints |
 
 ## Source governance & recovery
 
@@ -60,3 +60,13 @@
 - The existing GitHub `promote-production.yml` is extended to respond to successful **main-push `Validate Medical MEQ Bank` workflow_run only**, not untrusted pull-request results.
 - Production is fail-closed: require main ref and same repository, exact current main SHA, full validate/Chromium/WebKit success, an exact matching successful Cloudflare Workers version, and valid stored secrets. Manual dispatch with explicit confirmation stays available.
 - **Not live at commit time.** Verify post-merge main CI, promotion workflow execution and active Worker at 100% before marking DONE/LIVE. Cloudflare Access browser smoke still needs owner-provided service credentials (issue #35), not an access bypass.
+
+
+## V5.1 — Project-wide review and safe restoration (2026-10-26)
+
+- **Baseline:** 12 published lecture JSON files: Surgery 9; Internal Medicine II 3 (Dermatology 1, Psychiatry 2). Source asset path check found no missing local image assets among the reviewed image-question paths. The 3 source-reviewed MCQ packs contain 138 MCQs; other lectures have no approved auto-scored MCQ payload.
+- **P1 data safety:** Previously selecting a structurally valid progress backup immediately overwrote the active device progress/preferences. V5.1 presents current/incoming ratings, removed/changed counts, a one-click current-backup download, and explicit Cancel/Escape or Confirm. Existing transaction rollback remains in place.
+- **Regression:** Test invalid, empty, cancelled, confirmed, legacy/current schema, simulated write/rollback failures, responsive 320px, keyboard Escape and one-click backup export. Do not change lecture source media, answer indices or permanent item IDs.
+- **P2 accuracy:** Update the stale README (10 → 12 lectures) and stale V5 ship status. Rename offline connectivity pill to "Offline" rather than suggesting every lecture is available offline without saving it.
+- **Outstanding:** #50 Cloudflare Workers Builds can deploy before post-merge tests (needs owner configuration of production deploy command to build-only); #35 authenticated Access smoke blocked by missing service token; #53 editorial review of Bladder Cancer MCQs; #24/#25/#26 lecture ingestion workflow.
+- **Release gate:** V5.1 is not considered published until required static, Chromium, WebKit and Cloudflare build checks are green, and read-only active Worker version is independently verified. Authenticated production QA remains a separately acknowledged limitation.
