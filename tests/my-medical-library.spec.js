@@ -40,3 +40,43 @@ test('mobile library and review remain available without horizontal overflow', a
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
+
+
+test('lecture navigation is a compact, accessible section row outside the lecture header', async ({page}) => {
+  await page.setViewportSize({width: 390, height: 844});
+  await page.goto('/', {waitUntil:'domcontentloaded'});
+  await page.locator('#lectureFilter').selectOption('urology-congenital-anomalies');
+  const header = page.locator('.lecture-head');
+  await expect(header).toBeVisible({timeout: 20000});
+  const nav = page.getByRole('navigation', {name:'Lecture sections'});
+  await expect(nav).toBeVisible();
+  await expect(nav.getByRole('button', {name:'Cases'})).toBeVisible();
+  await nav.getByRole('button', {name:'Images'}).click();
+  await expect(page.locator('#typeFilter')).toHaveValue('image');
+  const alignment = await page.evaluate(() => {
+    const header = document.querySelector('.lecture-head').getBoundingClientRect();
+    const nav = document.querySelector('.lecture-section-nav').getBoundingClientRect();
+    return {below: nav.top >= header.bottom - 2, overflow: document.documentElement.scrollWidth - innerWidth};
+  });
+  expect(alignment.below).toBe(true);
+  expect(alignment.overflow).toBeLessThanOrEqual(1);
+});
+
+test('unreviewed marking schemes do not render empty answer boxes', async ({page}) => {
+  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.locator('#lectureFilter').selectOption('urology-bladder-cancer');
+  const card = page.locator('#urology-bladder-cancer-case-bc-c01');
+  await expect(card).toBeVisible({timeout: 20000});
+  await card.getByRole('button', {name:'Show model answer'}).click();
+  await expect(card.locator('.answer-grid .answer-card')).toHaveCount(1);
+  await expect(card.getByText('Suggested marking scheme')).toHaveCount(0);
+  await expect(card.locator('.answer-grid')).toHaveClass(/single-answer/);
+  await expect(card.locator('.exam-trap')).toHaveCount(1);
+
+  await page.locator('#lectureFilter').selectOption('urology-congenital-anomalies');
+  const reviewed = page.locator('#urology-congenital-anomalies-case-pujo');
+  await expect(reviewed).toBeVisible({timeout: 20000});
+  await reviewed.getByRole('button', {name:'Show model answer'}).click();
+  await expect(reviewed.locator('.answer-grid .answer-card')).toHaveCount(2);
+  await expect(reviewed.getByText('Suggested marking scheme')).toBeVisible();
+});
