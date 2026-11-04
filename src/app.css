@@ -1770,3 +1770,26 @@ details.original-figure-tools{
 .study-guide-part[data-guide-section]{scroll-margin-top:100px}
 @media(max-width:700px){.study-guide-part[data-guide-section]{scroll-margin-top:22px}}
 @media print{.lecture .lecture-back{display:none!important}}
+
+/* V5.5 — Source MCQ discovery. Readable, source-first, no decorative dashboard. */
+.mcq-library{min-width:0;border:1px solid var(--line);border-radius:22px;background:var(--surface-soft);padding:clamp(12px,2.2vw,22px)}
+.mcq-library .section-head{margin:4px 3px 18px}
+.mcq-library .section-head p{max-width:68ch}
+.mcq-library-groups{display:grid;gap:18px;min-width:0}
+.mcq-library-lecture{min-width:0;border:1px solid var(--line);background:var(--card);border-radius:17px;padding:clamp(10px,1.8vw,20px)}
+.mcq-library-lecture-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.mcq-library-lecture-heading h3{font-size:1.06rem;line-height:1.45;margin:0}
+.mcq-library-lecture-heading button{min-height:44px}
+.mcq-library-lecture .study-guide-part{margin:0}
+.study-guide-mcq.study-item{min-width:0;border-bottom:1px solid var(--line)}
+.study-guide-mcq.study-item:last-child{border-bottom:0}
+.study-guide-mcq.hidden,.learning-companion.hidden,.mcq-library-lecture.hidden,.mcq-library .hidden{display:none!important}
+.mcq-library-loading,.mcq-library-no-content{padding:14px 16px;border:1px dashed var(--line);border-radius:12px;background:var(--card);color:var(--muted)}
+@media(min-width:1050px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:700px){
+ .mcq-library{padding:11px;border-radius:15px}
+ .mcq-library-lecture{padding:10px}
+ .mcq-library-lecture-heading{align-items:flex-start}
+ .mcq-library-lecture-heading button{width:100%}
+}
+@media print{.mcq-library-lecture-heading button{display:none!important}}
