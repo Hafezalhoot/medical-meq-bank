@@ -492,7 +492,7 @@ def validate_html(source_lectures: dict[str, dict]) -> None:
     version = read_json(ROOT / "version.json")["version"]
 
     for marker in (
-        "Medical MEQ",
+        "My Medical Library",
         'id="lectureFilter"',
         'id="typeFilter"',
         'id="search"',
