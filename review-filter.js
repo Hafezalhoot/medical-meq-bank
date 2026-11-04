@@ -142,6 +142,20 @@
     const topic = topicFilter?.value || 'all';
     const prio = priorityFilter?.value || 'all';
     const rf = reviewFilter.value;
+    const overview=document.querySelector('.lecture-overview-panel');
+    if(overview){
+      let shown=0;
+      overview.querySelectorAll('.lecture-overview-card').forEach(card=>{
+        const visible=matchesSearch((card.getAttribute('aria-label')||'').toLocaleLowerCase());
+        card.classList.toggle('hidden',!visible);
+        if(visible)shown+=1;
+      });
+      $('empty').classList.toggle('show',shown===0);
+      $('emptyMessage').textContent='No lecture titles match this search. Try another term.';
+      syncQuickButtons();
+      syncAccessibility(dom);
+      return;
+    }
     let visibleStudyItems = 0;
     let visibleRapidItems = 0;
     const counts = {all: 0, unrated: 0, mastered: 0, review: 0, weak: 0};
@@ -280,18 +294,32 @@
   const revealButton = document.getElementById('revealBtn');
   const originalReveal = revealButton?.onclick;
   if (revealButton) {
-    revealButton.onclick = event => {
-      if (typeFilter.value !== 'rapid') {
-        originalReveal?.call(revealButton, event);
-        syncAccessibility(getDomCache());
+    const syncMcqAnswers=open=>{
+      document.querySelectorAll('.study-guide-mcq:not(.hidden)').forEach(item=>{
+        const feedback=item.querySelector('.study-guide-answer');
+        const button=item.querySelector('.study-guide-reveal');
+        if(feedback&&button&&feedback.hidden===open)button.click();
+      });
+    };
+    revealButton.onclick=event=>{
+      if(typeFilter.value==='rapid'){
+        revealAll=!revealAll;
+        document.querySelectorAll('.rapid-item:not(.hidden)').forEach(item=>{
+          item.classList.toggle('open',revealAll);
+          item.setAttribute('aria-expanded',revealAll?'true':'false');
+        });
+        revealButton.textContent=revealAll?'Hide all':'Reveal all';
         return;
       }
-      revealAll = !revealAll;
-      document.querySelectorAll('.rapid-item:not(.hidden)').forEach(item => {
-        item.classList.toggle('open', revealAll);
-        item.setAttribute('aria-expanded', revealAll ? 'true' : 'false');
-      });
-      revealButton.textContent = revealAll ? 'Hide all' : 'Reveal all';
+      if(typeFilter.value==='mcq'){
+        revealAll=!revealAll;
+        syncMcqAnswers(revealAll);
+        revealButton.textContent=revealAll?'Hide all':'Reveal all';
+        return;
+      }
+      originalReveal?.call(revealButton,event);
+      if(typeFilter.value==='all')syncMcqAnswers(revealAll);
+      syncAccessibility(getDomCache());
     };
   }
 
