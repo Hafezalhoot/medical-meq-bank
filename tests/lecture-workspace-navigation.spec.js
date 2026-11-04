@@ -41,7 +41,7 @@ test('one-lecture specialty has only authored reader destinations and fits narro
   const nav=page.getByRole('navigation',{name:'Lecture sections'});
   await expect(nav.getByRole('button',{name:'Explanation',exact:true})).toBeVisible();
   await expect(nav.getByRole('button',{name:'MCQ practice',exact:true})).toBeVisible();
-  await expect(page.getByRole('button',{name:'All lectures',exact:true})).toHaveCount(0);
+  await expect(page.locator('.lecture-head').getByRole('button',{name:'All lectures',exact:true})).toHaveCount(0);
   await nav.getByRole('button',{name:'MCQ practice',exact:true}).click();
   await expect(page.locator('#'+derm+'-guide-mcqs')).toHaveAttribute('open','');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
@@ -56,7 +56,7 @@ test('legacy lecture omits unsupported explanation/MCQ shortcuts and returns to 
   await expect(nav.getByRole('button',{name:'Cases',exact:true})).toBeVisible();
   await expect(nav.getByRole('button',{name:'Explanation',exact:true})).toHaveCount(0);
   await expect(nav.getByRole('button',{name:'MCQ practice',exact:true})).toHaveCount(0);
-  const back=page.getByRole('button',{name:'All lectures',exact:true});
+  const back=page.locator('.lecture-head').getByRole('button',{name:'All lectures',exact:true});
   await expect(back).toBeVisible();
   await back.click();
   await expect(page.locator('#lectureFilter')).toHaveValue('all');
