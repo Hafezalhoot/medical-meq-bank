@@ -1,29 +1,31 @@
 # My Medical Library — Project Autopilot status
 
-## Product decision · 2026-11-04
-Approved customer-facing brand **My Medical Library** with descriptor **Lectures · Questions · Exams**. The product is a **personal lecture-first medical learning library**, not an MEQ-only bank. MEQ is retained as an item type; all reviewed source content and privacy guarantees remain unchanged.
+## Owner-approved product direction
+**My Medical Library · Lectures · Questions · Exams** is the personal lecture-first medical study application; MEQ is one supported question type, not the overall brand. Lecture-First Policy still controls every exam fact, and explanatory additions must be labeled as aids, not new exam facts.
 
-## Verified baseline
-- Repository: `Hafezalhoot/medical-meq-bank`; default branch `main`; baseline commit `2f0d6e8d0e7daec4000cb41607d09b15e6d28d25` (V5.2, released source dated 2026-10-28).
-- Source catalogs: 3 courses; 12 published lectures: Surgery 9 and Internal Medicine II 3. Only 3 lecture study packs contain published graded MCQs, 138 total.
-- Other review types exist (MEQ cases, short answer, detailed, image/spot and Rapid Recall); *counts across question categories are not necessarily unique questions*.
-- Storage: per-item IndexedDB ratings; local exam session/history; export/restore with replacement preview and rollback; existing PWA offline cache and generated standalone legacy HTML.
-- Repository `README.md`, `AGENTS.md`, `DESIGN.md`, `CONTENT_AUTHORING.md` are authoritative for build and lecture content constraints.
+## Repository and release baseline
+- Repository: `Hafezalhoot/medical-meq-bank`; production branch `main` remains at `2f0d6e8d0e7daec4000cb41607d09b15e6d28d25` (V5.2).
+- Source inventory: 3 courses, 12 published lectures; 138 reviewed auto-gradable MCQs in 3 lectures; historical MEQ, short, image/spot, Rapid Recall and exam workflows remain intact.
+- Existing device-local progress, IndexedDB exam history, safe backup/restore, original figures with SHA provenance, offline cache and print must be preserved.
 
-## Work in progress
-- GitHub issue [#74](https://github.com/Hafezalhoot/medical-meq-bank/issues/74) contains the approved pivot and implementation sequence LIB-00–LIB-06.
-- Implementation PR [#75](https://github.com/Hafezalhoot/medical-meq-bank/pull/75) targets `main` from `feature/my-medical-library-v5-3-foundation-20261104`.
-- Invariant: no changes to `lectures/`, `courses/`, original source images/hashes, stored ratings, IDs, backup schemas or exam scoring in the initial identity/accessibility slice.
-- Initial branch scope: app branding/manifest/print/404 + safe browse-to-library affordance + identity/navigation regression tests.
-- No production deploy or main merge is implied by an open PR.
+## Branch/PR sequence (2026-11-04)
+1. **V5.3 identity & compact reader foundation:** [PR #75](https://github.com/Hafezalhoot/medical-meq-bank/pull/75), head `50ef65e26cdb1a4bf773848596a86fb205635e21`, ready for review, not merged. [Full CI #41784312773](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/41784312773) **passed** (Static + 162 Chromium + 4 WebKit).
+2. **V5.4 source guide reader entries:** [PR #76](https://github.com/Hafezalhoot/medical-meq-bank/pull/76), stacked from #75, draft pending full tests. A separate plan is at `docs/superpowers/plans/2026-11-04-lecture-workspace-entry-points.md`. The branch temporarily targets `main` for CI, because the workflow only triggers on PRs targeting `main` — **do not merge it ahead of #75**. Retarget or rebase once #75 is safely integrated.
 
-## Quality gates
-Static build, Chromium, axe, Safari/WebKit, Cloudflare Workers Build, source parity, offline and history/backup regressions must all pass on the exact final PR head before merge. Authenticated production smoke remains gated by Cloudflare Access [#35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35). Early Worker promotion issue [#50](https://github.com/Hafezalhoot/medical-meq-bank/issues/50) remains unresolved.
+## V5.4 scope
+- Remove the ambiguous combined study guide shortcut and offer separate **Explanation**, **MCQ practice**, **Infographic** and **Original lecture figures** actions only where an authored section exists.
+- Each source-action opens its exact native `details`, scrolls to it and focuses its summary; preserve course/subject and source facts.
+- In multi-lecture specialties, a lecture-header **All lectures** control returns to the current specialty index and restores keyboard focus. Hide this control when the specialty contains only one lecture.
+- Rotate PWA version to `2026.11.04.2` for safe asset-cache invalidation.
+- Test actual Dermatology authored Explanation/MCQ/14 original figures, legacy Bladder Cancer without false guide entries, 390px mobile, source section focus and overview return.
 
-## Next unblocked tasks
-1. Finish LIB-01 coherent identity/accessibility increment without expanding product infrastructure.
-2. Run exact-head CI; diagnose failures rather than weakening thresholds. Verify no user-facing rename touched persistence.
-3. After clean merge/release checks, implement reader-first course/lecture information architecture and the unified Question Bank, then pilot PDF intake with source page/image coverage.
+## Quality and safety gates
+- **V5.4 implementation is committed; CI on final head is pending.** Never state that the new reader work is tested/live until the exact-head Static, Chromium and WebKit run finishes green.
+- No `lectures/` or `courses/` change, no new medical content, no photo/hash changes, no exam answer-key or saved progress/storage migration.
+- Cloudflare Access authenticated production smoke [#35](https://github.com/Hafezalhoot/medical-meq-bank/issues/35) and Cloudflare auto-promotion before main CI [#50](https://github.com/Hafezalhoot/medical-meq-bank/issues/50) remain unresolved; **no production deploy/merge** in this iteration.
+- A connected code checkout and authenticated production browser are unavailable in this environment; GitHub Actions supplies the integration test evidence.
 
-## Evidence disclaimer
-Current-turn GitHub connector reads and branch writes are verified. No local repo checkout was possible because external DNS/GitHub network access from the code container failed. GitHub Actions is used as the integration test runner. User-authenticated production UI has not been tested in this turn.
+## Next slices after current checks
+1. Verify exact PR #76 test results and review its final diff for source/schema/storage changes; mark ready for review if clean.
+2. Rationalize Study Home → Courses → Lectures navigation, then unified question reader/type filters without inventing missing MCQ/Explanation data.
+3. Pilot lecture-PDF intake with page-by-page text *and information-dense figure* coverage, original provenance and editorial approval before any publication.
