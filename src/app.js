@@ -354,9 +354,11 @@ function createStudyGuide(lecture) {
   heading.append(title,description);
   section.appendChild(heading);
 
-  const disclosure=(name,count)=>{
+  const disclosure=(name,count,sectionKey)=>{
     const details=document.createElement('details');
     details.className='study-guide-part';
+    details.id=lecture.id+'-guide-'+sectionKey;
+    details.dataset.guideSection=sectionKey;
     const summary=document.createElement('summary');
     summary.textContent=name+(count?' ('+count+')':'');
     details.append(summary);
@@ -371,7 +373,7 @@ function createStudyGuide(lecture) {
   };
 
   if(guide.explanation?.length){
-    const details=disclosure('Explanation',guide.explanation.length);
+    const details=disclosure('Explanation',guide.explanation.length,'explanation');
     guide.explanation.forEach(part=>{
       const article=document.createElement('article');article.className='study-guide-explanation';
       const heading=document.createElement('h3');heading.textContent=part.heading;heading.dir='auto';article.append(heading);
@@ -392,7 +394,7 @@ function createStudyGuide(lecture) {
   }
 
   if(guide.mcqs?.length){
-    const details=disclosure('MCQ practice',guide.mcqs.length);
+    const details=disclosure('MCQ practice',guide.mcqs.length,'mcqs');
     guide.mcqs.forEach((item,index)=>{
       const article=document.createElement('article');article.className='study-guide-mcq';
       const question=document.createElement('h3');question.textContent=(index+1)+'. '+item.question;question.dir='auto';
@@ -448,7 +450,7 @@ function createStudyGuide(lecture) {
   }
 
   if(guide.infographic){
-    const details=disclosure('Infographic');
+    const details=disclosure('Infographic',0,'infographic');
     const figure=document.createElement('figure');figure.className='study-guide-figure';
     const image=document.createElement('img');
     image.src=guide.infographic.image;image.alt=guide.infographic.alt;
@@ -486,7 +488,7 @@ function createStudyGuide(lecture) {
   }
   const sourceQuestions=(lecture.imageQuestions||[]).filter(isOriginalSourceFigure);
   if(sourceQuestions.length){
-    const details=disclosure('Original lecture figures',sourceQuestions.length);
+    const details=disclosure('Original lecture figures',sourceQuestions.length,'original-figures');
     const copy=document.createElement('p');copy.className='original-guide-copy';
     copy.textContent=sourceQuestions.every(item=>Boolean(imageSource(item)))?'These are the original printed lecture photographs and information-dense source figures. Open any figure to zoom and jump to its study questions. No AI or external substitutes.':'Original lecture figures. Hosted figures open here; private-only originals require importing exact source JPEGs on your device.';
     const jump=document.createElement('a');jump.className='original-guide-link';
@@ -655,6 +657,22 @@ function render(){
   <div class="content-section extra-section" data-section-type="extra"><div class="section-head"><div><h2>Detailed Practice</h2><p>The original direct questions are preserved for deeper repetition.</p></div></div><details class="practice-details"><summary>Open detailed practice questions (${l.detailedShorts.length})</summary><div class="practice-body"><div class="study-grid shorts extra-grid"></div></div></details></div>
   <div class="content-section rapid-section" data-section-type="rapid"><div class="section-head" id="${l.id}-rapid"><div><h2>Rapid Recall</h2><p>Click each card to reveal the one-line answer.</p></div></div><section class="rapid"><div class="rapid-grid"></div></section></div>`;
   container.appendChild(sec);
+  if(list.length>1){
+    const back=document.createElement('button');
+    back.type='button';
+    back.className='lecture-back';
+    back.textContent='All lectures';
+    back.addEventListener('click',()=>{
+      selectLecture('all',false);
+      const title=container.querySelector('.lecture-overview-panel h2');
+      if(title){
+        title.tabIndex=-1;
+        title.focus({preventScroll:true});
+        title.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+      }
+    });
+    sec.querySelector('.lecture-head > div')?.prepend(back);
+  }
   requestAnimationFrame(()=>globalThis.MEQOriginalFigures?.refresh?.());
   const studyGuide=createStudyGuide(l);
   if(studyGuide){
@@ -666,15 +684,24 @@ function render(){
       pill.textContent=mcqCount+' source MCQs';
       sec.querySelector('.lecture-counts')?.append(pill);
     }
-    const jump=document.createElement('button');jump.type='button';
-    jump.className='study-guide-jump';jump.textContent=l.imageQuestions.some(isOriginalSourceFigure)?'Explanation / MCQ / Original Photos':'Explanation / MCQ / Infographic';
-    jump.addEventListener('click',()=>{
-      const first=studyGuide.querySelector('details');
-      if(first)first.open=true;
-      studyGuide.scrollIntoView({behavior:scrollBehavior(),block:'start'});
-      first?.querySelector('summary')?.focus({preventScroll:true});
+    // Source-guide destinations are available only when the lecture actually contains them.
+    const nav=sec.querySelector('.lecture-section-nav');
+    const offline=nav.querySelector('.offline-lecture-btn');
+    studyGuide.querySelectorAll('details[data-guide-section]').forEach(details=>{
+      const summary=details.querySelector('summary');
+      if(!summary)return;
+      const jump=document.createElement('button');
+      jump.type='button';
+      jump.className='study-guide-jump';
+      jump.textContent=summary.textContent.replace(/\\s*\\(\\d+\\)$/,'');
+      jump.setAttribute('aria-controls',details.id);
+      jump.addEventListener('click',()=>{
+        details.open=true;
+        details.scrollIntoView({behavior:scrollBehavior(),block:'start'});
+        summary.focus({preventScroll:true});
+      });
+      nav.insertBefore(jump,offline);
     });
-    sec.querySelector('.quick-views').append(jump);
   }
   l.cases.forEach((c,i)=>sec.querySelector('.cases-grid').appendChild(caseCard(l,c,i)));
   l.coreShorts.forEach((q,i)=>sec.querySelector('.core-grid').appendChild(shortCard(l,q,i,'core','High-Yield Short')));
