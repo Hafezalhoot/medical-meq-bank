@@ -2,11 +2,11 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {test, expect} from '@playwright/test';
 
-const headingName = 'Medical MEQ Review Bank';
+const headingName = 'Your medical study library';
 
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
-  await expect(page).toHaveTitle(/Medical MEQ Review Bank/);
+  await expect(page).toHaveTitle(/My Medical Library/);
   await expect(page.getByRole('heading', {name: headingName})).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
   await expect.poll(async () => page.locator('.lecture').count()).toBeGreaterThan(0);
