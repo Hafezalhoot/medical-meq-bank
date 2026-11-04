@@ -44,6 +44,7 @@ function lectureCount(lecture, keyName){
   return Array.isArray(lecture?.[keyName])?lecture[keyName].length:0
 }
 function lectureIsLoaded(lecture){return Boolean(lecture&&!lecture.__metadataOnly)}
+function lectureMcqCount(lecture){return lecture?.__metadataOnly?(Number.isInteger(lecture.mcqCount)?lecture.mcqCount:0):(lecture?.studyGuide?.mcqs?.length||0)}
 function lectureProgressPercent(lecture){
   const total=['cases','coreShorts','imageQuestions','detailedShorts']
     .reduce((sum,keyName)=>sum+lectureCount(lecture,keyName),0);
@@ -65,11 +66,12 @@ function subjectProgressCounts(scope){
   const ids=new Set(scope.map(lecture=>lecture.id));
   const totals=scope.reduce((out,lecture)=>{
     out.cases+=lectureCount(lecture,'cases');
+    out.mcqs+=lectureMcqCount(lecture);
     out.coreShorts+=lectureCount(lecture,'coreShorts');
     out.imageQuestions+=lectureCount(lecture,'imageQuestions');
     out.detailedShorts+=lectureCount(lecture,'detailedShorts');
     return out
-  },{cases:0,coreShorts:0,imageQuestions:0,detailedShorts:0});
+  },{cases:0,mcqs:0,coreShorts:0,imageQuestions:0,detailedShorts:0});
   const coreTotal=totals.cases+totals.coreShorts+totals.imageQuestions;
   const overallTotal=coreTotal+totals.detailedShorts;
   let coreDone=0,overallDone=0,mastered=0;
@@ -331,9 +333,10 @@ function renderLectureOverview(container,list){
     button.setAttribute('aria-label','Open lecture: '+lecture.title);
     const progress=lectureProgressPercent(lecture);
     const cases=lectureCount(lecture,'cases');
+    const mcqs=lectureMcqCount(lecture);
     const shorts=lectureCount(lecture,'coreShorts');
     const images=lectureCount(lecture,'imageQuestions');
-    button.innerHTML=`<span class="lecture-overview-top"><span class="lecture-overview-index" aria-hidden="true">${String(lecture.order).padStart(2,'0')}</span><strong class="lecture-overview-name">${esc(lecture.title)}</strong></span><span class="lecture-overview-meta">${cases} MEQ cases · ${shorts} core shorts · ${images} image questions</span><span class="lecture-overview-bottom"><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Open lecture'} <span aria-hidden="true">→</span></span></span>`;
+    button.innerHTML=`<span class="lecture-overview-top"><span class="lecture-overview-index" aria-hidden="true">${String(lecture.order).padStart(2,'0')}</span><strong class="lecture-overview-name">${esc(lecture.title)}</strong></span><span class="lecture-overview-meta">${mcqs} source MCQs · ${cases} MEQ cases · ${shorts} core shorts · ${images} image questions</span><span class="lecture-overview-bottom"><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Open lecture'} <span aria-hidden="true">→</span></span></span>`;
     button.onclick=()=>selectLecture(lecture.id,true);
     grid.appendChild(button);
   });
@@ -400,7 +403,10 @@ function createStudyGuide(lecture) {
   if(guide.mcqs?.length){
     const details=disclosure('MCQ practice',guide.mcqs.length,'mcqs');
     guide.mcqs.forEach((item,index)=>{
-      const article=document.createElement('article');article.className='study-guide-mcq';
+      const article=document.createElement('article');article.className='study-guide-mcq study-item';
+      article.id=lecture.id+'-mcq-'+item.id;
+      article.dataset.type='mcq';article.dataset.lecture=lecture.id;
+      article.dataset.search=[lecture.title,item.question,...item.options,item.rationale,item.sourcePage].join(' ').toLocaleLowerCase();
       const question=document.createElement('h3');question.textContent=(index+1)+'. '+item.question;question.dir='auto';
       article.append(question);
       const fieldset=document.createElement('fieldset');fieldset.className='study-guide-choices';
@@ -780,6 +786,7 @@ function updateStatus(){
   const {totals,coreTotal,overallTotal,coreDone,overallDone,mastered}=progress;
   $('lectureCount').textContent=scope.length;
   $('caseCount').textContent=totals.cases;
+  $('mcqCount').textContent=totals.mcqs;
   $('coreCount').textContent=totals.coreShorts;
   $('imageCount').textContent=totals.imageQuestions;
   $('masteredCount').textContent=mastered;
@@ -796,7 +803,7 @@ function updateStatus(){
     resume.title=scope.length?'Go to the next question or review item':'No lectures in this specialty yet';
   }
   const subject=subjects.find(s=>s.id===activeSubject);
-  $('heroTags').innerHTML=`<span class="hero-tag">${esc(subject?.label||'Subject')}</span><span class="hero-tag">${scope.length} Lecture${scope.length===1?'':'s'}</span><span class="hero-tag">${totals.cases} MEQ Cases</span><span class="hero-tag">${totals.coreShorts} Core Shorts</span><span class="hero-tag">Saved Progress</span>`;
+  $('heroTags').innerHTML=`<span class="hero-tag">${esc(subject?.label||'Subject')}</span><span class="hero-tag">${scope.length} Lecture${scope.length===1?'':'s'}</span><span class="hero-tag">${totals.cases} MEQ Cases</span><span class="hero-tag">${totals.mcqs} Source MCQs</span><span class="hero-tag">${totals.coreShorts} Core Shorts</span><span class="hero-tag">Saved Progress</span>`;
   updateStudyBreadcrumb();
   renderLearningAnalytics();
   const lectureSelect=$('lectureFilter');
