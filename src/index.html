@@ -102,7 +102,7 @@
   <label class="sr-only" for="lectureFilter">Lecture</label>
   <select id="lectureFilter" class="control" aria-label="Lecture filter"></select>
   <label class="sr-only" for="typeFilter">Question type</label>
-  <select id="typeFilter" class="control" aria-label="Question type filter"><option value="all">All study items</option><option value="case">MEQ cases</option><option value="core">High-yield shorts</option><option value="image">Image/spot questions</option><option value="extra">Detailed practice</option></select>
+  <select id="typeFilter" class="control" aria-label="Question type filter"><option value="all">All study items</option><option value="mcq">MCQ practice</option><option value="case">MEQ cases</option><option value="core">High-yield shorts</option><option value="image">Image/spot questions</option><option value="extra">Detailed practice</option></select>
   <label class="sr-only" for="topicFilter">Topic</label>
   <select id="topicFilter" class="control" aria-label="Topic filter"><option value="all">All topics</option></select>
   <label class="sr-only" for="priorityFilter">Priority</label>
@@ -130,12 +130,13 @@
 <section class="stats" aria-labelledby="progressOverviewTitle">
   <h2 id="progressOverviewTitle" class="sr-only">Study progress overview</h2>
   <div class="stat metric-stat"><strong id="lectureCount">0</strong><span>Lectures</span></div>
+  <div class="stat metric-stat"><strong id="mcqCount">0</strong><span>Source MCQs</span></div>
   <div class="stat metric-stat"><strong id="caseCount">0</strong><span>MEQ cases</span></div>
   <div class="stat metric-stat"><strong id="coreCount">0</strong><span>High-yield shorts</span></div>
   <div class="stat metric-stat"><strong id="imageCount">0</strong><span>Image questions</span></div>
   <div class="stat metric-stat"><strong id="masteredCount">0</strong><span>Mastered core items</span></div>
   <div class="stat progress-stat"><div class="stat-label">Core rated progress</div><strong id="coreProgressText">0%</strong><div class="progress-track" id="coreProgressBar" role="progressbar" aria-label="Core rated progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="coreProgressFill"></div></div></div>
-  <div class="stat progress-stat"><div class="stat-label">Overall practice</div><strong id="overallProgressText">0%</strong><div class="progress-track" id="overallProgressBar" role="progressbar" aria-label="Overall practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill overall-fill" id="overallProgressFill"></div></div></div>
+  <div class="stat progress-stat"><div class="stat-label">Written practice rated</div><strong id="overallProgressText">0%</strong><div class="progress-track" id="overallProgressBar" role="progressbar" aria-label="Overall practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill overall-fill" id="overallProgressFill"></div></div></div>
 </section>
 <section class="learning-analytics" id="learningAnalytics" aria-label="Personal learning analytics">
   <div class="learning-analytics-heading">
