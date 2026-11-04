@@ -39,62 +39,39 @@
 
   const topicFilter = document.getElementById('topicFilter');
   const priorityFilter = document.getElementById('priorityFilter');
-  const rapidInapplicableControls = [topicFilter, priorityFilter, reviewFilter].filter(Boolean);
-  let rapidModeActive = false;
-  let domCache = null;
-
-  const optionExists = (control, value) => [...control.options].some(option => option.value === value);
-
-  const getDomCache = () => {
-    const studyItems = [...document.querySelectorAll('.study-item')];
-    const rapidItems = [...document.querySelectorAll('.rapid-item')];
-    const lectures = [...document.querySelectorAll('.lecture')];
-    const sections = [...document.querySelectorAll('.content-section')];
-
-    const changed = !domCache ||
-      domCache.studyItems.length !== studyItems.length ||
-      domCache.rapidItems.length !== rapidItems.length ||
-      domCache.lectures.length !== lectures.length ||
-      domCache.sections.length !== sections.length ||
-      domCache.studyItems[0] !== studyItems[0] ||
-      domCache.rapidItems[0] !== rapidItems[0] ||
-      domCache.lectures[0] !== lectures[0];
-
-    if (changed) domCache = {studyItems, rapidItems, lectures, sections};
-    return domCache;
-  };
-
-  const setControlApplicability = rapidMode => {
-    if (rapidMode) {
-      if (activeSubtopic !== 'all') {
-        activeSubtopic = 'all';
-        renderSubtopicNav();
-      }
-      if (!rapidModeActive) {
-        rapidInapplicableControls.forEach(control => {
-          control.dataset.rapidPreviousValue = control.value;
-          control.dataset.rapidPreviousTitle = control.title || '';
-          control.value = 'all';
-          control.disabled = true;
-          control.classList.add('rapid-inapplicable');
-          control.title = 'This filter is not used for Rapid Recall cards.';
-        });
-        rapidModeActive = true;
-      }
-      return;
+  const inapplicableControls=[topicFilter,priorityFilter,reviewFilter].filter(Boolean);
+  let domCache=null;
+  const optionExists=(control,value)=>[...control.options].some(option=>option.value===value);
+  const setControlApplicability = mode => {
+    const suppressed=mode==='rapid'?inapplicableControls:
+      mode==='mcq'?[topicFilter,priorityFilter].filter(Boolean):[];
+    if(suppressed.length&&activeSubtopic!=='all'){
+      activeSubtopic='all';
+      renderSubtopicNav();
     }
-
-    if (!rapidModeActive) return;
-    rapidInapplicableControls.forEach(control => {
-      control.disabled = false;
-      control.classList.remove('rapid-inapplicable');
-      const previous = control.dataset.rapidPreviousValue || 'all';
-      control.value = optionExists(control, previous) ? previous : 'all';
-      control.title = control.dataset.rapidPreviousTitle || '';
-      delete control.dataset.rapidPreviousValue;
-      delete control.dataset.rapidPreviousTitle;
+    inapplicableControls.forEach(control=>{
+      const unused=suppressed.includes(control);
+      if(unused){
+        if(control.dataset.filterInapplicable!=='1'){
+          control.dataset.filterPreviousValue=control.value;
+          control.dataset.filterPreviousTitle=control.title||'';
+        }
+        control.dataset.filterInapplicable='1';
+        control.value='all';control.disabled=true;
+        control.classList.add('rapid-inapplicable');
+        control.title=mode==='mcq'
+          ?'This lecture does not assign topic or priority to source MCQs.'
+          :'This filter is not used for Rapid Recall cards.';
+      }else if(control.dataset.filterInapplicable==='1'){
+        control.disabled=false;control.classList.remove('rapid-inapplicable');
+        const previous=control.dataset.filterPreviousValue||'all';
+        control.value=optionExists(control,previous)?previous:'all';
+        control.title=control.dataset.filterPreviousTitle||'';
+        delete control.dataset.filterInapplicable;
+        delete control.dataset.filterPreviousValue;
+        delete control.dataset.filterPreviousTitle;
+      }
     });
-    rapidModeActive = false;
   };
 
   const prepareRapidItems = ({lectures}) => {
@@ -154,11 +131,13 @@
     const dom = getDomCache();
     prepareRapidItems(dom);
 
-    const q = $('search').value.toLowerCase().trim();
+    const q = $('search').value.toLocaleLowerCase().trim();
+    const terms=q?q.split(/\s+/):[];
+    const matchesSearch=text=>terms.every(term=>text.includes(term));
     const lf = $('lectureFilter').value;
     const tf = typeFilter.value;
     const rapidMode = tf === 'rapid';
-    setControlApplicability(rapidMode);
+    setControlApplicability(tf);
 
     const topic = topicFilter?.value || 'all';
     const prio = priorityFilter?.value || 'all';
@@ -172,7 +151,7 @@
       const subtopics = item.dataset.subtopics || '';
       const subOk = activeSubtopic === 'all' || subtopics.split(' ').includes(activeSubtopic);
       const baseShow = !rapidMode &&
-        (!q || searchText.includes(q)) &&
+        matchesSearch(searchText) &&
         (lf === 'all' || item.dataset.lecture === lf) &&
         (tf === 'all' || item.dataset.type === tf) &&
         (topic === 'all' || item.dataset.topic === topic) &&
@@ -203,7 +182,7 @@
       const searchText = item.dataset.search || '';
       const show = requested &&
         (lf === 'all' || item.dataset.lecture === lf) &&
-        (!q || searchText.includes(q));
+        matchesSearch(searchText);
       item.classList.toggle('hidden', !show);
       if (show) visibleRapidItems += 1;
     });
@@ -211,6 +190,22 @@
     updateReviewLabels(counts, rapidMode);
 
     dom.lectures.forEach(lecture => {
+      // A source guide is visible only when its authored MCQs match the active
+      // question/status filter. The default unfiltered reader stays unchanged.
+      const guide=lecture.querySelector('.learning-companion');
+      if(guide){
+        const matched=[...guide.querySelectorAll('.study-guide-mcq')]
+          .some(item=>!item.classList.contains('hidden'));
+        const showGuide=tf==='mcq'?matched:
+          tf==='all'&&((!q&&rf==='all')||matched);
+        guide.classList.toggle('hidden',!showGuide);
+        const showOnlyMCQs=tf==='mcq'||rf!=='all'||Boolean(q);
+        guide.querySelectorAll('.study-guide-part').forEach(part=>{
+          part.classList.toggle('hidden',showOnlyMCQs&&part.dataset.guideSection!=='mcqs');
+        });
+        const mcqPart=guide.querySelector('[data-guide-section="mcqs"]');
+        if(showOnlyMCQs&&matched&&mcqPart)mcqPart.open=true;
+      }
       const lectureAllowed = lf === 'all' || lecture.dataset.lecture === lf;
       const anyStudy = [...lecture.querySelectorAll('.study-item')]
         .some(item => !item.classList.contains('hidden'));
@@ -228,7 +223,9 @@
 
     const visible = visibleStudyItems + visibleRapidItems;
     const noSubjectLectures = visibleLectures().length === 0;
-    $('empty').classList.toggle('show', visible === 0);
+    const pendingMCQs=Boolean(document.querySelector('.mcq-library-loading'));
+    const inlineEmptyMCQs=Boolean(document.querySelector('.mcq-library-no-content'));
+    $('empty').classList.toggle('show', visible === 0 && !pendingMCQs && !inlineEmptyMCQs);
     const messages = {
       unrated: 'No unrated items match the current filters.',
       mastered: 'No mastered items match the current filters.',
@@ -239,7 +236,9 @@
       ? `No lectures have been added to ${subjects.find(subject => subject.id === activeSubject)?.label || 'this subject'} yet.`
       : rapidMode
         ? 'No Rapid Recall cards match the current lecture or search.'
-        : messages[rf] || 'No study items match the current filters.';
+        : tf==='mcq'
+          ? 'No source MCQs match this search or saved review status. Try clearing filters.'
+          : messages[rf] || 'No study items match the current filters.';
 
     syncQuickButtons();
     syncAccessibility(dom);
@@ -251,7 +250,7 @@
   });
 
   typeFilter.addEventListener('change', () => {
-    setControlApplicability(typeFilter.value === 'rapid');
+    setControlApplicability(typeFilter.value);
   }, true);
 
   document.addEventListener('click', event => {
