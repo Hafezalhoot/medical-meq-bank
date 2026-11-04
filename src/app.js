@@ -662,6 +662,7 @@ function render(){
     back.type='button';
     back.className='lecture-back';
     back.textContent='All lectures';
+    back.setAttribute('aria-label','All lectures');
     back.addEventListener('click',()=>{
       selectLecture('all',false);
       const title=container.querySelector('.lecture-overview-panel h2');
@@ -698,7 +699,10 @@ function render(){
       jump.addEventListener('click',()=>{
         details.open=true;
         details.scrollIntoView({behavior:scrollBehavior(),block:'start'});
-        summary.focus({preventScroll:true});
+        // Focus after layout/scroll; otherwise the click may restore focus to the toolbar.
+        requestAnimationFrame(()=>{
+          if(details.isConnected)summary.focus({preventScroll:true});
+        });
       });
       nav.insertBefore(jump,firstLegacy);
     });
