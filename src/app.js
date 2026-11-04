@@ -698,10 +698,11 @@ function render(){
       jump.setAttribute('aria-controls',details.id);
       jump.addEventListener('click',()=>{
         details.open=true;
-        details.scrollIntoView({behavior:scrollBehavior(),block:'start'});
-        // Focus after layout/scroll; otherwise the click may restore focus to the toolbar.
+        // Match Continue studying: instant positioning before focusing lazy-rendered content.
+        details.scrollIntoView({behavior:'instant',block:'start'});
         requestAnimationFrame(()=>{
-          if(details.isConnected)summary.focus({preventScroll:true});
+          const liveSummary=document.getElementById(details.id)?.querySelector('summary');
+          liveSummary?.focus({preventScroll:true});
         });
       });
       nav.insertBefore(jump,firstLegacy);
