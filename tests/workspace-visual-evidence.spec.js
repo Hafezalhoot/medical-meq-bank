@@ -7,7 +7,7 @@ test.use({serviceWorkers: 'block'});
 async function openWorkspace(page, width, height) {
   await page.setViewportSize({width, height});
   await page.goto('/', {waitUntil: 'domcontentloaded'});
-  await expect(page.getByRole('heading', {name: 'Medical MEQ Review Bank'})).toBeVisible();
+  await expect(page.getByRole('heading', {name: 'Your medical study library'})).toBeVisible();
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
 }
 
