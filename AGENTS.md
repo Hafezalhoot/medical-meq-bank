@@ -1,10 +1,10 @@
-# Medical MEQ Bank Development Contract
+# My Medical Library — Development Contract
 
 This file is the operational guide for any developer or coding agent changing this repository.
 
 ## Product boundary
 
-The application is an offline-first medical revision bank. The committed lecture PDFs or reviewed lecture JSON are the exam-content authority. Do not update, modernize, reinterpret, or supplement medical content from external guidelines unless the task explicitly requests that change.
+The application is a personal offline-first medical lecture and question library. MEQ is one question type, not the whole product identity. The committed lecture PDFs or reviewed lecture JSON are the exam-content authority. Do not update, modernize, reinterpret, or supplement medical content from external guidelines unless the task explicitly requests that change.
 
 Never invent missing medical answers, marking schemes, classifications, drugs, doses, procedures, indications, contraindications, exam traps, or memory prompts. Optional fields that are absent from the reviewed source must remain empty.
 
