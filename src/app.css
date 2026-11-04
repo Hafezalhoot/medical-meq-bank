@@ -1721,3 +1721,36 @@ details.original-figure-tools{
   .restore-preview-dialog button{transition:none}
 }
 
+/* V5.3 reader-first layout: navigation stays outside the lecture summary. */
+.answer-grid.single-answer{grid-template-columns:minmax(0,1fr)}
+.lecture .lecture-section-nav.quick-views{
+  display:flex;align-items:center;flex-wrap:wrap;max-width:none;width:100%;
+  gap:8px;margin:5px 0 4px;padding:8px 2px 12px
+}
+.lecture .lecture-section-nav .quick-view-btn,
+.lecture .lecture-section-nav .quick-reset,
+.lecture .lecture-section-nav .offline-lecture-btn,
+.lecture .lecture-section-nav .study-guide-jump{
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  width:auto;min-height:44px;grid-column:auto;grid-row:auto;
+  border-radius:10px;padding:8px 12px;font-size:.8rem;white-space:nowrap
+}
+.lecture .lecture-section-nav .quick-reset{
+  border:1px solid var(--line);background:var(--surface-soft);
+  text-decoration:none;color:var(--brand)
+}
+.lecture .lecture-section-nav .quick-view-btn.active{
+  background:var(--brand);color:#fff;border-color:var(--brand)
+}
+.dark .lecture .lecture-section-nav .quick-view-btn.active{
+  background:var(--brand-soft);color:var(--text);border-color:var(--brand)
+}
+.lecture .lecture-section-nav .offline-lecture-btn{margin-inline-start:auto}
+@media(max-width:700px){
+  .lecture .lecture-section-nav.quick-views{
+    flex-wrap:nowrap;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:thin;scroll-padding-inline:12px
+  }
+  .lecture .lecture-section-nav .offline-lecture-btn{margin-inline-start:0}
+}
+@media print{.lecture .lecture-section-nav.quick-views{display:none!important}}
