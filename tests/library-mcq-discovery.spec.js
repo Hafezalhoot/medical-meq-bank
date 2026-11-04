@@ -67,7 +67,7 @@ test('MCQ bank can search source questions across both Psychiatry lectures on de
   await page.locator('#typeFilter').selectOption('mcq');
   await expect(page.locator('#mainContent .study-guide-mcq:not(.hidden)')).toHaveCount(108,{timeout:30000});
   await expect(page.locator('#mcqCount')).toHaveText('108');
-  await page.locator('#search').fill('fear from anxiety');
+  await page.locator('#search').fill('distinguish fear from anxiety');
   const cards=page.locator('#mainContent .study-guide-mcq:not(.hidden)');
   await expect(cards).toHaveCount(1);
   await expect(cards.first()).toContainText('How does the lecture distinguish fear from anxiety?');
