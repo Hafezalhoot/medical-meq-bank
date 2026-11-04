@@ -18,6 +18,15 @@ const subjects = [
 ];
 const lectures = [];
 const $=id=>document.getElementById(id);
+// The library shortcut opens the existing native disclosure without touching study state.
+$('browseLibraryLink')?.addEventListener('click', event => {
+  const library = $('courseLibraryDisclosure');
+  if (!library) return;
+  event.preventDefault();
+  library.open = true;
+  library.querySelector('summary')?.focus({preventScroll: true});
+  library.scrollIntoView({block: 'start'});
+});
 const storage={get(k){try{return window.localStorage.getItem(k)}catch(e){return null}},set(k,v){try{window.localStorage.setItem(k,v)}catch(e){}}};
 const state=(()=>{try{const value=JSON.parse(storage.get('medicalBankStatusV2')||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch(e){return {}}})();
 let revealAll=false;
