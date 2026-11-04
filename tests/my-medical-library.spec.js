@@ -45,7 +45,11 @@ test('mobile library and review remain available without horizontal overflow', a
 test('lecture navigation is a compact, accessible section row outside the lecture header', async ({page}) => {
   await page.setViewportSize({width: 390, height: 844});
   await page.goto('/', {waitUntil:'domcontentloaded'});
+  // On phones the lecture select belongs to the closed native filter sheet.
+  await expect(page.locator('#mobileFiltersToggle')).toBeVisible();
+  await page.locator('#mobileFiltersToggle').click();
   await page.locator('#lectureFilter').selectOption('urology-congenital-anomalies');
+  await page.locator('#applyMobileFiltersBtn').click();
   const header = page.locator('.lecture-head');
   await expect(header).toBeVisible({timeout: 20000});
   const nav = page.getByRole('navigation', {name:'Lecture sections'});
