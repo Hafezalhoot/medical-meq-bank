@@ -31,6 +31,7 @@ test('source guide has separate keyboard-accessible Explanation, MCQ and origina
     await expect(details).toHaveAttribute('open','');
     await expect(details.locator('summary')).toBeFocused();
   }
+  await expect(nav.getByRole('button',{name:'Infographic',exact:true})).toHaveCount(0);
   await expect(page.locator('#'+derm+'-guide-mcqs input[type="radio"]').first()).toBeAttached();
   await expect(nav.getByRole('button',{name:/Explanation \/ MCQ \/ Original/})).toHaveCount(0);
 });
