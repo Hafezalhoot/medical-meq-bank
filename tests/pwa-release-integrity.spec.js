@@ -4,7 +4,7 @@ import {runInNewContext} from 'node:vm';
 
 test('fresh online HTML loads one coherent version of every CSS and JS asset', async ({page}) => {
   await page.goto('/', {waitUntil:'domcontentloaded'});
-  await expect(page.getByRole('heading', {name:'Medical MEQ Review Bank'})).toBeVisible();
+  await expect(page.getByRole('heading', {name:'Your medical study library'})).toBeVisible();
 
   const result=await page.evaluate(async()=>{
     const release=(await (await fetch('/version.json',{cache:'no-store'})).json()).version;
@@ -47,7 +47,7 @@ test('cached obsolete CSS cannot corrupt the released page after reload', async 
     ));
   });
   await page.reload({waitUntil:'domcontentloaded'});
-  await expect(page.getByRole('heading',{name:'Medical MEQ Review Bank'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Your medical study library'})).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>
     Math.round(document.querySelector('.pwa-tools-toggle .ui-icon svg').getBoundingClientRect().width)
   )).toBe(18);
