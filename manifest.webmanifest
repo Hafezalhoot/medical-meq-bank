@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Medical MEQ Review Bank",
-  "short_name": "MEQ Bank",
-  "description": "Offline-first medical MEQ, short-question and image-spot review bank.",
+  "name": "My Medical Library",
+  "short_name": "My Medical Library",
+  "description": "Personal lecture-based medical library with explanations, question practice, original figures and exams.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
