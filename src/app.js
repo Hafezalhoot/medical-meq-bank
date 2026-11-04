@@ -693,7 +693,7 @@ function render(){
       const jump=document.createElement('button');
       jump.type='button';
       jump.className='study-guide-jump';
-      jump.textContent=summary.textContent.replace(/\\s*\\(\\d+\\)$/,'');
+      jump.textContent=summary.textContent.replace(/\s*\(\d+\)$/,'');
       jump.setAttribute('aria-controls',details.id);
       jump.addEventListener('click',()=>{
         details.open=true;
