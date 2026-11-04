@@ -22,6 +22,8 @@ test('source guide has separate keyboard-accessible Explanation, MCQ and origina
     {name:'MCQ practice', id:derm+'-guide-mcqs'},
     {name:'Original lecture figures', id:derm+'-guide-original-figures'}
   ];
+  await expect(nav.locator('button').first()).toHaveText('Explanation');
+  await expect(nav.locator('button').nth(1)).toHaveText('MCQ practice');
   for(const shortcut of shortcuts) {
     const button=nav.getByRole('button',{name:shortcut.name,exact:true});
     await expect(button).toBeVisible();
