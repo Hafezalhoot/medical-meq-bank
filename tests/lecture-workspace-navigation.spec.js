@@ -66,3 +66,20 @@ test('legacy lecture omits unsupported explanation/MCQ shortcuts and returns to 
   await expect(page.getByRole('button',{name:'Open lecture: Bladder Cancer'})).toBeVisible();
   await expect(page.locator('.lecture-overview-panel h2')).toBeFocused();
 });
+
+
+test('core lecture navigation and random-item action emit no JavaScript exceptions', async ({page}) => {
+  const errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
+  await expect(page.locator('.study-item:not(.hidden)').first()).toBeAttached();
+  await page.getByRole('button',{name:'Random item'}).click();
+  await page.locator('#lectureFilter').selectOption('urology-bladder-cancer');
+  const back=page.locator('.lecture-head').getByRole('button',{name:'All lectures',exact:true});
+  await expect(back).toBeVisible();
+  await back.click();
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
+  expect(errors).toEqual([]);
+});
