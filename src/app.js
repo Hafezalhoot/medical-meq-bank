@@ -686,7 +686,7 @@ function render(){
     }
     // Source-guide destinations are available only when the lecture actually contains them.
     const nav=sec.querySelector('.lecture-section-nav');
-    const offline=nav.querySelector('.offline-lecture-btn');
+    const firstLegacy=nav.querySelector('.quick-view-btn');
     studyGuide.querySelectorAll('details[data-guide-section]').forEach(details=>{
       const summary=details.querySelector('summary');
       if(!summary)return;
@@ -700,7 +700,7 @@ function render(){
         details.scrollIntoView({behavior:scrollBehavior(),block:'start'});
         summary.focus({preventScroll:true});
       });
-      nav.insertBefore(jump,offline);
+      nav.insertBefore(jump,firstLegacy);
     });
   }
   l.cases.forEach((c,i)=>sec.querySelector('.cases-grid').appendChild(caseCard(l,c,i)));
