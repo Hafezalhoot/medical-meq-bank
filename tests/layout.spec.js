@@ -14,7 +14,7 @@ async function openBank(page, viewport) {
   await page.setViewportSize({width: viewport.width, height: viewport.height});
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
-    name: 'Medical MEQ Review Bank'
+    name: 'Your medical study library'
   })).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
   await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
