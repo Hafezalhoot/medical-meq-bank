@@ -342,6 +342,71 @@ function renderLectureOverview(container,list){
   });
   container.appendChild(section);
 }
+// Source-backed, on-demand MCQ browser for a single selected specialty.
+const mcqOverviewLoading=new Set(),mcqOverviewFailures=new Set();
+function renderMcqOverview(container,list){
+  const section=document.createElement('section');section.className='mcq-library';
+  const heading=document.createElement('div');heading.className='section-head';
+  const intro=document.createElement('div'),title=document.createElement('h2'),subtitle=document.createElement('p');
+  title.textContent='Source MCQs · '+(subjects.find(item=>item.id===activeSubject)?.label||'Selected specialty');
+  subtitle.textContent='Search reviewed MCQs across lectures in this specialty. Rating is personal revision, not exam accuracy.';
+  intro.append(title,subtitle);heading.append(intro);section.append(heading);
+  const results=document.createElement('div');results.className='mcq-library-groups';
+  let awaiting=0;
+  list.forEach(lecture=>{
+    const count=lectureMcqCount(lecture);
+    if(!count)return;
+    if(!lectureIsLoaded(lecture)){
+      awaiting+=1;
+      const pending=document.createElement('p');
+      pending.className='mcq-library-loading';
+      pending.setAttribute('role','status');
+      pending.textContent=mcqOverviewFailures.has(lecture.id)
+        ?'Could not load source MCQs for '+lecture.title+'. Select the lecture and try again.'
+        :'Loading '+count+' source MCQs from '+lecture.title+'…';
+      results.append(pending);
+      return;
+    }
+    const detail=createStudyGuide(lecture)?.querySelector('[data-guide-section="mcqs"]');
+    if(!detail)return;
+    detail.open=true;
+    const group=document.createElement('section');
+    group.className='lecture mcq-library-lecture';
+    group.dataset.lecture=lecture.id;
+    const row=document.createElement('div');row.className='mcq-library-lecture-heading';
+    const label=document.createElement('h3');
+    label.textContent=lecture.title+' · '+count+' MCQs';
+    const open=document.createElement('button');open.type='button';open.className='btn btn-soft';
+    open.textContent='Open lecture';
+    open.setAttribute('aria-label','Open lecture: '+lecture.title);
+    open.addEventListener('click',()=>selectLecture(lecture.id,true));
+    row.append(label,open);group.append(row,detail);results.append(group);
+  });
+  section.append(results);
+  if(!results.children.length){
+    const empty=document.createElement('p');empty.className='mcq-library-no-content';
+    empty.textContent='No reviewed source MCQs have been added to this specialty yet.';
+    section.append(empty);
+  }
+  container.append(section);
+}
+function ensureMcqOverviewLoaded(list){
+  const api=globalThis.MEQLectureLoader;
+  if(typeof api?.loadLecture!=='function')return;
+  const scope=activeCourseId()+'::'+activeSubject;
+  list.forEach(lecture=>{
+    if(!lectureMcqCount(lecture)||lectureIsLoaded(lecture)||mcqOverviewLoading.has(lecture.id)||mcqOverviewFailures.has(lecture.id))return;
+    mcqOverviewLoading.add(lecture.id);
+    api.loadLecture(lecture.id,{refresh:false,busy:false}).then(()=>{
+      mcqOverviewLoading.delete(lecture.id);
+      if(scope===activeCourseId()+'::'+activeSubject&&$('lectureFilter').value==='all'&&$('typeFilter').value==='mcq')render();
+    }).catch(()=>{
+      mcqOverviewFailures.add(lecture.id);mcqOverviewLoading.delete(lecture.id);
+      if(scope===activeCourseId()+'::'+activeSubject&&$('lectureFilter').value==='all'&&$('typeFilter').value==='mcq')render();
+    });
+  });
+}
+
 // Arabic notes may start with a Latin clinical term: use the source prose's script for reading direction.
 const studyReadingDirection = text => /[\u0600-\u06ff]/.test(text) ? 'rtl' : 'auto';
 function createStudyGuide(lecture) {
@@ -643,11 +708,15 @@ function render(){
   if(!list.length){renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();return}
   const selected=$('lectureFilter').value;
   if(selected==='all'){
-    renderLectureOverview(container,list);
-    renderLectureNav();
-    renderSubtopicNav();
-    updateStatus();
-    $('empty').classList.remove('show');
+    if($('typeFilter').value==='mcq'){
+      renderMcqOverview(container,list);
+      renderLectureNav();renderSubtopicNav();updateStatus();bind();applyFilters();
+      ensureMcqOverviewLoaded(list);
+    }else{
+      renderLectureOverview(container,list);
+      renderLectureNav();renderSubtopicNav();updateStatus();
+      $('empty').classList.remove('show');
+    }
     return
   }
   const l=list.find(lecture=>lecture.id===selected);
@@ -909,7 +978,7 @@ function toggleSidebar(kind){const k=kind==='lectures'?'medicalBankHideLecturesV
 populateSubjectSelector();populateLectureFilter();updateTopicOptions();render();validateBank();setSidebarState();
 $('subjectSelector').addEventListener('change',()=>{activeSubject=$('subjectSelector').value;storage.set('medicalBankSubjectV4',activeSubject);activeSubtopic='all';delete $('lectureFilter').dataset.explicitAll;populateLectureFilter();updateTopicOptions();render();validateBank()});
 $('lectureFilter').addEventListener('change',()=>selectLecture($('lectureFilter').value,false));
-['search','typeFilter','topicFilter','priorityFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',()=>{applyFilters();syncQuickButtons()}));
+['search','typeFilter','topicFilter','priorityFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',()=>{if(id==='typeFilter'&&$('lectureFilter').value==='all')render();else applyFilters();syncQuickButtons()}));
 $('revealBtn').setAttribute('aria-pressed','false');
 $('revealBtn').onclick=()=>{revealAll=!revealAll;$('revealBtn').setAttribute('aria-pressed',revealAll?'true':'false');document.querySelectorAll('.study-item:not(.hidden)').forEach(it=>{it.classList.toggle('open',revealAll);const b=it.querySelector('.toggle');if(b)b.textContent=revealAll?'Hide answer':(it.dataset.type==='case'?'Show model answer':'Show answer')});$('revealBtn').textContent=revealAll?'Hide all':'Reveal all'};
 $('randomBtn').onclick=()=>{let list=[...document.querySelectorAll('.study-item:not(.hidden)')];if($('typeFilter').value==='all'){const core=list.filter(x=>x.dataset.type!=='extra');if(core.length)list=core}if(!list.length)return;const it=list[Math.floor(Math.random()*list.length)];const parentDetails=it.closest('details');if(parentDetails)parentDetails.open=true;it.scrollIntoView({behavior:scrollBehavior(),block:'center'});if(!reduceMotion())it.animate([{outline:'5px solid #f79009'},{outline:'0 solid transparent'}],{duration:1300})};
