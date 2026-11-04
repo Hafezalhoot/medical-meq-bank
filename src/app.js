@@ -18,6 +18,10 @@ const subjects = [
 ];
 const lectures = [];
 const $=id=>document.getElementById(id);
+// Shared by question navigation, source figure viewer and random practice.
+// Keep reduced-motion navigation instant instead of relying on an undefined global.
+function reduceMotion(){return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true}
+function scrollBehavior(){return reduceMotion()?'instant':'smooth'}
 // The library shortcut opens the existing native disclosure without touching study state.
 $('browseLibraryLink')?.addEventListener('click', event => {
   const library = $('courseLibraryDisclosure');
