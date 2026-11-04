@@ -98,3 +98,34 @@ test('phone MCQ review uses existing filter sheet with no horizontal overflow',a
   await expect(page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(30);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
 });
+
+
+test('specialty-wide source index finds MCQs and opens the exact authored question',async ({page})=>{
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await page.locator('#subjectSelector').selectOption('psychiatry');
+  await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
+  await page.locator('#search').fill('fear from anxiety');
+  const result=page.locator('#globalSearchList .global-search-result[data-type="mcq"]')
+    .filter({hasText:'How does the lecture distinguish fear from anxiety?'});
+  await expect(result).toHaveCount(1,{timeout:20000});
+  await result.click();
+  await expect(page.locator('#lectureFilter')).toHaveValue('internal-medicine-ii-psychiatry-anxiety-disorders');
+  const target=page.locator('#internal-medicine-ii-psychiatry-anxiety-disorders-mcq-psyanx-mcq-001');
+  await expect(target).toBeVisible({timeout:20000});
+  await expect(page.locator('#typeFilter')).toHaveValue('mcq');
+});
+
+test('catalog MCQ metadata is exact and does not change original grading keys',async ({page})=>{
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  const response=await page.request.get('./lectures/catalog.json');
+  expect(response.ok()).toBe(true);
+  const catalog=await response.json();
+  const available=catalog.lectures.filter(x=>Number.isInteger(x.mcqCount));
+  expect(available.map(x=>[x.id,x.mcqCount]).sort()).toEqual([
+    ['internal-medicine-ii-dermatology-introduction',30],
+    ['internal-medicine-ii-psychiatry-anxiety-disorders',56],
+    ['internal-medicine-ii-psychiatry-psychiatric-history-mse',52]
+  ].sort());
+  expect(available.reduce((sum,x)=>sum+x.mcqCount,0)).toBe(138);
+});
