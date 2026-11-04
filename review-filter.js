@@ -41,6 +41,25 @@
   const priorityFilter = document.getElementById('priorityFilter');
   const inapplicableControls=[topicFilter,priorityFilter,reviewFilter].filter(Boolean);
   let domCache=null;
+  const getDomCache = () => {
+    const studyItems = [...document.querySelectorAll('.study-item')];
+    const rapidItems = [...document.querySelectorAll('.rapid-item')];
+    const lectures = [...document.querySelectorAll('.lecture')];
+    const sections = [...document.querySelectorAll('.content-section')];
+
+    const changed = !domCache ||
+      domCache.studyItems.length !== studyItems.length ||
+      domCache.rapidItems.length !== rapidItems.length ||
+      domCache.lectures.length !== lectures.length ||
+      domCache.sections.length !== sections.length ||
+      domCache.studyItems[0] !== studyItems[0] ||
+      domCache.rapidItems[0] !== rapidItems[0] ||
+      domCache.lectures[0] !== lectures[0];
+
+    if (changed) domCache = {studyItems, rapidItems, lectures, sections};
+    return domCache;
+  };
+
   const optionExists=(control,value)=>[...control.options].some(option=>option.value===value);
   const setControlApplicability = mode => {
     const suppressed=mode==='rapid'?inapplicableControls:
