@@ -1,4 +1,6 @@
-# Medical MEQ Review Bank — Design System V5
+# My Medical Library — Design System and V5 History
+
+**Approved 2026-11-04:** Personal lecture-first learning library. New brand `My Medical Library`; old MEQ Studio naming was user-facing only and is replaced incrementally. MEQ remains a question type. Preserve Mineral Blue palette, source imagery, complete exam/review/offline flows and all persistent IDs. This document retains the earlier V5 design evidence as history. Read [the implementation status](docs/project-autopilot/PROJECT_STATUS.md) and [roadmap issue #74](https://github.com/Hafezalhoot/medical-meq-bank/issues/74) before the next UI increment.
 
 **Stage:** V5 Mineral Blue Studio shipped in `2026.10.26.9` (PR #71, main `dc3819f`), Cloudflare Worker `b873bcb3` verified at 100% traffic. V5.1 backup safety under development; production Access issue #35 and Cloudflare-side build-only configuration issue #50 remain open.  
 **Source of truth:** the actual `src/app.css`, `src/index.html`, `src/app.js`, source-linked medical content and test evidence. **Progress:** [MEQ_UI_UX_V4_PROGRESS.md](MEQ_UI_UX_V4_PROGRESS.md).
