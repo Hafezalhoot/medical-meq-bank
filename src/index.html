@@ -4,28 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F5F7FC">
-<meta name="application-name" content="Medical MEQ Bank">
+<meta name="application-name" content="My Medical Library">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="MEQ Bank">
-<meta name="description" content="Offline-first medical MEQ and short-question review bank organized by subject, lecture and subtopic.">
+<meta name="apple-mobile-web-app-title" content="My Medical Library">
+<meta name="description" content="A personal offline-first medical library for lecture explanations, source-based questions, original figures and exams.">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 
-<title>Medical MEQ Review Bank</title>
+<title>My Medical Library — Lectures, Questions &amp; Exams</title>
 <link rel="stylesheet" href="./app.css">
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to study content</a>
 <div class="app">
-<header class="studio-masthead" aria-label="Medical MEQ workspace">
+<header class="studio-masthead" aria-label="My Medical Library workspace">
   <div class="studio-identity">
     <span class="studio-brandmark" aria-hidden="true">
       <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M16 7c-4.2-2.7-8-3-12-2v21c4-1 8-.7 12 2m0-21c4.2-2.7 8-3 12-2v21c-4-1-8-.7-12 2M16 7v21"/></svg>
     </span>
-    <span class="studio-wordmark"><strong>MEQ Studio</strong><small>THE MEDICAL STUDY WORKSPACE</small></span>
+    <span class="studio-wordmark"><strong>My Medical Library</strong><small>LECTURES · QUESTIONS · EXAMS</small></span>
   </div>
+  <a class="studio-library-link" id="browseLibraryLink" href="#courseLibraryDisclosure">Browse my library</a>
   <div class="studio-masthead-tools">
     <button class="theme-toggle" id="darkBtn" type="button" aria-label="Switch to dark mode"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"></path></svg></span><span class="button-label" data-theme-label>Dark mode</span></button>
     <div class="pwa-tools" aria-label="App and backup tools">
@@ -44,16 +45,16 @@
   <div class="hero-grid">
     <div class="hero-copy">
       <div class="workspace-brandline">
-        <div class="eyebrow">FOCUS ON WHAT MATTERS</div>
+        <div class="eyebrow">YOUR PERSONAL LECTURE LIBRARY</div>
         
       </div>
-      <h1>Medical MEQ Review Bank</h1>
-      <p>A quieter place for clinical learning — lectures, explanations, original source images and exam practice, thoughtfully connected.</p>
+      <h1>Your medical study library</h1>
+      <p>Study your lectures, practise questions from their original sources, and review the topics that need attention.</p>
       <div class="hero-tags" id="heroTags"></div>
 
     </div>
     <div class="hero-panel">
-      <div class="hero-panel-heading"><strong>Your study path</strong><span>Pick up right where you left off.</span></div>
+      <div class="hero-panel-heading"><strong>Continue studying</strong><span>Pick up right where you left off.</span></div>
       <label class="hero-panel-label" for="subjectSelector">Subject / specialty</label>
       <select id="subjectSelector" class="subject-select"></select>
       <span class="subject-hint">Choose a specialty to display its lectures and study content.</span>
@@ -70,7 +71,7 @@
       <span class="course-library-symbol" aria-hidden="true">
         <svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><rect x="3" y="4" width="8" height="7" rx="1.5"></rect><rect x="13" y="4" width="8" height="7" rx="1.5"></rect><rect x="3" y="13" width="8" height="7" rx="1.5"></rect><rect x="13" y="13" width="8" height="7" rx="1.5"></rect></svg>
       </span>
-      <span class="course-library-heading"><strong>Explore your courses</strong><span>Switch between medical courses without losing your place or study progress.</span></span>
+      <span class="course-library-heading"><strong>My Library</strong><span>Courses, specialties and lectures. Your progress stays with you.</span></span>
       <span id="courseLibraryCount" class="course-library-count">Courses</span>
       <span class="course-library-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span>
     </summary>
@@ -222,7 +223,7 @@
     <div class="empty" id="empty"><h2>No content found</h2><div id="emptyMessage">No study items match the current selection.</div><button class="btn btn-soft empty-reset" id="emptyResetBtn" type="button">Reset filters</button><button class="btn btn-soft empty-reset" id="emptyBrowseCoursesBtn" type="button">Browse courses</button></div>
   </main>
 </div>
-<div class="footer">Medical course → specialty → lecture → subtopic • Saved progress • Offline-ready</div>
+<div class="footer">My Medical Library · Courses → specialties → lectures · Progress saved on this device</div>
 </div>
 <div id="appToast" class="toast" role="status" aria-live="polite"></div>
 <dialog id="examDialog" class="exam-dialog" aria-labelledby="examTitle" aria-modal="true"><div id="examRoot"><h2 id="examTitle">Exam mode</h2></div></dialog>
