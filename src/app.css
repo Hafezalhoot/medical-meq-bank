@@ -1625,6 +1625,14 @@ details.original-figure-tools{
 }
 
 
+/* V5.3 — compact, accessible library shortcut; preserve phone reading space. */
+.studio-library-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 15px;border:1px solid var(--line);border-radius:11px;background:var(--card);color:var(--brand);font-size:.82rem;font-weight:780;text-decoration:none;white-space:nowrap}
+.studio-library-link:hover{border-color:var(--brand);background:var(--brand-soft)}
+.studio-library-link:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+@media(max-width:1100px){.studio-library-link{display:none}}
+@media(max-width:540px){.studio-wordmark strong{max-width:112px;font-size:.82rem;line-height:1.05;white-space:normal}}
+@media print{.studio-library-link{display:none!important}}
+
 /* V5.1 — non-destructive backup review before any replacement. */
 .restore-preview-dialog{
   width:min(540px,calc(100vw - 24px));max-height:min(86dvh,730px);
