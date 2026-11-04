@@ -1754,3 +1754,19 @@ details.original-figure-tools{
   .lecture .lecture-section-nav .offline-lecture-btn{margin-inline-start:0}
 }
 @media print{.lecture .lecture-section-nav.quick-views{display:none!important}}
+
+/* V5.4: a clear return path from a lecture to the current specialty index. */
+.lecture .lecture-back{
+  display:inline-flex;align-items:center;min-height:44px;max-width:100%;
+  gap:7px;margin:0 0 6px;padding:8px 12px;border:1px solid var(--line);
+  border-radius:10px;background:var(--surface-soft);color:var(--brand);
+  font:inherit;font-size:.8rem;font-weight:800;cursor:pointer
+}
+.lecture .lecture-back::before{content:"←";font-size:1rem}
+.lecture .lecture-back:hover{background:var(--brand-soft);border-color:var(--brand)}
+.lecture .lecture-back:focus-visible,.lecture-overview-panel h2:focus-visible{
+  outline:3px solid var(--brand);outline-offset:3px
+}
+.study-guide-part[data-guide-section]{scroll-margin-top:100px}
+@media(max-width:700px){.study-guide-part[data-guide-section]{scroll-margin-top:22px}}
+@media print{.lecture .lecture-back{display:none!important}}
