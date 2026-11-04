@@ -1,0 +1,100 @@
+import {test, expect} from '@playwright/test';
+
+test.use({serviceWorkers:'block'});
+const dermatology='internal-medicine-ii-dermatology-introduction';
+
+async function openDermatology(page){
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#courseSelector')).toBeVisible();
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+  await expect(page.locator('#lecture-'+dermatology)).toBeVisible({timeout:20000});
+  await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
+}
+
+test('source MCQs are first-class: filter, source count, search and keyboard answer',async ({page})=>{
+  await openDermatology(page);
+  await expect(page.locator('#mcqCount')).toHaveText('30');
+  await page.locator('#typeFilter').selectOption('mcq');
+  const cards=page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)');
+  await expect(cards).toHaveCount(30);
+  const part=page.locator('#'+dermatology+'-guide-mcqs');
+  await expect(part).toHaveAttribute('open','');
+  await expect(page.locator('.cases-section')).toBeHidden();
+  await expect(page.locator('#lecture-'+dermatology+' .study-guide-part[data-guide-section="explanation"]')).toBeHidden();
+  await page.locator('#search').fill('largest organ');
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText('Which organ is described as the largest');
+  await expect(cards.first()).toContainText('Lecture source: PDF p. 1');
+  await cards.first().locator('input[type="radio"]').nth(1).check();
+  await cards.first().getByRole('button',{name:'Reveal explanation'}).click();
+  await expect(cards.first().locator('.study-guide-answer')).toContainText('Your answer is correct.');
+});
+
+test('MCQs have explicit saved ratings but answering alone never auto-marks Weak',async ({page})=>{
+  await openDermatology(page);
+  await page.locator('#typeFilter').selectOption('mcq');
+  const first=page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)').first();
+  await first.locator('input[type="radio"]').first().check();
+  await first.getByRole('button',{name:'Reveal explanation'}).click();
+  await expect(first.locator('.status.active')).toHaveCount(0);
+  await page.locator('#reviewFilter').selectOption('weak');
+  await expect(page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(0);
+  await page.locator('#reviewFilter').selectOption('all');
+  const restored=page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)').first();
+  await restored.locator('.status.weak').click();
+  await page.locator('#reviewFilter').selectOption('weak');
+  await expect(page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(1);
+  await expect(page.locator('#myReviewCount')).toContainText('1 to revisit');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
+  await page.locator('#typeFilter').selectOption('mcq');
+  await expect(page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(1);
+  await expect(page.locator('.study-guide-mcq:not(.hidden) .status.weak.active')).toHaveCount(1);
+});
+
+test('MCQ bank can search source questions across both Psychiatry lectures on demand',async ({page})=>{
+  const fetched=new Set();
+  page.on('request',request=>{
+    const url=new URL(request.url());
+    if(url.pathname.startsWith('/lectures/data/'))fetched.add(url.pathname);
+  });
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await page.locator('#subjectSelector').selectOption('psychiatry');
+  await expect(page.locator('#lectureFilter option[value="all"]')).toHaveCount(1);
+  await page.locator('#lectureFilter').selectOption('all');
+  await page.locator('#typeFilter').selectOption('mcq');
+  await expect(page.locator('#mainContent .study-guide-mcq:not(.hidden)')).toHaveCount(108,{timeout:30000});
+  await expect(page.locator('#mcqCount')).toHaveText('108');
+  await page.locator('#search').fill('fear from anxiety');
+  const cards=page.locator('#mainContent .study-guide-mcq:not(.hidden)');
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText('How does the lecture distinguish fear from anxiety?');
+  await expect(cards.first()).toContainText('Lecture source: PDF p.2');
+  expect([...fetched].every(path=>path.includes('psychiatry')||path.includes('urology-'))).toBe(true);
+  expect(fetched.has('/lectures/data/internal-medicine-ii-psychiatry-anxiety-disorders.json')).toBe(true);
+  expect(fetched.has('/lectures/data/internal-medicine-ii-psychiatry-psychiatric-history-mse.json')).toBe(true);
+});
+
+test('legacy lecture without authored MCQ has a truthful empty state and keeps Cases',async ({page})=>{
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.locator('#lectureFilter').selectOption('urology-bladder-cancer');
+  await expect(page.locator('#lecture-urology-bladder-cancer')).toBeVisible({timeout:20000});
+  await expect(page.locator('#mcqCount')).toHaveText('0');
+  await page.locator('#typeFilter').selectOption('mcq');
+  await expect(page.locator('#mainContent .study-guide-mcq')).toHaveCount(0);
+  await expect(page.locator('#emptyMessage')).toContainText('No source MCQs');
+  await page.locator('#typeFilter').selectOption('case');
+  await expect(page.locator('#urology-bladder-cancer-case-bc-c01')).toBeVisible();
+});
+
+test('phone MCQ review uses existing filter sheet with no horizontal overflow',async ({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await openDermatology(page);
+  await page.locator('#mobileFiltersToggle').click();
+  await page.locator('#typeFilter').selectOption('mcq');
+  await page.locator('#applyMobileFiltersBtn').click();
+  await expect(page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(30);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+});
