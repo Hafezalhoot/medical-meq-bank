@@ -1,5 +1,5 @@
 (() => {
-  const APP_VERSION = '2026.10.28.1';
+  const APP_VERSION = '2026.11.04.1';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -515,7 +515,7 @@
   });
   window.addEventListener('appinstalled', () => {
     if (installBtn) installBtn.hidden = true;
-    toast('MEQ Bank installed successfully.');
+    toast('My Medical Library installed successfully.');
   });
 
   const banner = $p('updateBanner');
