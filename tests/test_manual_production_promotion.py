@@ -39,6 +39,10 @@ class ManualPromotionTests(unittest.TestCase):
         self.assertIn("if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'", self.text)
         self.assertEqual(self.text.count("SOURCE_SHA: ${{ inputs.source_sha }}"), 2)
         self.assertIn('if [[ "$SOURCE_SHA" != "$(git rev-parse HEAD)" ]]; then', self.text)
+        # A dispatch may outlive a newer protected-main commit. Verify the
+        # *remote* head in both eligibility and immediately before deployment.
+        self.assertEqual(self.text.count("git ls-remote --exit-code origin refs/heads/main"), 2)
+        self.assertEqual(self.text.count('if [[ "$SOURCE_SHA" != "$remote_main_sha" ]]; then'), 2)
         self.assertIn("node scripts/promotion_gate.mjs", self.text)
         self.assertIn('wrangler@4 versions deploy "${WORKER_VERSION_ID}@100%"', self.text)
 
