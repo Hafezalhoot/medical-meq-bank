@@ -15,7 +15,9 @@ test('home and library are distinct, keyboard accessible workspace views', async
 
   await nav.getByRole('link', {name:'Library'}).click();
   await expect(page.locator('body')).toHaveAttribute('data-workspace', 'library');
-  await expect(page.locator('#courseLibraryDisclosure')).toHaveAttribute('open', '');
+  // Course/subject selectors already live above; don't duplicate the full
+  // course-card grid before the lecture list on the Library screen.
+  await expect(page.locator('#courseLibraryDisclosure')).toBeHidden();
   await expect(page.locator('#mainLayout')).toBeVisible();
   await expect(page.locator('.toolbar')).toBeHidden();
   await expect(page.locator('#lectureFilter')).toHaveValue('all', {timeout:15000});
@@ -104,4 +106,32 @@ test('unknown workspace hashes fall back safely to home rather than rendering em
   await page.goto('/#/non-existent',{waitUntil:'domcontentloaded'});
   await expect(page.locator('body')).toHaveAttribute('data-workspace','home');
   await expect(page.locator('.hero')).toBeVisible();
+});
+
+test('mobile home and exams do not inherit the long study filter chip row', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/#/home',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#activeFilterChips')).toBeHidden();
+  await expect(page.locator('.mobile-filter-shell')).toBeHidden();
+  await page.getByRole('navigation',{name:'Primary workspace'}).getByRole('link',{name:'Exams'}).click();
+  await expect(page.locator('#activeFilterChips')).toBeHidden();
+  await expect(page.locator('.mobile-filter-shell')).toBeHidden();
+});
+
+test('mobile library shows its lecture index before the first viewport ends', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/#/library',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('.lecture-overview-panel h2')).toBeVisible({timeout:20000});
+  const top=await page.locator('.lecture-overview-panel h2').evaluate(el=>el.getBoundingClientRect().top);
+  expect(top).toBeGreaterThanOrEqual(0);
+  expect(top).toBeLessThan(600);
+  await expect(page.locator('#courseLibraryDisclosure')).toBeHidden();
+});
+
+test('offline standalone can restore a deep linked lecture without online loader', async ({page}) => {
+  const route='/offline/Medical_MEQ_Review_Bank_Offline.html#/lecture/urology-bladder-cancer?course=surgery&subject=urology';
+  await page.goto(route,{waitUntil:'domcontentloaded',timeout:30000});
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','lecture');
+  await expect(page.locator('#lectureFilter')).toHaveValue('urology-bladder-cancer',{timeout:20000});
+  await expect(page.locator('#lecture-urology-bladder-cancer .lecture-title')).toBeVisible();
 });
