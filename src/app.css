@@ -2019,3 +2019,8 @@ body[data-workspace="review"] .my-review{
 @media print{
   .workspace-primary-nav,.workspace-exam-entry{display:none!important}
 }
+
+/* Keep the legacy / entry's reader-first geometry while V6 nav shares the header. */
+@media (min-width:1101px){
+  body:not([data-workspace]) .studio-masthead{padding-bottom:2px}
+}
