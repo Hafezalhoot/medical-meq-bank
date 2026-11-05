@@ -39,6 +39,7 @@ def load_embedded_registry() -> dict:
         fail("course catalog has no courses")
 
     packs: dict[str, dict] = {}
+    chapter_by_lecture: dict[str, str] = {}
     for entry in entries:
         if not isinstance(entry, dict):
             fail("course catalog contains a non-object entry")
@@ -68,9 +69,13 @@ def load_embedded_registry() -> dict:
             if not resolved.is_relative_to(ROOT.resolve()) or not resolved.is_file():
                 fail(f"course {course_id} lecture catalog is missing or unsafe")
             prepared["lectureCatalogUrl"] = "./" + resolved.relative_to(ROOT).as_posix()
+            lecture_entries = read_json(resolved).get("lectures", [])
+            for lecture in lecture_entries:
+                if lecture.get("courseId") == course_id and lecture.get("chapterId"):
+                    chapter_by_lecture[lecture["id"]] = lecture["chapterId"]
         packs[course_id] = prepared
 
-    return {"catalog": catalog, "packs": packs}
+    return {"catalog": catalog, "packs": packs, "lectureChapters": chapter_by_lecture}
 
 
 def insert_once(text: str, marker: str, insertion: str, label: str, *, before: bool = True) -> str:
