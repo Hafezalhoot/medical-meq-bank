@@ -1794,3 +1794,285 @@ details.original-figure-tools{
  .mcq-library-lecture-heading button{width:100%}
 }
 @media print{.mcq-library-lecture-heading button{display:none!important}}
+
+
+/* V6 UX-01: structured workspaces. Scoped to routed screens; legacy plain /
+   keeps its established layout and persisted learner state intact. */
+:root {
+  --v6-canvas:#F6F8F7; --v6-surface:#FFFFFF; --v6-ink:#182A32;
+  --v6-muted:#587079; --v6-line:#DCE6E4;
+  --v6-primary:#1C6765; --v6-selected:#E5F3F0;
+}
+body.dark {
+  --v6-canvas:#111E24; --v6-surface:#192A31; --v6-ink:#F1F8F7;
+  --v6-muted:#C3D7D4; --v6-line:#385159;
+  --v6-primary:#9BD8CB; --v6-selected:#294944;
+}
+.workspace-primary-nav {
+  display:flex;align-items:center;gap:5px;
+  margin:0 0 14px;padding:6px;
+  background:var(--v6-surface);border:1px solid var(--v6-line);
+  border-radius:14px;color:var(--v6-ink);
+}
+.studio-masthead > .workspace-primary-nav{margin:0;padding:4px;flex:0 1 auto;min-width:0}
+.workspace-primary-nav a {
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:80px;min-height:44px;padding:9px 14px;
+  border-radius:10px;color:var(--v6-muted);
+  font-size:.87rem;font-weight:750;text-decoration:none;
+  transition:background-color .14s,color .14s;
+}
+.workspace-primary-nav a:hover {background:var(--v6-selected);color:var(--v6-ink)}
+.workspace-primary-nav a[aria-current="page"]{
+  color:var(--v6-primary);background:var(--v6-selected);
+}
+.workspace-primary-nav a:focus-visible,
+.workspace-exam-entry button:focus-visible{
+  outline:3px solid var(--v6-primary);outline-offset:2px;
+}
+body[data-workspace] {background:var(--v6-canvas);color:var(--v6-ink)}
+body[data-workspace] .app{max-width:1540px}
+body[data-workspace] .study-insights,
+body[data-workspace] .stats{display:none!important}
+body[data-workspace="home"] #studyBreadcrumb,
+body[data-workspace="home"] .toolbar,
+body[data-workspace="home"] .nav-controls,
+body[data-workspace="home"] #mainLayout,
+body[data-workspace="home"] #dataAlert,
+body[data-workspace="home"] #updateBanner,
+body[data-workspace="home"] #activeFilterChips,
+body[data-workspace="library"] #activeFilterChips,
+body[data-workspace="lecture"] #activeFilterChips,
+body[data-workspace="review"] #activeFilterChips,
+body[data-workspace="exams"] #activeFilterChips,
+body[data-workspace="home"] .mobile-filter-shell,
+body[data-workspace="library"] .mobile-filter-shell,
+body[data-workspace="lecture"] .mobile-filter-shell,
+body[data-workspace="review"] .mobile-filter-shell,
+body[data-workspace="exams"] .mobile-filter-shell,
+body[data-workspace="library"] .study-launch-row,
+body[data-workspace="library"] .my-review,
+body[data-workspace="library"] .toolbar,
+body[data-workspace="library"] .nav-controls,
+body[data-workspace="lecture"] .hero,
+body[data-workspace="lecture"] .study-launch-row,
+body[data-workspace="lecture"] .toolbar,
+body[data-workspace="lecture"] .nav-controls,
+body[data-workspace="practice"] .hero,
+body[data-workspace="practice"] .study-launch-row,
+body[data-workspace="review"] .hero,
+body[data-workspace="review"] .course-library,
+body[data-workspace="review"] #studyBreadcrumb,
+body[data-workspace="review"] .toolbar,
+body[data-workspace="review"] .nav-controls,
+body[data-workspace="review"] #mainLayout,
+body[data-workspace="exams"] .hero,
+body[data-workspace="exams"] .study-launch-row,
+body[data-workspace="exams"] #studyBreadcrumb,
+body[data-workspace="exams"] .toolbar,
+body[data-workspace="exams"] .nav-controls,
+body[data-workspace="exams"] #mainLayout{
+  display:none!important;
+}
+body[data-workspace="home"] .hero,
+body[data-workspace="library"] .hero{
+  min-height:0;background:var(--v6-surface);
+  border:1px solid var(--v6-line);color:var(--v6-ink);
+  box-shadow:none;border-radius:18px;padding:clamp(16px,2.2vw,30px);
+}
+body[data-workspace="home"] .hero:after,
+body[data-workspace="library"] .hero:after{display:none}
+body[data-workspace="home"] .hero p{color:var(--v6-muted)}
+body[data-workspace="home"] .hero .eyebrow{color:var(--v6-primary)}
+body[data-workspace="home"] .hero-panel,
+body[data-workspace="library"] .hero-panel{
+  background:var(--v6-selected);border:1px solid var(--v6-line);
+  color:var(--v6-ink);box-shadow:none;backdrop-filter:none;
+  margin:0;padding:14px;border-radius:14px;
+}
+body[data-workspace="home"] .hero-panel-heading,
+body[data-workspace="home"] .hero-panel-label,
+body[data-workspace="home"] .subject-hint,
+body[data-workspace="library"] .hero-panel-label,
+body[data-workspace="library"] .subject-hint{
+  color:var(--v6-ink);
+}
+body[data-workspace="library"] .hero {margin-bottom:14px;padding:14px}
+body[data-workspace="library"] .hero-grid{display:block;max-width:100%}
+body[data-workspace="library"] .hero-copy,
+body[data-workspace="library"] .hero-panel-heading,
+body[data-workspace="library"] .hero-panel .study-resume-btn,
+body[data-workspace="library"] .hero-panel .exam-launch-btn{display:none!important}
+body[data-workspace="library"] .hero-panel{
+  max-width:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;
+  background:transparent;border:0;padding:0;
+}
+body[data-workspace="library"] .hero-panel select{
+  flex:1 1 230px;max-width:330px;min-width:165px;margin:0;
+}
+body[data-workspace="library"] .hero-panel label{flex:0 0 auto;margin:0}
+body[data-workspace="library"] .study-launch-row{display:block}
+body[data-workspace="library"] .course-library{margin:0 0 16px;box-shadow:none}
+body[data-workspace="library"] #mainLayout{
+  display:grid!important;grid-template-columns:minmax(210px,245px) minmax(0,1fr)!important;
+  gap:17px;
+}
+body[data-workspace="library"] #mainLayout .study-navigation-column{
+  display:block!important;position:static;max-height:none;overflow:visible;
+  grid-column:1!important;
+}
+body[data-workspace="library"] #mainLayout .lecture-sidebar{
+  display:block!important;position:static;max-height:70vh;overflow:auto;
+}
+body[data-workspace="library"] #mainLayout .subtopic-sidebar{display:none!important}
+body[data-workspace="library"] #mainContent{grid-column:2!important;max-width:none}
+body[data-workspace="library"] .lecture-overview-panel{padding:0}
+body[data-workspace="library"] .lecture-overview-grid{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:8px;
+}
+body[data-workspace="library"] .lecture-overview-card{
+  min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.45fr);
+  gap:5px 20px;padding:15px 18px;
+  box-shadow:none;border:1px solid var(--v6-line);border-radius:12px;
+}
+body[data-workspace="library"] .lecture-overview-top{grid-column:1;min-width:0}
+body[data-workspace="library"] .lecture-overview-meta{grid-column:1;min-width:0}
+body[data-workspace="library"] .lecture-overview-bottom{
+  grid-column:2;grid-row:1/3;align-self:center;min-width:0;
+}
+body[data-workspace="lecture"] #mainLayout{
+  display:grid!important;grid-template-columns:minmax(215px,250px) minmax(0,1fr)!important;
+  align-items:start;gap:24px;
+}
+body[data-workspace="lecture"] #mainLayout .study-navigation-column{
+  display:block!important;grid-column:1!important;position:sticky;top:14px;
+  max-height:calc(100dvh - 110px);overflow:auto;
+}
+body[data-workspace="lecture"] #mainLayout .lecture-sidebar{display:none!important}
+body[data-workspace="lecture"] #mainLayout .subtopic-sidebar{
+  display:block!important;position:static;
+}
+body[data-workspace="lecture"] #mainContent{grid-column:2!important;max-width:none}
+body[data-workspace="lecture"] .lecture-head{
+  background:var(--v6-surface);border:1px solid var(--v6-line);box-shadow:none;
+  border-radius:16px;
+}
+body[data-workspace="lecture"] .lecture-side{display:none}
+body[data-workspace="review"] .study-launch-row{display:block}
+body[data-workspace="review"] .my-review{
+  margin:0;max-width:980px;box-shadow:none;border:1px solid var(--v6-line);
+}
+.workspace-exam-entry[hidden]{display:none!important}
+.workspace-exam-entry{
+  background:var(--v6-surface);color:var(--v6-ink);
+  border:1px solid var(--v6-line);border-radius:20px;
+  padding:clamp(25px,4vw,54px);margin:12px auto;max-width:880px;
+}
+.workspace-exam-overline{font-size:.79rem;font-weight:780;color:var(--v6-primary)}
+.workspace-exam-entry h1{font-size:clamp(1.7rem,3vw,2.6rem);line-height:1.2;margin:12px 0}
+.workspace-exam-entry p{color:var(--v6-muted);max-width:60ch;line-height:1.7;margin-bottom:25px}
+.workspace-exam-entry .btn{background:var(--v6-primary);color:var(--v6-surface)}
+@media (min-width:768px) and (max-width:1000px){
+  .studio-masthead > .workspace-primary-nav{
+    position:fixed;z-index:90;left:50%;right:auto;top:auto;
+    bottom:max(8px,env(safe-area-inset-bottom));
+    transform:translateX(-50%);width:min(620px,96vw);
+    margin:0;padding:5px;gap:0;
+    border-radius:15px;box-shadow:0 5px 28px rgba(19,35,40,.13);
+  }
+  .studio-masthead > .workspace-primary-nav a{
+    flex:1 1 0;min-width:0;min-height:48px;white-space:nowrap;
+  }
+  body[data-workspace] .app{padding-bottom:max(80px,calc(72px + env(safe-area-inset-bottom)))}
+}
+@media (max-width:767px){
+  body[data-workspace] .app{padding-bottom:max(90px,calc(80px + env(safe-area-inset-bottom)))}
+  .workspace-primary-nav{
+    position:fixed;z-index:90;bottom:max(7px,env(safe-area-inset-bottom));
+    left:8px;right:8px;margin:0;padding:5px;gap:0;
+    border-radius:15px;box-shadow:0 5px 28px rgba(19,35,40,.13);
+  }
+  .workspace-primary-nav a{
+    flex:1 1 0;min-width:0;min-height:48px;padding:10px 1px;
+    font-size:.7rem;line-height:1.25;white-space:nowrap;
+  }
+  body[data-workspace="library"] .hero-panel{display:block}
+  body[data-workspace="library"] .hero-panel label{display:block;margin:9px 0 3px}
+  body[data-workspace="library"] .hero-panel select{display:block;width:100%;max-width:none}
+  body[data-workspace="library"] #mainLayout,
+  body[data-workspace="lecture"] #mainLayout{display:block!important}
+  body[data-workspace="library"] #mainLayout .study-navigation-column,
+  body[data-workspace="lecture"] #mainLayout .study-navigation-column{display:none!important}
+  body[data-workspace="library"] #mainContent,
+  body[data-workspace="lecture"] #mainContent{display:block!important;grid-column:auto!important}
+  body[data-workspace="library"] .lecture-overview-card{grid-template-columns:minmax(0,1fr)}
+  body[data-workspace="library"] .lecture-overview-bottom{
+    grid-column:1;grid-row:auto;align-self:auto;
+  }
+  body[data-workspace="home"] .hero-grid{display:flex;flex-direction:column;gap:14px}
+  body[data-workspace="home"] .hero-copy,body[data-workspace="home"] .hero-panel{width:100%}
+  body[data-workspace="lecture"] .lecture-head{padding:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .workspace-primary-nav a{transition:none}
+}
+@media print{
+  .workspace-primary-nav,.workspace-exam-entry{display:none!important}
+}
+
+/* Keep the legacy / entry's reader-first geometry while V6 nav shares the header. */
+@media (min-width:1101px){
+  body:not([data-workspace]) .studio-masthead{padding-bottom:2px}
+}
+
+
+/* V6 library selector fix: legacy hero uses a column flex layout, which
+   made flex-basis:230px turn the selects into 230px-tall rows. */
+body[data-workspace] .studio-library-link{display:none!important}
+body[data-workspace="library"] .hero-panel{
+  display:grid;grid-template-columns:repeat(2,minmax(0,330px));
+  grid-template-rows:auto 48px;align-items:center;align-content:start;
+  justify-content:start;gap:6px 16px;
+}
+body[data-workspace="library"] .hero-panel .course-panel-label{
+  grid-column:1;grid-row:1
+}
+body[data-workspace="library"] .hero-panel label[for="subjectSelector"]{
+  grid-column:2;grid-row:1
+}
+body[data-workspace="library"] .hero-panel #courseSelector,
+body[data-workspace="library"] .hero-panel #subjectSelector{
+  display:block;width:100%;max-width:none;
+  height:48px;min-height:48px;max-height:48px;flex:none;
+  margin:0;align-self:center
+}
+body[data-workspace="library"] .hero-panel #courseSelector{
+  grid-column:1;grid-row:2
+}
+body[data-workspace="library"] .hero-panel #subjectSelector{
+  grid-column:2;grid-row:2
+}
+body[data-workspace="library"] .hero-panel .subject-hint,
+body[data-workspace="library"] .hero-panel .course-hint,
+body[data-workspace="library"] .hero-panel .offline-subject-btn{
+  display:none!important
+}
+@media(max-width:767px){
+  body[data-workspace="library"] .hero-panel{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:auto 48px auto 48px;
+    gap:5px
+  }
+  body[data-workspace="library"] .hero-panel .course-panel-label{
+    grid-column:1;grid-row:1
+  }
+  body[data-workspace="library"] .hero-panel #courseSelector{
+    grid-column:1;grid-row:2
+  }
+  body[data-workspace="library"] .hero-panel label[for="subjectSelector"]{
+    grid-column:1;grid-row:3;margin-top:6px
+  }
+  body[data-workspace="library"] .hero-panel #subjectSelector{
+    grid-column:1;grid-row:4
+  }
+}
