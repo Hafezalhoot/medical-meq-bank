@@ -137,7 +137,7 @@ class IntakeReportTests(unittest.TestCase):
             (lecture | {"title": "Modified"}, "a" * 64, "b" * 64, original),
             (lecture, "c" * 64, "b" * 64, original),
             (lecture, "a" * 64, "d" * 64, original),
-            (lecture, "a" * 64, "b" * 64, original.replace("Source figure", "Edited figure")),
+            (lecture, "a" * 64, "b" * 64, original.replace("Example", "Edited")),
         )
         for draft, pdf_hash, draft_hash, report in cases:
             with self.subTest(draft=draft, pdf_hash=pdf_hash, draft_hash=draft_hash):
