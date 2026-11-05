@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import importlib.util
 import json
+from hashlib import sha256
 import os
 import sys
 import unittest
@@ -16,6 +17,7 @@ sys.path.insert(0, str(ROOT_SOURCE / "tools"))
 spec = importlib.util.spec_from_file_location("lecture_intake_test_module", ROOT_SOURCE / "tools" / "add_lecture.py")
 intake = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(intake)
+import lecture_review_report as source_review
 
 
 def save(path, value):
@@ -505,6 +507,61 @@ class LectureIntakeTests(unittest.TestCase):
         self.assertEqual(self.catalog.read_bytes(), before_catalog)
         self.assertEqual((self.root / "courses" / "packs" / "internal-medicine.json").read_bytes(), before_pack)
         self.assertFalse((self.root / "lectures" / "data" / "internal-medicine-test-lecture.json").exists())
+
+
+    def private_review_flags(self, lecture, checked=True):
+        source = self.root / "original.pdf"
+        source.write_bytes(b"%PDF-1.4\\nonly a review hash fixture")
+        draft_path = self.root / "draft.json"
+        save(draft_path, lecture)
+        report_path = self.root / "source-review.md"
+        worksheet = source_review.build_report(
+            lecture, pdf_name=source.name, pdf_hash=sha256(source.read_bytes()).hexdigest(),
+            page_count=2, draft_hash=sha256(draft_path.read_bytes()).hexdigest(),
+        )
+        if checked:
+            worksheet = worksheet.replace("[ ]", "[x]")
+        report_path.write_text(worksheet, encoding="utf-8")
+        return ["--review-report", str(report_path), "--source-pdf", str(source),
+                "--page-count", "2"], source
+
+    def test_source_review_evidence_validated_before_lecture_write(self):
+        lecture = draft()
+        flags, original_pdf = self.private_review_flags(lecture)
+        self.run_cli(flags=("--write", "--reviewed", *flags))
+        registered = json.loads(self.catalog.read_text(encoding="utf-8"))["lectures"]
+        self.assertEqual(registered[0]["id"], lecture["id"])
+        self.assertTrue((self.root / "lectures" / "data" / f"{lecture['id']}.json").is_file())
+        self.assertTrue(original_pdf.is_file())
+
+    def test_unchecked_review_blocks_write_without_catalog_mutation(self):
+        lecture = draft()
+        flags, _ = self.private_review_flags(lecture, checked=False)
+        before = self.catalog.read_bytes()
+        with self.assertRaisesRegex(SystemExit, "unchecked"):
+            self.run_cli(flags=("--write", "--reviewed", *flags))
+        self.assertEqual(self.catalog.read_bytes(), before)
+        self.assertFalse((self.root / "lectures" / "data" / f"{lecture['id']}.json").exists())
+
+    def test_modified_pdf_blocks_reviewed_registration(self):
+        lecture = draft()
+        flags, original_pdf = self.private_review_flags(lecture)
+        original_pdf.write_bytes(b"%PDF-1.4\\nsource changed after review")
+        before = self.catalog.read_bytes()
+        with self.assertRaisesRegex(SystemExit, "stale|altered"):
+            self.run_cli(flags=("--write", "--reviewed", *flags))
+        self.assertEqual(self.catalog.read_bytes(), before)
+
+    def test_incomplete_review_evidence_arguments_fail_closed(self):
+        lecture = draft()
+        flags, _ = self.private_review_flags(lecture)
+        before = self.catalog.read_bytes()
+        for partial in (flags[:2], flags[2:4], flags[4:]):
+            with self.subTest(partial=partial), self.assertRaisesRegex(
+                    SystemExit, "review-report.*source-pdf.*page-count"):
+                self.run_cli(flags=("--write", "--reviewed", *partial))
+        self.assertEqual(self.catalog.read_bytes(), before)
+
 
 
 if __name__ == "__main__":
