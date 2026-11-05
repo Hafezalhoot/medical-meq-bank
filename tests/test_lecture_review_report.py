@@ -90,6 +90,14 @@ class IntakeReportTests(unittest.TestCase):
         self.assertIn("No page-linked items yet", report)
         self.assertIn("not an approval", report)
 
+    def test_review_signoff_is_required_before_any_registration(self):
+        report = intake_report.build_report({"title": "Source"}, page_count=1)
+        self.assertIn(
+            "- [ ] Confirm medical/editorial approval before any --write --reviewed registration.",
+            report,
+        )
+        self.assertNotIn("run --write --reviewed only after approval", report)
+
     def test_pdf_hash_and_exclusive_report_creation(self):
         with TemporaryDirectory() as folder:
             root = Path(folder)
