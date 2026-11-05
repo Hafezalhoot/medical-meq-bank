@@ -42,7 +42,7 @@
   const inapplicableControls=[topicFilter,priorityFilter,reviewFilter].filter(Boolean);
   let domCache=null;
   const getDomCache = () => {
-    const studyItems = [...document.querySelectorAll('.study-item')];
+    const studyItems = [...document.querySelectorAll('.study-item, .study-guide-mcq')];
     const rapidItems = [...document.querySelectorAll('.rapid-item')];
     const lectures = [...document.querySelectorAll('.lecture')];
     const sections = [...document.querySelectorAll('.content-section')];
@@ -240,7 +240,7 @@
         if(showOnlyMCQs&&matched&&mcqPart)mcqPart.open=true;
       }
       const lectureAllowed = lf === 'all' || lecture.dataset.lecture === lf;
-      const anyStudy = [...lecture.querySelectorAll('.study-item')]
+      const anyStudy = [...lecture.querySelectorAll('.study-item, .study-guide-mcq')]
         .some(item => !item.classList.contains('hidden'));
       const anyRapid = [...lecture.querySelectorAll('.rapid-item')]
         .some(item => !item.classList.contains('hidden'));
