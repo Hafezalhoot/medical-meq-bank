@@ -1380,7 +1380,7 @@ syncThemeButton();
     const courseSelect=document.getElementById('courseSelector');
     const subjectSelect=document.getElementById('subjectSelector');
     const lectureSelect=document.getElementById('lectureFilter');
-    if(!registry||!loader||!subjectSelect||!lectureSelect)return;
+    if(!registry||!subjectSelect||!lectureSelect)return;
 
     const requestedCourse=route.params.get('course')||registry.activeCourse||courseSelect?.value;
     if(requestedCourse&&!registry.packs.has(requestedCourse)){location.hash='#/library';return;}
@@ -1395,12 +1395,16 @@ syncThemeButton();
       subjectSelect.value=requestedSubject;
       subjectSelect.dispatchEvent(new Event('change',{bubbles:true}));
     }
-    try {
-      await loader.loadSubject(requestedSubject,requestedCourse);
-    }catch(error){
-      if(sequence===routeSequence&&status)
-        status.textContent='Unable to load the selected subject. Choose it from Library.';
-      return;
+    // The offline standalone embeds lecture payloads; it deliberately has no
+    // MEQLectureLoader. Use the same selection logic without a network fetch.
+    if(loader?.loadSubject){
+      try {
+        await loader.loadSubject(requestedSubject,requestedCourse);
+      }catch(error){
+        if(sequence===routeSequence&&status)
+          status.textContent='Unable to load the selected subject. Choose it from Library.';
+        return;
+      }
     }
     if(sequence!==routeSequence)return;
     if(![...lectureSelect.options].some(option=>option.value===route.id)){
@@ -1434,7 +1438,6 @@ syncThemeButton();
     if(status)status.textContent=view==='lecture'?'Lecture reader':view.charAt(0).toUpperCase()+view.slice(1)+' workspace';
     if(document.querySelector('.app.study-focus'))setFocusMode(false);
     if(view==='library'){
-      courseLibrary.open=true;
       selectLecture('all',false);
     }
     if(view==='review')savedReview.open=true;
