@@ -94,6 +94,10 @@
           "schemaVersion": {
             "type": "integer",
             "const": 1
+          },
+          "chapterId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
           }
         },
         "additionalProperties": false

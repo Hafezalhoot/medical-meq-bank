@@ -253,6 +253,34 @@ let lectureNavSearchScope='';
 function renderLectureNav(){
   const nav=$('lectureNav'),list=visibleLectures(),selected=$('lectureFilter').value;
   const wrap=$('lectureNavSearchWrap'),field=$('lectureNavSearch'),status=$('lectureNavResult');
+  const heading=document.querySelector('.lecture-sidebar h2');
+  const caption=document.querySelector('.lecture-sidebar .sidebar-caption');
+  if(document.body.dataset.workspace==='library'){
+    const currentPack=globalThis.MEQCourseRegistry?.packs?.get?.(activeCourseId());
+    nav.setAttribute('aria-label','Specialties in selected course');
+    if(heading)heading.textContent='Specialties';
+    if(caption)caption.textContent='Choose a specialty to view its lectures.';
+    wrap.hidden=true;field.value='';status.textContent='';
+    nav.replaceChildren();
+    (currentPack?.subjects||[]).slice().sort((a,b)=>a.order-b.order).forEach(subject=>{
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='library-subject-link'+(subject.id===activeSubject?' active':'');
+      button.textContent=subject.label;
+      if(subject.id===activeSubject)button.setAttribute('aria-current','page');
+      button.onclick=()=>{
+        const subjectSelect=document.getElementById('subjectSelector');
+        if(subjectSelect.value===subject.id)return;
+        subjectSelect.value=subject.id;
+        subjectSelect.dispatchEvent(new Event('change',{bubbles:true}));
+      };
+      nav.append(button);
+    });
+    return;
+  }
+  nav.setAttribute('aria-label','Lectures in selected specialty');
+  if(heading)heading.textContent='Lectures';
+  if(caption)caption.textContent='Choose a lecture or return to the subject overview.';
   const scope=activeCourseId()+':'+activeSubject;
   if(scope!==lectureNavSearchScope){lectureNavSearchScope=scope;field.value='';}
   wrap.hidden=list.length<5;
@@ -327,13 +355,78 @@ function renderSubtopicNav(){
   nav.innerHTML='<div class="sidebar-empty">Subtopics will appear when this lecture finishes loading.</div>'
 }
 
+
+let librarySearchScope='';
+const librarySearchField=document.getElementById('libraryLectureSearch');
+function filterLibraryLectures(list){
+  if(document.body.dataset.workspace!=='library')return list;
+  const scope=activeCourseId()+'::'+activeSubject;
+  if(librarySearchScope!==scope){
+    librarySearchScope=scope;
+    if(librarySearchField)librarySearchField.value='';
+  }
+  const query=(librarySearchField?.value||'').trim().toLocaleLowerCase();
+  const result=query
+    ?list.filter(lecture=>lecture.title.toLocaleLowerCase().includes(query)||String(lecture.order).includes(query))
+    :list;
+  const status=document.getElementById('libraryResultCount');
+  if(status)status.textContent=query?result.length+' of '+list.length+' lectures':list.length+' lectures';
+  return result;
+}
+librarySearchField?.addEventListener('input',()=>{
+  if(document.body.dataset.workspace==='library'&&$('lectureFilter').value==='all')render();
+});
+librarySearchField?.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&librarySearchField.value){
+    librarySearchField.value='';render();event.preventDefault();
+  }
+});
 function renderLectureOverview(container,list){
   const section=document.createElement('section');
   section.className='lecture-overview-panel';
   const subjectName=subjects.find(subject=>subject.id===activeSubject)?.label||'Selected specialty';
   section.innerHTML=`<div class="section-head"><div><h2>${esc(subjectName)} lectures</h2><p>Choose a lecture to open its available explanations, practice questions and original source figures.</p></div><span class="lecture-overview-total">${list.length} ${list.length===1?'lecture':'lectures'}</span></div><div class="lecture-overview-grid"></div>`;
   const grid=section.querySelector('.lecture-overview-grid');
-  list.forEach(lecture=>{
+  const isLibrary=document.body.dataset.workspace==='library';
+  const shown=filterLibraryLectures(list);
+  const subjectMeta=globalThis.MEQCourseRegistry?.packs?.get?.(activeCourseId())
+    ?.subjects?.find(item=>item.id===activeSubject);
+  const chapters=isLibrary&&Array.isArray(subjectMeta?.chapters)
+    ?[...subjectMeta.chapters].sort((a,b)=>a.order-b.order||a.id.localeCompare(b.id)):[];
+  const chapterIdOf=lecture=>globalThis.MEQCourseRegistry?.chapterIdForLecture?.(lecture.id)||globalThis.MEQLectureLoader?.catalogEntry?.(lecture.id)?.chapterId||lecture.chapterId||'';
+  const known=new Set(chapters.map(chapter=>chapter.id));
+  const targets=new Map();
+  let otherTarget=grid;
+  const makeGroup=(className,chapterId,label,count)=>{
+    const sectionNode=document.createElement('section');
+    sectionNode.className=className;
+    if(chapterId)sectionNode.dataset.chapterId=chapterId;
+    const heading=document.createElement('div');
+    heading.className='library-chapter-heading';
+    const title=document.createElement('h3');title.textContent=label;
+    const total=document.createElement('span');total.textContent=count+' '+(count===1?'lecture':'lectures');
+    heading.append(title,total);
+    const rows=document.createElement('div');rows.className='lecture-overview-grid';
+    sectionNode.append(heading,rows);
+    section.append(sectionNode);
+    return rows;
+  };
+  if(chapters.length){
+    grid.remove();
+    for(const chapter of chapters){
+      const count=shown.filter(lecture=>chapterIdOf(lecture)===chapter.id).length;
+      if(count)targets.set(chapter.id,makeGroup('library-chapter',chapter.id,chapter.label,count));
+    }
+    const remaining=shown.filter(lecture=>!known.has(chapterIdOf(lecture))).length;
+    if(remaining)otherTarget=makeGroup('library-unassigned','','Other lectures',remaining);
+  }
+  if(!shown.length){
+    const empty=document.createElement('p');
+    empty.className='library-search-empty';
+    empty.textContent=list.length?'No lectures match this search.':'No lectures have been added to this specialty yet.';
+    section.append(empty);
+  }
+  shown.forEach(lecture=>{
     const button=document.createElement('button');
     button.type='button';
     button.className='lecture-overview-card';
@@ -349,7 +442,8 @@ function renderLectureOverview(container,list){
       selectLecture(lecture.id,!focused);
       if(focused)globalThis.MEQWorkspace?.openLecture(lecture.id);
     };
-    grid.appendChild(button);
+    const chapterId=chapterIdOf(lecture);
+    (targets.get(chapterId)||otherTarget).appendChild(button);
   });
   container.appendChild(section);
 }
@@ -716,7 +810,10 @@ document.addEventListener('click',event=>{
 function render(){
   const container=$('lectureContainer');container.innerHTML='';const list=visibleLectures();
   $('mainLayout').classList.toggle('lecture-overview-active',$('lectureFilter').value==='all');
-  if(!list.length){renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();return}
+  if(!list.length){
+    if(document.body.dataset.workspace==='library')filterLibraryLectures(list);
+    renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();return
+  }
   const selected=$('lectureFilter').value;
   if(selected==='all'){
     if($('typeFilter').value==='mcq'){
@@ -1438,6 +1535,8 @@ syncThemeButton();
     if(status)status.textContent=view==='lecture'?'Lecture reader':view.charAt(0).toUpperCase()+view.slice(1)+' workspace';
     if(document.querySelector('.app.study-focus'))setFocusMode(false);
     if(view==='library'){
+      const typeFilter=document.getElementById('typeFilter');
+      if(typeFilter)typeFilter.value='all';
       populateLectureFilter();
       selectLecture('all',false);
     }

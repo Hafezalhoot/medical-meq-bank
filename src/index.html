@@ -207,6 +207,13 @@
   </div>
 
   <main id="mainContent" tabindex="-1" aria-label="Study content">
+    <div class="library-lecture-tools" id="libraryLectureTools" role="search" aria-label="Search lectures">
+      <label for="libraryLectureSearch">Find a lecture in this specialty</label>
+      <div class="library-lecture-search-row">
+        <input id="libraryLectureSearch" type="search" autocomplete="off" placeholder="Search lectures by name or number…" aria-label="Find a lecture in this specialty">
+        <span id="libraryResultCount" role="status" aria-label="Library results" aria-live="polite"></span>
+      </div>
+    </div>
     <details class="original-figure-tools" id="originalFigureTools" aria-label="Original images from the selected lecture" hidden>
       <summary class="original-figure-summary">
         <span class="original-figure-summary-icon" aria-hidden="true">
