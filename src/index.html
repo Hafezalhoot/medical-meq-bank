@@ -41,6 +41,14 @@
     </div>
   </div>
 </header>
+<nav class="workspace-primary-nav" aria-label="Primary workspace">
+  <a href="#/home" data-workspace-link="home">Home</a>
+  <a href="#/library" data-workspace-link="library">Library</a>
+  <a href="#/practice" data-workspace-link="practice">Practice</a>
+  <a href="#/review" data-workspace-link="review">Review</a>
+  <a href="#/exams" data-workspace-link="exams">Exams</a>
+</nav>
+<p id="workspaceRouteStatus" class="sr-only" role="status" aria-live="polite"></p>
 <section class="hero">
   <div class="hero-grid">
     <div class="hero-copy">
@@ -94,6 +102,12 @@
 </section>
 </div>
 
+<section class="workspace-exam-entry" id="workspaceExamEntry" hidden aria-labelledby="workspaceExamTitle">
+  <span class="workspace-exam-overline">My Medical Library / Exams</span>
+  <h1 id="workspaceExamTitle">Practice like the exam</h1>
+  <p>Choose your current course and specialty, then configure a timed or untimed exam. Your ongoing attempt and previous results stay on this device.</p>
+  <button id="workspaceExamStart" type="button" class="btn btn-primary" aria-haspopup="dialog" aria-controls="examDialog">Configure exam</button>
+</section>
 <nav id="studyBreadcrumb" class="study-breadcrumb" aria-label="Study location"></nav>
 
 <section class="toolbar" aria-label="Study filters">
