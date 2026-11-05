@@ -164,7 +164,7 @@ def verify_report(report_text, lecture, pdf_name, pdf_hash, page_count, draft_ha
         raise SystemExit("Verification requires the complete draft JSON SHA-256")
     expected = build_report(lecture, pdf_name, pdf_hash, page_count, draft_hash)
     # Only checkbox ticks may differ from the original generated worksheet.
-    normalized = re.sub(r"\\[[xX]\\]", "[ ]", report_text)
+    normalized = re.sub(r"\[[xX]\]", "[ ]", report_text)
     if normalized != expected:
         raise SystemExit("Review worksheet is stale or altered: regenerate from unchanged draft/PDF and re-review")
     if any(token in expected for token in (
@@ -173,7 +173,7 @@ def verify_report(report_text, lecture, pdf_name, pdf_hash, page_count, draft_ha
         "Out-of-range source page:",
     )):
         raise SystemExit("Review worksheet has unresolved source page references")
-    boxes = re.findall(r"\\[[ xX]\\]", report_text)
+    boxes = re.findall(r"\[[ xX]\]", report_text)
     if len(boxes) < (page_count * 3 + 5) or any(box == "[ ]" for box in boxes):
         raise SystemExit("Review worksheet has unchecked page or human-review items")
     return len(boxes)
