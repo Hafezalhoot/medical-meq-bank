@@ -171,6 +171,21 @@ python3 tools/lecture_review_report.py tmp/lecture-drafts/<lecture-id>.json \
   --verify tmp/lecture-drafts/<lecture-id>-review.md
 ```
 
+For new source-reviewed lectures, keep this evidence with the existing **dry-run first**, then pass it to the registrar when registration has been medically approved:
+
+```bash
+python3 tools/add_lecture.py tmp/lecture-drafts/<lecture-id>.json --course <course-id>
+
+# Only after all checkboxes are genuinely reviewed, the read-only verification succeeds,
+# the dry-run succeeds, and medical/editorial approval has been explicitly given:
+python3 tools/add_lecture.py tmp/lecture-drafts/<lecture-id>.json --course <course-id> \
+  --write --reviewed \
+  --review-report tmp/lecture-drafts/<lecture-id>-review.md \
+  --source-pdf /private/path/source.pdf --page-count 25
+```
+
+The registrar rechecks the exact current PDF and draft fingerprints **before any catalog or lecture data is written**. If one evidence flag is supplied without the others, the operation stops rather than silently omitting the review. Existing `--write --reviewed` workflows remain compatible, so this is an **opt-in evidence gate**, not mandatory for legacy importers. Use the evidence-gated command for new source-backed lectures. An unchecked/mismatched worksheet cannot be used as proof of review; successful verification still does **not** independently audit medical facts or copyright permissions.
+
 The checker refuses any unchecked page or final sign-off item, invalid/missing source citations, changed draft or PDF fingerprints, altered worksheet text, or missing independently supplied page count. It only verifies that the checklist remains structurally consistent with the exact inputs and all assertions were checked. **It cannot confirm that the human actually checked those facts, that clinical answers are correct, that the declared PDF page count is true, or that redistribution rights exist.** Medical approval is separate and must happen before the existing `add_lecture.py --write --reviewed` step. This verification command never writes catalog/lecture data or publishes an app release.
 
 ### V5.7 — Page-by-page coverage for information-rich visuals
