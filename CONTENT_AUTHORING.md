@@ -152,6 +152,14 @@ python3 tools/lecture_review_report.py tmp/lecture-drafts/surgery-urology-exampl
 
 The tool saves `tmp/lecture-drafts/surgery-urology-example-review.md` without overwriting an older report. It lists authored section counts, source-page fields for Explanation / MCQs / image spots, missing page labels, and the **SHA-256 fingerprint** of the private PDF if one is supplied. The `--page-count` value is reviewer-supplied, not automatically inferred. The original PDF is never uploaded or copied into public assets by this command. The report does **not** check whether medical answers are right or whether an image may legally be republished.
 
+### V5.7 — Page-by-page coverage for information-rich visuals
+
+When you supply the **manually confirmed** `--page-count`, the private review report adds **one unchecked row for every PDF page**, even pages with no currently authored question. It shows only *claimed links* from explicit single-page labels (such as `PDF p.4`, `Slide 3` or a numeric image-question page), not proof that the lecture has been fully captured. It flags ambiguous references (including ranges or handout labels) and references outside the declared page count for manual resolution.
+
+For **every page**, independently check and mark the three columns: **Text/definitions**, **Images/legends** and **Tables/graphs**. In particular, read source image captions, labels, diagrams, photo annotations, scanned text and small-print tables; these can contain examinable information even when they are not separate image questions. If there is no authored link for a page, inspect it rather than presuming the page is non-examinable. Document any intentionally omitted pages with a reviewer explanation outside the generated report.
+
+**Important:** the script fingerprints the PDF only; it does **not** read, render, OCR, count PDF pages independently, judge scientific correctness, infer image facts, or grant redistribution rights. Checkboxes start empty and require a human comparison to the original lecture; the report is a private editorial checklist, not an automated completeness certificate.
+
 Next review the report against the real PDF, run `python3 tools/add_lecture.py <draft.json> --course <course>` as a safe dry-run, and **only after documented source approval** use the existing `--write --reviewed` gate. The old five practice formats and the newer Study Guide are preserved.
 
 ## Source-linked MCQs on checksum-verified legacy lectures
