@@ -74,6 +74,22 @@ test('MCQs have explicit saved ratings but answering alone never auto-marks Weak
   await expect(page.locator('.study-guide-mcq:not(.hidden) .status.weak.active')).toHaveCount(1);
 });
 
+test('My Review opens saved Weak source MCQ without clearing the Weak filter',async ({page})=>{
+  await openDermatology(page);
+  const mcq=page.locator('#'+dermatology+'-mcq-derm-mcq-001');
+  await mcq.locator('.status.weak').click();
+  await expect(page.locator('#myReviewCount')).toContainText('1 to revisit');
+  await page.locator('#myReviewDisclosure summary').click();
+  const review=page.getByRole('button',{name:/Open 1 weak questions in.*Introduction/i});
+  await expect(review).toBeVisible();
+  await review.click();
+  await expect(page.locator('#reviewFilter')).toHaveValue('weak');
+  await expect(page.locator('#'+dermatology+'-guide-mcqs')).toHaveAttribute('open','');
+  await expect(mcq).toBeVisible();
+  await expect(mcq.locator('.status.weak')).toHaveClass(/active/);
+  await expect(page.locator('#'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(1);
+});
+
 test('MCQ bank can search source questions across both Psychiatry lectures on demand',async ({page})=>{
   const fetched=new Set();
   page.on('request',request=>{
