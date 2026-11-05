@@ -99,9 +99,9 @@ jobs:
           previous_status=$(npx --yes wrangler@4 deployments status --name medical-meq-bank)
           {
             echo '### Previous active Worker deployment (rollback reference)'
-            echo '\`\`\`text'
+            echo '```text'
             printf '%s\n' "$previous_status"
-            echo '\`\`\`'
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           npx --yes wrangler@4 versions deploy "${WORKER_VERSION_ID}@100%" \
             --name medical-meq-bank --message "Approved source ${SOURCE_SHA}" --yes
