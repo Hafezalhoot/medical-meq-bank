@@ -66,7 +66,7 @@ python3 tools/new_lecture.py --course internal-medicine --subject cardiology \
 
 This creates an **unpublished, intentionally empty** `tmp/lecture-drafts/internal-medicine-cardiology-heart-failure.json`. New draft IDs include the course and specialty to avoid collisions when different courses teach similarly named lectures. An explicit `--id` still allows a reviewed custom stable identifier. This tool does not extract PDF facts or publish placeholder content. Populate the medically reviewed `subtopics`, `cases`, `coreShorts`, `imageQuestions`, `detailedShorts`, and `rapid` using the lecture PDF only.
 
-The five existing practice modes remain the **current production contract**. An optional **studyGuide** extension is now schema-validated in this authoring branch. Its browser renderer and tests are developed separately in V2 PR #23. A schema-only change does not make new modes live until both components are merged, quality-gated and promoted.
+The five legacy practice arrays remain required JSON fields, but they may all be empty **when the lecture contains reviewed, source-page-linked `studyGuide.mcqs`**. The V5.5 source-MCQ browser is implemented in stacked PR #78, not yet merged or deployed; passing authoring checks alone does not make content live.
 
 Run a safe dry-run:
 
@@ -105,6 +105,41 @@ npm run test:e2e
 npm run test:webkit
 ```
 
+
+## V5.6 — Register a source-MCQ-only lecture
+
+**An MCQ bank lecture needs no invented MEQ/Short/Image questions.** Keep the five original arrays (`cases`, `coreShorts`, `imageQuestions`, `detailedShorts`, `rapid`) present as `[]`. Populate `studyGuide.mcqs` with only medically reviewed items from your PDF. Every MCQ must have a unique, stable ID, exactly four non-empty options, an `answerIndex` of 0–3, a source-supported rationale and a specific `sourcePage`.
+
+For example, this is **test data, not medical study content**:
+
+~~~json
+{
+  "studyGuide": {
+    "mcqs": [{
+      "id": "heart-failure-mcq-001",
+      "question": "What term is explicitly used on PDF page 2?",
+      "options": ["Term A", "Term B", "Term C", "Term D"],
+      "answerIndex": 0,
+      "rationale": "The first term is stated on the original slide.",
+      "sourcePage": "PDF p. 2"
+    }]
+  }
+}
+~~~
+
+This object goes **inside the complete lecture JSON** created with `tools/new_lecture.py`, not in place of its required metadata and arrays.
+
+Run the safe dry-run first:
+
+~~~bash
+python3 tools/add_lecture.py tmp/lecture-drafts/<lecture-id>.json --course <course-id>
+~~~
+
+The registrar now calculates the exact `mcqCount` from `studyGuide.mcqs` in its preview and the catalog entry, including `0` for lectures without an MCQ section. It does **not** change your authored MCQ choices, page references, answer indices or IDs. Once a human has checked every item and original-source image, register it deliberately with `--write --reviewed`.
+
+A catalog containing `mcqCount` that no longer matches the approved source JSON is rejected by the canonical builder, search-index build and runtime loader; that prevents silent stale counts in the library. Legacy catalog entries that omit this optional field still load. Do not edit `mcqCount` by hand, force a mismatching number, or use a successful build as proof that the medical answers are scientifically correct.
+
+**Release controls:** this V5.6 improvement is a stacked development PR after #75–#78. It is not live until the code is reviewed, the exact-head tests pass, and Cloudflare Access/CI-promotion release checks (#35/#50) have been satisfied.
 
 ## One-command draft source-review report (local-only)
 
