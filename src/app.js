@@ -1013,9 +1013,11 @@ function focusNextStudyItem(){
     $('priorityFilter').value==='all' &&
     (document.getElementById('reviewFilter')?.value||'all')==='all' &&
     activeSubtopic==='all';
-  const selector=includeGuide
-    ?'#mainContent .study-item:not(.hidden),#mainContent .study-guide-mcq'
-    :'#mainContent .study-item:not(.hidden)';
+  const selector=$('typeFilter').value==='mcq'
+    ?'#mainContent .study-guide-mcq:not(.hidden)'
+    :includeGuide
+      ?'#mainContent .study-item:not(.hidden),#mainContent .study-guide-mcq:not(.hidden)'
+      :'#mainContent .study-item:not(.hidden)';
   const items=[...document.querySelectorAll(selector)];
   const rating=item=>{
     const key=item.querySelector('.status')?.dataset.key;
