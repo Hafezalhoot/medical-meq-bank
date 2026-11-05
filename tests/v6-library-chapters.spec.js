@@ -102,3 +102,12 @@ test('Library route ignores practice-only MCQ type filter and displays lecture c
   await expect(page.locator('#typeFilter')).toHaveValue('all');
   await expect(page.locator('.lecture-overview-card')).toHaveCount(8,{timeout:20000});
 });
+
+
+test('capture desktop and phone Library workspaces for V6 visual review', async ({page},testInfo) => {
+  for(const width of [390,1440]){
+    await page.setViewportSize({width,height:width===390?844:900});
+    await openUrology(page);
+    await page.screenshot({path:testInfo.outputPath('library-'+width+'.png'),fullPage:false});
+  }
+});
