@@ -73,3 +73,27 @@ test('mobile library search is visible and result items stay inside viewport', a
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
+
+
+test('desktop library rail navigates specialties instead of duplicating lecture rows', async ({page}) => {
+  await page.setViewportSize({width:1440,height:900});
+  await openUrology(page);
+  const rail=page.locator('.lecture-sidebar');
+  await expect(rail.getByRole('heading',{name:'Specialties'})).toBeVisible();
+  await expect(rail.getByRole('button',{name:'Urology',exact:true})).toBeVisible();
+  await expect(rail.getByRole('button',{name:'Neurosurgery',exact:true})).toBeVisible();
+  await expect(rail.getByRole('button',{name:/Bladder Cancer/})).toHaveCount(0);
+  await rail.getByRole('button',{name:'Neurosurgery',exact:true}).click();
+  await expect(page.locator('#subjectSelector')).toHaveValue('neurosurgery');
+  await expect(page.getByRole('button',{name:'Open lecture: Traumatic Brain Injury'})).toBeVisible({timeout:20000});
+  await rail.getByRole('button',{name:'Urology',exact:true}).click();
+  await expect(page.locator('.lecture-overview-card')).toHaveCount(8,{timeout:20000});
+});
+
+test('Library route ignores practice-only MCQ type filter and displays lecture choices', async ({page}) => {
+  await page.goto('/#/practice',{waitUntil:'domcontentloaded'});
+  await page.locator('#typeFilter').selectOption('mcq');
+  await page.getByRole('navigation',{name:'Primary workspace'}).getByRole('link',{name:'Library'}).click();
+  await expect(page.locator('#typeFilter')).toHaveValue('all');
+  await expect(page.locator('.lecture-overview-card')).toHaveCount(8,{timeout:20000});
+});
