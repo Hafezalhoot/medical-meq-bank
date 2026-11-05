@@ -148,7 +148,7 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None, draft_hash=
         "- [ ] Check each page label, MCQ answer index and distractor against the printed source.",
         "- [ ] Confirm original image provenance and public redistribution rights before any upload.",
         "- [ ] Run the existing add_lecture.py --course dry-run with no write.",
-        "- [ ] Obtain explicit medical review and run --write --reviewed only after approval.",
+        "- [ ] Confirm medical/editorial approval before any --write --reviewed registration.",
         "", "**This report does not inspect clinical accuracy, publish source PDFs or modify catalogs.**", "",
     ]
     return "\n".join(lines)
