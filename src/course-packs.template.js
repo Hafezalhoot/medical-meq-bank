@@ -286,22 +286,13 @@
         reviewFilter.value=level;
         reviewFilter.dispatchEvent(new Event('change',{bubbles:true}));
       }else applyFilters();
-      let matching=[...document.querySelectorAll('#mainContent .study-item:not(.hidden)')]
-        .find(item=>item.querySelector('.status[data-status="'+level+'"].active'));
-      if(!matching){
-        // Source MCQs are study-guide cards, not legacy .study-item cards.
-        const mcq=[...document.querySelectorAll('#mainContent .study-guide-mcq')]
-          .find(item=>item.querySelector('.status[data-status="'+level+'"].active'));
-        if(mcq){
-          if(reviewFilter){
-            reviewFilter.value='all';
-            reviewFilter.dispatchEvent(new Event('change',{bubbles:true}));
-          }
-          const disclosure=mcq.closest('details');
-          if(disclosure)disclosure.open=true;
-          matching=mcq;
-        }
-      }
+      // Source MCQs participate in the same saved Weak/Review filter as written
+      // questions. Never clear that filter when reopening a reviewed MCQ.
+      const matching=[...document.querySelectorAll(
+        '#mainContent .study-item:not(.hidden),#mainContent .study-guide-mcq:not(.hidden)'
+      )].find(item=>item.querySelector('.status[data-status="'+level+'"].active'));
+      const disclosure=matching?.closest('details');
+      if(disclosure)disclosure.open=true;
       if(!matching)throw new Error('No saved '+level+' items are visible in this lecture.');
       reviewPanel.open=false;
       matching.setAttribute('tabindex','-1');

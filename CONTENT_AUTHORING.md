@@ -66,7 +66,7 @@ python3 tools/new_lecture.py --course internal-medicine --subject cardiology \
 
 This creates an **unpublished, intentionally empty** `tmp/lecture-drafts/internal-medicine-cardiology-heart-failure.json`. New draft IDs include the course and specialty to avoid collisions when different courses teach similarly named lectures. An explicit `--id` still allows a reviewed custom stable identifier. This tool does not extract PDF facts or publish placeholder content. Populate the medically reviewed `subtopics`, `cases`, `coreShorts`, `imageQuestions`, `detailedShorts`, and `rapid` using the lecture PDF only.
 
-The five existing practice modes remain the **current production contract**. An optional **studyGuide** extension is now schema-validated in this authoring branch. Its browser renderer and tests are developed separately in V2 PR #23. A schema-only change does not make new modes live until both components are merged, quality-gated and promoted.
+The five legacy practice arrays remain required JSON fields, but they may all be empty **when the lecture contains reviewed, source-page-linked `studyGuide.mcqs`**. The V5.5 source-MCQ browser is implemented in stacked PR #78, not yet merged or deployed; passing authoring checks alone does not make content live.
 
 Run a safe dry-run:
 
@@ -106,6 +106,41 @@ npm run test:webkit
 ```
 
 
+## V5.6 — Register a source-MCQ-only lecture
+
+**An MCQ bank lecture needs no invented MEQ/Short/Image questions.** Keep the five original arrays (`cases`, `coreShorts`, `imageQuestions`, `detailedShorts`, `rapid`) present as `[]`. Populate `studyGuide.mcqs` with only medically reviewed items from your PDF. Every MCQ must have a unique, stable ID, exactly four non-empty options, an `answerIndex` of 0–3, a source-supported rationale and a specific `sourcePage`.
+
+For example, this is **test data, not medical study content**:
+
+~~~json
+{
+  "studyGuide": {
+    "mcqs": [{
+      "id": "heart-failure-mcq-001",
+      "question": "What term is explicitly used on PDF page 2?",
+      "options": ["Term A", "Term B", "Term C", "Term D"],
+      "answerIndex": 0,
+      "rationale": "The first term is stated on the original slide.",
+      "sourcePage": "PDF p. 2"
+    }]
+  }
+}
+~~~
+
+This object goes **inside the complete lecture JSON** created with `tools/new_lecture.py`, not in place of its required metadata and arrays.
+
+Run the safe dry-run first:
+
+~~~bash
+python3 tools/add_lecture.py tmp/lecture-drafts/<lecture-id>.json --course <course-id>
+~~~
+
+The registrar now calculates the exact `mcqCount` from `studyGuide.mcqs` in its preview and the catalog entry, including `0` for lectures without an MCQ section. It does **not** change your authored MCQ choices, page references, answer indices or IDs. Once a human has checked every item and original-source image, register it deliberately with `--write --reviewed`.
+
+A catalog containing `mcqCount` that no longer matches the approved source JSON is rejected by the canonical builder, search-index build and runtime loader; that prevents silent stale counts in the library. Legacy catalog entries that omit this optional field still load. Do not edit `mcqCount` by hand, force a mismatching number, or use a successful build as proof that the medical answers are scientifically correct.
+
+**Release controls:** this V5.6 improvement is a stacked development PR after #75–#78. It is not live until the code is reviewed, the exact-head tests pass, and Cloudflare Access/CI-promotion release checks (#35/#50) have been satisfied.
+
 ## One-command draft source-review report (local-only)
 
 After creating and filling a new lecture draft, generate a review checklist *before* attempting to register it. This step reuses the existing intake flow and does **not** publish files or approve medical facts:
@@ -116,6 +151,50 @@ python3 tools/lecture_review_report.py tmp/lecture-drafts/surgery-urology-exampl
 ```
 
 The tool saves `tmp/lecture-drafts/surgery-urology-example-review.md` without overwriting an older report. It lists authored section counts, source-page fields for Explanation / MCQs / image spots, missing page labels, and the **SHA-256 fingerprint** of the private PDF if one is supplied. The `--page-count` value is reviewer-supplied, not automatically inferred. The original PDF is never uploaded or copied into public assets by this command. The report does **not** check whether medical answers are right or whether an image may legally be republished.
+
+### V5.9 — Verify completed source-review checklist against immutable inputs
+
+Generate the worksheet with the original private PDF and **manually confirmed** PDF page count:
+
+```bash
+python3 tools/lecture_review_report.py tmp/lecture-drafts/<lecture-id>.json \
+  --pdf /private/path/source.pdf --page-count 25
+```
+
+This draft-only local file records a SHA-256 for both the draft JSON bytes and the original PDF; it does not upload, OCR, interpret or redistribute the PDF. Compare **every** page of the original PDF with the authored Explanation, MCQs, original figures, tables and embedded image text. Then manually tick all `[ ]` boxes as `[x]` without changing the rest of the worksheet. For pages with no authored links, you must still inspect the page and explicitly document any deliberate omissions elsewhere in your private editorial records. Missing/ambiguous source pages must be resolved in the draft, and a new worksheet generated.
+
+After review, run the **read-only** verification mode:
+
+```bash
+python3 tools/lecture_review_report.py tmp/lecture-drafts/<lecture-id>.json \
+  --pdf /private/path/source.pdf --page-count 25 \
+  --verify tmp/lecture-drafts/<lecture-id>-review.md
+```
+
+For new source-reviewed lectures, keep this evidence with the existing **dry-run first**, then pass it to the registrar when registration has been medically approved:
+
+```bash
+python3 tools/add_lecture.py tmp/lecture-drafts/<lecture-id>.json --course <course-id>
+
+# Only after all checkboxes are genuinely reviewed, the read-only verification succeeds,
+# the dry-run succeeds, and medical/editorial approval has been explicitly given:
+python3 tools/add_lecture.py tmp/lecture-drafts/<lecture-id>.json --course <course-id> \
+  --write --reviewed \
+  --review-report tmp/lecture-drafts/<lecture-id>-review.md \
+  --source-pdf /private/path/source.pdf --page-count 25
+```
+
+The registrar rechecks the exact current PDF and draft fingerprints **before any catalog or lecture data is written**. If one evidence flag is supplied without the others, the operation stops rather than silently omitting the review. Existing `--write --reviewed` workflows remain compatible, so this is an **opt-in evidence gate**, not mandatory for legacy importers. Use the evidence-gated command for new source-backed lectures. An unchecked/mismatched worksheet cannot be used as proof of review; successful verification still does **not** independently audit medical facts or copyright permissions.
+
+The checker refuses any unchecked page or final sign-off item, invalid/missing source citations, changed draft or PDF fingerprints, altered worksheet text, or missing independently supplied page count. It only verifies that the checklist remains structurally consistent with the exact inputs and all assertions were checked. **It cannot confirm that the human actually checked those facts, that clinical answers are correct, that the declared PDF page count is true, or that redistribution rights exist.** Medical approval is separate and must happen before the existing `add_lecture.py --write --reviewed` step. This verification command never writes catalog/lecture data or publishes an app release.
+
+### V5.7 — Page-by-page coverage for information-rich visuals
+
+When you supply the **manually confirmed** `--page-count`, the private review report adds **one unchecked row for every PDF page**, even pages with no currently authored question. It shows only *claimed links* from explicit single-page labels (such as `PDF p.4`, `Slide 3` or a numeric image-question page), not proof that the lecture has been fully captured. It flags ambiguous references (including ranges or handout labels) and references outside the declared page count for manual resolution.
+
+For **every page**, independently check and mark the three columns: **Text/definitions**, **Images/legends** and **Tables/graphs**. In particular, read source image captions, labels, diagrams, photo annotations, scanned text and small-print tables; these can contain examinable information even when they are not separate image questions. If there is no authored link for a page, inspect it rather than presuming the page is non-examinable. Document any intentionally omitted pages with a reviewer explanation outside the generated report.
+
+**Important:** the script fingerprints the PDF only; it does **not** read, render, OCR, count PDF pages independently, judge scientific correctness, infer image facts, or grant redistribution rights. Checkboxes start empty and require a human comparison to the original lecture; the report is a private editorial checklist, not an automated completeness certificate.
 
 Next review the report against the real PDF, run `python3 tools/add_lecture.py <draft.json> --course <course>` as a safe dry-run, and **only after documented source approval** use the existing `--write --reviewed` gate. The old five practice formats and the newer Study Guide are preserved.
 

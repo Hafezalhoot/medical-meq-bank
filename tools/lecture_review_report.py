@@ -6,6 +6,7 @@ from hashlib import sha256
 from html import escape
 import json
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 PRACTICE = ("cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid")
@@ -26,7 +27,22 @@ def pdf_fingerprint(path):
     return digest.hexdigest()
 
 
-def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
+def single_source_page(value):
+    """Recognize only unambiguous, positive, single page labels; never guess."""
+    if type(value) is int:
+        return value if value > 0 else None
+    if not isinstance(value, str):
+        return None
+    match = re.fullmatch(r"\s*(?:PDF\s+)?(?:p\.?|page|slide)\s*(\d+)\s*", value, flags=re.I)
+    if not match:
+        return None
+    number = int(match.group(1))
+    return number if number > 0 else None
+
+
+def build_report(lecture, pdf_name="", pdf_hash="", page_count=None, draft_hash=""):
+    if page_count is not None and (type(page_count) is not int or page_count <= 0):
+        raise SystemExit("page_count must be a positive reviewer-supplied integer")
     if not isinstance(lecture, dict) or not isinstance(lecture.get("title"), str):
         raise SystemExit("Lecture draft must have a title")
     guide = lecture.get("studyGuide") or {}
@@ -47,6 +63,7 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
         "- Lecture ID: " + plain(lecture.get("id") or "not assigned"),
         "- Source note: " + plain(lecture.get("sourceNote") or "not provided"),
         "- Original PDF: " + (plain(pdf_name) + " (SHA-256 " + BT + pdf_hash + BT + ")" if pdf_hash else "not fingerprinted"),
+        "- Draft JSON SHA-256: " + (BT + draft_hash + BT if draft_hash else "not fingerprinted"),
         "- Reported page count: " + (str(page_count) + " (not independently checked)" if page_count else "not provided"),
         "", "## Draft inventory", "",
         "| Section | Count | Page references provided |",
@@ -55,8 +72,10 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
     page_fields = {"imageQuestions": "page", "explanation": "sourcePage", "mcqs": "sourcePage"}
     for name, items in sections.items():
         field = page_fields.get(name)
-        traced = sum(isinstance(item, dict) and isinstance(item.get(field), str)
-                     and bool(item[field].strip()) for item in items) if field else None
+        traced = sum(isinstance(item, dict) and (
+            (isinstance(item.get(field), str) and bool(item[field].strip()))
+            or (type(item.get(field)) is int and item[field] > 0)
+        ) for item in items) if field else None
         lines.append(f"| {name} | {len(items)} | {traced if field else 'Not supported in legacy schema'} |")
     lines += [
         "", "## Source-page map (labels must be verified against the original PDF)", "",
@@ -64,6 +83,7 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
         "| --- | --- | --- | --- |",
     ]
     missing = []
+    cited_pages = []
     rows = 0
     for name in ("explanation", "mcqs", "imageQuestions"):
         for index, item in enumerate(sections[name], 1):
@@ -71,9 +91,10 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
                 raise SystemExit(f"{name} item {index} must be an object")
             label = item.get("id") or item.get("heading") or f"{name}-{index:02d}"
             page = item.get(page_fields[name])
-            if not isinstance(page, str) or not page.strip():
+            if not ((isinstance(page, str) and page.strip()) or (type(page) is int and page > 0)):
                 missing.append(f"{name}: {label}")
                 page = "MISSING"
+            cited_pages.append((f"{name}: {label}", page))
             lines.append(f"| {name} | {plain(label)} | {plain(page)} | Check original PDF |")
             rows += 1
     if infographic is not None:
@@ -81,10 +102,42 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
         if not isinstance(page, str) or not page.strip():
             missing.append("infographic")
             page = "MISSING"
+        cited_pages.append(("infographic: Source figure", page))
         lines.append(f"| infographic | Source figure | {plain(page)} | Confirm original and reuse rights |")
         rows += 1
     if not rows:
         lines.append("| — | No page-linked items yet | — | Draft |")
+    if page_count is not None:
+        page_links = {number: [] for number in range(1, page_count + 1)}
+        unresolved = []
+        for label, value in cited_pages:
+            if value == "MISSING":
+                continue  # Already listed as missing in the review checklist below.
+            number = single_source_page(value)
+            if number is None:
+                unresolved.append(f"- Ambiguous/unmapped page label: {plain(label)} — {plain(value)}")
+            elif number > page_count:
+                unresolved.append(f"- Out-of-range source page: {plain(label)} — {plain(value)}")
+            else:
+                page_links[number].append(plain(label))
+        lines += [
+            "", "## Page-by-page source inspection", "",
+            "**Authored links are NOT verified content coverage.** The declared PDF page count is reviewer-supplied and has not been independently checked.",
+            "- All page checks start unchecked. A citation never proves that exam facts or visual information were completely extracted.",
+            "- Figure captions, embedded text and annotations need explicit review, alongside every table, graph, legend and footnote.",
+            "", "| PDF page | Authored links (unverified) | Text/definitions | Images/legends | Tables/graphs |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+        for number, labels in page_links.items():
+            linked = "; ".join(labels) if labels else "No mapped item — inspect this page"
+            lines.append(f"| PDF p.{number} | {linked} | [ ] | [ ] | [ ] |")
+        if unresolved:
+            lines += ["", "### Source-page labels requiring manual resolution", "", *unresolved]
+    else:
+        lines += [
+            "", "## Page-by-page source inspection", "",
+            "Page-by-page inspection unavailable until a reviewer supplies --page-count. The PDF is not parsed by this tool.",
+        ]
     lines += ["", "## Required human review", ""]
     if not sections["mcqs"]:
         lines.append("- No reviewed MCQ keys: automatic scoring is unavailable for this lecture.")
@@ -95,10 +148,35 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
         "- [ ] Check each page label, MCQ answer index and distractor against the printed source.",
         "- [ ] Confirm original image provenance and public redistribution rights before any upload.",
         "- [ ] Run the existing add_lecture.py --course dry-run with no write.",
-        "- [ ] Obtain explicit medical review and run --write --reviewed only after approval.",
+        "- [ ] Confirm medical/editorial approval before any --write --reviewed registration.",
         "", "**This report does not inspect clinical accuracy, publish source PDFs or modify catalogs.**", "",
     ]
     return "\n".join(lines)
+
+
+def verify_report(report_text, lecture, pdf_name, pdf_hash, page_count, draft_hash):
+    """Check a manually ticked worksheet against exact local source bytes, not clinical truth."""
+    if type(page_count) is not int or page_count <= 0:
+        raise SystemExit("Verification requires a positive reviewer-supplied page count")
+    if not pdf_name or not re.fullmatch(r"[0-9a-f]{64}", pdf_hash or ""):
+        raise SystemExit("Verification requires an original local PDF and its SHA-256")
+    if not re.fullmatch(r"[0-9a-f]{64}", draft_hash or ""):
+        raise SystemExit("Verification requires the complete draft JSON SHA-256")
+    expected = build_report(lecture, pdf_name, pdf_hash, page_count, draft_hash)
+    # Only checkbox ticks may differ from the original generated worksheet.
+    normalized = re.sub(r"\[[xX]\]", "[ ]", report_text)
+    if normalized != expected:
+        raise SystemExit("Review worksheet is stale or altered: regenerate from unchanged draft/PDF and re-review")
+    if any(token in expected for token in (
+        "Source page not supplied for:",
+        "Ambiguous/unmapped page label:",
+        "Out-of-range source page:",
+    )):
+        raise SystemExit("Review worksheet has unresolved source page references")
+    boxes = re.findall(r"\[[ xX]\]", report_text)
+    if len(boxes) < (page_count * 3 + 5) or any(box == "[ ]" for box in boxes):
+        raise SystemExit("Review worksheet has unchecked page or human-review items")
+    return len(boxes)
 
 
 def main():
@@ -107,6 +185,7 @@ def main():
     parser.add_argument("--pdf", type=Path, help="Optional original local PDF (fingerprint only, never uploaded)")
     parser.add_argument("--page-count", type=int, help="Optional manually checked PDF page count")
     parser.add_argument("--output", type=Path, help="Default: tmp/lecture-drafts/<draft-name>-review.md")
+    parser.add_argument("--verify", type=Path, help="Check a fully signed-off worksheet, never publish or approve")
     args = parser.parse_args()
     if args.page_count is not None and args.page_count <= 0:
         parser.error("--page-count must be positive")
@@ -115,7 +194,21 @@ def main():
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
         raise SystemExit(f"Cannot read lecture draft: {error}") from error
     fingerprint = pdf_fingerprint(args.pdf) if args.pdf else ""
-    report = build_report(draft, args.pdf.name if args.pdf else "", fingerprint, args.page_count)
+    draft_hash = sha256(args.draft.read_bytes()).hexdigest()
+    if args.verify is not None:
+        if args.output is not None:
+            parser.error("--output cannot be combined with --verify")
+        try:
+            worksheet = args.verify.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            raise SystemExit(f"Cannot read review worksheet: {error}") from error
+        checked = verify_report(worksheet, draft, args.pdf.name if args.pdf else "",
+                                fingerprint, args.page_count, draft_hash)
+        print(f"Source review checklist checked ({checked} boxes, current draft/PDF hashes); "
+              "this does not certify medical accuracy, sign-off authenticity or image rights.")
+        return
+    report = build_report(draft, args.pdf.name if args.pdf else "",
+                          fingerprint, args.page_count, draft_hash)
     target = args.output or ROOT / "tmp" / "lecture-drafts" / (args.draft.stem + "-review.md")
     target.parent.mkdir(parents=True, exist_ok=True)
     try:

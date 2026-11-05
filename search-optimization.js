@@ -70,6 +70,7 @@
     lecture.coreShorts?.forEach(item => add('core', item.id, item.q, item, item.topic, item.priority));
     lecture.imageQuestions?.forEach(item => add('image', item.id, item.title, item, item.topic, item.priority));
     lecture.detailedShorts?.forEach(item => add('extra', item.id, item.q, item, item.topic, item.priority));
+    lecture.studyGuide?.mcqs?.forEach(item => add('mcq',item.id,item.question,item));
     lecture.rapid?.forEach((pair, index) => add('rapid', `rapid-${index + 1}`, String(pair?.[0] || ''), pair));
     return rows;
   };
@@ -137,6 +138,7 @@
   };
 
   const typeLabel = type => ({
+    mcq: 'Source MCQ',
     case: 'MEQ case',
     core: 'Short question',
     image: 'Image question',
@@ -150,6 +152,13 @@
       if (loader?.loadLecture && !loader.isLoaded(item.lectureId)) {
         await loader.loadLecture(item.lectureId, {refresh: false});
       }
+      if(item.type==='mcq'){
+        const type=document.getElementById('typeFilter');
+        if(type)type.value='mcq';
+        const review=document.getElementById('reviewFilter');
+        if(review)review.value='all';
+        searchInput.value='';
+      }
       if (typeof selectLecture === 'function') {
         selectLecture(item.lectureId, false);
       } else {
@@ -162,7 +171,12 @@
         const candidates = [...document.querySelectorAll(
           `.study-item[data-lecture="${CSS.escape(item.lectureId)}"], .rapid-item`
         )];
-        const first = candidates.find(node => !node.classList.contains('hidden'));
+        const targetId=item.lectureId+'-'+item.type+'-'+item.id;
+        const target=document.getElementById(targetId);
+        const first=target&&!target.classList.contains('hidden')
+          ?target:candidates.find(node=>!node.classList.contains('hidden'));
+        const parent=first?.closest('details');
+        if(parent)parent.open=true;
         first?.scrollIntoView({behavior: reduceMotion?.matches ? 'auto' : 'smooth', block: 'center'});
       }, 0);
     } catch (error) {

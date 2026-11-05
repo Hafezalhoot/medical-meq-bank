@@ -1,8 +1,8 @@
-# Medical MEQ Review Bank
+# My Medical Library
 
-Public source repository for the Medical MEQ Review Bank.
+Personal medical lecture and question library (formerly Medical MEQ Review Bank). The original repository and internal compatibility identifiers are intentionally retained to preserve study history and existing device installations.
 
-The project is an offline-first Progressive Web App containing lecture-based MEQ cases, high-yield short questions, image/spot questions, detailed practice, Rapid Recall, saved progress, dark mode, printing, and lecture/subtopic navigation.
+An offline-first Progressive Web App organizing **courses → specialties → lectures**. Each lecture can provide source-based explanation, MCQs, MEQ cases, short questions, original figures, Rapid Recall, practice exams and saved review progress. An item type only appears when that lecture actually has reviewed content. The uploaded original lecture is the authority for exam facts.
 
 ## Current lecture content — 12 published lectures
 

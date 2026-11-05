@@ -334,7 +334,7 @@ def validate_search_index(source_lectures: dict[str, dict]) -> None:
         expected_by_scope[scope] = expected_by_scope.get(scope, 0) + sum(
             len(lecture.get(key, []))
             for key in ("cases", "coreShorts", "imageQuestions", "detailedShorts", "rapid")
-        )
+        ) + len((lecture.get("studyGuide") or {}).get("mcqs", []))
         lectures_by_scope.setdefault(scope, set()).add(lecture_id)
 
     seen_scopes: set[tuple[str, str]] = set()
@@ -492,7 +492,7 @@ def validate_html(source_lectures: dict[str, dict]) -> None:
     version = read_json(ROOT / "version.json")["version"]
 
     for marker in (
-        "Medical MEQ",
+        "My Medical Library",
         'id="lectureFilter"',
         'id="typeFilter"',
         'id="search"',

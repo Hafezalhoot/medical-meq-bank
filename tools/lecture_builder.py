@@ -336,6 +336,14 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
             expected_id=lecture_id,
             expected_counts=expected_counts,
         )
+        if "mcqCount" in entry:
+            actual_mcqs = len((validated.get("studyGuide") or {}).get("mcqs", []))
+            declared_mcqs = entry["mcqCount"]
+            if type(declared_mcqs) is not int or declared_mcqs < 0 or declared_mcqs != actual_mcqs:
+                raise SystemExit(
+                    f"Lecture {lecture_id} has invalid MCQ count: catalog {declared_mcqs!r}, "
+                    f"source {actual_mcqs}"
+                )
         published = dict(validated)
         published["schemaVersion"] = payload_schema_version
         published["courseId"] = course_id

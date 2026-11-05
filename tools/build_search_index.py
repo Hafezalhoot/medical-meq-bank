@@ -118,6 +118,23 @@ def build() -> dict:
                     priority=str(item.get("priority", "")),
                 ))
 
+
+        # Indexed source MCQs are reviewed lecture questions, not generated suggestions.
+        guide = lecture.get("studyGuide") or {}
+        mcqs = guide.get("mcqs", []) if isinstance(guide, dict) else []
+        if not isinstance(mcqs, list):
+            fail(f"{lecture['id']} has invalid source MCQs")
+        if metadata.get("mcqCount") is not None and len(mcqs) != metadata["mcqCount"]:
+            fail(f"{lecture['id']} source MCQ metadata count differs from lecture")
+        for item in mcqs:
+            if not isinstance(item, dict) or not isinstance(item.get("id"), str) or not isinstance(item.get("question"), str):
+                fail(f"{lecture['id']} has invalid source MCQ")
+            row_key = f"{lecture['id']}::mcq::{item['id']}"
+            if row_key in seen:
+                fail(f"duplicate search item {row_key}")
+            seen.add(row_key)
+            rows.append(entry(lecture, "mcq", item["id"], item["question"], item))
+
         rapid = lecture.get("rapid")
         if not isinstance(rapid, list):
             fail(f"{lecture['id']} has invalid rapid recall")

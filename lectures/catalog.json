@@ -16,7 +16,8 @@
         "rapid": 41
       },
       "courseId": "internal-medicine-ii",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "mcqCount": 30
     },
     {
       "id": "internal-medicine-ii-psychiatry-psychiatric-history-mse",
@@ -32,7 +33,8 @@
         "rapid": 28
       },
       "courseId": "internal-medicine-ii",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "mcqCount": 52
     },
     {
       "id": "internal-medicine-ii-psychiatry-anxiety-disorders",
@@ -48,7 +50,8 @@
         "rapid": 30
       },
       "courseId": "internal-medicine-ii",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "mcqCount": 56
     },
     {
       "id": "neurosurgery-traumatic-brain-injury",

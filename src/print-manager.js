@@ -505,7 +505,7 @@
     const lectureNames = [...new Set(getPrintableItems().map(item => item.closest('.lecture')?.querySelector('.lecture-title')?.textContent?.trim()).filter(Boolean))];
     if (lectureNames.length === 1) return lectureNames[0];
     const subject = selectedText('subjectSelector');
-    return subject ? `${subject} Review Bank` : 'Medical MEQ Review Bank';
+    return subject ? `${subject} Practice Questions` : 'My Medical Library';
   };
 
   const pageSettingDescription = settings => settings.questionsPerPage === 'auto'
@@ -554,11 +554,11 @@
     `;
     const body = renderQuestionPages(infos, settings, inlineAnswers);
     const answerKey = separateAnswers ? renderAnswerKey(infos) : '';
-    const header = `<header class="document-head"><div class="brand-line">Medical MEQ Review Bank</div><h1>${escapeHtml(title)}</h1><div class="subtitle">${escapeHtml(subject)} • ${escapeHtml(modeDescription(settings))}</div>
+    const header = `<header class="document-head"><div class="brand-line">My Medical Library</div><h1>${escapeHtml(title)}</h1><div class="subtitle">${escapeHtml(subject)} • ${escapeHtml(modeDescription(settings))}</div>
       ${settings.includeStudentHeader ? '<div class="student-fields"><div class="field"><b>Name:</b><span class="field-line"></span></div><div class="field"><b>Date:</b><span class="field-line"></span></div><div class="field"><b>Score:</b><span class="field-line"></span></div></div>' : ''}
       <div class="print-summary"><span><strong>${infos.length}</strong> printable items</span><span>${escapeHtml(pageSettingDescription(settings))}<span class="generated-detail"> • Generated ${escapeHtml(generated)}</span></span></div></header>`;
     return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="${baseHref}"><title>${escapeHtml(title)} — Print</title><style>${printCss}</style></head><body><main class="document ${paginationClass} ${qppClass} mode-${settings.mode} margin-${settings.marginPreset} ${detailClass}" data-document-title="${escapeHtml(title)}">
-      ${header}${body}${answerKey}<footer class="document-foot">Medical MEQ Review Bank • ${escapeHtml(modeDescription(settings))}</footer></main></body></html>`;
+      ${header}${body}${answerKey}<footer class="document-foot">My Medical Library • ${escapeHtml(modeDescription(settings))}</footer></main></body></html>`;
   };
 
   const updateManualPageGrid = page => {
@@ -594,7 +594,7 @@
 
   const reindexManualPages = printDocument => {
     const pages = [...printDocument.querySelectorAll('.question-page.manual-page')];
-    const title = printDocument.querySelector('.document')?.dataset.documentTitle || 'Medical MEQ Review Bank';
+    const title = printDocument.querySelector('.document')?.dataset.documentTitle || 'My Medical Library';
     pages.forEach((page, index) => {
       page.classList.toggle('first-page', index === 0);
       page.classList.toggle('last-page', index === pages.length - 1);

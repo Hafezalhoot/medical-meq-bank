@@ -42,17 +42,18 @@ async function openWithOptionalGuide(page) {
 
 test('optional source-linked study guide exposes all three modes without altering existing MEQ bank', async ({page}) => {
   await openWithOptionalGuide(page);
-  await expect(page.locator('.study-guide-jump')).toBeVisible();
+  const nav=page.getByRole('navigation',{name:'Lecture sections'});
+  await expect(nav.locator('.study-guide-jump')).toHaveCount(3);
   await expect(page.locator('.study-item').first()).toBeAttached();
   await expect(page.locator('.learning-companion .study-guide-part')).toHaveCount(3);
-  await page.locator('.study-guide-jump').click();
+  await nav.getByRole('button',{name:'Explanation',exact:true}).click();
   const guide=page.locator('.learning-companion');
   await expect(guide.getByRole('heading',{name:'Source-linked example'})).toBeVisible();
   await expect(guide.getByText('Understanding Aid — Not an additional exam fact')).toBeVisible();
   await expect(guide.locator('script')).toHaveCount(0);
   await expect(guide.getByText('<script>must stay text</script>',{exact:false})).toBeVisible();
 
-  await guide.getByText('MCQ practice (1)').click();
+  await nav.getByRole('button',{name:'MCQ practice',exact:true}).click();
   const options=guide.locator('.study-guide-choices input[type="radio"]');
   await expect(options).toHaveCount(4);
   await options.nth(1).check();
@@ -61,7 +62,7 @@ test('optional source-linked study guide exposes all three modes without alterin
   await expect(guide.locator('.study-guide-answer')).toContainText('Option B');
   await expect(guide.getByText('Lecture source: Slide 4')).toBeVisible();
 
-  await guide.getByText('Infographic',{exact:true}).click();
+  await nav.getByRole('button',{name:'Infographic',exact:true}).click();
   await expect(guide.getByRole('img',{name:'Fixture infographic preview'})).toBeVisible();
   await expect(guide.getByText('Lecture source: Slide 5')).toBeVisible();
 });

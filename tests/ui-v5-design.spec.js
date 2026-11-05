@@ -11,8 +11,8 @@ async function ready(page,width=1440,height=900){
 
 test('V5 replaces corporate teal with a calm mineral-blue study system',async({page},info)=>{
   await ready(page);
-  await expect(page.getByRole('heading',{name:'Medical MEQ Review Bank'})).toBeVisible();
-  await expect(page.locator('.studio-wordmark')).toHaveText(/MEQ Studio/);
+  await expect(page.getByRole('heading',{name:'Your medical study library'})).toBeVisible();
+  await expect(page.locator('.studio-wordmark')).toHaveText(/My Medical Library/);
   await expect(page.locator('#pwaToolsToggle')).toBeVisible();
   await expect(page.locator('#darkBtn')).toBeVisible();
   await expect(page.locator('#resumeStudyBtn')).toBeVisible();

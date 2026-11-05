@@ -39,14 +39,10 @@
 
   const topicFilter = document.getElementById('topicFilter');
   const priorityFilter = document.getElementById('priorityFilter');
-  const rapidInapplicableControls = [topicFilter, priorityFilter, reviewFilter].filter(Boolean);
-  let rapidModeActive = false;
-  let domCache = null;
-
-  const optionExists = (control, value) => [...control.options].some(option => option.value === value);
-
+  const inapplicableControls=[topicFilter,priorityFilter,reviewFilter].filter(Boolean);
+  let domCache=null;
   const getDomCache = () => {
-    const studyItems = [...document.querySelectorAll('.study-item')];
+    const studyItems = [...document.querySelectorAll('.study-item, .study-guide-mcq')];
     const rapidItems = [...document.querySelectorAll('.rapid-item')];
     const lectures = [...document.querySelectorAll('.lecture')];
     const sections = [...document.querySelectorAll('.content-section')];
@@ -64,37 +60,37 @@
     return domCache;
   };
 
-  const setControlApplicability = rapidMode => {
-    if (rapidMode) {
-      if (activeSubtopic !== 'all') {
-        activeSubtopic = 'all';
-        renderSubtopicNav();
-      }
-      if (!rapidModeActive) {
-        rapidInapplicableControls.forEach(control => {
-          control.dataset.rapidPreviousValue = control.value;
-          control.dataset.rapidPreviousTitle = control.title || '';
-          control.value = 'all';
-          control.disabled = true;
-          control.classList.add('rapid-inapplicable');
-          control.title = 'This filter is not used for Rapid Recall cards.';
-        });
-        rapidModeActive = true;
-      }
-      return;
+  const optionExists=(control,value)=>[...control.options].some(option=>option.value===value);
+  const setControlApplicability = mode => {
+    const suppressed=mode==='rapid'?inapplicableControls:
+      mode==='mcq'?[topicFilter,priorityFilter].filter(Boolean):[];
+    if(suppressed.length&&activeSubtopic!=='all'){
+      activeSubtopic='all';
+      renderSubtopicNav();
     }
-
-    if (!rapidModeActive) return;
-    rapidInapplicableControls.forEach(control => {
-      control.disabled = false;
-      control.classList.remove('rapid-inapplicable');
-      const previous = control.dataset.rapidPreviousValue || 'all';
-      control.value = optionExists(control, previous) ? previous : 'all';
-      control.title = control.dataset.rapidPreviousTitle || '';
-      delete control.dataset.rapidPreviousValue;
-      delete control.dataset.rapidPreviousTitle;
+    inapplicableControls.forEach(control=>{
+      const unused=suppressed.includes(control);
+      if(unused){
+        if(control.dataset.filterInapplicable!=='1'){
+          control.dataset.filterPreviousValue=control.value;
+          control.dataset.filterPreviousTitle=control.title||'';
+        }
+        control.dataset.filterInapplicable='1';
+        control.value='all';control.disabled=true;
+        control.classList.add('rapid-inapplicable');
+        control.title=mode==='mcq'
+          ?'This lecture does not assign topic or priority to source MCQs.'
+          :'This filter is not used for Rapid Recall cards.';
+      }else if(control.dataset.filterInapplicable==='1'){
+        control.disabled=false;control.classList.remove('rapid-inapplicable');
+        const previous=control.dataset.filterPreviousValue||'all';
+        control.value=optionExists(control,previous)?previous:'all';
+        control.title=control.dataset.filterPreviousTitle||'';
+        delete control.dataset.filterInapplicable;
+        delete control.dataset.filterPreviousValue;
+        delete control.dataset.filterPreviousTitle;
+      }
     });
-    rapidModeActive = false;
   };
 
   const prepareRapidItems = ({lectures}) => {
@@ -154,15 +150,31 @@
     const dom = getDomCache();
     prepareRapidItems(dom);
 
-    const q = $('search').value.toLowerCase().trim();
+    const q = $('search').value.toLocaleLowerCase().trim();
+    const terms=q?q.split(/\s+/):[];
+    const matchesSearch=text=>terms.every(term=>text.includes(term));
     const lf = $('lectureFilter').value;
     const tf = typeFilter.value;
     const rapidMode = tf === 'rapid';
-    setControlApplicability(rapidMode);
+    setControlApplicability(tf);
 
     const topic = topicFilter?.value || 'all';
     const prio = priorityFilter?.value || 'all';
     const rf = reviewFilter.value;
+    const overview=document.querySelector('.lecture-overview-panel');
+    if(overview){
+      let shown=0;
+      overview.querySelectorAll('.lecture-overview-card').forEach(card=>{
+        const visible=matchesSearch((card.getAttribute('aria-label')||'').toLocaleLowerCase());
+        card.classList.toggle('hidden',!visible);
+        if(visible)shown+=1;
+      });
+      $('empty').classList.toggle('show',shown===0);
+      $('emptyMessage').textContent='No lecture titles match this search. Try another term.';
+      syncQuickButtons();
+      syncAccessibility(dom);
+      return;
+    }
     let visibleStudyItems = 0;
     let visibleRapidItems = 0;
     const counts = {all: 0, unrated: 0, mastered: 0, review: 0, weak: 0};
@@ -172,7 +184,7 @@
       const subtopics = item.dataset.subtopics || '';
       const subOk = activeSubtopic === 'all' || subtopics.split(' ').includes(activeSubtopic);
       const baseShow = !rapidMode &&
-        (!q || searchText.includes(q)) &&
+        matchesSearch(searchText) &&
         (lf === 'all' || item.dataset.lecture === lf) &&
         (tf === 'all' || item.dataset.type === tf) &&
         (topic === 'all' || item.dataset.topic === topic) &&
@@ -203,7 +215,7 @@
       const searchText = item.dataset.search || '';
       const show = requested &&
         (lf === 'all' || item.dataset.lecture === lf) &&
-        (!q || searchText.includes(q));
+        matchesSearch(searchText);
       item.classList.toggle('hidden', !show);
       if (show) visibleRapidItems += 1;
     });
@@ -211,8 +223,24 @@
     updateReviewLabels(counts, rapidMode);
 
     dom.lectures.forEach(lecture => {
+      // A source guide is visible only when its authored MCQs match the active
+      // question/status filter. The default unfiltered reader stays unchanged.
+      const guide=lecture.querySelector('.learning-companion');
+      if(guide){
+        const matched=[...guide.querySelectorAll('.study-guide-mcq')]
+          .some(item=>!item.classList.contains('hidden'));
+        const showGuide=tf==='mcq'?matched:
+          tf==='all'&&((!q&&rf==='all')||matched);
+        guide.classList.toggle('hidden',!showGuide);
+        const showOnlyMCQs=tf==='mcq'||rf!=='all'||Boolean(q);
+        guide.querySelectorAll('.study-guide-part').forEach(part=>{
+          part.classList.toggle('hidden',showOnlyMCQs&&part.dataset.guideSection!=='mcqs');
+        });
+        const mcqPart=guide.querySelector('[data-guide-section="mcqs"]');
+        if(showOnlyMCQs&&matched&&mcqPart)mcqPart.open=true;
+      }
       const lectureAllowed = lf === 'all' || lecture.dataset.lecture === lf;
-      const anyStudy = [...lecture.querySelectorAll('.study-item')]
+      const anyStudy = [...lecture.querySelectorAll('.study-item, .study-guide-mcq')]
         .some(item => !item.classList.contains('hidden'));
       const anyRapid = [...lecture.querySelectorAll('.rapid-item')]
         .some(item => !item.classList.contains('hidden'));
@@ -228,7 +256,9 @@
 
     const visible = visibleStudyItems + visibleRapidItems;
     const noSubjectLectures = visibleLectures().length === 0;
-    $('empty').classList.toggle('show', visible === 0);
+    const pendingMCQs=Boolean(document.querySelector('.mcq-library-loading'));
+    const inlineEmptyMCQs=Boolean(document.querySelector('.mcq-library-no-content'));
+    $('empty').classList.toggle('show', visible === 0 && !pendingMCQs && !inlineEmptyMCQs);
     const messages = {
       unrated: 'No unrated items match the current filters.',
       mastered: 'No mastered items match the current filters.',
@@ -239,7 +269,9 @@
       ? `No lectures have been added to ${subjects.find(subject => subject.id === activeSubject)?.label || 'this subject'} yet.`
       : rapidMode
         ? 'No Rapid Recall cards match the current lecture or search.'
-        : messages[rf] || 'No study items match the current filters.';
+        : tf==='mcq'
+          ? 'No source MCQs match this search or saved review status. Try clearing filters.'
+          : messages[rf] || 'No study items match the current filters.';
 
     syncQuickButtons();
     syncAccessibility(dom);
@@ -251,7 +283,7 @@
   });
 
   typeFilter.addEventListener('change', () => {
-    setControlApplicability(typeFilter.value === 'rapid');
+    setControlApplicability(typeFilter.value);
   }, true);
 
   document.addEventListener('click', event => {
@@ -281,18 +313,32 @@
   const revealButton = document.getElementById('revealBtn');
   const originalReveal = revealButton?.onclick;
   if (revealButton) {
-    revealButton.onclick = event => {
-      if (typeFilter.value !== 'rapid') {
-        originalReveal?.call(revealButton, event);
-        syncAccessibility(getDomCache());
+    const syncMcqAnswers=open=>{
+      document.querySelectorAll('.study-guide-mcq:not(.hidden)').forEach(item=>{
+        const feedback=item.querySelector('.study-guide-answer');
+        const button=item.querySelector('.study-guide-reveal');
+        if(feedback&&button&&feedback.hidden===open)button.click();
+      });
+    };
+    revealButton.onclick=event=>{
+      if(typeFilter.value==='rapid'){
+        revealAll=!revealAll;
+        document.querySelectorAll('.rapid-item:not(.hidden)').forEach(item=>{
+          item.classList.toggle('open',revealAll);
+          item.setAttribute('aria-expanded',revealAll?'true':'false');
+        });
+        revealButton.textContent=revealAll?'Hide all':'Reveal all';
         return;
       }
-      revealAll = !revealAll;
-      document.querySelectorAll('.rapid-item:not(.hidden)').forEach(item => {
-        item.classList.toggle('open', revealAll);
-        item.setAttribute('aria-expanded', revealAll ? 'true' : 'false');
-      });
-      revealButton.textContent = revealAll ? 'Hide all' : 'Reveal all';
+      if(typeFilter.value==='mcq'){
+        revealAll=!revealAll;
+        syncMcqAnswers(revealAll);
+        revealButton.textContent=revealAll?'Hide all':'Reveal all';
+        return;
+      }
+      originalReveal?.call(revealButton,event);
+      if(typeFilter.value==='all')syncMcqAnswers(revealAll);
+      syncAccessibility(getDomCache());
     };
   }
 
@@ -300,6 +346,18 @@
   const originalRandom = randomButton?.onclick;
   if (randomButton) {
     randomButton.onclick = event => {
+      if(typeFilter.value==='mcq'){
+        const items=[...document.querySelectorAll('.study-guide-mcq:not(.hidden)')]
+          .filter(item=>!item.closest('.lecture.hidden')&&!item.closest('.learning-companion.hidden'));
+        if(!items.length)return;
+        const item=items[Math.floor(Math.random()*items.length)];
+        const parent=item.closest('details');
+        if(parent)parent.open=true;
+        item.tabIndex=-1;
+        item.scrollIntoView({behavior:reduceMotion?.matches?'instant':'smooth',block:'center'});
+        item.focus({preventScroll:true});
+        return;
+      }
       if (typeFilter.value !== 'rapid') {
         originalRandom?.call(randomButton, event);
         return;

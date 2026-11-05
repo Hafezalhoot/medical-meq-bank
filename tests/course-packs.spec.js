@@ -6,7 +6,7 @@ test.use({serviceWorkers: 'block'});
 
 async function openBank(page) {
   await page.goto('/', {waitUntil: 'domcontentloaded'});
-  await expect(page).toHaveTitle(/Medical MEQ Review Bank/);
+  await expect(page).toHaveTitle(/My Medical Library/);
   await expect(page.locator('#courseSelector')).toBeVisible();
   await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
   await expect(page.locator('.lecture').first()).toBeAttached();

@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import importlib.util
 import json
+from hashlib import sha256
 import os
 import sys
 import unittest
@@ -16,6 +17,7 @@ sys.path.insert(0, str(ROOT_SOURCE / "tools"))
 spec = importlib.util.spec_from_file_location("lecture_intake_test_module", ROOT_SOURCE / "tools" / "add_lecture.py")
 intake = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(intake)
+import lecture_review_report as source_review
 
 
 def save(path, value):
@@ -335,6 +337,78 @@ class LectureIntakeTests(unittest.TestCase):
         self.assertEqual(stored["studyGuide"]["mcqs"][0]["answerIndex"], 1)
         self.assertEqual(stored["studyGuide"]["explanation"][0]["sourcePage"], "Slide 3")
 
+    def test_registered_lecture_declares_zero_mcqs_without_generating_questions(self):
+        document = draft()
+        save(self.root / "draft.json", document)
+        self.run_cli(flags=("--write", "--reviewed"))
+        entry = json.loads(self.catalog.read_text())["lectures"][0]
+        self.assertIn("mcqCount", entry)
+        self.assertEqual(entry["mcqCount"], 0)
+        saved = json.loads((self.root / "lectures" / entry["file"]).read_text())
+        self.assertNotIn("studyGuide", saved)
+
+    def test_registers_reviewed_mcq_only_lecture_with_exact_catalog_count(self):
+        document = draft()
+        document["coreShorts"] = []
+        mcq = {
+            "id": "source-mcq-01",
+            "question": "Which option appears in the reviewed slide?",
+            "options": ["First", "Second", "Third", "Fourth"],
+            "answerIndex": 2,
+            "rationale": "The source slide explicitly labels the third option.",
+            "sourcePage": "PDF p.7",
+        }
+        document["studyGuide"] = {"mcqs": [mcq]}
+        save(self.root / "draft.json", document)
+
+        # Dry-run must accept a source-backed MCQ-only lecture without publishing.
+        before = self.catalog.read_bytes()
+        self.run_cli()
+        self.assertEqual(self.catalog.read_bytes(), before)
+        self.assertFalse((self.root / "lectures" / "data" / (document["id"] + ".json")).exists())
+
+        with self.assertRaisesRegex(SystemExit, "requires --reviewed"):
+            self.run_cli(flags=("--write",))
+        self.run_cli(flags=("--write", "--reviewed"))
+        entries = json.loads(self.catalog.read_text())["lectures"]
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["mcqCount"], 1)
+        self.assertEqual(entries[0]["expectedCounts"]["coreShorts"], 0)
+        saved = json.loads((self.root / "lectures" / entries[0]["file"]).read_text())
+        self.assertEqual(saved["studyGuide"]["mcqs"], [mcq])
+
+        from lecture_builder import load_json_lectures
+        published = load_json_lectures(self.root)
+        self.assertEqual(published[0]["studyGuide"]["mcqs"], [mcq])
+
+    def test_rejects_bad_mcq_count_without_mutating_source(self):
+        document = draft()
+        document["studyGuide"] = {"mcqs": [{
+            "id": "source-mcq-01",
+            "question": "Which option is in the source?",
+            "options": ["A", "B", "C", "D"],
+            "answerIndex": 1,
+            "rationale": "According to the source PDF.",
+            "sourcePage": "PDF p.2",
+        }]}
+        save(self.root / "draft.json", document)
+        self.run_cli(flags=("--write", "--reviewed"))
+        entry = json.loads(self.catalog.read_text())["lectures"][0]
+        self.assertEqual(entry["mcqCount"], 1)
+
+        from lecture_builder import load_json_lectures
+        catalog = json.loads(self.catalog.read_text())
+        for invalid in (0, 2, -1, True, "1", None):
+            with self.subTest(invalid=invalid):
+                catalog["lectures"][0]["mcqCount"] = invalid
+                save(self.catalog, catalog)
+                with self.assertRaisesRegex(SystemExit, "MCQ count|mcqCount"):
+                    load_json_lectures(self.root)
+        # Catalogs predating V5.5 are still valid without the optional field.
+        catalog["lectures"][0].pop("mcqCount")
+        save(self.catalog, catalog)
+        self.assertEqual(len(load_json_lectures(self.root)), 1)
+
     def test_study_guide_rejects_missing_page_and_bad_answer_index(self):
         document = draft()
         document["studyGuide"] = {
@@ -433,6 +507,61 @@ class LectureIntakeTests(unittest.TestCase):
         self.assertEqual(self.catalog.read_bytes(), before_catalog)
         self.assertEqual((self.root / "courses" / "packs" / "internal-medicine.json").read_bytes(), before_pack)
         self.assertFalse((self.root / "lectures" / "data" / "internal-medicine-test-lecture.json").exists())
+
+
+    def private_review_flags(self, lecture, checked=True):
+        source = self.root / "original.pdf"
+        source.write_bytes(b"%PDF-1.4\\nonly a review hash fixture")
+        draft_path = self.root / "draft.json"
+        save(draft_path, lecture)
+        report_path = self.root / "source-review.md"
+        worksheet = source_review.build_report(
+            lecture, pdf_name=source.name, pdf_hash=sha256(source.read_bytes()).hexdigest(),
+            page_count=2, draft_hash=sha256(draft_path.read_bytes()).hexdigest(),
+        )
+        if checked:
+            worksheet = worksheet.replace("[ ]", "[x]")
+        report_path.write_text(worksheet, encoding="utf-8")
+        return ["--review-report", str(report_path), "--source-pdf", str(source),
+                "--page-count", "2"], source
+
+    def test_source_review_evidence_validated_before_lecture_write(self):
+        lecture = draft()
+        flags, original_pdf = self.private_review_flags(lecture)
+        self.run_cli(flags=("--write", "--reviewed", *flags))
+        registered = json.loads(self.catalog.read_text(encoding="utf-8"))["lectures"]
+        self.assertEqual(registered[0]["id"], lecture["id"])
+        self.assertTrue((self.root / "lectures" / "data" / f"{lecture['id']}.json").is_file())
+        self.assertTrue(original_pdf.is_file())
+
+    def test_unchecked_review_blocks_write_without_catalog_mutation(self):
+        lecture = draft()
+        flags, _ = self.private_review_flags(lecture, checked=False)
+        before = self.catalog.read_bytes()
+        with self.assertRaisesRegex(SystemExit, "unchecked"):
+            self.run_cli(flags=("--write", "--reviewed", *flags))
+        self.assertEqual(self.catalog.read_bytes(), before)
+        self.assertFalse((self.root / "lectures" / "data" / f"{lecture['id']}.json").exists())
+
+    def test_modified_pdf_blocks_reviewed_registration(self):
+        lecture = draft()
+        flags, original_pdf = self.private_review_flags(lecture)
+        original_pdf.write_bytes(b"%PDF-1.4\\nsource changed after review")
+        before = self.catalog.read_bytes()
+        with self.assertRaisesRegex(SystemExit, "stale|altered"):
+            self.run_cli(flags=("--write", "--reviewed", *flags))
+        self.assertEqual(self.catalog.read_bytes(), before)
+
+    def test_incomplete_review_evidence_arguments_fail_closed(self):
+        lecture = draft()
+        flags, _ = self.private_review_flags(lecture)
+        before = self.catalog.read_bytes()
+        for partial in (flags[:2], flags[2:4], flags[4:]):
+            with self.subTest(partial=partial), self.assertRaisesRegex(
+                    SystemExit, "review-report.*source-pdf.*page-count"):
+                self.run_cli(flags=("--write", "--reviewed", *partial))
+        self.assertEqual(self.catalog.read_bytes(), before)
+
 
 
 if __name__ == "__main__":

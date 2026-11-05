@@ -137,6 +137,9 @@
       throw new Error(`Lecture identity metadata differs from catalog for ${entry.id}`);
     }
     const expected = entry.expectedCounts || {};
+    if (Number.isInteger(entry.mcqCount) && (lecture.studyGuide?.mcqs?.length || 0) !== entry.mcqCount) {
+      throw new Error(`Lecture ${entry.id} has invalid source MCQ count`);
+    }
     for (const key of ['cases', 'coreShorts', 'imageQuestions', 'detailedShorts', 'rapid']) {
       if (!Array.isArray(lecture[key]) || lecture[key].length !== expected[key]) {
         throw new Error(`Lecture ${entry.id} has invalid ${key}`);
@@ -169,6 +172,7 @@
     rapid: [],
     schemaVersion: entry.schemaVersion,
     expectedCounts: {...(entry.expectedCounts || {})},
+    mcqCount: Number.isInteger(entry.mcqCount) ? entry.mcqCount : 0,
     __metadataOnly: true
   });
 

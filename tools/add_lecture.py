@@ -11,9 +11,11 @@ import re
 import base64
 import binascii
 import math
+from hashlib import sha256
 import tempfile
 
 from lecture_builder import LECTURE_LIST_KEYS, validate_lecture, validate_safe_svg
+from lecture_review_report import pdf_fingerprint, verify_report
 
 ROOT = Path(__file__).resolve().parents[1]
 LECTURES = ROOT / "lectures"
@@ -161,14 +163,34 @@ def main() -> None:
         help="Copy/register the lecture. Without this flag the command is a safe dry-run.",
     )
     parser.add_argument("--reviewed", action="store_true", help="Confirm medical content was checked against the source lecture; required with --write.")
+    parser.add_argument("--review-report", type=Path, help="Optional completed private page-review worksheet")
+    parser.add_argument("--source-pdf", type=Path, help="Original private PDF used for that worksheet")
+    parser.add_argument("--page-count", type=int, help="Reviewer-confirmed PDF page count for the worksheet")
     args = parser.parse_args()
     if args.write and not args.reviewed:
         fail("--write requires --reviewed after lecture-first medical review")
+    review_arguments = (args.review_report, args.source_pdf, args.page_count)
+    if any(arg is not None for arg in review_arguments) and not all(
+        arg is not None for arg in review_arguments
+    ):
+        fail("--review-report, --source-pdf and --page-count must be provided together")
 
     source_path = args.source.resolve()
     lecture = read_json(source_path)
     if not isinstance(lecture, dict):
         fail("lecture source must be a JSON object")
+    if args.review_report is not None:
+        try:
+            worksheet = args.review_report.read_text(encoding="utf-8")
+            digest = sha256(source_path.read_bytes()).hexdigest()
+            verify_report(
+                worksheet, lecture, args.source_pdf.name, pdf_fingerprint(args.source_pdf),
+                args.page_count, digest,
+            )
+        except (OSError, UnicodeError) as error:
+            fail(f"cannot read private review evidence: {error}")
+        except SystemExit as error:
+            fail(f"source review verification failed: {error}")
 
     lecture_id = lecture.get("id")
     subject_key = lecture.get("subjectKey")
@@ -199,7 +221,13 @@ def main() -> None:
         if not isinstance(value, list):
             fail(f"lecture is missing list {key}")
         counts[key] = len(value)
-    if sum(counts.values()) == 0:
+    guide = lecture.get("studyGuide")
+    has_source_mcqs = (
+        isinstance(guide, dict)
+        and isinstance(guide.get("mcqs"), list)
+        and bool(guide["mcqs"])
+    )
+    if sum(counts.values()) == 0 and not has_source_mcqs:
         fail("cannot publish an empty lecture; add reviewed learning items first")
 
     # Published identity is derived from catalogs. Keep reviewable source content independent.
@@ -213,6 +241,7 @@ def main() -> None:
         expected_counts=counts,
     )
     validate_image_sources(medical_source)
+    mcq_count = len((medical_source.get("studyGuide") or {}).get("mcqs", []))
     for key in LECTURE_LIST_KEYS:
         if key == "rapid":
             continue
@@ -249,6 +278,7 @@ def main() -> None:
         "order": order,
         "file": relative_file,
         "expectedCounts": counts,
+        "mcqCount": mcq_count,
         "courseId": args.course,
         "schemaVersion": 1,
     }
