@@ -77,6 +77,14 @@ class OptionalChapterMetadataTests(unittest.TestCase):
                 with self.assertRaisesRegex(SystemExit, "unknown chapter"):
                     validate_chapter_mapping(pack, [lecture])
 
+    def test_rejects_non_positive_chapter_order(self):
+        pack = course_pack()
+        pack["subjects"][0]["chapters"] = [
+            {"id": "zero", "label": "Not ordered", "order": 0},
+        ]
+        with self.assertRaisesRegex(SystemExit, "invalid chapter"):
+            validate_chapter_mapping(pack, [])
+
     def test_rejects_malformed_chapter_container(self):
         pack = course_pack()
         pack["subjects"][0]["chapters"] = "not a list"
