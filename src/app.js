@@ -468,7 +468,7 @@ function createStudyGuide(lecture) {
   if(guide.mcqs?.length){
     const details=disclosure('MCQ practice',guide.mcqs.length,'mcqs');
     guide.mcqs.forEach((item,index)=>{
-      const article=document.createElement('article');article.className='study-guide-mcq study-item';
+      const article=document.createElement('article');article.className='study-guide-mcq';
       article.id=lecture.id+'-mcq-'+item.id;
       article.dataset.type='mcq';article.dataset.lecture=lecture.id;
       article.dataset.search=[lecture.title,item.question,...item.options,item.rationale,item.sourcePage].join(' ').toLocaleLowerCase();
