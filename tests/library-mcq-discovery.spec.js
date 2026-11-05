@@ -89,7 +89,7 @@ test('My Review opens saved Weak source MCQ without clearing the Weak filter',as
   await expect(page.locator('#'+dermatology+'-guide-mcqs')).toHaveAttribute('open','');
   await expect(mcq).toBeVisible();
   await expect(mcq.locator('.status.weak')).toHaveClass(/active/);
-  await expect(page.locator('#'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(1);
+  await expect(page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(1);
 });
 
 test('MCQ bank can search source questions across both Psychiatry lectures on demand',async ({page})=>{
