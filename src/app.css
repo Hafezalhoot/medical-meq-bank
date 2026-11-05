@@ -1784,7 +1784,7 @@ details.original-figure-tools{
 .study-guide-mcq{min-width:0;border-bottom:1px solid var(--line)}
 .study-guide-mcq:last-child{border-bottom:0}
 .study-guide-mcq:focus{outline:3px solid var(--brand);outline-offset:2px;border-radius:8px}
-.study-guide-mcq.hidden,.learning-companion.hidden,.mcq-library-lecture.hidden,.mcq-library .hidden{display:none!important}
+.study-guide-part.hidden,.study-guide-mcq.hidden,.learning-companion.hidden,.mcq-library-lecture.hidden,.mcq-library .hidden{display:none!important}
 .mcq-library-loading,.mcq-library-no-content{padding:14px 16px;border:1px dashed var(--line);border-radius:12px;background:var(--card);color:var(--muted)}
 @media(min-width:1050px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:700px){
