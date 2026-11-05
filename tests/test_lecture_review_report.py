@@ -111,5 +111,82 @@ class IntakeReportTests(unittest.TestCase):
                 intake_report.pdf_fingerprint(root / "missing.pdf")
 
 
+    def test_verify_requires_all_pages_and_manual_signoffs(self):
+        lecture = {
+            "id": "draft-one", "title": "Source-only",
+            "imageQuestions": [{"id": "spot", "page": 2}],
+            "studyGuide": {"explanation": [{"heading": "Overview", "sourcePage": "PDF p.1"}]},
+        }
+        report = intake_report.build_report(lecture, "source.pdf", "a" * 64, 2, draft_hash="b" * 64)
+        complete = report.replace("[ ]", "[x]")
+        intake_report.verify_report(report_text=complete, lecture=lecture,
+                                    pdf_name="source.pdf", pdf_hash="a" * 64,
+                                    page_count=2, draft_hash="b" * 64)
+        with self.assertRaisesRegex(SystemExit, "unchecked"):
+            intake_report.verify_report(report_text=report, lecture=lecture,
+                                        pdf_name="source.pdf", pdf_hash="a" * 64,
+                                        page_count=2, draft_hash="b" * 64)
+        self.assertIn("NEEDS SOURCE REVIEW", complete)
+
+    def test_verify_rejects_stale_draft_or_pdf_and_modified_worksheet(self):
+        lecture = {"id": "draft-one", "title": "Example",
+                   "studyGuide": {"mcqs": [{"id": "one", "sourcePage": "PDF p.1"}]}}
+        original = intake_report.build_report(lecture, "source.pdf", "a" * 64, 1,
+                                              draft_hash="b" * 64).replace("[ ]", "[x]")
+        cases = (
+            (lecture | {"title": "Modified"}, "a" * 64, "b" * 64, original),
+            (lecture, "c" * 64, "b" * 64, original),
+            (lecture, "a" * 64, "d" * 64, original),
+            (lecture, "a" * 64, "b" * 64, original.replace("Source figure", "Edited figure")),
+        )
+        for draft, pdf_hash, draft_hash, report in cases:
+            with self.subTest(draft=draft, pdf_hash=pdf_hash, draft_hash=draft_hash):
+                with self.assertRaisesRegex(SystemExit, "stale|altered"):
+                    intake_report.verify_report(report, draft, "source.pdf", pdf_hash, 1, draft_hash)
+
+    def test_verify_rejects_missing_or_ambiguous_source_page_and_page_count(self):
+        lecture = {"title": "Invalid", "studyGuide": {"mcqs": [{"id": "one", "sourcePage": "PDF pp.1-2"}]}}
+        report = intake_report.build_report(lecture, "source.pdf", "a" * 64, 2,
+                                             draft_hash="b" * 64).replace("[ ]", "[x]")
+        with self.assertRaisesRegex(SystemExit, "unresolved"):
+            intake_report.verify_report(report, lecture, "source.pdf", "a" * 64, 2, "b" * 64)
+        missing = {"title": "No citation", "studyGuide": {"mcqs": [{"id": "one"}]}}
+        missing_report = intake_report.build_report(missing, "source.pdf", "a" * 64, 2,
+                                                     draft_hash="b" * 64).replace("[ ]", "[x]")
+        with self.assertRaisesRegex(SystemExit, "unresolved"):
+            intake_report.verify_report(missing_report, missing, "source.pdf", "a" * 64, 2, "b" * 64)
+        with self.assertRaisesRegex(SystemExit, "page count"):
+            intake_report.verify_report(report, lecture, "source.pdf", "a" * 64, None, "b" * 64)
+
+    def test_cli_verification_is_read_only_and_checks_original_pdf_hash(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            draft = root / "lecture.json"
+            lecture = {"title": "Test", "studyGuide": {"mcqs": [{"id": "one", "sourcePage": "PDF p.1"}]}}
+            draft.write_text(json.dumps(lecture), encoding="utf-8")
+            pdf = root / "original.pdf"
+            pdf.write_bytes(b"%PDF-1.4\\nfixture")
+            report = root / "review.md"
+            with patch.object(sys, "argv", ["lecture_review_report.py", str(draft),
+                                            "--pdf", str(pdf), "--page-count", "1",
+                                            "--output", str(report)]):
+                intake_report.main()
+            original = report.read_text(encoding="utf-8")
+            self.assertIn("Draft JSON SHA-256", original)
+            report.write_text(original.replace("[ ]", "[x]"), encoding="utf-8")
+            with patch.object(sys, "argv", ["lecture_review_report.py", str(draft),
+                                            "--pdf", str(pdf), "--page-count", "1",
+                                            "--verify", str(report)]):
+                intake_report.main()
+            self.assertEqual(draft.read_text(encoding="utf-8"), json.dumps(lecture))
+            pdf.write_bytes(b"%PDF-1.4\\nchanged")
+            with patch.object(sys, "argv", ["lecture_review_report.py", str(draft),
+                                            "--pdf", str(pdf), "--page-count", "1",
+                                            "--verify", str(report)]):
+                with self.assertRaisesRegex(SystemExit, "stale|altered"):
+                    intake_report.main()
+
+
+
 if __name__ == "__main__":
     unittest.main()
