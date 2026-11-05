@@ -199,7 +199,7 @@ function populateLectureFilter(){
   const lf=$('lectureFilter'),old=lf.value,list=visibleLectures();
   if(!list.length){lf.innerHTML='<option value="all">No lectures yet</option>';lf.value='all';lf.disabled=true;delete lf.dataset.explicitAll;return}
   lf.disabled=false;
-  if(list.length===1){
+  if(list.length===1&&document.body.dataset.workspace!=='library'){
     lf.innerHTML=`<option value="${list[0].id}">01. ${esc(list[0].title)}</option>`;
     lf.value=list[0].id;
     delete lf.dataset.explicitAll;
@@ -1438,6 +1438,7 @@ syncThemeButton();
     if(status)status.textContent=view==='lecture'?'Lecture reader':view.charAt(0).toUpperCase()+view.slice(1)+' workspace';
     if(document.querySelector('.app.study-focus'))setFocusMode(false);
     if(view==='library'){
+      populateLectureFilter();
       selectLecture('all',false);
     }
     if(view==='review')savedReview.open=true;
@@ -1461,9 +1462,14 @@ syncThemeButton();
       location.hash='#/library';
     }
   },true);
-  document.addEventListener('meq:lectures-loaded',()=>{
-    if(document.body.dataset.workspace==='library')selectLecture('all',false);
-  });
+  const refreshLibraryIndex=()=>{
+    if(document.body.dataset.workspace!=='library')return;
+    populateLectureFilter();
+    selectLecture('all',false);
+  };
+  document.getElementById('subjectSelector')?.addEventListener('change',refreshLibraryIndex);
+  document.addEventListener('meq:course-changed',refreshLibraryIndex);
+  document.addEventListener('meq:lectures-loaded',refreshLibraryIndex);
   window.addEventListener('hashchange',applyRoute);
   if(document.readyState==='loading')
     document.addEventListener('DOMContentLoaded',applyRoute,{once:true});
