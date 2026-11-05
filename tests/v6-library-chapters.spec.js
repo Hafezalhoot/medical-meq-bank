@@ -92,7 +92,12 @@ test('desktop library rail navigates specialties instead of duplicating lecture 
 
 test('Library route ignores practice-only MCQ type filter and displays lecture choices', async ({page}) => {
   await page.goto('/#/practice',{waitUntil:'domcontentloaded'});
-  await page.locator('#typeFilter').selectOption('mcq');
+  // Seed the previous practice filter as route state: that native field may
+  // be hidden inside the responsive filter sheet before the user opens it.
+  await page.locator('#typeFilter').evaluate(field=>{
+    field.value='mcq';
+    field.dispatchEvent(new Event('change',{bubbles:true}));
+  });
   await page.getByRole('navigation',{name:'Primary workspace'}).getByRole('link',{name:'Library'}).click();
   await expect(page.locator('#typeFilter')).toHaveValue('all');
   await expect(page.locator('.lecture-overview-card')).toHaveCount(8,{timeout:20000});
