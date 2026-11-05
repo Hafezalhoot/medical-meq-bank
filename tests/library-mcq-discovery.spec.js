@@ -12,9 +12,16 @@ async function openDermatology(page){
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
 }
 
+async function openAdvancedFilters(page){
+  const toggle=page.locator('#desktopFiltersToggle');
+  if(await toggle.isVisible() && await toggle.getAttribute('aria-expanded')!=='true')await toggle.click();
+  await expect(page.locator('#typeFilter')).toBeVisible();
+}
+
 test('source MCQs are first-class: filter, source count, search and keyboard answer',async ({page})=>{
   await openDermatology(page);
   await expect(page.locator('#mcqCount')).toHaveText('30');
+  await openAdvancedFilters(page);
   await page.locator('#typeFilter').selectOption('mcq');
   const cards=page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)');
   await expect(cards).toHaveCount(30);
@@ -33,6 +40,7 @@ test('source MCQs are first-class: filter, source count, search and keyboard ans
 
 test('MCQs have explicit saved ratings but answering alone never auto-marks Weak',async ({page})=>{
   await openDermatology(page);
+  await openAdvancedFilters(page);
   await page.locator('#typeFilter').selectOption('mcq');
   const first=page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)').first();
   await first.locator('input[type="radio"]').first().check();
@@ -48,6 +56,7 @@ test('MCQs have explicit saved ratings but answering alone never auto-marks Weak
   await expect(page.locator('#myReviewCount')).toContainText('1 to revisit');
   await page.reload({waitUntil:'domcontentloaded'});
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
+  await openAdvancedFilters(page);
   await page.locator('#typeFilter').selectOption('mcq');
   await expect(page.locator('#lecture-'+dermatology+' .study-guide-mcq:not(.hidden)')).toHaveCount(1);
   await expect(page.locator('.study-guide-mcq:not(.hidden) .status.weak.active')).toHaveCount(1);
@@ -64,6 +73,7 @@ test('MCQ bank can search source questions across both Psychiatry lectures on de
   await page.locator('#subjectSelector').selectOption('psychiatry');
   await expect(page.locator('#lectureFilter option[value="all"]')).toHaveCount(1);
   await page.locator('#lectureFilter').selectOption('all');
+  await openAdvancedFilters(page);
   await page.locator('#typeFilter').selectOption('mcq');
   await expect(page.locator('#mainContent .study-guide-mcq:not(.hidden)')).toHaveCount(108,{timeout:30000});
   await expect(page.locator('#mcqCount')).toHaveText('108');
@@ -82,6 +92,7 @@ test('legacy lecture without authored MCQ has a truthful empty state and keeps C
   await page.locator('#lectureFilter').selectOption('urology-bladder-cancer');
   await expect(page.locator('#lecture-urology-bladder-cancer')).toBeVisible({timeout:20000});
   await expect(page.locator('#mcqCount')).toHaveText('0');
+  await openAdvancedFilters(page);
   await page.locator('#typeFilter').selectOption('mcq');
   await expect(page.locator('#mainContent .study-guide-mcq')).toHaveCount(0);
   await expect(page.locator('#emptyMessage')).toContainText('No source MCQs');
