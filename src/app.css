@@ -1781,8 +1781,9 @@ details.original-figure-tools{
 .mcq-library-lecture-heading h3{font-size:1.06rem;line-height:1.45;margin:0}
 .mcq-library-lecture-heading button{min-height:44px}
 .mcq-library-lecture .study-guide-part{margin:0}
-.study-guide-mcq.study-item{min-width:0;border-bottom:1px solid var(--line)}
-.study-guide-mcq.study-item:last-child{border-bottom:0}
+.study-guide-mcq{min-width:0;border-bottom:1px solid var(--line)}
+.study-guide-mcq:last-child{border-bottom:0}
+.study-guide-mcq:focus{outline:3px solid var(--brand);outline-offset:2px;border-radius:8px}
 .study-guide-mcq.hidden,.learning-companion.hidden,.mcq-library-lecture.hidden,.mcq-library .hidden{display:none!important}
 .mcq-library-loading,.mcq-library-no-content{padding:14px 16px;border:1px dashed var(--line);border-radius:12px;background:var(--card);color:var(--muted)}
 @media(min-width:1050px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
