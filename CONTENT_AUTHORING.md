@@ -152,6 +152,27 @@ python3 tools/lecture_review_report.py tmp/lecture-drafts/surgery-urology-exampl
 
 The tool saves `tmp/lecture-drafts/surgery-urology-example-review.md` without overwriting an older report. It lists authored section counts, source-page fields for Explanation / MCQs / image spots, missing page labels, and the **SHA-256 fingerprint** of the private PDF if one is supplied. The `--page-count` value is reviewer-supplied, not automatically inferred. The original PDF is never uploaded or copied into public assets by this command. The report does **not** check whether medical answers are right or whether an image may legally be republished.
 
+### V5.9 — Verify completed source-review checklist against immutable inputs
+
+Generate the worksheet with the original private PDF and **manually confirmed** PDF page count:
+
+```bash
+python3 tools/lecture_review_report.py tmp/lecture-drafts/<lecture-id>.json \
+  --pdf /private/path/source.pdf --page-count 25
+```
+
+This draft-only local file records a SHA-256 for both the draft JSON bytes and the original PDF; it does not upload, OCR, interpret or redistribute the PDF. Compare **every** page of the original PDF with the authored Explanation, MCQs, original figures, tables and embedded image text. Then manually tick all `[ ]` boxes as `[x]` without changing the rest of the worksheet. For pages with no authored links, you must still inspect the page and explicitly document any deliberate omissions elsewhere in your private editorial records. Missing/ambiguous source pages must be resolved in the draft, and a new worksheet generated.
+
+After review, run the **read-only** verification mode:
+
+```bash
+python3 tools/lecture_review_report.py tmp/lecture-drafts/<lecture-id>.json \
+  --pdf /private/path/source.pdf --page-count 25 \
+  --verify tmp/lecture-drafts/<lecture-id>-review.md
+```
+
+The checker refuses any unchecked page or final sign-off item, invalid/missing source citations, changed draft or PDF fingerprints, altered worksheet text, or missing independently supplied page count. It only verifies that the checklist remains structurally consistent with the exact inputs and all assertions were checked. **It cannot confirm that the human actually checked those facts, that clinical answers are correct, that the declared PDF page count is true, or that redistribution rights exist.** Medical approval is separate and must happen before the existing `add_lecture.py --write --reviewed` step. This verification command never writes catalog/lecture data or publishes an app release.
+
 ### V5.7 — Page-by-page coverage for information-rich visuals
 
 When you supply the **manually confirmed** `--page-count`, the private review report adds **one unchecked row for every PDF page**, even pages with no currently authored question. It shows only *claimed links* from explicit single-page labels (such as `PDF p.4`, `Slide 3` or a numeric image-question page), not proof that the lecture has been fully captured. It flags ambiguous references (including ranges or handout labels) and references outside the declared page count for manual resolution.
