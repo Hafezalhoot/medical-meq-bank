@@ -223,6 +223,7 @@
     },
     allSubjectScopes,
     allSubjectKeys,
+    chapterIdForLecture: lectureId => embedded.lectureChapters?.[lectureId] || null,
     get activeCourse() { return activeCourse; }
   });
 
