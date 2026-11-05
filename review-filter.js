@@ -346,6 +346,18 @@
   const originalRandom = randomButton?.onclick;
   if (randomButton) {
     randomButton.onclick = event => {
+      if(typeFilter.value==='mcq'){
+        const items=[...document.querySelectorAll('.study-guide-mcq:not(.hidden)')]
+          .filter(item=>!item.closest('.lecture.hidden')&&!item.closest('.learning-companion.hidden'));
+        if(!items.length)return;
+        const item=items[Math.floor(Math.random()*items.length)];
+        const parent=item.closest('details');
+        if(parent)parent.open=true;
+        item.tabIndex=-1;
+        item.scrollIntoView({behavior:reduceMotion?.matches?'instant':'smooth',block:'center'});
+        item.focus({preventScroll:true});
+        return;
+      }
       if (typeFilter.value !== 'rapid') {
         originalRandom?.call(randomButton, event);
         return;
