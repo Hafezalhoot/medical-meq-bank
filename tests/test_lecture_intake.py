@@ -335,6 +335,78 @@ class LectureIntakeTests(unittest.TestCase):
         self.assertEqual(stored["studyGuide"]["mcqs"][0]["answerIndex"], 1)
         self.assertEqual(stored["studyGuide"]["explanation"][0]["sourcePage"], "Slide 3")
 
+    def test_registered_lecture_declares_zero_mcqs_without_generating_questions(self):
+        document = draft()
+        save(self.root / "draft.json", document)
+        self.run_cli(flags=("--write", "--reviewed"))
+        entry = json.loads(self.catalog.read_text())["lectures"][0]
+        self.assertIn("mcqCount", entry)
+        self.assertEqual(entry["mcqCount"], 0)
+        saved = json.loads((self.root / "lectures" / entry["file"]).read_text())
+        self.assertNotIn("studyGuide", saved)
+
+    def test_registers_reviewed_mcq_only_lecture_with_exact_catalog_count(self):
+        document = draft()
+        document["coreShorts"] = []
+        mcq = {
+            "id": "source-mcq-01",
+            "question": "Which option appears in the reviewed slide?",
+            "options": ["First", "Second", "Third", "Fourth"],
+            "answerIndex": 2,
+            "rationale": "The source slide explicitly labels the third option.",
+            "sourcePage": "PDF p.7",
+        }
+        document["studyGuide"] = {"mcqs": [mcq]}
+        save(self.root / "draft.json", document)
+
+        # Dry-run must accept a source-backed MCQ-only lecture without publishing.
+        before = self.catalog.read_bytes()
+        self.run_cli()
+        self.assertEqual(self.catalog.read_bytes(), before)
+        self.assertFalse((self.root / "lectures" / "data" / (document["id"] + ".json")).exists())
+
+        with self.assertRaisesRegex(SystemExit, "requires --reviewed"):
+            self.run_cli(flags=("--write",))
+        self.run_cli(flags=("--write", "--reviewed"))
+        entries = json.loads(self.catalog.read_text())["lectures"]
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["mcqCount"], 1)
+        self.assertEqual(entries[0]["expectedCounts"]["coreShorts"], 0)
+        saved = json.loads((self.root / "lectures" / entries[0]["file"]).read_text())
+        self.assertEqual(saved["studyGuide"]["mcqs"], [mcq])
+
+        from lecture_builder import load_json_lectures
+        published = load_json_lectures(self.root)
+        self.assertEqual(published[0]["studyGuide"]["mcqs"], [mcq])
+
+    def test_rejects_bad_mcq_count_without_mutating_source(self):
+        document = draft()
+        document["studyGuide"] = {"mcqs": [{
+            "id": "source-mcq-01",
+            "question": "Which option is in the source?",
+            "options": ["A", "B", "C", "D"],
+            "answerIndex": 1,
+            "rationale": "According to the source PDF.",
+            "sourcePage": "PDF p.2",
+        }]}
+        save(self.root / "draft.json", document)
+        self.run_cli(flags=("--write", "--reviewed"))
+        entry = json.loads(self.catalog.read_text())["lectures"][0]
+        self.assertEqual(entry["mcqCount"], 1)
+
+        from lecture_builder import load_json_lectures
+        catalog = json.loads(self.catalog.read_text())
+        for invalid in (0, 2, -1, True, "1", None):
+            with self.subTest(invalid=invalid):
+                catalog["lectures"][0]["mcqCount"] = invalid
+                save(self.catalog, catalog)
+                with self.assertRaisesRegex(SystemExit, "MCQ count|mcqCount"):
+                    load_json_lectures(self.root)
+        # Catalogs predating V5.5 are still valid without the optional field.
+        catalog["lectures"][0].pop("mcqCount")
+        save(self.catalog, catalog)
+        self.assertEqual(len(load_json_lectures(self.root)), 1)
+
     def test_study_guide_rejects_missing_page_and_bad_answer_index(self):
         document = draft()
         document["studyGuide"] = {
