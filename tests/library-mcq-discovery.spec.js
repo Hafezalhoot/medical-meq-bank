@@ -38,6 +38,18 @@ test('source MCQs are first-class: filter, source count, search and keyboard ans
   await expect(cards.first().locator('.study-guide-answer')).toContainText('Your answer is correct.');
 });
 
+test('MCQ-only Start and Random focus an actual source-backed question',async ({page})=>{
+  await openDermatology(page);
+  await openAdvancedFilters(page);
+  await page.locator('#typeFilter').selectOption('mcq');
+  await expect(page.locator('.study-guide-mcq:not(.hidden)')).toHaveCount(30);
+  await page.locator('#resumeStudyBtn').click();
+  await expect.poll(()=>page.evaluate(()=>document.activeElement?.classList.contains('study-guide-mcq'))).toBe(true);
+  await page.locator('#randomBtn').click();
+  await expect.poll(()=>page.evaluate(()=>document.activeElement?.classList.contains('study-guide-mcq'))).toBe(true);
+  await expect(page.locator('#typeFilter')).toHaveValue('mcq');
+});
+
 test('MCQs have explicit saved ratings but answering alone never auto-marks Weak',async ({page})=>{
   await openDermatology(page);
   await openAdvancedFilters(page);
