@@ -1,23 +1,12 @@
 name: Promote approved MEQ Worker
 
 on:
-  # Promote only after the full protected main CI suite succeeds.
-  workflow_run:
-    workflows: ["Validate Medical MEQ Bank"]
-    types: [completed]
-    branches: [main]
-  # Preserve existing opt-in/manual release entrypoints.
-  # One-time owner-requested retry when PR #42 is merged; other pushes skip.
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       source_sha:
         description: 'Fully reviewed source commit (must be on main and pass all quality checks)'
         required: true
         type: string
-        default: '7a01299ffa9d0b2ca066903b02918feb8ec7761f'
       worker_version_id:
         description: 'Optional Worker ID; leave blank for latest validated Cloudflare build at source_sha'
         required: false
@@ -39,14 +28,7 @@ concurrency:
 
 jobs:
   promote:
-    if: >-
-      github.ref == 'refs/heads/main' &&
-      (github.event_name == 'workflow_dispatch' ||
-       (github.event_name == 'workflow_run' &&
-        github.event.workflow_run.event == 'push' &&
-        github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.head_repository.full_name == github.repository) ||
-       (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'Promote latest approved MEQ Worker via protected CI (#42)')))
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
@@ -64,9 +46,9 @@ jobs:
       - name: Verify explicit approval, version and protected quality checks
         id: eligibility
         env:
-          SOURCE_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.event_name == 'push' && '7a01299ffa9d0b2ca066903b02918feb8ec7761f' || inputs.source_sha }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
           WORKER_VERSION_ID: ${{ inputs.worker_version_id }}
-          CONFIRM_PRODUCTION: ${{ (github.event_name == 'workflow_run' || github.event_name == 'push') && 'true' || inputs.confirm_production }}
+          CONFIRM_PRODUCTION: ${{ inputs.confirm_production }}
           GITHUB_TOKEN: ${{ github.token }}
         shell: bash
         run: |
@@ -83,8 +65,8 @@ jobs:
             echo '::error::If supplied, the Cloudflare Worker version must be a lowercase UUID.'
             exit 1
           fi
-          if [[ "$GITHUB_EVENT_NAME" == 'workflow_run' && "$SOURCE_SHA" != "$(git rev-parse HEAD)" ]]; then
-            echo '::error::Main advanced after this CI run; refuse to promote an outdated version.'
+          if [[ "$SOURCE_SHA" != "$(git rev-parse HEAD)" ]]; then
+            echo '::error::Source SHA must equal current protected main HEAD; refuse stale or unmerged commits.'
             exit 1
           fi
           git merge-base --is-ancestor "$SOURCE_SHA" "$GITHUB_SHA" || {
@@ -102,7 +84,7 @@ jobs:
       - name: Promote the previously built Worker version to 100% traffic
         env:
           WORKER_VERSION_ID: ${{ steps.eligibility.outputs.worker_version_id }}
-          SOURCE_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.event_name == 'push' && '7a01299ffa9d0b2ca066903b02918feb8ec7761f' || inputs.source_sha }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
@@ -112,6 +94,15 @@ jobs:
             echo '::error::Create the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID GitHub Actions secrets first.'
             exit 1
           fi
+          # Fail closed if the current active deployment cannot be identified.
+          # Retain the previous active Worker ID(s) for a controlled rollback.
+          previous_status=$(npx --yes wrangler@4 deployments status --name medical-meq-bank)
+          {
+            echo '### Previous active Worker deployment (rollback reference)'
+            echo '\`\`\`text'
+            printf '%s\n' "$previous_status"
+            echo '\`\`\`'
+          } >> "$GITHUB_STEP_SUMMARY"
           npx --yes wrangler@4 versions deploy "${WORKER_VERSION_ID}@100%" \
             --name medical-meq-bank --message "Approved source ${SOURCE_SHA}" --yes
           npx --yes wrangler@4 deployments status --name medical-meq-bank
