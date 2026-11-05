@@ -29,3 +29,13 @@
 1. Verify exact PR #76 test results and review its final diff for source/schema/storage changes; mark ready for review if clean.
 2. Rationalize Study Home → Courses → Lectures navigation, then unified question reader/type filters without inventing missing MCQ/Explanation data.
 3. Pilot lecture-PDF intake with page-by-page text *and information-dense figure* coverage, original provenance and editorial approval before any publication.
+
+## 2026-11-05 — V5.9 private lecture source-review evidence
+
+- Branch/PR: `feature/lecture-review-verification-v5-9-20261105`, [PR #82](https://github.com/Hafezalhoot/medical-meq-bank/pull/82), stacked after #80 → #79 → #78 → #76 → #75. Release gate PR #81 remains independent and must be reviewed before any production activation.
+- `tools/lecture_review_report.py`: generates a private, pagewise PDF inspection worksheet with both source PDF and draft JSON SHA-256. `--verify` accepts only checked review boxes and refuses stale/altered evidence, missing/ambiguous/out-of-range page references or incomplete review.
+- `tools/add_lecture.py`: optional `--review-report`, `--source-pdf` and `--page-count` flags recheck the exact sources **before** lecture/catalog mutation; partial flag sets fail closed. Existing legacy `--write --reviewed` callers remain compatible; this does not make evidence checks mandatory for legacy imports or prove clinical accuracy.
+- Generated worksheet approval is explicitly **before** registration: the final manual check says to confirm separate medical/editorial approval before any `--write --reviewed` operation.
+- **Source-preservation boundary:** source lecture JSON and answer keys, original PDF figure bytes/hashes, IndexedDB progress and exam history, PWA/Worker configuration, and `main` are not edited by this implementation. Private PDFs are only hashed on the author's local device, never uploaded.
+- **CI evidence:** exact head `4005d5290f64f47ce7738ef4b009687db2788755` passed GitHub Static, Chromium and WebKit in [run #42003586921](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42003586921). Additional registrar gating/test/docs changes require a **new final exact-head run**; previous green cannot be used as final-head proof.
+- **Release HOLD:** do not merge/deploy until Cloudflare Workers Builds default deploy command has been confirmed build/upload-only, protected manual promotion (PR #81) is reviewed, and authenticated production smoke #35 / activation sequencing #50 are resolved. Build and browser suites do not constitute scientific editorial approval.
