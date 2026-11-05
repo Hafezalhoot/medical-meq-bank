@@ -2024,3 +2024,55 @@ body[data-workspace="review"] .my-review{
 @media (min-width:1101px){
   body:not([data-workspace]) .studio-masthead{padding-bottom:2px}
 }
+
+
+/* V6 library selector fix: legacy hero uses a column flex layout, which
+   made flex-basis:230px turn the selects into 230px-tall rows. */
+body[data-workspace] .studio-library-link{display:none!important}
+body[data-workspace="library"] .hero-panel{
+  display:grid;grid-template-columns:repeat(2,minmax(0,330px));
+  grid-template-rows:auto 48px;align-items:center;align-content:start;
+  justify-content:start;gap:6px 16px;
+}
+body[data-workspace="library"] .hero-panel .course-panel-label{
+  grid-column:1;grid-row:1
+}
+body[data-workspace="library"] .hero-panel label[for="subjectSelector"]{
+  grid-column:2;grid-row:1
+}
+body[data-workspace="library"] .hero-panel #courseSelector,
+body[data-workspace="library"] .hero-panel #subjectSelector{
+  display:block;width:100%;max-width:none;
+  height:48px;min-height:48px;max-height:48px;flex:none;
+  margin:0;align-self:center
+}
+body[data-workspace="library"] .hero-panel #courseSelector{
+  grid-column:1;grid-row:2
+}
+body[data-workspace="library"] .hero-panel #subjectSelector{
+  grid-column:2;grid-row:2
+}
+body[data-workspace="library"] .hero-panel .subject-hint,
+body[data-workspace="library"] .hero-panel .course-hint,
+body[data-workspace="library"] .hero-panel .offline-subject-btn{
+  display:none!important
+}
+@media(max-width:767px){
+  body[data-workspace="library"] .hero-panel{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:auto 48px auto 48px;
+    gap:5px
+  }
+  body[data-workspace="library"] .hero-panel .course-panel-label{
+    grid-column:1;grid-row:1
+  }
+  body[data-workspace="library"] .hero-panel #courseSelector{
+    grid-column:1;grid-row:2
+  }
+  body[data-workspace="library"] .hero-panel label[for="subjectSelector"]{
+    grid-column:1;grid-row:3;margin-top:6px
+  }
+  body[data-workspace="library"] .hero-panel #subjectSelector{
+    grid-column:1;grid-row:4
+  }
+}
