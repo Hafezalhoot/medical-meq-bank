@@ -69,6 +69,12 @@ jobs:
             echo '::error::Source SHA must equal current protected main HEAD; refuse stale or unmerged commits.'
             exit 1
           fi
+          # Refuse a dispatch that became stale while queued or awaiting approval.
+          remote_main_sha=$(git ls-remote --exit-code origin refs/heads/main | awk '{print $1}')
+          if [[ "$SOURCE_SHA" != "$remote_main_sha" ]]; then
+            echo '::error::Protected remote main has advanced; start a new release approval.'
+            exit 1
+          fi
           git merge-base --is-ancestor "$SOURCE_SHA" "$GITHUB_SHA" || {
             echo '::error::The target commit is not in protected main history.'
             exit 1
@@ -103,6 +109,12 @@ jobs:
             printf '%s\n' "$previous_status"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+          # Check again directly before mutating production traffic.
+          remote_main_sha=$(git ls-remote --exit-code origin refs/heads/main | awk '{print $1}')
+          if [[ "$SOURCE_SHA" != "$remote_main_sha" ]]; then
+            echo '::error::Protected remote main changed before activation; production untouched.'
+            exit 1
+          fi
           npx --yes wrangler@4 versions deploy "${WORKER_VERSION_ID}@100%" \
             --name medical-meq-bank --message "Approved source ${SOURCE_SHA}" --yes
           npx --yes wrangler@4 deployments status --name medical-meq-bank
