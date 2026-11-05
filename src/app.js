@@ -253,6 +253,34 @@ let lectureNavSearchScope='';
 function renderLectureNav(){
   const nav=$('lectureNav'),list=visibleLectures(),selected=$('lectureFilter').value;
   const wrap=$('lectureNavSearchWrap'),field=$('lectureNavSearch'),status=$('lectureNavResult');
+  const heading=document.querySelector('.lecture-sidebar h2');
+  const caption=document.querySelector('.lecture-sidebar .sidebar-caption');
+  if(document.body.dataset.workspace==='library'){
+    const currentPack=globalThis.MEQCourseRegistry?.packs?.get?.(activeCourseId());
+    nav.setAttribute('aria-label','Specialties in selected course');
+    if(heading)heading.textContent='Specialties';
+    if(caption)caption.textContent='Choose a specialty to view its lectures.';
+    wrap.hidden=true;field.value='';status.textContent='';
+    nav.replaceChildren();
+    (currentPack?.subjects||[]).slice().sort((a,b)=>a.order-b.order).forEach(subject=>{
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='library-subject-link'+(subject.id===activeSubject?' active':'');
+      button.textContent=subject.label;
+      if(subject.id===activeSubject)button.setAttribute('aria-current','page');
+      button.onclick=()=>{
+        const subjectSelect=document.getElementById('subjectSelector');
+        if(subjectSelect.value===subject.id)return;
+        subjectSelect.value=subject.id;
+        subjectSelect.dispatchEvent(new Event('change',{bubbles:true}));
+      };
+      nav.append(button);
+    });
+    return;
+  }
+  nav.setAttribute('aria-label','Lectures in selected specialty');
+  if(heading)heading.textContent='Lectures';
+  if(caption)caption.textContent='Choose a lecture or return to the subject overview.';
   const scope=activeCourseId()+':'+activeSubject;
   if(scope!==lectureNavSearchScope){lectureNavSearchScope=scope;field.value='';}
   wrap.hidden=list.length<5;
