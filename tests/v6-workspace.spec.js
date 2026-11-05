@@ -135,3 +135,17 @@ test('offline standalone can restore a deep linked lecture without online loader
   await expect(page.locator('#lectureFilter')).toHaveValue('urology-bladder-cancer',{timeout:20000});
   await expect(page.locator('#lecture-urology-bladder-cancer .lecture-title')).toBeVisible();
 });
+
+
+test('desktop Library course and specialty selectors are compact and show lectures above fold', async ({page}) => {
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/#/library',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('.lecture-overview-panel h2')).toBeVisible({timeout:20000});
+  for(const id of ['courseSelector','subjectSelector']){
+    const box=await page.locator('#'+id).boundingBox();
+    expect(box.height, id).toBeLessThanOrEqual(54);
+    expect(box.width, id).toBeGreaterThanOrEqual(200);
+  }
+  const heading=await page.locator('.lecture-overview-panel h2').boundingBox();
+  expect(heading.y).toBeLessThan(450);
+});
