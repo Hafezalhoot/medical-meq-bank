@@ -40,7 +40,7 @@ def single_source_page(value):
     return number if number > 0 else None
 
 
-def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
+def build_report(lecture, pdf_name="", pdf_hash="", page_count=None, draft_hash=""):
     if page_count is not None and (type(page_count) is not int or page_count <= 0):
         raise SystemExit("page_count must be a positive reviewer-supplied integer")
     if not isinstance(lecture, dict) or not isinstance(lecture.get("title"), str):
@@ -63,6 +63,7 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
         "- Lecture ID: " + plain(lecture.get("id") or "not assigned"),
         "- Source note: " + plain(lecture.get("sourceNote") or "not provided"),
         "- Original PDF: " + (plain(pdf_name) + " (SHA-256 " + BT + pdf_hash + BT + ")" if pdf_hash else "not fingerprinted"),
+        "- Draft JSON SHA-256: " + (BT + draft_hash + BT if draft_hash else "not fingerprinted"),
         "- Reported page count: " + (str(page_count) + " (not independently checked)" if page_count else "not provided"),
         "", "## Draft inventory", "",
         "| Section | Count | Page references provided |",
@@ -153,12 +154,38 @@ def build_report(lecture, pdf_name="", pdf_hash="", page_count=None):
     return "\n".join(lines)
 
 
+def verify_report(report_text, lecture, pdf_name, pdf_hash, page_count, draft_hash):
+    """Check a manually ticked worksheet against exact local source bytes, not clinical truth."""
+    if type(page_count) is not int or page_count <= 0:
+        raise SystemExit("Verification requires a positive reviewer-supplied page count")
+    if not pdf_name or not re.fullmatch(r"[0-9a-f]{64}", pdf_hash or ""):
+        raise SystemExit("Verification requires an original local PDF and its SHA-256")
+    if not re.fullmatch(r"[0-9a-f]{64}", draft_hash or ""):
+        raise SystemExit("Verification requires the complete draft JSON SHA-256")
+    expected = build_report(lecture, pdf_name, pdf_hash, page_count, draft_hash)
+    # Only checkbox ticks may differ from the original generated worksheet.
+    normalized = re.sub(r"\\[[xX]\\]", "[ ]", report_text)
+    if normalized != expected:
+        raise SystemExit("Review worksheet is stale or altered: regenerate from unchanged draft/PDF and re-review")
+    if any(token in expected for token in (
+        "Source page not supplied for:",
+        "Ambiguous/unmapped page label:",
+        "Out-of-range source page:",
+    )):
+        raise SystemExit("Review worksheet has unresolved source page references")
+    boxes = re.findall(r"\\[[ xX]\\]", report_text)
+    if len(boxes) < (page_count * 3 + 5) or any(box == "[ ]" for box in boxes):
+        raise SystemExit("Review worksheet has unchecked page or human-review items")
+    return len(boxes)
+
+
 def main():
     parser = ArgumentParser(description="Private source-review checklist for lecture intake.")
     parser.add_argument("draft", type=Path)
     parser.add_argument("--pdf", type=Path, help="Optional original local PDF (fingerprint only, never uploaded)")
     parser.add_argument("--page-count", type=int, help="Optional manually checked PDF page count")
     parser.add_argument("--output", type=Path, help="Default: tmp/lecture-drafts/<draft-name>-review.md")
+    parser.add_argument("--verify", type=Path, help="Check a fully signed-off worksheet, never publish or approve")
     args = parser.parse_args()
     if args.page_count is not None and args.page_count <= 0:
         parser.error("--page-count must be positive")
@@ -167,7 +194,21 @@ def main():
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
         raise SystemExit(f"Cannot read lecture draft: {error}") from error
     fingerprint = pdf_fingerprint(args.pdf) if args.pdf else ""
-    report = build_report(draft, args.pdf.name if args.pdf else "", fingerprint, args.page_count)
+    draft_hash = sha256(args.draft.read_bytes()).hexdigest()
+    if args.verify is not None:
+        if args.output is not None:
+            parser.error("--output cannot be combined with --verify")
+        try:
+            worksheet = args.verify.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            raise SystemExit(f"Cannot read review worksheet: {error}") from error
+        checked = verify_report(worksheet, draft, args.pdf.name if args.pdf else "",
+                                fingerprint, args.page_count, draft_hash)
+        print(f"Source review checklist checked ({checked} boxes, current draft/PDF hashes); "
+              "this does not certify medical accuracy, sign-off authenticity or image rights.")
+        return
+    report = build_report(draft, args.pdf.name if args.pdf else "",
+                          fingerprint, args.page_count, draft_hash)
     target = args.output or ROOT / "tmp" / "lecture-drafts" / (args.draft.stem + "-review.md")
     target.parent.mkdir(parents=True, exist_ok=True)
     try:
