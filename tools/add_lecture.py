@@ -199,7 +199,13 @@ def main() -> None:
         if not isinstance(value, list):
             fail(f"lecture is missing list {key}")
         counts[key] = len(value)
-    if sum(counts.values()) == 0:
+    guide = lecture.get("studyGuide")
+    has_source_mcqs = (
+        isinstance(guide, dict)
+        and isinstance(guide.get("mcqs"), list)
+        and bool(guide["mcqs"])
+    )
+    if sum(counts.values()) == 0 and not has_source_mcqs:
         fail("cannot publish an empty lecture; add reviewed learning items first")
 
     # Published identity is derived from catalogs. Keep reviewable source content independent.
@@ -213,6 +219,7 @@ def main() -> None:
         expected_counts=counts,
     )
     validate_image_sources(medical_source)
+    mcq_count = len((medical_source.get("studyGuide") or {}).get("mcqs", []))
     for key in LECTURE_LIST_KEYS:
         if key == "rapid":
             continue
@@ -249,6 +256,7 @@ def main() -> None:
         "order": order,
         "file": relative_file,
         "expectedCounts": counts,
+        "mcqCount": mcq_count,
         "courseId": args.course,
         "schemaVersion": 1,
     }
