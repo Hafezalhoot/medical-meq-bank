@@ -393,7 +393,7 @@ function renderLectureOverview(container,list){
     ?.subjects?.find(item=>item.id===activeSubject);
   const chapters=isLibrary&&Array.isArray(subjectMeta?.chapters)
     ?[...subjectMeta.chapters].sort((a,b)=>a.order-b.order||a.id.localeCompare(b.id)):[];
-  const chapterIdOf=lecture=>globalThis.MEQLectureLoader?.catalogEntry?.(lecture.id)?.chapterId||lecture.chapterId||'';
+  const chapterIdOf=lecture=>globalThis.MEQCourseRegistry?.chapterIdForLecture?.(lecture.id)||globalThis.MEQLectureLoader?.catalogEntry?.(lecture.id)?.chapterId||lecture.chapterId||'';
   const known=new Set(chapters.map(chapter=>chapter.id));
   const targets=new Map();
   let otherTarget=grid;
