@@ -149,3 +149,20 @@ test('desktop Library course and specialty selectors are compact and show lectur
   const heading=await page.locator('.lecture-overview-panel h2').boundingBox();
   expect(heading.y).toBeLessThan(450);
 });
+
+
+test('changing course and specialty inside Library shows the lecture list, not a forced lecture', async ({page}) => {
+  await page.goto('/#/library',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#courseSelector')).toBeVisible();
+  await page.locator('#courseSelector').selectOption('internal-medicine-ii');
+  await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
+  await expect(page.locator('#lectureFilter')).toHaveValue('all',{timeout:20000});
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible({timeout:20000});
+  await expect(page.getByRole('button', {name:'Open lecture: Introduction to Dermatology'})).toBeVisible();
+
+  await page.locator('#subjectSelector').selectOption('psychiatry');
+  await expect(page.locator('#lectureFilter')).toHaveValue('all',{timeout:20000});
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible({timeout:20000});
+  await expect(page.locator('.lecture-overview-card')).toHaveCount(2,{timeout:20000});
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
+});
