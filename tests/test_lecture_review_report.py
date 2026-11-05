@@ -31,6 +31,59 @@ class IntakeReportTests(unittest.TestCase):
         self.assertIn("SHA-256", report)
         self.assertIn("public redistribution rights", report)
 
+    def test_page_by_page_review_never_claims_source_coverage(self):
+        lecture = {
+            "id": "dermatology-example", "title": "Example lecture",
+            "cases": [], "coreShorts": [], "detailedShorts": [], "rapid": [],
+            "imageQuestions": [{"id": "spot-1", "page": "PDF p.4"}],
+            "studyGuide": {
+                "explanation": [{"heading": "Introduction", "sourcePage": "PDF p.1"}],
+                "mcqs": [{"id": "mcq-1", "sourcePage": "PDF p.2"}],
+                "infographic": {"sourcePage": "PDF p.5"},
+            },
+        }
+        report = intake_report.build_report(lecture, page_count=5)
+        self.assertIn("## Page-by-page source inspection", report)
+        self.assertIn("Authored links are NOT verified content coverage", report)
+        self.assertIn("Text/definitions", report)
+        self.assertIn("Images/legends", report)
+        self.assertIn("Tables/graphs", report)
+        rows = [line for line in report.splitlines() if line.startswith("| PDF p.")]
+        self.assertEqual(len(rows), 5)
+        self.assertIn("| PDF p.1 | explanation: Introduction | [ ] | [ ] | [ ] |", rows)
+        self.assertIn("| PDF p.2 | mcqs: mcq-1 | [ ] | [ ] | [ ] |", rows)
+        self.assertIn("| PDF p.3 | No mapped item — inspect this page | [ ] | [ ] | [ ] |", rows)
+        self.assertIn("| PDF p.4 | imageQuestions: spot-1 | [ ] | [ ] | [ ] |", rows)
+        self.assertIn("| PDF p.5 | infographic: Source figure | [ ] | [ ] | [ ] |", rows)
+        self.assertIn("All page checks start unchecked", report)
+        self.assertIn("Figure captions, embedded text and annotations", report)
+        self.assertNotIn("5 pages verified", report)
+
+    def test_page_audit_flags_unmappable_and_out_of_range_citations(self):
+        lecture = {
+            "title": "Coverage audit",
+            "imageQuestions": [{"id": "source-2", "page": 2}],
+            "studyGuide": {"mcqs": [
+                {"id": "range", "sourcePage": "PDF pp. 2-4"},
+                {"id": "too-high", "sourcePage": "PDF p.8"},
+                {"id": "unlabeled", "sourcePage": "Figure B, handout"},
+            ]},
+        }
+        report = intake_report.build_report(lecture, page_count=4)
+        self.assertIn("| PDF p.2 | imageQuestions: source-2 | [ ] | [ ] | [ ] |", report)
+        self.assertIn("Ambiguous/unmapped page label: mcqs: range — PDF pp. 2-4", report)
+        self.assertIn("Out-of-range source page: mcqs: too-high — PDF p.8", report)
+        self.assertIn("Ambiguous/unmapped page label: mcqs: unlabeled — Figure B, handout", report)
+        self.assertIn("| PDF p.3 | No mapped item — inspect this page | [ ] | [ ] | [ ] |", report)
+        self.assertNotIn("mcqs: range | [ ]", report)
+
+    def test_audit_requires_explicit_valid_page_count_for_full_page_review(self):
+        report = intake_report.build_report({"title": "One lecture"})
+        self.assertIn("Page-by-page inspection unavailable until a reviewer supplies --page-count", report)
+        for bad in (True, 0, -1, "4", 2.5):
+            with self.subTest(bad=bad), self.assertRaisesRegex(SystemExit, "page_count must be"):
+                intake_report.build_report({"title": "One lecture"}, page_count=bad)
+
     def test_empty_draft_is_not_ready(self):
         report = intake_report.build_report({"title": "Draft"})
         self.assertIn("automatic scoring is unavailable", report)
