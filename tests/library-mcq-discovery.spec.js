@@ -77,6 +77,8 @@ test('MCQs have explicit saved ratings but answering alone never auto-marks Weak
 test('My Review opens saved Weak source MCQ without clearing the Weak filter',async ({page})=>{
   await openDermatology(page);
   const mcq=page.locator('#'+dermatology+'-mcq-derm-mcq-001');
+  await page.getByRole('navigation',{name:'Lecture sections'}).getByRole('button',{name:'MCQ practice',exact:true}).click();
+  await expect(page.locator('#'+dermatology+'-guide-mcqs')).toHaveAttribute('open','');
   await mcq.locator('.status.weak').click();
   await expect(page.locator('#myReviewCount')).toContainText('1 to revisit');
   await page.locator('#myReviewDisclosure summary').click();
@@ -102,6 +104,7 @@ test('MCQ bank can search source questions across both Psychiatry lectures on de
   await expect(page.locator('#lectureFilter option[value="all"]')).toHaveCount(1);
   await page.locator('#lectureFilter').selectOption('all');
   await openAdvancedFilters(page);
+  const beforeMcqSelection=new Set(fetched);
   await page.locator('#typeFilter').selectOption('mcq');
   await expect(page.locator('#mainContent .study-guide-mcq:not(.hidden)')).toHaveCount(108,{timeout:30000});
   await expect(page.locator('#mcqCount')).toHaveText('108');
@@ -110,7 +113,9 @@ test('MCQ bank can search source questions across both Psychiatry lectures on de
   await expect(cards).toHaveCount(1);
   await expect(cards.first()).toContainText('How does the lecture distinguish fear from anxiety?');
   await expect(cards.first()).toContainText('Lecture source: PDF p.2');
-  expect([...fetched].every(path=>path.includes('psychiatry')||path.includes('urology-'))).toBe(true);
+  // A course switch may already have fetched the previous default specialty.
+  // MCQ discovery itself must load only the selected Psychiatry source payloads.
+  expect([...fetched].filter(path=>!beforeMcqSelection.has(path)).every(path=>path.includes('psychiatry'))).toBe(true);
   expect(fetched.has('/lectures/data/internal-medicine-ii-psychiatry-anxiety-disorders.json')).toBe(true);
   expect(fetched.has('/lectures/data/internal-medicine-ii-psychiatry-psychiatric-history-mse.json')).toBe(true);
 });
