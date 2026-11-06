@@ -84,7 +84,13 @@ test('reading modes work from keyboard without losing saved study progress',asyn
   const selected=page.getByRole('tablist',{name:'Lecture reading modes'}).locator('[role="tab"][aria-selected="true"]');
   await expect(selected).toHaveCount(1);
   await expect(selected).not.toHaveText('Cases');
-  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('medicalBankStatusV2')));
+  // ProgressResilience migrates the seeded legacy key into IndexedDB and
+  // removes it from localStorage. Check the active durable store, not the
+  // intentionally retired mirror.
+  const stored=await page.evaluate(async()=>{
+    await globalThis.MEQProgressStore.ready;
+    return globalThis.MEQProgressStore.exportAll();
+  });
   expect(stored['urology-bladder-cancer::case::bc-c01']).toBe('mastered');
 });
 
