@@ -126,3 +126,15 @@ test('Practice toolbar reveals only current answer and Random picks one visible 
   expect(after).not.toBe(before);
   await expect(page.locator(visibleQuestions)).toHaveCount(1);
 });
+
+
+test('Practice displays the first actual question above the fold on desktop',async({page},testInfo)=>{
+  await page.setViewportSize({width:1280,height:720});
+  await openPractice(page);
+  const first=page.locator('.practice-current');
+  const top=await first.evaluate(element=>element.getBoundingClientRect().top);
+  expect(top).toBeLessThan(600);
+  await testInfo.attach('practice-desktop-1280.png',{
+    body:await page.screenshot({animations:'disabled'}),contentType:'image/png'
+  });
+});
