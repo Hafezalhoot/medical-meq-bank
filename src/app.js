@@ -901,7 +901,8 @@ function render(){
   l.imageQuestions.forEach((q,i)=>sec.querySelector('.image-grid').appendChild(imageCard(l,q,i)));
   l.detailedShorts.forEach((q,i)=>sec.querySelector('.extra-grid').appendChild(shortCard(l,q,i,'extra','Detailed Question')));
   const rg=sec.querySelector('.rapid-grid');l.rapid.forEach(([q,a],i)=>{const d=document.createElement('button');d.type='button';d.className='rapid-item';d.setAttribute('aria-expanded','false');d.innerHTML=`<strong>${i+1}. ${esc(q)}</strong><span class="rapid-answer">${esc(a)}</span>`;d.onclick=()=>{const open=d.classList.toggle('open');d.setAttribute('aria-expanded',open?'true':'false')};rg.appendChild(d)});
-  bind();renderLectureNav();renderSubtopicNav();updateStatus();applyFilters()
+  bind();renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();
+  if(document.body.dataset.workspace==='lecture')configureReaderWorkspace(l);
 }
 
 function bind(){
@@ -1513,6 +1514,8 @@ syncThemeButton();
       selectLecture(route.id,false);
     else if(!document.getElementById('lecture-'+route.id))
       selectLecture(route.id,false);
+    const existing=lectures.find(item=>item.id===route.id);
+    if(existing&&document.getElementById('lecture-'+route.id))configureReaderWorkspace(existing);
   }
 
   function applyRoute() {
@@ -1574,3 +1577,193 @@ syncThemeButton();
     document.addEventListener('DOMContentLoaded',applyRoute,{once:true});
   else applyRoute();
 })();
+
+
+/* V6 UX-03: one authored mode and one explanation topic at a time.
+   The existing source DOM, answer controls, figure provenance and progress keys
+   remain authoritative. Never manufacture a section that the lecture lacks. */
+function configureReaderWorkspace(lecture){
+  if(document.body.dataset.workspace!=='lecture'||!lecture)return;
+  const root=document.getElementById('lecture-'+lecture.id);
+  if(!root)return;
+  if(root.__readerController){
+    root.__readerController.restore();
+    return;
+  }
+
+  const guide=root.querySelector('.learning-companion');
+  const definitions={
+    explanation:'Explanation',mcqs:'MCQ practice',
+    infographic:'Infographic','original-figures':'Original figures'
+  };
+  const modes=[];
+  guide?.querySelectorAll('details[data-guide-section]').forEach(node=>{
+    const key=node.dataset.guideSection;
+    if(definitions[key])modes.push({key,label:definitions[key],node,guide:true});
+  });
+  [
+    ['cases','Cases','.cases-section',lecture.cases?.length],
+    ['shorts','Short Questions','.core-section',lecture.coreShorts?.length],
+    ['images','Images','.image-section',lecture.imageQuestions?.length],
+    ['detailed','Detailed practice','.extra-section',lecture.detailedShorts?.length],
+    ['rapid','Rapid Recall','.rapid-section',lecture.rapid?.length]
+  ].forEach(([key,label,selector,count])=>{
+    const node=root.querySelector(selector);
+    if(count&&node)modes.push({key,label,node,guide:false});
+  });
+  if(!modes.length)return;
+
+  // The prior filter sheet is hidden on this route; it must not silently
+  // remove medical content from the focused reader.
+  document.getElementById('search').value='';
+  for(const key of ['typeFilter','topicFilter','priorityFilter']){
+    const select=document.getElementById(key);
+    if(select)select.value='all';
+  }
+  activeSubtopic='all';
+  applyFilters();
+
+  const header=document.createElement('section');
+  header.className='reader-workspace';
+  header.setAttribute('aria-label','Lecture reader controls');
+  const tabs=document.createElement('div');
+  tabs.id='readerModeTabs';
+  tabs.className='reader-mode-tabs';
+  tabs.setAttribute('role','tablist');
+  tabs.setAttribute('aria-label','Lecture reading modes');
+  header.append(tabs);
+
+  const topicBar=document.createElement('div');
+  topicBar.id='readerTopicBar';
+  topicBar.className='reader-topic-bar';
+  topicBar.hidden=true;
+  const topicLabel=document.createElement('label');
+  topicLabel.htmlFor='readerTopicSelect';
+  topicLabel.textContent='Lecture topic';
+  const topicSelect=document.createElement('select');
+  topicSelect.id='readerTopicSelect';
+  topicSelect.className='reader-topic-select';
+  const previous=document.createElement('button');
+  previous.id='readerPreviousTopic';previous.type='button';previous.textContent='Previous topic';
+  const next=document.createElement('button');
+  next.id='readerNextTopic';next.type='button';next.textContent='Next topic';
+  const all=document.createElement('button');
+  all.id='readerAllTopics';all.type='button';all.textContent='Read all topics';
+  all.setAttribute('aria-pressed','false');
+  const topicPosition=document.createElement('span');
+  topicPosition.id='readerTopicPosition';topicPosition.className='reader-topic-position';
+  topicPosition.setAttribute('role','status');topicPosition.setAttribute('aria-live','polite');
+  topicBar.append(topicLabel,topicSelect,previous,next,all,topicPosition);
+  header.append(topicBar);
+
+  const utilities=document.createElement('div');
+  utilities.className='reader-utilities';
+  const offline=root.querySelector('.offline-lecture-btn');
+  if(offline)utilities.append(offline);
+  if(utilities.childElementCount)header.append(utilities);
+
+  const oldNav=root.querySelector('.lecture-section-nav');
+  if(oldNav)oldNav.before(header);
+  else root.querySelector('.lecture-head')?.after(header);
+
+  modes.forEach(mode=>{
+    const pane=document.createElement('div');
+    pane.id='readerPane-'+mode.key;
+    pane.className='reader-pane';
+    pane.setAttribute('role','tabpanel');
+    pane.hidden=true;
+    mode.node.before(pane);
+    pane.append(mode.node);
+    mode.pane=pane;
+
+    const tab=document.createElement('button');
+    tab.type='button';tab.className='reader-mode-tab';
+    tab.id='readerTab-'+mode.key;tab.setAttribute('role','tab');
+    tab.setAttribute('aria-controls',pane.id);
+    tab.setAttribute('aria-selected','false');tab.tabIndex=-1;
+    tab.textContent=mode.label;
+    pane.setAttribute('aria-labelledby',tab.id);
+    tabs.append(tab);
+    mode.tab=tab;
+  });
+
+  const explanationArticles=[...root.querySelectorAll('.study-guide-explanation')];
+  const topicHeadings=explanationArticles.map((article,index)=>
+    article.querySelector('h3')?.textContent?.trim()||('Topic '+(index+1)));
+  topicSelect.replaceChildren(...topicHeadings.map((heading,index)=>{
+    const option=document.createElement('option');
+    option.value=String(index);option.textContent=heading;return option;
+  }));
+  let topicIndex=0,readAll=false;
+
+  const updateTopics=()=>{
+    explanationArticles.forEach((article,index)=>{
+      article.hidden=!readAll&&index!==topicIndex;
+    });
+    topicSelect.value=String(topicIndex);
+    previous.disabled=readAll||topicIndex===0;
+    next.disabled=readAll||topicIndex===explanationArticles.length-1;
+    all.textContent=readAll?'Show one topic':'Read all topics';
+    all.setAttribute('aria-pressed',String(readAll));
+    topicPosition.textContent=readAll
+      ?'All '+explanationArticles.length+' topics'
+      :'Topic '+(topicIndex+1)+' of '+explanationArticles.length;
+  };
+  topicSelect.addEventListener('change',()=>{
+    topicIndex=Number(topicSelect.value)||0;readAll=false;updateTopics();
+  });
+  previous.addEventListener('click',()=>{
+    topicIndex=Math.max(0,topicIndex-1);readAll=false;updateTopics();
+  });
+  next.addEventListener('click',()=>{
+    topicIndex=Math.min(explanationArticles.length-1,topicIndex+1);
+    readAll=false;updateTopics();
+  });
+  all.addEventListener('click',()=>{readAll=!readAll;updateTopics();});
+
+  const queryMode=()=>{
+    const query=location.hash.split('?')[1]||'';
+    const wanted=new URLSearchParams(query).get('tab');
+    if(wanted==='read')return 'explanation';
+    return wanted||modes[0].key;
+  };
+  const applyMode=(requested,writeHash)=>{
+    const selected=modes.find(mode=>mode.key===requested)||modes[0];
+    modes.forEach(mode=>{
+      const active=mode===selected;
+      mode.pane.hidden=!active;
+      mode.tab.setAttribute('aria-selected',String(active));
+      mode.tab.tabIndex=active?0:-1;
+      if(active&&mode.node.tagName==='DETAILS')mode.node.open=true;
+    });
+    if(guide)guide.hidden=!selected.guide;
+    topicBar.hidden=selected.key!=='explanation'||!explanationArticles.length;
+    if(!topicBar.hidden)updateTopics();
+    root.classList.remove('hidden');
+    document.getElementById('empty')?.classList.remove('show');
+    root.dataset.readerMode=selected.key;
+    if(writeHash&&location.hash.startsWith('#/lecture/')){
+      const [path,query='']=location.hash.split('?',2);
+      const params=new URLSearchParams(query);
+      params.set('tab',selected.key);
+      history.replaceState(history.state,'',location.pathname+location.search+path+'?'+params.toString());
+    }
+  };
+  modes.forEach(mode=>{
+    mode.tab.addEventListener('click',()=>applyMode(mode.key,true));
+  });
+  tabs.addEventListener('keydown',event=>{
+    const keys=['ArrowLeft','ArrowRight','Home','End'];
+    if(!keys.includes(event.key)||!event.target.closest('[role="tab"]'))return;
+    const current=modes.findIndex(mode=>mode.tab===event.target);
+    if(current<0)return;
+    event.preventDefault();
+    const nextIndex=event.key==='Home'?0:event.key==='End'?modes.length-1:
+      (current+(event.key==='ArrowRight'?1:-1)+modes.length)%modes.length;
+    modes[nextIndex].tab.focus();
+    applyMode(modes[nextIndex].key,true);
+  });
+
+  root.__readerController={restore:()=>applyMode(queryMode(),false)};
+  root.__readerController.restore();
+}
