@@ -55,6 +55,7 @@ test('Practice only shows a source-reviewed MCQ and does not mark Weak on reveal
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
   await page.getByRole('navigation',{name:'Primary workspace'}).getByRole('link',{name:'Practice'}).click();
   await expect(page.locator('#practiceSession')).toBeVisible({timeout:20000});
+  await page.locator('#desktopFiltersToggle').click();
   await page.locator('#typeFilter').selectOption('mcq');
   await expect(page.locator(visibleQuestions)).toHaveCount(1,{timeout:20000});
   const current=page.locator('.study-guide-mcq.practice-current');
@@ -104,4 +105,24 @@ test('Review and Exams remain separate from the focused Practice session',async(
   await expect(page.locator('#practiceSession')).toBeHidden();
   await page.locator('#workspaceExamStart').click();
   await expect(page.locator('#examDialog')).toBeVisible();
+});
+
+
+test('Practice toolbar reveals only current answer and Random picks one visible question',async({page})=>{
+  await openPractice(page);
+  await page.locator('#desktopFiltersToggle').click();
+  await expect(page.locator('#revealBtn')).toHaveText('Reveal current answer');
+  const first=page.locator('.practice-current');
+  await expect(first.locator('.toggle')).toBeVisible();
+  await page.locator('#revealBtn').click();
+  await expect(first).toHaveClass(/open/);
+  await expect(page.locator(visibleQuestions)).toHaveCount(1);
+  await page.locator('#practiceNext').click();
+  await expect(page.locator('.practice-current')).not.toHaveClass(/open/);
+  const before=await page.locator('.practice-current').evaluate(item=>item.id||item.dataset.practiceIdentity);
+  await expect(page.locator('#randomBtn')).toHaveText('Random question');
+  await page.locator('#randomBtn').click();
+  const after=await page.locator('.practice-current').evaluate(item=>item.id||item.dataset.practiceIdentity);
+  expect(after).not.toBe(before);
+  await expect(page.locator(visibleQuestions)).toHaveCount(1);
 });

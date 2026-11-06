@@ -1538,6 +1538,13 @@ syncThemeButton();
     entry.hidden=view!=='exams';
     if(practiceIntro)practiceIntro.hidden=view!=='practice';
     if(view!=='practice'&&practiceEmpty)practiceEmpty.hidden=true;
+    const randomButton=document.getElementById('randomBtn');
+    const revealButton=document.getElementById('revealBtn');
+    if(randomButton)randomButton.textContent=view==='practice'?'Random question':'Random item';
+    if(revealButton){
+      revealButton.disabled=false;
+      revealButton.textContent=view==='practice'?'Reveal current answer':revealAll?'Hide all':'Reveal all';
+    }
     if(previousView==='practice'&&view==='lecture')render();
     nav?.querySelectorAll('a').forEach(link=>{
       if(link.dataset.workspaceLink===(view==='lecture'?'library':view))
@@ -1842,6 +1849,8 @@ function syncPracticeWorkspace(){
   root.querySelectorAll('.practice-active').forEach(node=>node.classList.remove('practice-active'));
   if(!candidates.length){
     session.hidden=true;
+    const reveal=document.getElementById('revealBtn');
+    if(reveal)reveal.disabled=true;
     practiceEmptyState('No questions match the current filters. Adjust filters or choose another lecture.');
     return;
   }
@@ -1851,6 +1860,16 @@ function syncPracticeWorkspace(){
   const index=Math.max(0,candidates.indexOf(session.__selected));
   const item=candidates[index];
   session.__selected=item;
+  const reveal=document.getElementById('revealBtn');
+  if(reveal){
+    reveal.disabled=false;
+    const opened=item.matches('.rapid-item')
+      ?item.classList.contains('open')
+      :item.matches('.study-guide-mcq')
+        ?!item.querySelector('.study-guide-answer')?.hidden
+        :item.classList.contains('open');
+    reveal.textContent=opened?'Hide current answer':'Reveal current answer';
+  }
   item.classList.add('practice-current');
   if(!item.id)item.dataset.practiceIdentity='rapid-'+index;
   item.closest('.content-section')?.classList.add('practice-active');
@@ -1885,4 +1904,33 @@ function enterPracticeRoute(){
   // Remove Reader-only DOM when entering Practice from a lecture.
   render();
 }
-globalThis.MEQPractice=Object.freeze({sync:syncPracticeWorkspace,enter:enterPracticeRoute});
+globalThis.MEQPractice=Object.freeze({sync:syncPracticeWorkspace,enter:enterPracticeRoute,revealCurrent:revealPracticeCurrent,random:randomPracticeQuestion});
+
+
+function revealPracticeCurrent(){
+  if(document.body.dataset.workspace!=='practice')return false;
+  const item=document.querySelector('#mainContent .practice-current');
+  if(!item)return true;
+  const toggle=item.querySelector('.toggle,.study-guide-reveal');
+  if(toggle)toggle.click();
+  else if(item.matches('.rapid-item'))item.click();
+  syncPracticeWorkspace();
+  return true;
+}
+function randomPracticeQuestion(){
+  if(document.body.dataset.workspace!=='practice')return false;
+  const root=document.querySelector('#mainContent .lecture');
+  const session=root?.querySelector('#practiceSession');
+  if(!root||!session)return true;
+  let available=practiceEligibleQuestions(root);
+  // Match the existing Random behaviour: avoid Detailed practice for All types.
+  if(document.getElementById('typeFilter')?.value==='all'){
+    const core=available.filter(item=>item.dataset.type!=='extra');
+    if(core.length)available=core;
+  }
+  const options=available.filter(item=>item!==session.__selected);
+  session.__selected=(options.length?options:available)[Math.floor(Math.random()*(options.length||available.length))]||null;
+  syncPracticeWorkspace();
+  session.scrollIntoView({behavior:'instant',block:'start'});
+  return true;
+}

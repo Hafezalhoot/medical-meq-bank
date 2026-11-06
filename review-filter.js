@@ -322,6 +322,7 @@
       });
     };
     revealButton.onclick=event=>{
+      if(globalThis.MEQPractice?.revealCurrent?.())return;
       if(typeFilter.value==='rapid'){
         revealAll=!revealAll;
         document.querySelectorAll('.rapid-item:not(.hidden)').forEach(item=>{
@@ -347,6 +348,7 @@
   const originalRandom = randomButton?.onclick;
   if (randomButton) {
     randomButton.onclick = event => {
+      if(globalThis.MEQPractice?.random?.())return;
       if(typeFilter.value==='mcq'){
         const items=[...document.querySelectorAll('.study-guide-mcq:not(.hidden)')]
           .filter(item=>!item.closest('.lecture.hidden')&&!item.closest('.learning-companion.hidden'));
