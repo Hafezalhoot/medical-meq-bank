@@ -75,23 +75,27 @@ test('legacy lecture offers only authored modes and keeps old question IDs intac
 });
 
 test('reading modes work from keyboard without losing saved study progress',async({page})=>{
-  await page.addInitScript(()=>localStorage.setItem('medicalBankStatusV2',JSON.stringify({'urology-bladder-cancer::case::bc-c01':'mastered'})));
+  const legacy='urology-bladder-cancer::case::bc-c01';
+  const scoped='v2::surgery::urology::urology-bladder-cancer::case::bc-c01';
+  await page.addInitScript(key=>localStorage.setItem('medicalBankStatusV2',JSON.stringify({[key]:'mastered'})),legacy);
   await page.goto(bladder,{waitUntil:'domcontentloaded'});
   await ready(page);
+  // Existing source rating keys migrate from legacy localStorage into the
+  // course-scoped v2 IndexedDB key. Wait for the asynchronous migration, then
+  // assert that keyboard navigation doesn't affect the migrated rating.
+  const rating=()=>page.evaluate(async key=>{
+    await globalThis.MEQProgressStore.ready;
+    const stored=await globalThis.MEQProgressStore.exportAll();
+    return stored[key];
+  },scoped);
+  await expect.poll(rating).toBe('mastered');
   const first=page.getByRole('tablist',{name:'Lecture reading modes'}).getByRole('tab').first();
   await first.focus();
   await page.keyboard.press('ArrowRight');
   const selected=page.getByRole('tablist',{name:'Lecture reading modes'}).locator('[role="tab"][aria-selected="true"]');
   await expect(selected).toHaveCount(1);
   await expect(selected).not.toHaveText('Cases');
-  // ProgressResilience migrates the seeded legacy key into IndexedDB and
-  // removes it from localStorage. Check the active durable store, not the
-  // intentionally retired mirror.
-  const stored=await page.evaluate(async()=>{
-    await globalThis.MEQProgressStore.ready;
-    return globalThis.MEQProgressStore.exportAll();
-  });
-  expect(stored['urology-bladder-cancer::case::bc-c01']).toBe('mastered');
+  await expect.poll(rating).toBe('mastered');
 });
 
 test('reader modes preserve content and stay usable at 320px',async({page})=>{
