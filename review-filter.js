@@ -275,6 +275,7 @@
 
     syncQuickButtons();
     syncAccessibility(dom);
+    globalThis.MEQPractice?.sync?.();
   };
 
   reviewFilter.addEventListener('change', () => {
