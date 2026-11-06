@@ -903,6 +903,7 @@ function render(){
   const rg=sec.querySelector('.rapid-grid');l.rapid.forEach(([q,a],i)=>{const d=document.createElement('button');d.type='button';d.className='rapid-item';d.setAttribute('aria-expanded','false');d.innerHTML=`<strong>${i+1}. ${esc(q)}</strong><span class="rapid-answer">${esc(a)}</span>`;d.onclick=()=>{const open=d.classList.toggle('open');d.setAttribute('aria-expanded',open?'true':'false')};rg.appendChild(d)});
   bind();renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();
   if(document.body.dataset.workspace==='lecture')configureReaderWorkspace(l);
+  if(document.body.dataset.workspace==='practice')syncPracticeWorkspace();
 }
 
 function bind(){
@@ -1455,6 +1456,8 @@ syncThemeButton();
   const entry=document.getElementById('workspaceExamEntry');
   const courseLibrary=document.getElementById('courseLibraryDisclosure');
   const savedReview=document.getElementById('myReviewDisclosure');
+  const practiceIntro=document.getElementById('practiceIntro');
+  const practiceEmpty=document.getElementById('practiceEmpty');
   let routeSequence=0;
 
   function parseRoute(hash) {
@@ -1524,12 +1527,25 @@ syncThemeButton();
     if(!route){
       delete document.body.dataset.workspace;
       entry.hidden=true;
+      if(practiceIntro)practiceIntro.hidden=true;
+      if(practiceEmpty)practiceEmpty.hidden=true;
       nav?.querySelectorAll('a').forEach(link=>link.removeAttribute('aria-current'));
       return;
     }
     const view=route.view;
+    const previousView=document.body.dataset.workspace;
     document.body.dataset.workspace=view;
     entry.hidden=view!=='exams';
+    if(practiceIntro)practiceIntro.hidden=view!=='practice';
+    if(view!=='practice'&&practiceEmpty)practiceEmpty.hidden=true;
+    const randomButton=document.getElementById('randomBtn');
+    const revealButton=document.getElementById('revealBtn');
+    if(randomButton)randomButton.textContent=view==='practice'?'Random question':'Random item';
+    if(revealButton){
+      revealButton.disabled=false;
+      revealButton.textContent=view==='practice'?'Reveal current answer':revealAll?'Hide all':'Reveal all';
+    }
+    if(previousView==='practice'&&view==='lecture')render();
     nav?.querySelectorAll('a').forEach(link=>{
       if(link.dataset.workspaceLink===(view==='lecture'?'library':view))
         link.setAttribute('aria-current','page');
@@ -1544,6 +1560,7 @@ syncThemeButton();
       selectLecture('all',false);
     }
     if(view==='review')savedReview.open=true;
+    if(view==='practice')enterPracticeRoute();
     if(view==='lecture')restoreLecture(route,sequence).catch(()=>{
       if(sequence===routeSequence&&status)
         status.textContent='The lecture could not be opened. Return to Library.';
@@ -1572,6 +1589,9 @@ syncThemeButton();
   document.getElementById('subjectSelector')?.addEventListener('change',refreshLibraryIndex);
   document.addEventListener('meq:course-changed',refreshLibraryIndex);
   document.addEventListener('meq:lectures-loaded',refreshLibraryIndex);
+  document.addEventListener('meq:lectures-loaded',()=>{
+    if(document.body.dataset.workspace==='practice')enterPracticeRoute();
+  });
   window.addEventListener('hashchange',applyRoute);
   if(document.readyState==='loading')
     document.addEventListener('DOMContentLoaded',applyRoute,{once:true});
@@ -1766,4 +1786,151 @@ function configureReaderWorkspace(lecture){
 
   root.__readerController={restore:()=>applyMode(queryMode(),false)};
   root.__readerController.restore();
+}
+
+
+/* V6 UX-04A: non-scoring Practice; reused authored questions and progress. */
+function practiceEligibleQuestions(root){
+  return [...root.querySelectorAll('.study-item:not(.hidden),.study-guide-mcq:not(.hidden),.rapid-item:not(.hidden)')];
+}
+function practiceEmptyState(message){
+  const panel=document.getElementById('practiceEmpty');
+  if(!panel)return;
+  panel.hidden=false;
+  const label=panel.querySelector('#practiceEmptyMessage');
+  if(label)label.textContent=message;
+}
+function syncPracticeWorkspace(){
+  if(document.body.dataset.workspace!=='practice')return;
+  const selected=document.getElementById('lectureFilter')?.value;
+  const root=selected&&selected!=='all'?document.getElementById('lecture-'+selected):null;
+  if(!root){
+    practiceEmptyState(visibleLectures().length
+      ?'Loading questions from the selected lecture…'
+      :'No lectures have been published for this specialty yet.');
+    return;
+  }
+  let session=root.querySelector('#practiceSession');
+  if(!session){
+    session=document.createElement('section');
+    session.id='practiceSession';
+    session.className='practice-session';
+    session.setAttribute('aria-label','Question navigation');
+    session.innerHTML=[
+      '<div class="practice-session-header">',
+        '<div class="practice-session-eyebrow">Focused practice</div>',
+        '<strong>One question at a time</strong>',
+        '<p>Try first, reveal the source answer, then choose your own rating.</p>',
+      '</div>',
+      '<div class="practice-session-controls">',
+        '<button id="practicePrevious" type="button">Previous question</button>',
+        '<span id="practiceQuestionCounter" role="status" aria-live="polite">Question 1</span>',
+        '<button id="practiceNext" type="button">Next question</button>',
+      '</div>',
+      '<div id="practiceProgress" class="practice-progress" role="progressbar" ',
+        'aria-label="Question position" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">',
+        '<span></span>',
+      '</div>'
+    ].join('');
+    root.querySelector('.lecture-head')?.after(session);
+    const move=offset=>{
+      const candidates=practiceEligibleQuestions(root);
+      const current=candidates.indexOf(session.__selected);
+      const target=Math.max(0,Math.min(candidates.length-1,(current<0?0:current)+offset));
+      session.__selected=candidates[target]||null;
+      syncPracticeWorkspace();
+      session.scrollIntoView({behavior:'instant',block:'start'});
+    };
+    session.querySelector('#practicePrevious').addEventListener('click',()=>move(-1));
+    session.querySelector('#practiceNext').addEventListener('click',()=>move(1));
+  }
+  const candidates=practiceEligibleQuestions(root);
+  root.querySelectorAll('.practice-current').forEach(item=>item.classList.remove('practice-current'));
+  root.querySelectorAll('.practice-active').forEach(node=>node.classList.remove('practice-active'));
+  if(!candidates.length){
+    session.hidden=true;
+    const reveal=document.getElementById('revealBtn');
+    if(reveal)reveal.disabled=true;
+    practiceEmptyState('No questions match the current filters. Adjust filters or choose another lecture.');
+    return;
+  }
+  const empty=document.getElementById('practiceEmpty');
+  if(empty)empty.hidden=true;
+  session.hidden=false;
+  const index=Math.max(0,candidates.indexOf(session.__selected));
+  const item=candidates[index];
+  session.__selected=item;
+  const reveal=document.getElementById('revealBtn');
+  if(reveal){
+    reveal.disabled=false;
+    const opened=item.matches('.rapid-item')
+      ?item.classList.contains('open')
+      :item.matches('.study-guide-mcq')
+        ?!item.querySelector('.study-guide-answer')?.hidden
+        :item.classList.contains('open');
+    reveal.textContent=opened?'Hide current answer':'Reveal current answer';
+  }
+  item.classList.add('practice-current');
+  if(!item.id)item.dataset.practiceIdentity='rapid-'+index;
+  item.closest('.content-section')?.classList.add('practice-active');
+  item.closest('.learning-companion')?.classList.add('practice-active');
+  const details=item.closest('details');
+  if(details)details.open=true;
+  root.classList.remove('hidden');
+  session.querySelector('#practiceQuestionCounter').textContent='Question '+(index+1)+' of '+candidates.length;
+  session.querySelector('#practicePrevious').disabled=index===0;
+  session.querySelector('#practiceNext').disabled=index===candidates.length-1;
+  const progress=session.querySelector('#practiceProgress');
+  progress.setAttribute('aria-valuemax',String(candidates.length));
+  progress.setAttribute('aria-valuenow',String(index+1));
+  progress.querySelector('span').style.width=((index+1)/candidates.length*100)+'%';
+}
+function enterPracticeRoute(){
+  if(document.body.dataset.workspace!=='practice')return;
+  const available=visibleLectures();
+  if(!available.length){syncPracticeWorkspace();return;}
+  const current=document.getElementById('lectureFilter')?.value;
+  const selected=available.find(lecture=>lecture.id===current);
+  if(!selected){
+    const remembered=storage.get('medicalBankLectureV2:'+activeCourseId()+':'+activeSubject);
+    const chosen=available.find(lecture=>lecture.id===remembered)||available[0];
+    selectLecture(chosen.id,false);
+    return;
+  }
+  if(!lectureIsLoaded(selected)||!document.getElementById('lecture-'+selected.id)){
+    selectLecture(selected.id,false);
+    return;
+  }
+  // Remove Reader-only DOM when entering Practice from a lecture.
+  render();
+}
+globalThis.MEQPractice=Object.freeze({sync:syncPracticeWorkspace,enter:enterPracticeRoute,revealCurrent:revealPracticeCurrent,random:randomPracticeQuestion});
+
+
+function revealPracticeCurrent(){
+  if(document.body.dataset.workspace!=='practice')return false;
+  const item=document.querySelector('#mainContent .practice-current');
+  if(!item)return true;
+  const toggle=item.querySelector('.toggle,.study-guide-reveal');
+  if(toggle)toggle.click();
+  else if(item.matches('.rapid-item'))item.click();
+  syncPracticeWorkspace();
+  return true;
+}
+function randomPracticeQuestion(){
+  if(document.body.dataset.workspace!=='practice')return false;
+  const root=document.querySelector('#mainContent .lecture');
+  const session=root?.querySelector('#practiceSession');
+  if(!root||!session)return true;
+  let available=practiceEligibleQuestions(root);
+  // Match the existing Random behaviour: avoid Detailed practice for All types.
+  if(document.getElementById('typeFilter')?.value==='all'){
+    const core=available.filter(item=>item.dataset.type!=='extra');
+    if(core.length)available=core;
+  }
+  const options=available.filter(item=>item!==session.__selected);
+  session.__selected=(options.length?options:available)[Math.floor(Math.random()*(options.length||available.length))]||null;
+  syncPracticeWorkspace();
+  session.scrollIntoView({behavior:'instant',block:'start'});
+  return true;
 }
