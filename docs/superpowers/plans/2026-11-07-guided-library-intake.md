@@ -10,17 +10,17 @@
 Preserve medical payloads, IDs, images, progress, exam scoring and the five learner destinations. No direct publication or private PDF upload. Check stale scope, pending draft collisions, non-ASCII text, unsafe paths/unknown fields, offline parity and accidental approval claims.
 
 ### Task 1: Authoring contract and private importer
-- [ ] Add browser tests for route, step validation, export/CLI handoff and responsive/offline states; run and observe missing Manage route.
-- [ ] Add Python tests for strict intake metadata, collisions, Chapter scope, exclusive writes and empty-publication refusal; observe failure before implementation.
-- [ ] Implement `prepare_intake(document)` and CLI preview/`--write` in `tools/import_library_draft.py`, reusing `prepare_draft`.
-- [ ] Preserve optional draft Chapter through reviewed registration in `tools/add_lecture.py`; test actual catalog/source separation.
+- [x] Add browser tests for route, step validation, export/CLI handoff and responsive/offline states. Initial launch was blocked by missing browser binaries; subsequent skip-navigation and ID-boundary regressions were observed failing against actual browser behavior before their fixes.
+- [x] Add Python tests for strict intake metadata, collisions, Chapter scope, exclusive writes and empty-publication refusal; observed missing importer, unsupported Chapter and accepted invalid-ID failures before the corresponding implementation/fixes.
+- [x] Implement `prepare_intake(document)` and CLI preview/`--write` in `tools/import_library_draft.py`, reusing `prepare_draft`.
+- [x] Preserve optional draft Chapter through reviewed registration in `tools/add_lecture.py`; test actual catalog/source separation.
 
 ### Task 2: Manage Library workspace
-- [ ] Add semantic form in `src/index.html`, route in `src/app.js`, standalone `src/library-authoring.js` and CSS; reuse V6 tokens.
-- [ ] Wire module into builder, offline output, versioned service-worker shell cache and source syntax checks; bump aligned release candidate version.
-- [ ] Run focused tests; inspect desktop/mobile screenshots, then full static/Chromium/WebKit gates.
+- [x] Add semantic form in `src/index.html`, route in `src/app.js`, standalone `src/library-authoring.js` and CSS; reuse V6 tokens.
+- [x] Wire module into builder, offline output, versioned service-worker shell cache and source syntax checks; bump aligned release candidate version.
+- [x] Run focused tests; inspect desktop/mobile screenshots, then full static/Chromium/WebKit gates. Source `1b3ddfa`: official run #42392300567 green; 70 Python / 217 Chromium / 16 WebKit + 2 intentional skips. Six preview authoring scenarios passed.
 
 ### Task 3: Review and truthful handoff
-- [ ] Independent code/design review; address material findings and verify.
-- [ ] Update authoring docs and `PROJECT_PROGRESS.md` with real evidence and remaining UX/release gates.
-- [ ] Commit and preserve a reviewable candidate branch/PR; do not merge or promote through unresolved Cloudflare/CI blockers.
+- [x] Independent code/design review; reproduced and fixed reader-incompatible IDs. Narrow verdict scored the finding and stable-theme recapture resolved; documenter verification passed.
+- [x] Update authoring docs and `PROJECT_PROGRESS.md` with real evidence and remaining UX/release gates.
+- [x] Commit and preserve a reviewable candidate branch/[draft PR #89](https://github.com/Hafezalhoot/medical-meq-bank/pull/89); no merge or promotion through unresolved Cloudflare blockers.
