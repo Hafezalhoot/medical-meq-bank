@@ -2,7 +2,7 @@ import {defineConfig, devices} from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: /webkit-smoke\.spec\.js/,
+  testMatch: /(?:webkit-smoke|v6-library-authoring)\.spec\.js/,
   timeout: 60_000,
   expect: {timeout: 10_000},
   fullyParallel: false,

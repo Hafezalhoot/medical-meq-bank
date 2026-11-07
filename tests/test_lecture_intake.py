@@ -98,6 +98,28 @@ class LectureIntakeTests(unittest.TestCase):
             with redirect_stdout(StringIO()):
                 intake.main()
 
+    def test_reviewed_chapter_assignment_only_enters_catalog_not_medical_payload(self):
+        pack = self.root / 'courses/packs/internal-medicine.json'
+        metadata = json.loads(pack.read_text())
+        metadata['subjects'][0]['chapters'] = [{'id':'basics','label':'Foundations','order':1}]
+        save(pack, metadata)
+        lecture = draft(); lecture['chapterId'] = 'basics'
+        save(self.root / 'draft.json', lecture)
+        self.run_cli(flags=('--write','--reviewed'))
+        catalog = json.loads(self.catalog.read_text())
+        self.assertEqual(catalog['lectures'][0]['chapterId'], 'basics')
+        published = json.loads((self.root / 'lectures/data/internal-medicine-test-lecture.json').read_text())
+        self.assertNotIn('chapterId', published)
+        self.assertEqual(published['coreShorts'], lecture['coreShorts'])
+
+    def test_orphan_chapter_fails_before_any_catalog_write(self):
+        lecture = draft(); lecture['chapterId'] = 'not-in-this-specialty'
+        save(self.root / 'draft.json', lecture)
+        before = self.catalog.read_bytes()
+        with self.assertRaisesRegex(SystemExit, 'Chapter'):
+            self.run_cli(flags=('--write','--reviewed'))
+        self.assertEqual(self.catalog.read_bytes(), before)
+
     def test_create_course_dry_run_then_register_without_touching_existing_packs(self):
         import importlib.util
         spec = importlib.util.spec_from_file_location(

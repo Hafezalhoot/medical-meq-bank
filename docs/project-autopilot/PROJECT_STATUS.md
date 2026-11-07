@@ -1,5 +1,27 @@
 # My Medical Library — Project Autopilot status
 
+## Current continuation — 2026-11-07 (supersedes older handoff below)
+
+- **Repository:** `Hafezalhoot/medical-meq-bank`; inspected `main` at `cb0d193c447623b5b52784ab6d5e73d4275f400e`.
+- **Latest real UI base:** V6 UX-04A `dd89bf5fb6c4c446f2041583eef2322e9a06f9a5`, not main. Dependency chain: UX-01 [#84](https://github.com/Hafezalhoot/medical-meq-bank/pull/84) → UX-02 [#85](https://github.com/Hafezalhoot/medical-meq-bank/pull/85) → UX-03 [#87](https://github.com/Hafezalhoot/medical-meq-bank/pull/87) → UX-04A [#88](https://github.com/Hafezalhoot/medical-meq-bank/pull/88). These remain separate draft PRs. Existing source is vanilla HTML/CSS/JS, not React.
+- **Working branch:** `feature/v6-guided-authoring-ux05-20261107`; candidate `2026.11.07.1`. New `#/manage` four-step metadata intake + strict local importer, optional Chapter handoff, no changes to registered structure or clinical content. [Spec](../superpowers/specs/2026-11-07-guided-library-intake.md), [plan](../superpowers/plans/2026-11-07-guided-library-intake.md), [authoring instructions](../../CONTENT_AUTHORING.md).
+- **Verified locally so far:** complete static gate, 70 Python tests and six new Chromium flow tests. WebKit desktop+iPhone ran 16 passing tests, with two existing device-specific skips; full final Chromium and WebKit reruns pending after the review fix. Do not treat this line as a final release signoff.
+- **Independent review:** identified that repeated/trailing hyphens could create an ID accepted by the wizard/importer but refused by the V6 reader. Added failing browser/Python regressions, aligned both intake boundaries to the reader grammar. Two inherited macOS symlink path failures and an independently reproduced native-selector crop were repaired without changing test assertions. First local Chromium run with two workers had startup timing failures; final run uses the CI's one-worker setting.
+- **Production evidence:** read-only [smoke run #42391542570](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42391542570) on 2026-11-07 16:30 UTC reported Worker `6b5d76a0-5409-4ff8-8245-78438d7105d4` at **100%**. Live `/version.json` still redirects HTTP 302 to Cloudflare Access; full authenticated live smoke failed. This is the active existing Worker, not the new V6 candidate. #35 and #50 remain open; dashboard build-only deployment setting has not been independently verified. No main merge or production activation in this continuation.
+- **Preserved:** 3 courses, 12 published lecture packs, 138 authored MCQs, existing image hashes, question/progress IDs, IndexedDB, backups, exam grading, print and offline flows. The legacy builder rematerializes two tracked lecture files; discard only those build-created diffs before committing this UI/tooling slice.
+- **Design review boundary:** existing V6 sage/slate tokens and native controls retained. Whole-source static detector warnings refer to inherited legacy hero/utility typography, contrast, spacing and glow declarations; none suppressed. New wizard dark WCAG audit passed; final stable-theme captures and review verdict are still required.
+
+## Next unblocked slices
+
+1. Finish exact-head source/Chromium/WebKit checks and independent review of this candidate; keep it draft until the V6 dependency chain is approved.
+2. UX-05B: reviewed creation/editing of new Material/specialty/Chapter metadata and recoverable downloaded drafts. Current UI selects existing structure only.
+3. UX-04B: dedicated saved Review and exam setup/result presentation, reusing existing rating/scoring engines.
+4. Consolidated responsive/RTL/a11y/offline QA, then protected-main integration and authorized promotion after #35/#50 account controls are resolved. Never bypass Access or infer production success from preview CI.
+
+---
+
+## Archived V5 handoff (historical)
+
 ## Owner-approved product direction
 **My Medical Library · Lectures · Questions · Exams** is the personal lecture-first medical study application; MEQ is one supported question type, not the overall brand. Lecture-First Policy still controls every exam fact, and explanatory additions must be labeled as aids, not new exam facts.
 

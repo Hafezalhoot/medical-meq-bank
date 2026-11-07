@@ -49,6 +49,7 @@ fi
 
 javascript_files=(
   src/app.js
+  src/library-authoring.js
   src/course-packs.template.js
   src/progress-resilience.js
   src/lecture-loader.js
@@ -61,6 +62,7 @@ javascript_files=(
   search-optimization.js
   back-to-top.js
   dist/app.js
+  dist/library-authoring.js
   dist/course-packs.js
   dist/progress-resilience.js
   dist/lecture-loader.js

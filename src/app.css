@@ -1548,6 +1548,10 @@ details.original-figure-tools{
 
 /* V5 rendered-layout QA: long medical names remain readable at every width,
    while the first study question stays near the first screen. */
+@media(min-width:981px){
+  body:not([data-workspace]) .hero .subject-select,
+  body:not([data-workspace]) .hero .course-select{padding-left:8px;padding-right:26px}
+}
 @media(min-width:701px) and (max-width:980px){
   .hero-grid{grid-template-columns:minmax(0,1fr) minmax(355px,385px);gap:14px}
   .hero .hero-panel{padding:12px}

@@ -39,6 +39,7 @@
     <div class="pwa-tools" aria-label="App and backup tools">
       <button class="pwa-tools-toggle" id="pwaToolsToggle" aria-label="Study tools" type="button" aria-expanded="false" aria-controls="pwaToolsActions"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M5 5h14v14H5z"></path><path d="M9 10h6"></path><path d="M9 14h6"></path></svg></span> Study tools <span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span></button>
       <div class="pwa-tools-actions" id="pwaToolsActions">
+      <a class="pwa-btn" id="manageLibraryLink" href="#/manage">Manage library</a>
       <button class="pwa-btn" id="installAppBtn" type="button" hidden><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Install App</span></button>
       <button class="pwa-btn" id="exportProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg></span><span class="button-label">Backup Progress</span></button>
       <button class="pwa-btn" id="importProgressBtn" type="button"><span class="ui-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" focusable="false"><path d="M12 21V9"></path><path d="m7 14 5-5 5 5"></path><path d="M5 3h14"></path></svg></span><span class="button-label">Restore Progress</span></button>
@@ -50,6 +51,61 @@
 </header>
 
 <p id="workspaceRouteStatus" class="sr-only" role="status" aria-live="polite"></p>
+<section id="libraryManager" class="library-manager" aria-labelledby="libraryManagerTitle" hidden>
+  <div class="intake-heading">
+    <div><h1 id="libraryManagerTitle" tabindex="-1">Manage library</h1><p>Prepare a lecture for your library, one step at a time.</p></div>
+    <a href="#/library">Return to Library</a>
+  </div>
+  <p class="intake-boundary">Private draft preparation. Only the metadata you enter is downloaded; your PDF stays with you. Published lectures and study progress stay unchanged.</p>
+  <ol class="intake-steps" aria-label="Lecture draft steps">
+    <li aria-current="step">Location</li><li>Lecture</li><li>Topics</li><li>Review</li>
+  </ol>
+  <p id="intakeStatus" class="intake-status" role="status" aria-live="polite">Loading library metadata…</p>
+  <p id="intakeError" class="intake-error" role="alert" hidden></p>
+  <button id="intakeRetry" type="button" class="btn btn-soft" hidden>Retry metadata</button>
+  <form id="libraryIntakeForm" novalidate>
+    <fieldset data-intake-step="0">
+      <legend>Choose a place in your library</legend>
+      <div class="intake-fields">
+        <label for="intakeCourse">Material / course<select id="intakeCourse" required></select></label>
+        <label for="intakeSubject">Specialty<select id="intakeSubject" required></select></label>
+        <label for="intakeChapter">Chapter (optional)<select id="intakeChapter" aria-describedby="intakeChapterHint"><option value="">No Chapter — list directly</option></select></label>
+      </div>
+      <p id="intakeChapterHint">Use an existing Chapter, or list the lecture directly under its specialty.</p>
+      <details class="intake-help"><summary>Need a new Material, specialty or Chapter?</summary><p>New curriculum structure is added through the reviewed library configuration. This draft flow uses the registered structure and does not rename or move published content.</p></details>
+    </fieldset>
+    <fieldset data-intake-step="1" hidden>
+      <legend>Name the lecture and its source</legend>
+      <div class="intake-fields">
+        <label for="intakeTitle">Lecture title<input id="intakeTitle" type="text" maxlength="200" required dir="auto" autocomplete="off"></label>
+        <label for="intakeSource">Source PDF filename<input id="intakeSource" type="text" maxlength="180" required placeholder="Original lecture.pdf" autocomplete="off" aria-describedby="intakeSourceHint"></label>
+        <label for="intakeId">Stable lecture ID<input id="intakeId" type="text" maxlength="200" required spellcheck="false" autocomplete="off" aria-describedby="intakeIdHint"></label>
+        <label for="intakeOrder">Lecture order<input id="intakeOrder" type="number" min="1" max="99999" step="1" required inputmode="numeric"></label>
+      </div>
+      <p id="intakeSourceHint">Filename only. The PDF is not uploaded, read or verified by this form.</p>
+      <p id="intakeIdHint">Suggested from the title. Use lowercase English letters, numbers and hyphens; add an English reference for an Arabic-only title. This ID becomes permanent after publication.</p>
+    </fieldset>
+    <fieldset data-intake-step="2" hidden>
+      <legend>Outline the lecture topics</legend>
+      <label for="intakeTopics">Topic headings<textarea id="intakeTopics" rows="7" maxlength="10000" required dir="auto" aria-describedby="intakeTopicsHint" placeholder="One heading from the original lecture per line"></textarea></label>
+      <p id="intakeTopicsHint">1–60 unique headings, one per line. Keep the source wording; Arabic and English are supported. You will add explanations, questions and original figures during source review.</p>
+    </fieldset>
+    <fieldset data-intake-step="3" hidden>
+      <legend>Check your lecture draft</legend>
+      <p class="intake-draft-state">Needs source review</p>
+      <dl id="intakeSummary" class="intake-summary"></dl>
+      <h2>Topic outline</h2><ol id="intakeTopicPreview" class="intake-topic-preview"></ol>
+      <p>No explanations, MCQs, answers or images have been created. The intake file prepares an empty source-review draft.</p>
+      <details class="intake-help"><summary>What happens after download?</summary><p>Import the intake file into the existing lecture authoring tools. They check the current catalog and pending drafts again. Add content from the original PDF, review every page and figure, then use the existing validation and reviewed release process.</p></details>
+    </fieldset>
+    <div class="intake-actions">
+      <button id="intakeBack" class="btn btn-soft" type="button" hidden>Back</button>
+      <button id="intakeNext" class="btn btn-primary" type="submit" disabled>Next</button>
+      <button id="intakeDownload" class="btn btn-primary" type="button" hidden>Download intake file</button>
+    </div>
+  </form>
+  <p class="intake-session-note">Your draft stays in this tab while you navigate. Download it before reloading or closing; it is separate from your study-progress backup.</p>
+</section>
 <section class="hero">
   <div class="hero-grid">
     <div class="hero-copy">
