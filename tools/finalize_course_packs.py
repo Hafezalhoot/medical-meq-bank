@@ -68,7 +68,7 @@ def load_embedded_registry() -> dict:
             resolved = (pack_path.parent / lecture_catalog).resolve()
             if not resolved.is_relative_to(ROOT.resolve()) or not resolved.is_file():
                 fail(f"course {course_id} lecture catalog is missing or unsafe")
-            prepared["lectureCatalogUrl"] = "./" + resolved.relative_to(ROOT).as_posix()
+            prepared["lectureCatalogUrl"] = "./" + resolved.relative_to(ROOT.resolve()).as_posix()
             lecture_entries = read_json(resolved).get("lectures", [])
             for lecture in lecture_entries:
                 if lecture.get("courseId") == course_id and lecture.get("chapterId"):

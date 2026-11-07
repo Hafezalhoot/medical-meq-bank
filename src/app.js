@@ -1450,7 +1450,7 @@ syncThemeButton();
 /* V6 UX-01 — progressive workspace routes. No progress or lecture schema writes.
    Plain / remains the legacy study screen until every existing user flow is migrated. */
 (() => {
-  const allowed=new Set(['home','library','practice','review','exams']);
+  const allowed=new Set(['home','library','practice','review','exams','manage']);
   const nav=document.querySelector('[aria-label="Primary workspace"]');
   const status=document.getElementById('workspaceRouteStatus');
   const entry=document.getElementById('workspaceExamEntry');

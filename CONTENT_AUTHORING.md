@@ -2,6 +2,30 @@
 
 This is the contributor workflow for adding new Medical MEQ Bank content without creating lecture-specific build code.
 
+## Guided library intake (V6 UX-05A candidate)
+
+Open **Study tools → Manage library**, or `#/manage`. The four separate steps select a registered Material/course, specialty and optional Chapter, collect lecture identity/source filename, outline topics, and preview a **Needs source review** draft. Arabic/English topic wording is preserved. This is metadata preparation, not a PDF reader or clinical-content generator.
+
+Download the `.intake.json` file before closing/reloading the tab. It is separate from the study-progress backup; the form stays in memory while switching workspaces but does not autosave across reloads. The online PWA and single-file offline export offer the same form.
+
+Preview the downloaded file with the existing repository checked out:
+
+```bash
+python3 tools/import_library_draft.py /private/downloaded.intake.json
+```
+
+Create its private empty draft only after the preview is correct:
+
+```bash
+python3 tools/import_library_draft.py /private/downloaded.intake.json --write
+```
+
+The importer rechecks the current catalog, registered placement and pending `tmp/lecture-drafts/` reservations; it rejects unknown fields, approval claims, duplicate titles/IDs/orders/topics and unsafe source filenames. It never overwrites an existing draft. Topic headings become initial `topic-1`, `topic-2`, etc IDs; preserve them when authoring content and after reviewed publication.
+
+Continue the source-review workflow below using the original PDF. All clinical arrays start empty. An empty draft remains unpublishable even with `--write --reviewed`. A selected, registered `chapterId` is draft metadata: reviewed `add_lecture.py` registration validates its course/specialty and moves it into **catalog metadata only**, keeping the medical payload independent. Chapter metadata changes before import/registration cause revalidation to fail.
+
+Creating or renaming Materials, specialties or Chapters still uses reviewed course configuration and the existing course tools. This first wizard does not write those registries, upload PDFs, approve clinical facts or publish directly from the browser.
+
 ## Medical visual provenance policy — owner request (2026-10-17)
 
 **Only figures and clinical photographs actually present in the learner-provided PDF may appear as medical lecture images.** The repository must not manufacture new clinical visuals, depict invented lesions, borrow photographs from external sources, or replace original source photographs with AI-generated diagrams.

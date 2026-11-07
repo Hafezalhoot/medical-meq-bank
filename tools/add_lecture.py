@@ -214,6 +214,11 @@ def main() -> None:
         fail(f"subject {subject_key} is not registered in course {args.course}")
     if lecture.get("subject") != subject.get("label"):
         fail(f"subject name must match course pack label {subject.get('label')!r}")
+    chapter_id = lecture.get('chapterId')
+    if chapter_id is not None and (not isinstance(chapter_id, str) or not any(
+        item['id'] == chapter_id for item in subject.get('chapters', [])
+    )):
+        fail('Chapter is not registered in the selected course/specialty')
 
     counts = {}
     for key in LECTURE_LIST_KEYS:
@@ -232,7 +237,7 @@ def main() -> None:
 
     # Published identity is derived from catalogs. Keep reviewable source content independent.
     medical_source = dict(lecture)
-    for key in ("schemaVersion", "courseId", "canonicalId"):
+    for key in ("schemaVersion", "courseId", "canonicalId", "chapterId"):
         medical_source.pop(key, None)
     validate_lecture(
         medical_source,
@@ -282,6 +287,8 @@ def main() -> None:
         "courseId": args.course,
         "schemaVersion": 1,
     }
+    if chapter_id is not None:
+        entry['chapterId'] = chapter_id
 
     print(json.dumps({
         "mode": "write" if args.write else "dry-run",
@@ -317,7 +324,7 @@ def main() -> None:
 
     if not pack.get("lectureCatalog"):
         pack["lectureCatalog"] = Path(
-            os.path.relpath(CATALOG_PATH, start=pack_path.parent)
+            os.path.relpath(CATALOG_PATH.resolve(), start=pack_path.parent.resolve())
         ).as_posix()
         changes[pack_path] = render_json(pack)
 
