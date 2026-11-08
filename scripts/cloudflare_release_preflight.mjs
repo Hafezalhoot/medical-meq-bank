@@ -44,6 +44,10 @@ try {
         name: trigger.repo_connection.repo_name
       } : undefined});
   }
+  const applications = await readApi('/access/apps', 'Read protected-site application prerequisites');
+  assert(Array.isArray(applications), 'Unexpected Access application metadata response');
+  const site = applications.filter(item => item.domain === 'medical-meq-bank.hafztamr.workers.dev');
+  report({protectedSiteApplications: site.map(item => ({id: item.id, domain: item.domain, type: item.type}))});
 } catch (error) {
   report({blocked: error.message});
   process.exitCode = 1;
