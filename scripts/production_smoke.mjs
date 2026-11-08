@@ -211,13 +211,19 @@ async function run() {
 
   // A controlled client should never reuse obsolete application CSS/JS.
   await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, {timeout: 30000});
-  await page.evaluate(async () => {
+  const previousDocument = await page.evaluate(async () => {
     const old = await caches.open('medical-meq-bank-2026.10.04.2');
     await old.put(new URL('./app.css', location.href), new Response(
       'body{background:red!important}.workspace-primary-nav{background:red!important}.ui-icon svg{width:400px!important;height:400px!important}',
       {headers: {'Content-Type': 'text/css'}}
     ));
+    return performance.timeOrigin;
   });
+  // A repeated hash URL is a same-document navigation and cannot exercise
+  // stylesheet loading. Require an actual controlled document reload.
+  await page.reload({waitUntil: 'domcontentloaded', timeout: 45000});
+  assert.notEqual(await page.evaluate(() => performance.timeOrigin), previousDocument,
+    'PWA stale-CSS check requires a fresh document load');
   await verifyWorkspace(390, 844);
   observations.push({step: 'service-worker-old-css-poison', outcome: 'passed'});
   await verifyDermatology();
