@@ -59,10 +59,20 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify actual published Cloudflare Worker
+        if: always()
         env:
           MEQ_CF_ACCESS_CLIENT_ID: ${{ secrets.MEQ_CF_ACCESS_CLIENT_ID }}
           MEQ_CF_ACCESS_CLIENT_SECRET: ${{ secrets.MEQ_CF_ACCESS_CLIENT_SECRET }}
         run: node scripts/production_smoke.mjs
+
+      - name: Read deployment prerequisites without changing account settings
+        if: always() && github.event_name == 'workflow_dispatch'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          MEQ_CF_ACCESS_CLIENT_ID: ${{ secrets.MEQ_CF_ACCESS_CLIENT_ID }}
+          MEQ_CF_ACCESS_CLIENT_SECRET: ${{ secrets.MEQ_CF_ACCESS_CLIENT_SECRET }}
+        run: node scripts/cloudflare_release_preflight.mjs
 
       - name: Upload live evidence and failure screenshots
         if: always()
