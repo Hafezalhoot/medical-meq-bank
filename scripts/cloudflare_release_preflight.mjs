@@ -44,10 +44,10 @@ try {
         name: trigger.repo_connection.repo_name
       } : undefined});
   }
-  const applications = await readApi('/access/apps', 'Read protected-site application prerequisites');
+  const applications = await readApi('/access/apps?per_page=100', 'Read protected-site application prerequisites');
   assert(Array.isArray(applications), 'Unexpected Access application metadata response');
-  const site = applications.filter(item => item.domain === 'medical-meq-bank.hafztamr.workers.dev');
-  report({protectedSiteApplications: site.map(item => ({id: item.id, domain: item.domain, type: item.type}))});
+  const site = applications.filter(item => /medical-meq-bank|hafztamr\.workers\.dev/i.test(JSON.stringify(item)) || /meq|medical|workers/i.test(item.name || ''));
+  report({applicationCount: applications.length, protectedSiteApplications: site.map(item => ({id: item.id, name: item.name, domain: item.domain, type: item.type, selfHostedDomains: item.self_hosted_domains}))});
 } catch (error) {
   report({blocked: error.message});
   process.exitCode = 1;
