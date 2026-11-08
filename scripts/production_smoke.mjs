@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {setTimeout as pause} from 'node:timers/promises';
-import {chromium} from '@playwright/test';
+import {chromium, expect} from '@playwright/test';
 
 // This checks the REAL Cloudflare Worker, not the local dist/ server.
 // It never edits study progress or the source lecture data.
@@ -85,33 +85,40 @@ async function waitForDeployment() {
 
 async function verifyWorkspace(width, height) {
   await page.setViewportSize({width, height});
-  await page.goto(site.href, {waitUntil: 'domcontentloaded', timeout: 45000});
+  await page.goto(new URL('#/library', site).href, {waitUntil: 'domcontentloaded', timeout: 45000});
   await page.waitForFunction(() => document.getElementById('mainContent')?.getAttribute('aria-busy') === 'false', null, {timeout: 25000});
   await page.locator('#courseSelector').waitFor({state: 'visible'});
+  await expect(page.locator('body')).toHaveAttribute('data-workspace', 'library');
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible({timeout: 25000});
+  const nav = page.getByRole('navigation', {name: 'Primary workspace'});
+  await expect(nav.getByRole('link', {name: 'Library', exact: true})).toHaveAttribute('aria-current', 'page');
+  await expect(page.locator('.toolbar')).toBeHidden();
 
   const result = await page.evaluate(() => {
     const files = [...document.querySelectorAll('link[rel="stylesheet"][href], script[src]')]
       .map(el => new URL(el.href || el.src, location.href));
-    const hero = document.querySelector('.hero');
     const icon = document.querySelector('.pwa-tools-toggle .ui-icon svg');
-    const library = document.querySelector('.course-library');
+    const navigation = document.querySelector('.workspace-primary-nav');
     const course = document.querySelector('#courseSelector');
     return {
       assetVersions: files.map(url => url.searchParams.get('v')),
       allSameOrigin: files.every(url => url.origin === location.origin),
-      heroColor: getComputedStyle(hero).backgroundColor,
+      canvasColor: getComputedStyle(document.body).backgroundColor,
+      navigationColor: getComputedStyle(navigation).backgroundColor,
+      navigationTargetHeights: [...navigation.querySelectorAll('a')].map(link => link.getBoundingClientRect().height),
       iconWidth: icon?.getBoundingClientRect().width,
       courseWidth: course?.getBoundingClientRect().width,
-      libraryHeight: library?.getBoundingClientRect().height,
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
     };
   });
   assert(result.assetVersions.length >= 14, 'Live page did not load the expected CSS/JS assets');
   assert(result.assetVersions.every(version => version === expectedVersion), 'Mixed release versions in live CSS/JS');
   assert(result.allSameOrigin, 'A runtime asset unexpectedly came from another origin');
-  assert.equal(result.heroColor, 'rgb(17, 57, 66)', 'Live hero is not styled with the approved V3 palette');
+  assert.equal(result.canvasColor, 'rgb(246, 248, 247)', 'Live workspace is missing its V6 canvas styling');
+  assert.equal(result.navigationColor, 'rgb(255, 255, 255)', 'Workspace navigation surface is unstyled');
+  assert.equal(result.navigationTargetHeights.length, 5, 'Primary workspace navigation is incomplete');
+  assert(result.navigationTargetHeights.every(height => height >= 44), 'Workspace navigation tap targets are too small');
   assert(result.iconWidth >= 16 && result.iconWidth <= 24, 'Navigation icons are oversized or missing');
-  assert(result.libraryHeight >= 38 && result.libraryHeight <= 125, 'Course Library is missing or distorted');
   assert(result.courseWidth > 80, 'Course navigation is unusably narrow');
   assert(result.overflow <= 1, 'The live page has horizontal overflow (' + width + 'px)');
   observations.push({step: 'responsive', width, height, ...result});
@@ -122,15 +129,16 @@ async function verifyDermatology() {
   await page.setViewportSize({width: 390, height: 844});
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await page.waitForFunction(() => document.querySelector('#subjectSelector')?.value === 'dermatology');
-  const mobileFilter = page.locator('#mobileFiltersToggle');
-  if (await mobileFilter.isVisible()) await mobileFilter.click();
   const lectureId = 'internal-medicine-ii-dermatology-introduction';
-  await page.locator('#lectureFilter').selectOption(lectureId);
-  const close = page.locator('#closeMobileFiltersBtn');
-  if (await close.isVisible()) await close.click();
-  await page.waitForFunction(() => document.getElementById('mainContent')?.getAttribute('aria-busy') === 'false', null, {timeout: 25000});
+  await page.getByRole('button', {name: 'Open lecture: Introduction to Dermatology', exact: true}).click();
+  await expect(page.locator('body')).toHaveAttribute('data-workspace', 'lecture');
+  await expect(page.locator('#lecture-' + lectureId + ' .lecture-title')).toBeVisible({timeout: 25000});
+  const tabs = page.getByRole('tablist', {name: 'Lecture reading modes'});
+  await expect(tabs.getByRole('tab', {name: 'Explanation', exact: true})).toHaveAttribute('aria-selected', 'true');
   assert.equal(await page.locator('#lecture-' + lectureId + ' .image-card img').count(), 14, 'Hosted Dermatology photo cards are missing');
   assert.equal(await page.locator('.study-guide-mcq').count(), 30, 'Published Dermatology MCQs are missing');
+  await tabs.getByRole('tab', {name: 'MCQ practice', exact: true}).click();
+  await expect(page.locator('.study-guide-mcq').first()).toBeVisible();
   assert.equal(await page.locator('#originalFigureTools').isVisible(), false, 'Hosted photos incorrectly require manual import');
 
   const integrity = await page.evaluate(async id => {
@@ -151,13 +159,24 @@ async function verifyDermatology() {
   assert.equal(integrity.length, 14, 'Expected 14 authentic source-image slots');
   assert(integrity.every(item => item.ok && item.shaMatches && item.bytes > 300 && /image\/jpeg/.test(item.contentType || '')),
     'An original medical JPEG is missing, damaged or does not match its source SHA-256');
-  await page.locator('.learning-companion summary').nth(2).click();
+  await tabs.getByRole('tab', {name: 'Original figures', exact: true}).click();
   assert.equal(await page.locator('.original-atlas-item img').count(), 14, 'Live original photograph atlas is incomplete');
   const first = page.locator('.original-atlas-item img').first();
   await first.scrollIntoViewIfNeeded();
   await first.evaluate(img => img.decode());
   await page.screenshot({path: output + '/dermatology-original-photos-390.png', animations: 'disabled'});
   observations.push({step: 'dermatology', photoCount: integrity.length, verifiedSha256: integrity.length, mcqCount: 30});
+}
+
+async function verifyManagement() {
+  const selectedCourse = await page.locator('#courseSelector').inputValue();
+  await page.getByRole('button', {name: 'Study tools', exact: true}).click();
+  await page.getByRole('link', {name: 'Manage library', exact: true}).click();
+  await expect(page.getByRole('heading', {name: 'Manage library', exact: true})).toBeVisible();
+  await expect(page.getByLabel('Material / course')).toHaveValue(selectedCourse);
+  await expect(page.locator('.intake-steps li')).toHaveCount(4);
+  await expect(page.locator('#mainLayout')).toBeHidden();
+  observations.push({step: 'library-management', outcome: 'passed'});
 }
 
 async function run() {
@@ -195,18 +214,19 @@ async function run() {
   await page.evaluate(async () => {
     const old = await caches.open('medical-meq-bank-2026.10.04.2');
     await old.put(new URL('./app.css', location.href), new Response(
-      '.hero{background:red!important}.ui-icon svg{width:400px!important;height:400px!important}',
+      'body{background:red!important}.workspace-primary-nav{background:red!important}.ui-icon svg{width:400px!important;height:400px!important}',
       {headers: {'Content-Type': 'text/css'}}
     ));
   });
   await verifyWorkspace(390, 844);
   observations.push({step: 'service-worker-old-css-poison', outcome: 'passed'});
   await verifyDermatology();
+  await verifyManagement();
   await page.locator('#darkBtn').click();
   assert.equal(await page.locator('body').evaluate(el => el.classList.contains('dark')), true, 'Dark mode failed on the live study page');
   observations.push({step: 'theme-toggle', outcome: 'passed'});
   assert.deepEqual(errors, [], 'The live browser reported HTTP/JavaScript errors');
-  console.log('Cloudflare production verified: release ' + expectedVersion + ', responsive UI, PWA, dark mode and 14 original Dermatology photos.');
+  console.log('Cloudflare target verified: ' + site.origin + ', release ' + expectedVersion + ', responsive V6 Library/reader/management, PWA, dark mode and 14 original Dermatology photos.');
 }
 
 try {
