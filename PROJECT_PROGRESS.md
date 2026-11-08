@@ -1,5 +1,13 @@
 # Medical MEQ Bank — Project Progress & Scalability Program
 
+### 2026-11-08 — Owner-authorized online V6 release preparation
+
+- Owner explicitly requested publishing the latest changes to the existing online site. [PR #89](https://github.com/Hafezalhoot/medical-meq-bank/pull/89) now consolidates the already-tested V6 chain and targets protected `main`; no intermediate UX release is needed. Application source remains the verified `2026.11.07.1` candidate; clinical content, imagery and progress/scoring identities remain untouched.
+- **External build-only setting is now verified**, rather than assumed: read-only [preflight #42459758485](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42459758485) queried Cloudflare Workers Builds. Production trigger `6a986000-a436-4e96-9b88-27aa0a62acaa` targets `main`; preview trigger excludes `main`; both use `bash build.sh` and **`npx wrangler versions upload`**, repository `Hafezalhoot/medical-meq-bank`. No account setting was changed. Main ruleset is active, with validate/Chromium/WebKit required and no bypass actors.
+- Current live rollback reference is Worker `6b5d76a0-5409-4ff8-8245-78438d7105d4` at 100% (read-only check, 2026-11-08 07:41 UTC). Production `/version.json` still returns Cloudflare Access HTTP 302. The two encrypted MEQ Access smoke credentials are absent; Access is not disabled or bypassed.
+- Normal PR-triggered final checks and merged-main checks must complete before protected manual promotion. No direct-main push, admin bypass, unmerged-version promotion or production traffic change is authorized by this log. This entry records release preparation, not a deployment-success claim.
+- A separate `release/v6-deployment-preflight-20261108` branch contains read-only diagnostics using the existing CI credential; it is not part of the application release. Local Cloudflare CLI is unauthenticated and the computer-use tool failed to open the account dashboard. Existing detector exceptions remain local/untracked and are not product changes.
+
 ### 2026-11-07 — V6 UX-05A guided library intake (candidate, not production)
 
 - Resumed the actual V6 chain from UX-04A `dd89bf5fb6c4c446f2041583eef2322e9a06f9a5` (PR #88), after inspecting main `cb0d193c447623b5b52784ab6d5e73d4275f400e`, open UX PRs, source, deployment workflow and handoff. Work is on `feature/v6-guided-authoring-ux05-20261107`, candidate `2026.11.07.1`.

@@ -1,5 +1,11 @@
 # My Medical Library — Project Autopilot status
 
+## Online release request — 2026-11-08
+
+The owner has explicitly authorized publishing V6 to the existing site. PR #89 now targets `main` as one combined V6 release, with the application source unchanged from tested candidate `2026.11.07.1`. Normal PR-triggered checks and exact merged-main checks remain mandatory. Read-only preflight [#42459758485](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42459758485) verified both Cloudflare triggers use `npx wrangler versions upload`; the production trigger targets `main` and the connected repository/build command match this project. This removes the formerly unknown build-only configuration; issue #50's full activation proof still needs the controlled release.
+
+The remaining live-smoke prerequisite is Cloudflare Access: HTTP 302 and absent `MEQ_CF_ACCESS_CLIENT_ID` / `MEQ_CF_ACCESS_CLIENT_SECRET`. Current active/rollback Worker is `6b5d76a0-5409-4ff8-8245-78438d7105d4` at 100%. No Access policy or production traffic has been changed. The diagnostic branch is separate from application source; local detector-only exceptions are untracked. Do not mistake source integration or a successful preview for completed production activation.
+
 ## Current continuation — 2026-11-07 (supersedes older handoff below)
 
 - **Repository:** `Hafezalhoot/medical-meq-bank`; inspected `main` at `cb0d193c447623b5b52784ab6d5e73d4275f400e`.
