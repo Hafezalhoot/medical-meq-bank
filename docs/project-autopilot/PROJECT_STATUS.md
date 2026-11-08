@@ -1,5 +1,34 @@
 # My Medical Library — Project Autopilot status
 
+## Online release request — 2026-11-08
+
+The owner has explicitly authorized publishing V6 to the existing site. PR #89 now targets `main` as one combined V6 release, with the application source unchanged from tested candidate `2026.11.07.1`. Normal PR-triggered checks and exact merged-main checks remain mandatory. Read-only preflight [#42459758485](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42459758485) verified both Cloudflare triggers use `npx wrangler versions upload`; the production trigger targets `main` and the connected repository/build command match this project. This removes the formerly unknown build-only configuration; issue #50's full activation proof still needs the controlled release.
+
+The remaining live-smoke prerequisite is Cloudflare Access: HTTP 302 and absent `MEQ_CF_ACCESS_CLIENT_ID` / `MEQ_CF_ACCESS_CLIENT_SECRET`. Current active/rollback Worker is `6b5d76a0-5409-4ff8-8245-78438d7105d4` at 100%. No Access policy or production traffic has been changed. The diagnostic branch is separate from application source; local detector-only exceptions are untracked. Do not mistake source integration or a successful preview for completed production activation.
+
+## Current continuation — 2026-11-07 (supersedes older handoff below)
+
+- **Repository:** `Hafezalhoot/medical-meq-bank`; inspected `main` at `cb0d193c447623b5b52784ab6d5e73d4275f400e`.
+- **Latest real UI base:** V6 UX-04A `dd89bf5fb6c4c446f2041583eef2322e9a06f9a5`, not main. Dependency chain: UX-01 [#84](https://github.com/Hafezalhoot/medical-meq-bank/pull/84) → UX-02 [#85](https://github.com/Hafezalhoot/medical-meq-bank/pull/85) → UX-03 [#87](https://github.com/Hafezalhoot/medical-meq-bank/pull/87) → UX-04A [#88](https://github.com/Hafezalhoot/medical-meq-bank/pull/88). These remain separate draft PRs. Existing source is vanilla HTML/CSS/JS, not React.
+- **Working branch:** `feature/v6-guided-authoring-ux05-20261107`; candidate `2026.11.07.1`. New `#/manage` four-step metadata intake + strict local importer, optional Chapter handoff, no changes to registered structure or clinical content. [Spec](../superpowers/specs/2026-11-07-guided-library-intake.md), [plan](../superpowers/plans/2026-11-07-guided-library-intake.md), [authoring instructions](../../CONTENT_AUTHORING.md).
+- **Verified execution source:** `1b3ddfa118fe4be262d365ae3a80750e57929a79`, [official CI #42392300567](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42392300567): static/70 Python, 217 Chromium, 16 WebKit tests green; two intentional existing device-specific skips. Cloudflare Workers Builds green. Locally the same 217 Chromium tests passed after using a static server with a larger request queue; default-server connection-reset attempts were failed runs, not passing evidence. Final documentation-only head and exact-head checks are tracked in [draft PR #89](https://github.com/Hafezalhoot/medical-meq-bank/pull/89).
+- **Preview verified:** [Worker `0ae85f3c`](https://0ae85f3c-medical-meq-bank.hafztamr.workers.dev/#/manage), full version ID `0ae85f3c-6c52-46cc-b48d-1ef3752ce5ff`. HTTP 200 `/version.json` matched `2026.11.07.1`. Six authoring scenarios passed against this preview, with the standalone scenario using the local generated offline file. No production promotion implied.
+- **Independent review:** identified that repeated/trailing hyphens could create an ID accepted by the wizard/importer but refused by the V6 reader. Added failing browser/Python regressions, aligned both intake boundaries to the reader grammar. Two inherited macOS symlink path failures and an independently reproduced native-selector crop were repaired without changing test assertions. First local Chromium run with two workers had startup timing failures; final run uses the CI's one-worker setting.
+- **Production evidence:** read-only [smoke run #42391542570](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42391542570) on 2026-11-07 16:30 UTC reported Worker `6b5d76a0-5409-4ff8-8245-78438d7105d4` at **100%**. Live `/version.json` still redirects HTTP 302 to Cloudflare Access; full authenticated live smoke failed. This is the active existing Worker, not the new V6 candidate. #35 and #50 remain open; dashboard build-only deployment setting has not been independently verified. No main merge or production activation in this continuation.
+- **Preserved:** 3 courses, 12 published lecture packs, 138 authored MCQs, existing image hashes, question/progress IDs, IndexedDB, backups, exam grading, print and offline flows. The legacy builder rematerializes two tracked lecture files; discard only those build-created diffs before committing this UI/tooling slice.
+- **Design review:** existing V6 sage/slate tokens and native controls retained. Independent reviewer scored the ID fix and stable-dark recapture resolved and gave a scoped ship verdict; primary button contrast 9.23:1. Documenter verification passed. Whole-source static detector warnings refer to inherited legacy hero/utility typography, contrast, spacing and glow declarations; none suppressed. Historical V5/V6 DESIGN.md drift was reported and preserved.
+
+## Next unblocked slices
+
+1. Review [draft PR #89](https://github.com/Hafezalhoot/medical-meq-bank/pull/89) and its exact-head source/Chromium/WebKit/Workers checks; keep it draft until the V6 dependency chain is approved. No known outstanding fix from the scoped independent review.
+2. UX-05B: reviewed creation/editing of new Material/specialty/Chapter metadata and recoverable downloaded drafts. Current UI selects existing structure only.
+3. UX-04B: dedicated saved Review and exam setup/result presentation, reusing existing rating/scoring engines.
+4. Consolidated responsive/RTL/a11y/offline QA, then protected-main integration and authorized promotion after #35/#50 account controls are resolved. Never bypass Access or infer production success from preview CI.
+
+---
+
+## Archived V5 handoff (historical)
+
 ## Owner-approved product direction
 **My Medical Library · Lectures · Questions · Exams** is the personal lecture-first medical study application; MEQ is one supported question type, not the overall brand. Lecture-First Policy still controls every exam fact, and explanatory additions must be labeled as aids, not new exam facts.
 

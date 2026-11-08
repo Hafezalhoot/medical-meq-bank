@@ -34,6 +34,46 @@ def safe_child(base: Path, relative: str) -> Path:
     return resolved
 
 
+
+def validate_chapter_mapping(pack: dict, lecture_entries: list[dict]) -> None:
+    """Chapters group catalog metadata only; no medical payload or progress rewrite."""
+    chapters_by_subject: dict[str, set[str]] = {}
+    for subject in pack['subjects']:
+        scope = f"{pack['id']}/{subject['id']}"
+        chapters = subject.get('chapters', [])
+        if not isinstance(chapters, list):
+            fail(f'{scope} chapters must be a list')
+        ids: set[str] = set()
+        orders: set[int] = set()
+        for chapter in chapters:
+            if (
+                not isinstance(chapter, dict)
+                or set(chapter) != {'id', 'label', 'order'}
+                or not isinstance(chapter['id'], str)
+                or re.fullmatch(r'[a-z0-9][a-z0-9-]*', chapter['id']) is None
+                or not isinstance(chapter['label'], str)
+                or not chapter['label'].strip()
+                or type(chapter['order']) is not int
+                or chapter['order'] < 1
+            ):
+                fail(f'{scope} has invalid chapter metadata')
+            if chapter['id'] in ids:
+                fail(f"{scope} duplicate chapter id: {chapter['id']}")
+            if chapter['order'] in orders:
+                fail(f"{scope} duplicate chapter order: {chapter['order']}")
+            ids.add(chapter['id'])
+            orders.add(chapter['order'])
+        chapters_by_subject[subject['id']] = ids
+    for lecture in lecture_entries:
+        chapter_id = lecture.get('chapterId')
+        if chapter_id is not None:
+            if (not isinstance(chapter_id, str) or
+                    chapter_id not in chapters_by_subject.get(lecture.get('subjectKey'), set())):
+                fail(f"lecture {lecture.get('id')} references unknown chapter {chapter_id!r} "
+                     f"in {pack['id']}/{lecture.get('subjectKey')}")
+
+
+
 def main() -> None:
     for schema in ('catalog.schema.json','course-pack.schema.json'):
         load_json(COURSES / schema)
@@ -108,6 +148,7 @@ def main() -> None:
             fail(f'course {course_id} defaultSubject is not in its subject list')
 
         lecture_catalog = pack.get('lectureCatalog')
+        lecture_entries: list[dict] = []
         if lecture_catalog is not None:
             catalog_path = safe_child(pack_path.parent, lecture_catalog)
             lecture_catalog_data = load_json(catalog_path)
@@ -142,6 +183,7 @@ def main() -> None:
                 **lecture_catalog_data,
                 'lectures': lecture_entries,
             }
+        validate_chapter_mapping(pack, lecture_entries)
         packs[course_id] = pack
         course_ids.add(course_id)
         course_orders.add(float(order))

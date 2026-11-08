@@ -7,6 +7,9 @@ required_files=(
   src/index.html
   src/app.css
   src/app.js
+  src/library-authoring.js
+  src/library-authoring.css
+  tools/import_library_draft.py
   src/exam-mode.js
   src/exam-mode.css
   src/course-packs.template.js
@@ -123,6 +126,8 @@ mkdir -p "$OUTPUT/lectures/data"
 
 install -m 0644 \
   src/index.html \
+  src/library-authoring.js \
+  src/library-authoring.css \
   src/app.css \
   src/app.js \
   src/progress-resilience.js \

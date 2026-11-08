@@ -199,7 +199,7 @@ function populateLectureFilter(){
   const lf=$('lectureFilter'),old=lf.value,list=visibleLectures();
   if(!list.length){lf.innerHTML='<option value="all">No lectures yet</option>';lf.value='all';lf.disabled=true;delete lf.dataset.explicitAll;return}
   lf.disabled=false;
-  if(list.length===1){
+  if(list.length===1&&document.body.dataset.workspace!=='library'){
     lf.innerHTML=`<option value="${list[0].id}">01. ${esc(list[0].title)}</option>`;
     lf.value=list[0].id;
     delete lf.dataset.explicitAll;
@@ -253,6 +253,34 @@ let lectureNavSearchScope='';
 function renderLectureNav(){
   const nav=$('lectureNav'),list=visibleLectures(),selected=$('lectureFilter').value;
   const wrap=$('lectureNavSearchWrap'),field=$('lectureNavSearch'),status=$('lectureNavResult');
+  const heading=document.querySelector('.lecture-sidebar h2');
+  const caption=document.querySelector('.lecture-sidebar .sidebar-caption');
+  if(document.body.dataset.workspace==='library'){
+    const currentPack=globalThis.MEQCourseRegistry?.packs?.get?.(activeCourseId());
+    nav.setAttribute('aria-label','Specialties in selected course');
+    if(heading)heading.textContent='Specialties';
+    if(caption)caption.textContent='Choose a specialty to view its lectures.';
+    wrap.hidden=true;field.value='';status.textContent='';
+    nav.replaceChildren();
+    (currentPack?.subjects||[]).slice().sort((a,b)=>a.order-b.order).forEach(subject=>{
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='library-subject-link'+(subject.id===activeSubject?' active':'');
+      button.textContent=subject.label;
+      if(subject.id===activeSubject)button.setAttribute('aria-current','page');
+      button.onclick=()=>{
+        const subjectSelect=document.getElementById('subjectSelector');
+        if(subjectSelect.value===subject.id)return;
+        subjectSelect.value=subject.id;
+        subjectSelect.dispatchEvent(new Event('change',{bubbles:true}));
+      };
+      nav.append(button);
+    });
+    return;
+  }
+  nav.setAttribute('aria-label','Lectures in selected specialty');
+  if(heading)heading.textContent='Lectures';
+  if(caption)caption.textContent='Choose a lecture or return to the subject overview.';
   const scope=activeCourseId()+':'+activeSubject;
   if(scope!==lectureNavSearchScope){lectureNavSearchScope=scope;field.value='';}
   wrap.hidden=list.length<5;
@@ -268,7 +296,10 @@ function renderLectureNav(){
     all.className='lecture-link '+(selected==='all'?'active':'');
     if(selected==='all')all.setAttribute('aria-current','page');
     all.innerHTML=`<strong>All lectures</strong><small>${list.length} lecture overviews</small>`;
-    all.onclick=()=>selectLecture('all',false);
+    all.onclick=()=>{
+      selectLecture('all',false);
+      if(document.body.dataset.workspace==='lecture')location.hash='#/library';
+    };
     nav.appendChild(all)
   }
   filtered.forEach(l=>{
@@ -278,7 +309,11 @@ function renderLectureNav(){
     b.className='lecture-link '+(selected===l.id?'active':'');
     if(selected===l.id)b.setAttribute('aria-current','page');
     b.innerHTML=`<strong>${String(l.order).padStart(2,'0')}. ${esc(l.title)}</strong><small>${lectureCount(l,'cases')} cases • ${lectureCount(l,'coreShorts')} core shorts</small><div class="subnav"><span>MEQ</span><span>Shorts</span><span>Images</span><span>Rapid</span></div>`;
-    b.onclick=()=>selectLecture(l.id,true);
+    b.onclick=()=>{
+      const focused=['library','lecture'].includes(document.body.dataset.workspace);
+      selectLecture(l.id,!focused);
+      if(focused)globalThis.MEQWorkspace?.openLecture(l.id);
+    };
     nav.appendChild(b)
   });
   if(!filtered.length){
@@ -320,13 +355,78 @@ function renderSubtopicNav(){
   nav.innerHTML='<div class="sidebar-empty">Subtopics will appear when this lecture finishes loading.</div>'
 }
 
+
+let librarySearchScope='';
+const librarySearchField=document.getElementById('libraryLectureSearch');
+function filterLibraryLectures(list){
+  if(document.body.dataset.workspace!=='library')return list;
+  const scope=activeCourseId()+'::'+activeSubject;
+  if(librarySearchScope!==scope){
+    librarySearchScope=scope;
+    if(librarySearchField)librarySearchField.value='';
+  }
+  const query=(librarySearchField?.value||'').trim().toLocaleLowerCase();
+  const result=query
+    ?list.filter(lecture=>lecture.title.toLocaleLowerCase().includes(query)||String(lecture.order).includes(query))
+    :list;
+  const status=document.getElementById('libraryResultCount');
+  if(status)status.textContent=query?result.length+' of '+list.length+' lectures':list.length+' lectures';
+  return result;
+}
+librarySearchField?.addEventListener('input',()=>{
+  if(document.body.dataset.workspace==='library'&&$('lectureFilter').value==='all')render();
+});
+librarySearchField?.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&librarySearchField.value){
+    librarySearchField.value='';render();event.preventDefault();
+  }
+});
 function renderLectureOverview(container,list){
   const section=document.createElement('section');
   section.className='lecture-overview-panel';
   const subjectName=subjects.find(subject=>subject.id===activeSubject)?.label||'Selected specialty';
   section.innerHTML=`<div class="section-head"><div><h2>${esc(subjectName)} lectures</h2><p>Choose a lecture to open its available explanations, practice questions and original source figures.</p></div><span class="lecture-overview-total">${list.length} ${list.length===1?'lecture':'lectures'}</span></div><div class="lecture-overview-grid"></div>`;
   const grid=section.querySelector('.lecture-overview-grid');
-  list.forEach(lecture=>{
+  const isLibrary=document.body.dataset.workspace==='library';
+  const shown=filterLibraryLectures(list);
+  const subjectMeta=globalThis.MEQCourseRegistry?.packs?.get?.(activeCourseId())
+    ?.subjects?.find(item=>item.id===activeSubject);
+  const chapters=isLibrary&&Array.isArray(subjectMeta?.chapters)
+    ?[...subjectMeta.chapters].sort((a,b)=>a.order-b.order||a.id.localeCompare(b.id)):[];
+  const chapterIdOf=lecture=>globalThis.MEQCourseRegistry?.chapterIdForLecture?.(lecture.id)||globalThis.MEQLectureLoader?.catalogEntry?.(lecture.id)?.chapterId||lecture.chapterId||'';
+  const known=new Set(chapters.map(chapter=>chapter.id));
+  const targets=new Map();
+  let otherTarget=grid;
+  const makeGroup=(className,chapterId,label,count)=>{
+    const sectionNode=document.createElement('section');
+    sectionNode.className=className;
+    if(chapterId)sectionNode.dataset.chapterId=chapterId;
+    const heading=document.createElement('div');
+    heading.className='library-chapter-heading';
+    const title=document.createElement('h3');title.textContent=label;
+    const total=document.createElement('span');total.textContent=count+' '+(count===1?'lecture':'lectures');
+    heading.append(title,total);
+    const rows=document.createElement('div');rows.className='lecture-overview-grid';
+    sectionNode.append(heading,rows);
+    section.append(sectionNode);
+    return rows;
+  };
+  if(chapters.length){
+    grid.remove();
+    for(const chapter of chapters){
+      const count=shown.filter(lecture=>chapterIdOf(lecture)===chapter.id).length;
+      if(count)targets.set(chapter.id,makeGroup('library-chapter',chapter.id,chapter.label,count));
+    }
+    const remaining=shown.filter(lecture=>!known.has(chapterIdOf(lecture))).length;
+    if(remaining)otherTarget=makeGroup('library-unassigned','','Other lectures',remaining);
+  }
+  if(!shown.length){
+    const empty=document.createElement('p');
+    empty.className='library-search-empty';
+    empty.textContent=list.length?'No lectures match this search.':'No lectures have been added to this specialty yet.';
+    section.append(empty);
+  }
+  shown.forEach(lecture=>{
     const button=document.createElement('button');
     button.type='button';
     button.className='lecture-overview-card';
@@ -337,8 +437,13 @@ function renderLectureOverview(container,list){
     const shorts=lectureCount(lecture,'coreShorts');
     const images=lectureCount(lecture,'imageQuestions');
     button.innerHTML=`<span class="lecture-overview-top"><span class="lecture-overview-index" aria-hidden="true">${String(lecture.order).padStart(2,'0')}</span><strong class="lecture-overview-name">${esc(lecture.title)}</strong></span><span class="lecture-overview-meta">${mcqs} source MCQs · ${cases} MEQ cases · ${shorts} core shorts · ${images} image questions</span><span class="lecture-overview-bottom"><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Open lecture'} <span aria-hidden="true">→</span></span></span>`;
-    button.onclick=()=>selectLecture(lecture.id,true);
-    grid.appendChild(button);
+    button.onclick=()=>{
+      const focused=document.body.dataset.workspace==='library';
+      selectLecture(lecture.id,!focused);
+      if(focused)globalThis.MEQWorkspace?.openLecture(lecture.id);
+    };
+    const chapterId=chapterIdOf(lecture);
+    (targets.get(chapterId)||otherTarget).appendChild(button);
   });
   container.appendChild(section);
 }
@@ -705,7 +810,10 @@ document.addEventListener('click',event=>{
 function render(){
   const container=$('lectureContainer');container.innerHTML='';const list=visibleLectures();
   $('mainLayout').classList.toggle('lecture-overview-active',$('lectureFilter').value==='all');
-  if(!list.length){renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();return}
+  if(!list.length){
+    if(document.body.dataset.workspace==='library')filterLibraryLectures(list);
+    renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();return
+  }
   const selected=$('lectureFilter').value;
   if(selected==='all'){
     if($('typeFilter').value==='mcq'){
@@ -744,6 +852,7 @@ function render(){
     back.setAttribute('aria-label','All lectures');
     back.addEventListener('click',()=>{
       selectLecture('all',false);
+      if(document.body.dataset.workspace==='lecture')location.hash='#/library';
       const title=container.querySelector('.lecture-overview-panel h2');
       if(title){
         title.tabIndex=-1;
@@ -792,7 +901,9 @@ function render(){
   l.imageQuestions.forEach((q,i)=>sec.querySelector('.image-grid').appendChild(imageCard(l,q,i)));
   l.detailedShorts.forEach((q,i)=>sec.querySelector('.extra-grid').appendChild(shortCard(l,q,i,'extra','Detailed Question')));
   const rg=sec.querySelector('.rapid-grid');l.rapid.forEach(([q,a],i)=>{const d=document.createElement('button');d.type='button';d.className='rapid-item';d.setAttribute('aria-expanded','false');d.innerHTML=`<strong>${i+1}. ${esc(q)}</strong><span class="rapid-answer">${esc(a)}</span>`;d.onclick=()=>{const open=d.classList.toggle('open');d.setAttribute('aria-expanded',open?'true':'false')};rg.appendChild(d)});
-  bind();renderLectureNav();renderSubtopicNav();updateStatus();applyFilters()
+  bind();renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();
+  if(document.body.dataset.workspace==='lecture')configureReaderWorkspace(l);
+  if(document.body.dataset.workspace==='practice')syncPracticeWorkspace();
 }
 
 function bind(){
@@ -1334,3 +1445,492 @@ syncThemeButton();
   globalThis.MEQOriginalFigures={refresh};
   refresh();updateStatus(context());
 })();
+
+
+/* V6 UX-01 — progressive workspace routes. No progress or lecture schema writes.
+   Plain / remains the legacy study screen until every existing user flow is migrated. */
+(() => {
+  const allowed=new Set(['home','library','practice','review','exams','manage']);
+  const nav=document.querySelector('[aria-label="Primary workspace"]');
+  const status=document.getElementById('workspaceRouteStatus');
+  const entry=document.getElementById('workspaceExamEntry');
+  const courseLibrary=document.getElementById('courseLibraryDisclosure');
+  const savedReview=document.getElementById('myReviewDisclosure');
+  const practiceIntro=document.getElementById('practiceIntro');
+  const practiceEmpty=document.getElementById('practiceEmpty');
+  let routeSequence=0;
+
+  function parseRoute(hash) {
+    if(!hash.startsWith('#/'))return null;
+    const [path,search='']=hash.slice(2).split('?',2);
+    if(allowed.has(path))return {view:path};
+    if(/^lecture\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path))
+      return {view:'lecture',id:path.slice(8),params:new URLSearchParams(search)};
+    return {view:'home'};
+  }
+  function openLecture(id) {
+    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id))return;
+    const course=globalThis.MEQCourseRegistry?.activeCourse||'';
+    const subject=document.getElementById('subjectSelector')?.value||'';
+    const query=new URLSearchParams({course,subject});
+    location.hash='#/lecture/'+id+'?'+query;
+  }
+  async function restoreLecture(route,sequence) {
+    const registry=globalThis.MEQCourseRegistry;
+    const loader=globalThis.MEQLectureLoader;
+    const courseSelect=document.getElementById('courseSelector');
+    const subjectSelect=document.getElementById('subjectSelector');
+    const lectureSelect=document.getElementById('lectureFilter');
+    if(!registry||!subjectSelect||!lectureSelect)return;
+
+    const requestedCourse=route.params.get('course')||registry.activeCourse||courseSelect?.value;
+    if(requestedCourse&&!registry.packs.has(requestedCourse)){location.hash='#/library';return;}
+    if(requestedCourse!==registry.activeCourse)
+      registry.activateCourse(requestedCourse,{preserveSubject:false});
+
+    const requestedSubject=route.params.get('subject')||subjectSelect.value;
+    if(![...subjectSelect.options].some(option=>option.value===requestedSubject)){
+      location.hash='#/library';return;
+    }
+    if(subjectSelect.value!==requestedSubject){
+      subjectSelect.value=requestedSubject;
+      subjectSelect.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    // The offline standalone embeds lecture payloads; it deliberately has no
+    // MEQLectureLoader. Use the same selection logic without a network fetch.
+    if(loader?.loadSubject){
+      try {
+        await loader.loadSubject(requestedSubject,requestedCourse);
+      }catch(error){
+        if(sequence===routeSequence&&status)
+          status.textContent='Unable to load the selected subject. Choose it from Library.';
+        return;
+      }
+    }
+    if(sequence!==routeSequence)return;
+    if(![...lectureSelect.options].some(option=>option.value===route.id)){
+      if(status)status.textContent='This lecture is not available in the selected subject.';
+      location.hash='#/library';
+      return;
+    }
+    if(lectureSelect.value!==route.id)
+      selectLecture(route.id,false);
+    else if(!document.getElementById('lecture-'+route.id))
+      selectLecture(route.id,false);
+    const existing=lectures.find(item=>item.id===route.id);
+    if(existing&&document.getElementById('lecture-'+route.id))configureReaderWorkspace(existing);
+  }
+
+  function applyRoute() {
+    const sequence=++routeSequence;
+    const route=parseRoute(location.hash);
+    if(!route){
+      delete document.body.dataset.workspace;
+      entry.hidden=true;
+      if(practiceIntro)practiceIntro.hidden=true;
+      if(practiceEmpty)practiceEmpty.hidden=true;
+      nav?.querySelectorAll('a').forEach(link=>link.removeAttribute('aria-current'));
+      return;
+    }
+    const view=route.view;
+    const previousView=document.body.dataset.workspace;
+    document.body.dataset.workspace=view;
+    entry.hidden=view!=='exams';
+    if(practiceIntro)practiceIntro.hidden=view!=='practice';
+    if(view!=='practice'&&practiceEmpty)practiceEmpty.hidden=true;
+    const randomButton=document.getElementById('randomBtn');
+    const revealButton=document.getElementById('revealBtn');
+    if(randomButton)randomButton.textContent=view==='practice'?'Random question':'Random item';
+    if(revealButton){
+      revealButton.disabled=false;
+      revealButton.textContent=view==='practice'?'Reveal current answer':revealAll?'Hide all':'Reveal all';
+    }
+    if(previousView==='practice'&&view==='lecture')render();
+    nav?.querySelectorAll('a').forEach(link=>{
+      if(link.dataset.workspaceLink===(view==='lecture'?'library':view))
+        link.setAttribute('aria-current','page');
+      else link.removeAttribute('aria-current');
+    });
+    if(status)status.textContent=view==='lecture'?'Lecture reader':view.charAt(0).toUpperCase()+view.slice(1)+' workspace';
+    if(document.querySelector('.app.study-focus'))setFocusMode(false);
+    if(view==='library'){
+      const typeFilter=document.getElementById('typeFilter');
+      if(typeFilter)typeFilter.value='all';
+      populateLectureFilter();
+      selectLecture('all',false);
+    }
+    if(view==='review')savedReview.open=true;
+    if(view==='practice')enterPracticeRoute();
+    if(view==='lecture')restoreLecture(route,sequence).catch(()=>{
+      if(sequence===routeSequence&&status)
+        status.textContent='The lecture could not be opened. Return to Library.';
+    });
+    window.scrollTo({top:0,behavior:'instant'});
+  }
+
+  globalThis.MEQWorkspace=Object.freeze({openLecture,parseRoute});
+  document.getElementById('workspaceExamStart')?.addEventListener('click',()=>{
+    document.getElementById('examModeBtn')?.click();
+  });
+  document.getElementById('resumeStudyBtn')?.addEventListener('click',()=>{
+    if(document.body.dataset.workspace==='home')location.hash='#/practice';
+  });
+  document.getElementById('browseLibraryLink')?.addEventListener('click',event=>{
+    if(document.body.dataset.workspace&&document.body.dataset.workspace!=='legacy'){
+      event.preventDefault();
+      location.hash='#/library';
+    }
+  },true);
+  const refreshLibraryIndex=()=>{
+    if(document.body.dataset.workspace!=='library')return;
+    populateLectureFilter();
+    selectLecture('all',false);
+  };
+  document.getElementById('subjectSelector')?.addEventListener('change',refreshLibraryIndex);
+  document.addEventListener('meq:course-changed',refreshLibraryIndex);
+  document.addEventListener('meq:lectures-loaded',refreshLibraryIndex);
+  document.addEventListener('meq:lectures-loaded',()=>{
+    if(document.body.dataset.workspace==='practice')enterPracticeRoute();
+  });
+  window.addEventListener('hashchange',applyRoute);
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded',applyRoute,{once:true});
+  else applyRoute();
+})();
+
+
+/* V6 UX-03: one authored mode and one explanation topic at a time.
+   The existing source DOM, answer controls, figure provenance and progress keys
+   remain authoritative. Never manufacture a section that the lecture lacks. */
+function configureReaderWorkspace(lecture){
+  if(document.body.dataset.workspace!=='lecture'||!lecture)return;
+  const root=document.getElementById('lecture-'+lecture.id);
+  if(!root)return;
+  if(root.__readerController){
+    root.__readerController.restore();
+    return;
+  }
+
+  const guide=root.querySelector('.learning-companion');
+  const definitions={
+    explanation:'Explanation',mcqs:'MCQ practice',
+    infographic:'Infographic','original-figures':'Original figures'
+  };
+  const modes=[];
+  guide?.querySelectorAll('details[data-guide-section]').forEach(node=>{
+    const key=node.dataset.guideSection;
+    if(definitions[key])modes.push({key,label:definitions[key],node,guide:true});
+  });
+  [
+    ['cases','Cases','.cases-section',lecture.cases?.length],
+    ['shorts','Short Questions','.core-section',lecture.coreShorts?.length],
+    ['images','Images','.image-section',lecture.imageQuestions?.length],
+    ['detailed','Detailed practice','.extra-section',lecture.detailedShorts?.length],
+    ['rapid','Rapid Recall','.rapid-section',lecture.rapid?.length]
+  ].forEach(([key,label,selector,count])=>{
+    const node=root.querySelector(selector);
+    if(count&&node)modes.push({key,label,node,guide:false});
+  });
+  if(!modes.length)return;
+
+  // The prior filter sheet is hidden on this route; it must not silently
+  // remove medical content from the focused reader.
+  document.getElementById('search').value='';
+  for(const key of ['typeFilter','topicFilter','priorityFilter']){
+    const select=document.getElementById(key);
+    if(select)select.value='all';
+  }
+  activeSubtopic='all';
+  applyFilters();
+
+  const header=document.createElement('section');
+  header.className='reader-workspace';
+  header.setAttribute('aria-label','Lecture reader controls');
+  const tabs=document.createElement('div');
+  tabs.id='readerModeTabs';
+  tabs.className='reader-mode-tabs';
+  tabs.setAttribute('role','tablist');
+  tabs.setAttribute('aria-label','Lecture reading modes');
+  header.append(tabs);
+
+  const topicBar=document.createElement('div');
+  topicBar.id='readerTopicBar';
+  topicBar.className='reader-topic-bar';
+  topicBar.hidden=true;
+  const topicLabel=document.createElement('label');
+  topicLabel.htmlFor='readerTopicSelect';
+  topicLabel.textContent='Lecture topic';
+  const topicSelect=document.createElement('select');
+  topicSelect.id='readerTopicSelect';
+  topicSelect.className='reader-topic-select';
+  const previous=document.createElement('button');
+  previous.id='readerPreviousTopic';previous.type='button';previous.textContent='Previous topic';
+  const next=document.createElement('button');
+  next.id='readerNextTopic';next.type='button';next.textContent='Next topic';
+  const all=document.createElement('button');
+  all.id='readerAllTopics';all.type='button';all.textContent='Read all topics';
+  all.setAttribute('aria-pressed','false');
+  const topicPosition=document.createElement('span');
+  topicPosition.id='readerTopicPosition';topicPosition.className='reader-topic-position';
+  topicPosition.setAttribute('role','status');topicPosition.setAttribute('aria-live','polite');
+  topicBar.append(topicLabel,topicSelect,previous,next,all,topicPosition);
+  header.append(topicBar);
+
+  const utilities=document.createElement('div');
+  utilities.className='reader-utilities';
+  const offline=root.querySelector('.offline-lecture-btn');
+  if(offline)utilities.append(offline);
+  if(utilities.childElementCount)header.append(utilities);
+
+  const oldNav=root.querySelector('.lecture-section-nav');
+  if(oldNav)oldNav.before(header);
+  else root.querySelector('.lecture-head')?.after(header);
+
+  modes.forEach(mode=>{
+    const pane=document.createElement('div');
+    pane.id='readerPane-'+mode.key;
+    pane.className='reader-pane';
+    pane.setAttribute('role','tabpanel');
+    pane.hidden=true;
+    mode.node.before(pane);
+    pane.append(mode.node);
+    mode.pane=pane;
+
+    const tab=document.createElement('button');
+    tab.type='button';tab.className='reader-mode-tab';
+    tab.id='readerTab-'+mode.key;tab.setAttribute('role','tab');
+    tab.setAttribute('aria-controls',pane.id);
+    tab.setAttribute('aria-selected','false');tab.tabIndex=-1;
+    tab.textContent=mode.label;
+    pane.setAttribute('aria-labelledby',tab.id);
+    tabs.append(tab);
+    mode.tab=tab;
+  });
+
+  const explanationArticles=[...root.querySelectorAll('.study-guide-explanation')];
+  const topicHeadings=explanationArticles.map((article,index)=>
+    article.querySelector('h3')?.textContent?.trim()||('Topic '+(index+1)));
+  topicSelect.replaceChildren(...topicHeadings.map((heading,index)=>{
+    const option=document.createElement('option');
+    option.value=String(index);option.textContent=heading;return option;
+  }));
+  let topicIndex=0,readAll=false;
+
+  const updateTopics=()=>{
+    explanationArticles.forEach((article,index)=>{
+      article.hidden=!readAll&&index!==topicIndex;
+    });
+    topicSelect.value=String(topicIndex);
+    previous.disabled=readAll||topicIndex===0;
+    next.disabled=readAll||topicIndex===explanationArticles.length-1;
+    all.textContent=readAll?'Show one topic':'Read all topics';
+    all.setAttribute('aria-pressed',String(readAll));
+    topicPosition.textContent=readAll
+      ?'All '+explanationArticles.length+' topics'
+      :'Topic '+(topicIndex+1)+' of '+explanationArticles.length;
+  };
+  topicSelect.addEventListener('change',()=>{
+    topicIndex=Number(topicSelect.value)||0;readAll=false;updateTopics();
+  });
+  previous.addEventListener('click',()=>{
+    topicIndex=Math.max(0,topicIndex-1);readAll=false;updateTopics();
+  });
+  next.addEventListener('click',()=>{
+    topicIndex=Math.min(explanationArticles.length-1,topicIndex+1);
+    readAll=false;updateTopics();
+  });
+  all.addEventListener('click',()=>{readAll=!readAll;updateTopics();});
+
+  const queryMode=()=>{
+    const query=location.hash.split('?')[1]||'';
+    const wanted=new URLSearchParams(query).get('tab');
+    if(wanted==='read')return 'explanation';
+    return wanted||modes[0].key;
+  };
+  const applyMode=(requested,writeHash)=>{
+    const selected=modes.find(mode=>mode.key===requested)||modes[0];
+    modes.forEach(mode=>{
+      const active=mode===selected;
+      mode.pane.hidden=!active;
+      mode.tab.setAttribute('aria-selected',String(active));
+      mode.tab.tabIndex=active?0:-1;
+      if(active&&mode.node.tagName==='DETAILS')mode.node.open=true;
+    });
+    if(guide)guide.hidden=!selected.guide;
+    topicBar.hidden=selected.key!=='explanation'||!explanationArticles.length;
+    if(!topicBar.hidden)updateTopics();
+    root.classList.remove('hidden');
+    document.getElementById('empty')?.classList.remove('show');
+    root.dataset.readerMode=selected.key;
+    if(writeHash&&location.hash.startsWith('#/lecture/')){
+      const [path,query='']=location.hash.split('?',2);
+      const params=new URLSearchParams(query);
+      params.set('tab',selected.key);
+      history.replaceState(history.state,'',location.pathname+location.search+path+'?'+params.toString());
+    }
+  };
+  modes.forEach(mode=>{
+    mode.tab.addEventListener('click',()=>applyMode(mode.key,true));
+  });
+  tabs.addEventListener('keydown',event=>{
+    const keys=['ArrowLeft','ArrowRight','Home','End'];
+    if(!keys.includes(event.key)||!event.target.closest('[role="tab"]'))return;
+    const current=modes.findIndex(mode=>mode.tab===event.target);
+    if(current<0)return;
+    event.preventDefault();
+    const nextIndex=event.key==='Home'?0:event.key==='End'?modes.length-1:
+      (current+(event.key==='ArrowRight'?1:-1)+modes.length)%modes.length;
+    modes[nextIndex].tab.focus();
+    applyMode(modes[nextIndex].key,true);
+  });
+
+  root.__readerController={restore:()=>applyMode(queryMode(),false)};
+  root.__readerController.restore();
+}
+
+
+/* V6 UX-04A: non-scoring Practice; reused authored questions and progress. */
+function practiceEligibleQuestions(root){
+  return [...root.querySelectorAll('.study-item:not(.hidden),.study-guide-mcq:not(.hidden),.rapid-item:not(.hidden)')];
+}
+function practiceEmptyState(message){
+  const panel=document.getElementById('practiceEmpty');
+  if(!panel)return;
+  panel.hidden=false;
+  const label=panel.querySelector('#practiceEmptyMessage');
+  if(label)label.textContent=message;
+}
+function syncPracticeWorkspace(){
+  if(document.body.dataset.workspace!=='practice')return;
+  const selected=document.getElementById('lectureFilter')?.value;
+  const root=selected&&selected!=='all'?document.getElementById('lecture-'+selected):null;
+  if(!root){
+    practiceEmptyState(visibleLectures().length
+      ?'Loading questions from the selected lecture…'
+      :'No lectures have been published for this specialty yet.');
+    return;
+  }
+  let session=root.querySelector('#practiceSession');
+  if(!session){
+    session=document.createElement('section');
+    session.id='practiceSession';
+    session.className='practice-session';
+    session.setAttribute('aria-label','Question navigation');
+    session.innerHTML=[
+      '<div class="practice-session-header">',
+        '<div class="practice-session-eyebrow">Focused practice</div>',
+        '<strong>One question at a time</strong>',
+        '<p>Try first, reveal the source answer, then choose your own rating.</p>',
+      '</div>',
+      '<div class="practice-session-controls">',
+        '<button id="practicePrevious" type="button">Previous question</button>',
+        '<span id="practiceQuestionCounter" role="status" aria-live="polite">Question 1</span>',
+        '<button id="practiceNext" type="button">Next question</button>',
+      '</div>',
+      '<div id="practiceProgress" class="practice-progress" role="progressbar" ',
+        'aria-label="Question position" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">',
+        '<span></span>',
+      '</div>'
+    ].join('');
+    root.querySelector('.lecture-head')?.after(session);
+    const move=offset=>{
+      const candidates=practiceEligibleQuestions(root);
+      const current=candidates.indexOf(session.__selected);
+      const target=Math.max(0,Math.min(candidates.length-1,(current<0?0:current)+offset));
+      session.__selected=candidates[target]||null;
+      syncPracticeWorkspace();
+      session.scrollIntoView({behavior:'instant',block:'start'});
+    };
+    session.querySelector('#practicePrevious').addEventListener('click',()=>move(-1));
+    session.querySelector('#practiceNext').addEventListener('click',()=>move(1));
+  }
+  const candidates=practiceEligibleQuestions(root);
+  root.querySelectorAll('.practice-current').forEach(item=>item.classList.remove('practice-current'));
+  root.querySelectorAll('.practice-active').forEach(node=>node.classList.remove('practice-active'));
+  if(!candidates.length){
+    session.hidden=true;
+    const reveal=document.getElementById('revealBtn');
+    if(reveal)reveal.disabled=true;
+    practiceEmptyState('No questions match the current filters. Adjust filters or choose another lecture.');
+    return;
+  }
+  const empty=document.getElementById('practiceEmpty');
+  if(empty)empty.hidden=true;
+  session.hidden=false;
+  const index=Math.max(0,candidates.indexOf(session.__selected));
+  const item=candidates[index];
+  session.__selected=item;
+  const reveal=document.getElementById('revealBtn');
+  if(reveal){
+    reveal.disabled=false;
+    const opened=item.matches('.rapid-item')
+      ?item.classList.contains('open')
+      :item.matches('.study-guide-mcq')
+        ?!item.querySelector('.study-guide-answer')?.hidden
+        :item.classList.contains('open');
+    reveal.textContent=opened?'Hide current answer':'Reveal current answer';
+  }
+  item.classList.add('practice-current');
+  if(!item.id)item.dataset.practiceIdentity='rapid-'+index;
+  item.closest('.content-section')?.classList.add('practice-active');
+  item.closest('.learning-companion')?.classList.add('practice-active');
+  const details=item.closest('details');
+  if(details)details.open=true;
+  root.classList.remove('hidden');
+  session.querySelector('#practiceQuestionCounter').textContent='Question '+(index+1)+' of '+candidates.length;
+  session.querySelector('#practicePrevious').disabled=index===0;
+  session.querySelector('#practiceNext').disabled=index===candidates.length-1;
+  const progress=session.querySelector('#practiceProgress');
+  progress.setAttribute('aria-valuemax',String(candidates.length));
+  progress.setAttribute('aria-valuenow',String(index+1));
+  progress.querySelector('span').style.width=((index+1)/candidates.length*100)+'%';
+}
+function enterPracticeRoute(){
+  if(document.body.dataset.workspace!=='practice')return;
+  const available=visibleLectures();
+  if(!available.length){syncPracticeWorkspace();return;}
+  const current=document.getElementById('lectureFilter')?.value;
+  const selected=available.find(lecture=>lecture.id===current);
+  if(!selected){
+    const remembered=storage.get('medicalBankLectureV2:'+activeCourseId()+':'+activeSubject);
+    const chosen=available.find(lecture=>lecture.id===remembered)||available[0];
+    selectLecture(chosen.id,false);
+    return;
+  }
+  if(!lectureIsLoaded(selected)||!document.getElementById('lecture-'+selected.id)){
+    selectLecture(selected.id,false);
+    return;
+  }
+  // Remove Reader-only DOM when entering Practice from a lecture.
+  render();
+}
+globalThis.MEQPractice=Object.freeze({sync:syncPracticeWorkspace,enter:enterPracticeRoute,revealCurrent:revealPracticeCurrent,random:randomPracticeQuestion});
+
+
+function revealPracticeCurrent(){
+  if(document.body.dataset.workspace!=='practice')return false;
+  const item=document.querySelector('#mainContent .practice-current');
+  if(!item)return true;
+  const toggle=item.querySelector('.toggle,.study-guide-reveal');
+  if(toggle)toggle.click();
+  else if(item.matches('.rapid-item'))item.click();
+  syncPracticeWorkspace();
+  return true;
+}
+function randomPracticeQuestion(){
+  if(document.body.dataset.workspace!=='practice')return false;
+  const root=document.querySelector('#mainContent .lecture');
+  const session=root?.querySelector('#practiceSession');
+  if(!root||!session)return true;
+  let available=practiceEligibleQuestions(root);
+  // Match the existing Random behaviour: avoid Detailed practice for All types.
+  if(document.getElementById('typeFilter')?.value==='all'){
+    const core=available.filter(item=>item.dataset.type!=='extra');
+    if(core.length)available=core;
+  }
+  const options=available.filter(item=>item!==session.__selected);
+  session.__selected=(options.length?options:available)[Math.floor(Math.random()*(options.length||available.length))]||null;
+  syncPracticeWorkspace();
+  session.scrollIntoView({behavior:'instant',block:'start'});
+  return true;
+}
