@@ -1,5 +1,13 @@
 # My Medical Library — Project Autopilot status
 
+## 2026-11-10 — V6 offline My Review initialization (verified regression candidate)
+
+- **Current source:** main `e6bfc26055893353969ff09100980bd2f18fec24` with V6 Library/Practice/Review/Exams/Manage already integrated. Earlier V3 hotfix branch is obsolete and intentionally not merged.
+- **Reproduced bug:** the standalone offline HTML embeds 12 lectures but has no `MEQLectureLoader`. Opening My Review displayed `Lectures are still loading. Close and reopen My Review.` indefinitely. Captured actual Chrome RED state, then GREEN with empty review queue. This is a functional regression in the current standalone V6, not evidence that Cloudflare production is V6.
+- **Fix:** My Review now uses already-embedded metadata in standalone HTML, while networked app waits for its lecture loader and refreshes automatically when ready. No clinical content, source images, stored question IDs, progress data or exam scoring changed.
+- **Regression:** `tests/my-review.spec.js` now opens the actual standalone export and checks its empty state without `MEQLectureLoader`. PWA cache identity bumped coherently to `2026.11.10.1`; exact-head CI pending.
+- **Production warning:** latest scheduled Cloudflare smoke failure (Nov 9, [#42655224289](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42655224289)) comes from Access HTTP 302, and missing approved service-authentication secrets. Main static/Chromium/WebKit validation [#42461642683](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42461642683) passed. Protected V6 preview was previously verified, but **V6 is not proven active on public production**. Do not bypass Access or auto-promote merely to silence smoke.
+
 ## Online release request — 2026-11-08
 
 **Latest state (supersedes preparation and historical draft notes below):** [PR #89](https://github.com/Hafezalhoot/medical-meq-bank/pull/89) combined the V6 dependency chain and merged normally as `11397f4d676202707ad85f75ff305cc849ab28f6`. Exact PR head `3ece79b003b6e92ed0580003754a32735d03486a` passed static, Chromium, WebKit and Workers Builds ([CI #42460103834](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42460103834)). Exact merged-main validation also passed all three jobs in [#42460522700](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42460522700), with Workers Builds green. Main uploaded Worker `62297284-b0c2-407e-830f-96b4a1b17d3d`; its HTTP 200 manifest matches `2026.11.07.1`.

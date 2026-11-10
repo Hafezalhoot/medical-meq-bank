@@ -82,3 +82,37 @@ test('My Review actions fit narrow phones and remain keyboard-visible in dark mo
   await action.focus();
   await expect(action).toBeFocused();
 });
+
+
+test('standalone offline HTML opens My Review using embedded lecture metadata', async ({page}) => {
+  test.setTimeout(90_000);
+  await page.goto('/offline/Medical_MEQ_Review_Bank_Offline.html', {waitUntil:'domcontentloaded'});
+  await expect(page.locator('#myReviewDisclosure')).toBeAttached();
+  // Offline export deliberately has no MEQLectureLoader network runtime.
+  // Its 12 full source-based lectures are already embedded in the document.
+  await expect.poll(() => page.evaluate(() => Boolean(globalThis.MEQLectureLoader))).toBe(false);
+  await page.locator('#myReviewDisclosure summary').click();
+  await expect(page.locator('#myReviewStatus'))
+    .toContainText('No questions are marked Weak or Review yet.');
+  await expect(page.locator('#myReviewList .my-review-card')).toHaveCount(0);
+});
+
+
+test('My Review recovers automatically when lecture metadata loader becomes ready', async ({page}) => {
+  await openBank(page);
+  await page.evaluate(() => {
+    globalThis.__testLectureLoader = globalThis.MEQLectureLoader;
+    globalThis.MEQLectureLoader = undefined;
+  });
+  const review = page.locator('#myReviewDisclosure');
+  await review.locator('summary').click();
+  await expect(page.locator('#myReviewStatus')).toContainText('Your review will appear automatically.');
+  await page.evaluate(() => {
+    globalThis.MEQLectureLoader = globalThis.__testLectureLoader;
+    delete globalThis.__testLectureLoader;
+    document.dispatchEvent(new CustomEvent('meq:lectures-loaded'));
+  });
+  await expect(page.locator('#myReviewStatus'), 'No manual close/reopen is required')
+    .toContainText('No questions are marked Weak or Review yet.', {timeout: 15_000});
+  await expect(review).toHaveAttribute('open','');
+});
