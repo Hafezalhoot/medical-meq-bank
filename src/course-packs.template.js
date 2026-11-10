@@ -237,6 +237,7 @@
   const reviewStatus=document.getElementById('myReviewStatus');
   const reviewList=document.getElementById('myReviewList');
   let reviewRenderToken=0;
+  let reviewWaitingForLoader=false;
 
   const savedReviewRecords=()=>{
     const unique=new Map();
@@ -315,13 +316,18 @@
     reviewStatus.textContent='Preparing saved review…';
     reviewList.replaceChildren();
     const loader=globalThis.MEQLectureLoader;
-    if(!loader){
-      reviewStatus.textContent='Lectures are still loading. Close and reopen My Review.';
-      return
+    // Standalone offline HTML already embeds all reviewed lecture payloads;
+    // it intentionally has no network-based MEQLectureLoader.
+    const embeddedLectures=Boolean(document.querySelector('script#lecture-extensions:not([src])'));
+    if(!loader&&!embeddedLectures){
+      reviewWaitingForLoader=true;
+      reviewStatus.textContent='Lectures are loading. Your review will appear automatically.';
+      return;
     }
-    const checks=await Promise.allSettled(
+    reviewWaitingForLoader=false;
+    const checks=loader ? await Promise.allSettled(
       allSubjectScopes().map(scope=>loader.loadSubjectMetadata(scope.subjectKey,scope.courseId))
-    );
+    ) : [];
     if(!reviewPanel.open||token!==reviewRenderToken)return;
     const records=savedReviewRecords();
     const groups=new Map();
@@ -377,6 +383,12 @@
     }
   };
 
+  document.addEventListener('meq:lectures-loaded',()=>{
+    if(reviewWaitingForLoader&&reviewPanel?.open)void renderSavedReview();
+  });
+  window.addEventListener('load',()=>{
+    if(reviewWaitingForLoader&&reviewPanel?.open&&globalThis.MEQLectureLoader)void renderSavedReview();
+  });
   reviewPanel?.addEventListener('toggle',()=>{
     if(reviewPanel.open)void renderSavedReview();
     else reviewRenderToken++;
