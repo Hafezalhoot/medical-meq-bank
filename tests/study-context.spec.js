@@ -9,7 +9,11 @@ for(const route of ['/','/#/home','/#/not-a-real-view']){
   test('R01 default entry is Library, not the legacy stacked screen: '+route,async({page},testInfo)=>{
     await page.goto(route);
     await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
-    await expect(page.locator('.hero')).toBeHidden();
+    // Library reuses only the compact subject selectors, not the old hero content.
+    await expect(page.locator('.hero')).toBeVisible();
+    await expect(page.locator('.hero-copy')).toBeHidden();
+    await expect(page.locator('#courseSelector')).toBeVisible();
+    await expect(page.locator('#subjectSelector')).toBeVisible();
     await expect(page.locator('.toolbar')).toBeHidden();
     await expect(page.locator('.lecture-overview-panel')).toBeVisible();
     await expect(page.getByRole('navigation',{name:'Primary workspace'}).getByRole('link',{name:'Library',exact:true})).toHaveAttribute('aria-current','page');
