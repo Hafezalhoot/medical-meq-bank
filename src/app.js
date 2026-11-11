@@ -1555,39 +1555,111 @@ function configureReaderWorkspace(lecture){
     mode.tab=tab;
   });
 
+  // R02: index only authored explanation sections and explicitly mapped question
+  // subtopics. MCQs have no authored subtopic relation and must stay unfiltered.
   const explanationArticles=[...root.querySelectorAll('.study-guide-explanation')];
   const topicHeadings=explanationArticles.map((article,index)=>
-    article.querySelector('h3')?.textContent?.trim()||('Topic '+(index+1)));
-  topicSelect.replaceChildren(...topicHeadings.map((heading,index)=>{
-    const option=document.createElement('option');
-    option.value=String(index);option.textContent=heading;return option;
+    article.querySelector('h3')?.textContent?.trim()||('Section '+(index+1)));
+  const questionModes=new Set(['cases','shorts','images','detailed']);
+  const sourceTopics=Array.isArray(lecture.subtopics)?lecture.subtopics:[];
+  const mappedTopics=new Map(modes.filter(mode=>questionModes.has(mode.key)).map(mode=>{
+    const items=[...mode.node.querySelectorAll('.study-item[data-subtopics]')];
+    return [mode.key,sourceTopics.map(topic=>({
+      id:topic.id,label:topic.label,
+      count:items.filter(item=>(item.dataset.subtopics||'').split(' ').includes(topic.id)).length
+    })).filter(topic=>topic.count>0)];
   }));
-  let topicIndex=0,readAll=false;
+  let topicIndex=0,readAll=false,questionTopic='all',activeMode=modes[0];
 
-  const updateTopics=()=>{
+  const rebuildTopicSelect=()=>{
+    const explanation=activeMode.key==='explanation'&&explanationArticles.length>0;
+    const mapped=mappedTopics.get(activeMode.key)||[];
+    topicBar.hidden=!explanation&&!mapped.length;
+    if(topicBar.hidden)return;
+    topicLabel.textContent=explanation?'Explanation section':'Question subtopic';
+    previous.hidden=!explanation;
+    next.hidden=!explanation;
+    all.hidden=!explanation;
+    if(explanation){
+      topicSelect.replaceChildren(...topicHeadings.map((heading,index)=>{
+        const option=document.createElement('option');
+        option.value='e-'+(index+1);
+        option.textContent=heading;
+        return option;
+      }));
+    }else{
+      if(questionTopic!=='all'&&!mapped.some(topic=>topic.id===questionTopic))questionTopic='all';
+      const options=[{value:'q-all',label:'All question subtopics'}].concat(
+        mapped.map(topic=>({value:'q-'+topic.id,label:topic.label+' ('+topic.count+')'}))
+      );
+      topicSelect.replaceChildren(...options.map(item=>{
+        const option=document.createElement('option');
+        option.value=item.value;option.textContent=item.label;return option;
+      }));
+    }
+  };
+  const syncPosition=(writeTab=false)=>{
+    const sectionId=activeMode.key==='explanation'&&!readAll?'e-'+(topicIndex+1):null;
+    const topicId=questionModes.has(activeMode.key)&&questionTopic!=='all'?questionTopic:null;
+    if(location.hash.startsWith('#/lecture/')){
+      const [path,search='']=location.hash.split('?',2);
+      const params=new URLSearchParams(search);
+      if(writeTab)params.set('tab',activeMode.key);
+      if(sectionId)params.set('section',sectionId);else params.delete('section');
+      if(topicId)params.set('topic',topicId);else params.delete('topic');
+      const nextHash=path+(params.size?'?'+params.toString():'');
+      if(location.hash!==nextHash)
+        history.replaceState(history.state,'',location.pathname+location.search+nextHash);
+    }
+    document.dispatchEvent(new CustomEvent('meq:reader-position-changed',{
+      detail:{lectureId:lecture.id,sectionId,topicId,tab:activeMode.key}
+    }));
+  };
+  const updateTopics=(writeTab=false)=>{
     explanationArticles.forEach((article,index)=>{
       article.hidden=!readAll&&index!==topicIndex;
     });
-    topicSelect.value=String(topicIndex);
-    previous.disabled=readAll||topicIndex===0;
-    next.disabled=readAll||topicIndex===explanationArticles.length-1;
-    all.textContent=readAll?'Show one topic':'Read all topics';
-    all.setAttribute('aria-pressed',String(readAll));
-    topicPosition.textContent=readAll
-      ?'All '+explanationArticles.length+' topics'
-      :'Topic '+(topicIndex+1)+' of '+explanationArticles.length;
+    // This is view-only: source questions, scoring, grades and mappings stay intact.
+    modes.filter(mode=>questionModes.has(mode.key)).forEach(mode=>{
+      mode.node.querySelectorAll('.study-item').forEach(item=>{
+        const filtered=mode===activeMode&&questionTopic!=='all'&&
+          !(item.dataset.subtopics||'').split(' ').includes(questionTopic);
+        item.classList.toggle('reader-topic-filtered',filtered);
+      });
+    });
+    if(!topicBar.hidden){
+      const explanation=activeMode.key==='explanation';
+      topicSelect.value=explanation?'e-'+(topicIndex+1):'q-'+questionTopic;
+      previous.disabled=readAll||topicIndex===0;
+      next.disabled=readAll||topicIndex===explanationArticles.length-1;
+      all.textContent=readAll?'Show one section':'Read all sections';
+      all.setAttribute('aria-pressed',String(readAll));
+      if(explanation)topicPosition.textContent=readAll
+        ?'All '+explanationArticles.length+' sections'
+        :'Section '+(topicIndex+1)+' of '+explanationArticles.length;
+      else{
+        const items=[...activeMode.node.querySelectorAll('.study-item')];
+        const visible=items.filter(item=>!item.classList.contains('reader-topic-filtered')).length;
+        topicPosition.textContent='Showing '+visible+' of '+items.length+' questions';
+      }
+    }
+    syncPosition(writeTab);
   };
   topicSelect.addEventListener('change',()=>{
-    topicIndex=Number(topicSelect.value)||0;readAll=false;updateTopics();
+    if(activeMode.key==='explanation'){
+      topicIndex=Math.max(0,Math.min(explanationArticles.length-1,Number(topicSelect.value.slice(2))-1||0));
+      readAll=false;
+    }else questionTopic=topicSelect.value.slice(2);
+    updateTopics(true);
   });
   previous.addEventListener('click',()=>{
-    topicIndex=Math.max(0,topicIndex-1);readAll=false;updateTopics();
+    topicIndex=Math.max(0,topicIndex-1);readAll=false;updateTopics(true);
   });
   next.addEventListener('click',()=>{
     topicIndex=Math.min(explanationArticles.length-1,topicIndex+1);
-    readAll=false;updateTopics();
+    readAll=false;updateTopics(true);
   });
-  all.addEventListener('click',()=>{readAll=!readAll;updateTopics();});
+  all.addEventListener('click',()=>{readAll=!readAll;updateTopics(true);});
 
   const queryMode=()=>{
     const query=location.hash.split('?')[1]||'';
@@ -1597,6 +1669,20 @@ function configureReaderWorkspace(lecture){
   };
   const applyMode=(requested,writeHash)=>{
     const selected=modes.find(mode=>mode.key===requested)||modes[0];
+    activeMode=selected;
+    if(!writeHash){
+      const params=new URLSearchParams(location.hash.split('?')[1]||'');
+      const section=/^e-([1-9][0-9]*)$/.exec(params.get('section')||'');
+      if(selected.key==='explanation'){
+        topicIndex=section&&Number(section[1])<=explanationArticles.length?Number(section[1])-1:0;
+        readAll=false;
+      }
+      if(questionModes.has(selected.key)){
+        const requestedTopic=params.get('topic')||'all';
+        questionTopic=(mappedTopics.get(selected.key)||[]).some(topic=>topic.id===requestedTopic)
+          ?requestedTopic:'all';
+      }
+    }
     modes.forEach(mode=>{
       const active=mode===selected;
       mode.pane.hidden=!active;
@@ -1605,18 +1691,14 @@ function configureReaderWorkspace(lecture){
       if(active&&mode.node.tagName==='DETAILS')mode.node.open=true;
     });
     if(guide)guide.hidden=!selected.guide;
-    topicBar.hidden=selected.key!=='explanation'||!explanationArticles.length;
-    if(!topicBar.hidden)updateTopics();
+    rebuildTopicSelect();
+    updateTopics(writeHash);
     root.classList.remove('hidden');
     document.getElementById('empty')?.classList.remove('show');
     root.dataset.readerMode=selected.key;
-    if(writeHash&&location.hash.startsWith('#/lecture/')){
-      const [path,query='']=location.hash.split('?',2);
-      const params=new URLSearchParams(query);
-      params.set('tab',selected.key);
-      history.replaceState(history.state,'',location.pathname+location.search+path+'?'+params.toString());
-    }
-    document.dispatchEvent(new CustomEvent('meq:reader-mode-changed',{detail:{lectureId:lecture.id,tab:selected.key}}));
+    document.dispatchEvent(new CustomEvent('meq:reader-mode-changed',{
+      detail:{lectureId:lecture.id,tab:selected.key}
+    }));
   };
   modes.forEach(mode=>{
     mode.tab.addEventListener('click',()=>applyMode(mode.key,true));
