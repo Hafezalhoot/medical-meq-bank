@@ -34,23 +34,33 @@
     if(!registry)return {ok:false,reason:'Library metadata is not ready.'};
     if(!route)return {ok:true,context:null};
     const params=route.params||new URLSearchParams();
-    if(['course','subject','tab'].some(key=>params.getAll(key).length>1))
+    if(['course','subject','tab','lecture','question'].some(key=>params.getAll(key).length>1))
       return {ok:false,reason:'The link has conflicting selections. Choose a lecture from Library.'};
     const entries=Array.isArray(sourceCatalog)?sourceCatalog:sourceCatalog?.lectures||[];
     const lecture=route.view==='lecture'?entries.find(item=>item.id===route.id):null;
     if(route.view==='lecture'&&!lecture)return {ok:false,reason:'This lecture link is not available. Choose a lecture from Library.'};
+    const practiceId=route.view==='practice'?params.get('lecture'):null;
+    const practiceLecture=practiceId?entries.find(item=>item.id===practiceId):null;
+    if(practiceId&&!practiceLecture)return {ok:false,reason:'This Practice lecture is not available. Choose it from Library.'};
+    if(route.view==='practice'&&params.has('question')&&!practiceId)
+      return {ok:false,reason:'A Practice question link needs its lecture.'};
+    const requestedQuestion=route.view==='practice'?params.get('question'):null;
+    if(requestedQuestion&&!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,199}$/.test(requestedQuestion))
+      return {ok:false,reason:'This question reference is invalid.'};
     const courseId=params.get('course')||lecture?.courseId||registry.activeCourse;
     const pack=registry.packs.get(courseId);
     if(!pack)return {ok:false,reason:'This course link is not available. Choose a course from Library.'};
     const subjectId=params.get('subject')||lecture?.subjectKey||
       (courseId===registry.activeCourse?document.getElementById('subjectSelector')?.value:'')||pack.defaultSubject||pack.subjects[0]?.id;
     if(!pack.subjects.some(item=>item.id===subjectId)||
-       (lecture&&(lecture.courseId!==courseId||lecture.subjectKey!==subjectId)))
+       (lecture&&(lecture.courseId!==courseId||lecture.subjectKey!==subjectId))||
+       (practiceLecture&&(practiceLecture.courseId!==courseId||practiceLecture.subjectKey!==subjectId)))
       return {ok:false,reason:'This lecture does not belong to the selected course or specialty. Choose it from Library.'};
     const tab=params.get('tab');
     const mode=modeForTab(tab);
     return {ok:true,context:Object.freeze({schemaVersion:1,view:route.view,courseId,subjectId,
-      lectureId:lecture?.id||null,mode,topicId:null,sectionId:null,question:null})};
+      lectureId:lecture?.id||practiceLecture?.id||null,mode,topicId:null,sectionId:null,
+      question:requestedQuestion||null})};
   }
 
   function commitContext(next){
@@ -145,7 +155,19 @@
         const lecture=lectures.find(item=>item.id===next.lectureId);
         if(lecture)configureReaderWorkspace(lecture);
       }else if(next.view==='review')review.open=true;
-      else if(next.view==='practice')enterPracticeRoute();
+      else if(next.view==='practice'){
+        // A copied question link selects its authored lecture before Practice renders.
+        if(next.lectureId){
+          if(loader?.loadSubjectMetadata)await loader.loadSubjectMetadata(next.subjectId,next.courseId);
+          if(ticket!==sequence)return;
+          populateLectureFilter();
+          document.getElementById('lectureFilter').value=next.lectureId;
+          if(loader?.loadLecture)await loader.loadLecture(next.lectureId,{refresh:false,busy:false});
+          if(ticket!==sequence)return;
+          selectLecture(next.lectureId,false);
+        }
+        enterPracticeRoute();
+      }
       if(ticket===sequence)window.scrollTo({top:0,behavior:'instant'});
     }catch(error){
       if(ticket!==sequence)return;
@@ -219,6 +241,12 @@
   document.addEventListener('meq:reader-mode-changed',event=>{
     if(context?.view!=='lecture'||context.lectureId!==event.detail?.lectureId)return;
     commitContext(Object.freeze({...context,mode:modeForTab(event.detail.tab)}));
+  });
+  document.addEventListener('meq:practice-position-changed',event=>{
+    if(context?.view!=='practice')return;
+    const {lectureId,questionId}=event.detail||{};
+    if(!lectureId||!questionId)return;
+    commitContext(Object.freeze({...context,lectureId,question:questionId}));
   });
   window.addEventListener('hashchange',applyRoute);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyRoute,{once:true});
