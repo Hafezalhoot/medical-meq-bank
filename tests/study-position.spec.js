@@ -123,3 +123,15 @@ test('R03 each Rapid Recall card has a stable source-scoped question link',async
   await expect.poll(async()=>page.evaluate(async()=>(await globalThis.MEQStudyPosition.read())?.questionId))
     .toBe(rapidId);
 });
+
+
+test('R03 authored question identifiers containing underscores can be resumed',async({page})=>{
+  const question='urology-bph-prostate-carcinoma-core-bp_core01';
+  await page.goto('/#/practice?course=surgery&subject=urology&lecture=urology-bph-prostate-carcinoma&question='+question);
+  await expect(page.locator('.practice-current')).toHaveAttribute('id',question,{timeout:20000});
+  await expect.poll(async()=>page.evaluate(async()=>(await globalThis.MEQStudyPosition.read())?.questionId)).toBe(question);
+  await page.goto('/#/library');
+  await expect(page.locator('#continueLastStudy')).toBeVisible();
+  await page.locator('#continueLastStudy').click();
+  await expect(page.locator('.practice-current')).toHaveAttribute('id',question);
+});
