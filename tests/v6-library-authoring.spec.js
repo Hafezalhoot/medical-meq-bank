@@ -135,6 +135,7 @@ test('Study tools opens authoring and skip navigation retains the dedicated scre
 
 test('unfinished intake survives a same-tab reload without changing saved study progress',async({page})=>{
   await start(page);
+  await expect(page.locator('.intake-session-note')).toContainText('after a reload');
   await lectureStep(page);
   await page.getByLabel('Lecture title',{exact:true}).fill('Recovered Arabic lecture');
   await page.getByLabel('Source PDF filename',{exact:true}).fill('original-recovered.pdf');
