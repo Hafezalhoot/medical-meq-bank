@@ -9,7 +9,28 @@
     const course=field('Course'),subject=field('Subject'),chapter=field('Chapter');
     const title=field('Title'),source=field('Source'),id=field('Id'),order=field('Order'),topics=field('Topics');
     const error=field('Error'),status=field('Status'),next=field('Next'),back=field('Back'),download=field('Download');
-    let registry,entries=[],step=0,started=false,ready=false,loading=false,suggestedId='';
+    let registry,entries=[],step=0,started=false,ready=false,loading=false,suggestedId='',recovered=false;
+    const draftKey='medicalLibraryIntakeDraftV1';
+    const draftFields=[course,subject,chapter,title,source,id,order,topics];
+    function saveDraft(){
+      if(!ready)return;
+      try{sessionStorage.setItem(draftKey,JSON.stringify({step,values:draftFields.map(control=>control.value)}));}
+      catch{/* Private browsing may disable session storage; downloading remains available. */}
+    }
+    function restoreDraft(){
+      let saved;
+      try{saved=JSON.parse(sessionStorage.getItem(draftKey)||'null');}catch{return;}
+      if(!saved||!Array.isArray(saved.values)||saved.values.length!==draftFields.length||!Number.isInteger(saved.step)||saved.step<0||saved.step>3)return;
+      const values=saved.values;
+      if(!values.every(value=>typeof value==='string'||typeof value==='number'))return;
+      if(!registry.packs.has(values[0]))return;
+      course.value=values[0];refreshSubjects();
+      if(![...subject.options].some(option=>option.value===values[1]))return;
+      subject.value=values[1];refreshScope();
+      if([...chapter.options].some(option=>option.value===values[2]))chapter.value=values[2];
+      [title,source,id,order,topics].forEach((control,index)=>{control.value=String(values[index+3]);});
+      suggestedId=id.value;step=saved.step;recovered=true;
+    }
     const normalize=value=>value.trim().replace(/\s+/g,' ').toLowerCase();
     const selectedSubject=()=>registry?.packs.get(course.value)?.subjects.find(item=>item.id===subject.value);
     const scopedEntries=()=>entries.filter(item=>item.courseId===course.value&&item.subjectKey===subject.value);
@@ -115,7 +136,7 @@
       });
       back.hidden=step===0;next.hidden=step===3;download.hidden=step!==3;
       next.textContent=step===2?'Review draft':'Next';
-      status.textContent='Step '+(step+1)+' of 4 · '+['Location','Lecture details','Topic outline','Review your draft'][step];
+      status.textContent='Step '+(step+1)+' of 4 · '+['Location','Lecture details','Topic outline','Review your draft'][step]+(recovered?' · Draft recovered':'');
       if(step===3)preview();
       if(focus){
         const target=panels[step].querySelector('input,select,textarea')||panels[step].querySelector('legend');
@@ -137,6 +158,7 @@
           const current=document.getElementById('subjectSelector')?.value;
           if([...subject.options].some(item=>item.value===current)){subject.value=current;refreshScope();}
           started=true;
+          restoreDraft();
         }
         ready=true;next.disabled=false;showStep(false);
       }catch(cause){
@@ -162,11 +184,13 @@
     });
     form.addEventListener('submit',event=>{
       event.preventDefault();clearError();if(!ready||step===3)return;
-      if([validateLocation,validateLecture,validateTopics][step]()){step++;showStep();}
+      if([validateLocation,validateLecture,validateTopics][step]()){step++;saveDraft();showStep();}
     });
-    back.addEventListener('click',()=>{if(step>0){step--;showStep();}});
-    course.addEventListener('change',()=>{clearError();refreshSubjects();});
-    subject.addEventListener('change',()=>{clearError();refreshScope();});
+    back.addEventListener('click',()=>{if(step>0){step--;saveDraft();showStep();}});
+    form.addEventListener('input',saveDraft);
+    form.addEventListener('change',saveDraft);
+    course.addEventListener('change',()=>{clearError();refreshSubjects();saveDraft();});
+    subject.addEventListener('change',()=>{clearError();refreshScope();saveDraft();});
     title.addEventListener('input',suggestIdentity);
     field('Retry').addEventListener('click',loadMetadata);
     download.addEventListener('click',()=>{

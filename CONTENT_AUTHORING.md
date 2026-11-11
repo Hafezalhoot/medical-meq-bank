@@ -6,7 +6,7 @@ This is the contributor workflow for adding new Medical MEQ Bank content without
 
 Open **Study tools → Manage library**, or `#/manage`. The four separate steps select a registered Material/course, specialty and optional Chapter, collect lecture identity/source filename, outline topics, and preview a **Needs source review** draft. Arabic/English topic wording is preserved. This is metadata preparation, not a PDF reader or clinical-content generator.
 
-Download the `.intake.json` file before closing/reloading the tab. It is separate from the study-progress backup; the form stays in memory while switching workspaces but does not autosave across reloads. The online PWA and single-file offline export offer the same form.
+The wizard keeps an unfinished intake in **same-tab session storage**, restoring the selected step and fields after a reload. This is a convenience recovery copy, not a permanent backup: closing the tab may remove it, and storage can be unavailable in private browsing. **Download the `.intake.json` file** for a durable draft you can import later. Intake metadata stays separate from the learner's IndexedDB study progress and backup/restore. The online PWA and single-file offline export offer the same form.
 
 Preview the downloaded file with the existing repository checked out:
 
