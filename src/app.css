@@ -2191,6 +2191,8 @@ body[data-workspace="lecture"] .reader-topic-bar[hidden],
 body[data-workspace="lecture"] .study-guide-explanation[hidden]{
   display:none!important;
 }
+/* R02: filter only the visible reader pane; never delete or rewrite source items. */
+body[data-workspace="lecture"] .reader-topic-filtered{display:none!important}
 body[data-workspace="lecture"] .reader-pane{min-width:0}
 body[data-workspace="lecture"] .reader-pane .study-guide-part{margin:0}
 body[data-workspace="lecture"] .learning-companion>.section-head,
