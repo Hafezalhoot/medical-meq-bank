@@ -1944,19 +1944,15 @@ body[data-workspace="library"] .lecture-overview-meta{grid-column:1;min-width:0}
 body[data-workspace="library"] .lecture-overview-bottom{
   grid-column:2;grid-row:1/3;align-self:center;min-width:0;
 }
+/* One authoritative reader topic index; the old question-filter sidebar
+   stays in the unadvertised legacy workspace, never beside Read. */
 body[data-workspace="lecture"] #mainLayout{
-  display:grid!important;grid-template-columns:minmax(215px,250px) minmax(0,1fr)!important;
-  align-items:start;gap:24px;
+  display:block!important;
 }
-body[data-workspace="lecture"] #mainLayout .study-navigation-column{
-  display:block!important;grid-column:1!important;position:sticky;top:14px;
-  max-height:calc(100dvh - 110px);overflow:auto;
+body[data-workspace="lecture"] #mainLayout .study-navigation-column{display:none!important}
+body[data-workspace="lecture"] #mainContent{
+  display:block!important;max-width:1040px;margin-inline:auto;min-width:0
 }
-body[data-workspace="lecture"] #mainLayout .lecture-sidebar{display:none!important}
-body[data-workspace="lecture"] #mainLayout .subtopic-sidebar{
-  display:block!important;position:static;
-}
-body[data-workspace="lecture"] #mainContent{grid-column:2!important;max-width:none}
 body[data-workspace="lecture"] .lecture-head{
   background:var(--v6-surface);border:1px solid var(--v6-line);box-shadow:none;
   border-radius:16px;

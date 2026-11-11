@@ -1,4 +1,4 @@
-const APP_VERSION = '2026.11.11.2';
+const APP_VERSION = '2026.11.11.3';
 const CACHE_NAME = `medical-meq-bank-${APP_VERSION}`;
 const USER_LESSON_CACHE = 'medical-meq-bank-user-lessons-v1';
 const OFFLINE_PAGE = './offline/Medical_MEQ_Review_Bank_Offline.html';
@@ -10,6 +10,7 @@ const REQUIRED_ASSETS = [
   './app.css',
   './app.js',
   './study-context.js',
+  './navigation-index.js',
   './study-position.js',
   './library-authoring.js',
   './library-authoring.css',

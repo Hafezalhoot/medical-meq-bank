@@ -81,3 +81,13 @@ test('R02 reviewed topic labels are also embedded in the standalone offline read
   await expect(picker.locator('optgroup[label="Epidermis and Its Cells"] option[value="e-3"]')).toHaveCount(1);
   await expect(page.locator('#lecture-'+derm+' .study-guide-explanation:visible')).toHaveCount(1);
 });
+
+
+test('R02 the focused desktop reader has one section navigator, not the legacy question-filter sidebar',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/#/lecture/'+derm+'?course=internal-medicine-ii&subject=dermatology&tab=explanation');
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','lecture');
+  await expect(page.locator('#lecture-'+derm+' #readerTopicSelect')).toBeVisible();
+  await expect(page.locator('.study-navigation-column')).toBeHidden();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+});
