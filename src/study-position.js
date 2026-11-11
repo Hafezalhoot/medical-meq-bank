@@ -178,6 +178,12 @@
     button.addEventListener('click',continueReading);
     card.append(label,button);
     layout.before(card);
+    // Route readiness is authoritative; DOMContentLoaded and hashchange alone
+    // can run before the catalog/active workspace has settled.
+    globalThis.MEQStudyContext?.subscribe(next=>{
+      if(next?.view==='library')refreshCard();
+      else card.hidden=true;
+    });
     refreshCard();
   }
   document.addEventListener('meq:reader-position-changed',event=>{
