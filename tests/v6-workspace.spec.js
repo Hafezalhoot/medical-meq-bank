@@ -11,7 +11,8 @@ test('home links alias Library and browser navigation stays keyboard accessible'
   await expect(nav.getByRole('link',{name:'Home',exact:true})).toHaveCount(0);
   await expect(nav.getByRole('link',{name:'Library',exact:true})).toHaveAttribute('aria-current','page');
   await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
-  await expect(page.locator('.hero')).toBeHidden();
+  await expect(page.locator('.hero')).toBeVisible();
+  await expect(page.locator('.hero-copy')).toBeHidden();
   await expect(page.locator('#courseLibraryDisclosure')).toBeHidden();
   await expect(page.locator('#mainLayout')).toBeVisible();
   await expect(page.locator('.toolbar')).toBeHidden();
@@ -102,7 +103,8 @@ for (const width of [320,390,768,1440]) {
 test('unknown workspace hashes fall back safely to Library rather than rendering empty pages', async ({page}) => {
   await page.goto('/#/non-existent',{waitUntil:'domcontentloaded'});
   await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
-  await expect(page.locator('.hero')).toBeHidden();
+  await expect(page.locator('.hero')).toBeVisible();
+  await expect(page.locator('.hero-copy')).toBeHidden();
   await expect(page.locator('#workspaceNavigationNotice')).toBeVisible();
 });
 
