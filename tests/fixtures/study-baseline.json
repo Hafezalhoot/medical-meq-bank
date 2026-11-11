@@ -1,0 +1,21 @@
+{
+  "sourceSha": "f697846aa2edbbd3aaa70eee1f063ab2392b78f3",
+  "publishedLectures": 12,
+  "mcqs": 138,
+  "payloads": {
+    "internal-medicine-ii-dermatology-introduction": "973963b1f0028b71156d13b4cee8a58548baeba8ded1fab92534a96bd42dcd45",
+    "internal-medicine-ii-psychiatry-anxiety-disorders": "3a657b4c3ad23651dc918d04afc3023425674e8361d4ff45707b4767038ea32d",
+    "internal-medicine-ii-psychiatry-psychiatric-history-mse": "f0a9a4ebfa8574242dcd1f64d508d1ef1434c32c1be581ea30e1fb5c00dc6516",
+    "neurosurgery-traumatic-brain-injury": "bec61730bb94253a20104b406b08cc44be2926188a2b99124b5a9264da5bfb57",
+    "urology-bladder-cancer": "b730a37eee703b78cb68d87361fbb24aa6314983042cbd2bda8df89d5bbffb79",
+    "urology-bph-prostate-carcinoma": "6909df9c2a1fa54a0b60564e021c23b43e80fb87065dd6f21ef0d957f25c6776",
+    "urology-congenital-anomalies": "a95c23e632bea34462260c5e49d39a8c87d012768b4696a0b2d5bfdcd81cf1d3",
+    "urology-renal-tumors": "d951faf9f5c56aa1ba48a6ebc9b45069425b3a086dbd4bebb8078ca88024de49",
+    "urology-scrotal-swelling": "3e312b4cfb4b4a0289a4532037d8641fc44830f426f6e3dd6bae60b00f1be5be",
+    "urology-urinary-tract-infection": "a25785e7b1cf783f965944a1e6b4ac4c1eca16e3859dcf0354a354119f559b25",
+    "urology-urolithiasis": "5c981841001ff37296b3359592e5e530dfbb9fa868ac22738975f6b33ca2ffd6",
+    "urology-urological-emergencies": "1d3e10b2bb637eb41339bb2ba2e0541f220ff40acce874439052620b0f7ae4ef"
+  },
+  "identityHash": "63e11d1ea04aea08ad6e69236410c74f781a0cf8a0230d13ab9e7f2f71e5be53",
+  "originalAssetsHash": "7d5231cbb44ce0783abf9f325346a8cbf9d8307fce0e09a6672bb15309c02eea"
+}
