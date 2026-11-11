@@ -96,3 +96,24 @@ for(const width of [320,390,768,1440]){
     if(width===390)await page.screenshot({path:testInfo.outputPath('library-default-mobile.png'),fullPage:true});
   });
 }
+
+test('R01 context follows the actual reader tab, including a legacy lecture without Explanation',async({page})=>{
+  await page.goto('/#/lecture/'+urology);
+  await expect(page.getByRole('tab',{name:'Cases',exact:true})).toHaveAttribute('aria-selected','true');
+  expect(await page.evaluate(()=>globalThis.MEQStudyContext.get().mode)).toBe('questions');
+  await page.goto('/#/lecture/'+derm);
+  await page.getByRole('tab',{name:'MCQ practice',exact:true}).click();
+  await expect(page.getByRole('tab',{name:'MCQ practice',exact:true})).toHaveAttribute('aria-selected','true');
+  expect(await page.evaluate(()=>globalThis.MEQStudyContext.get().mode)).toBe('questions');
+  await page.getByRole('tab',{name:'Explanation',exact:true}).click();
+  expect(await page.evaluate(()=>globalThis.MEQStudyContext.get().mode)).toBe('read');
+});
+
+test('R01 Library entry is metadata-first and does not fetch the whole clinical corpus',async({page})=>{
+  const payloads=[];
+  page.on('request',request=>{const path=new URL(request.url()).pathname;if(path.startsWith('/lectures/data/'))payloads.push(path);});
+  await page.goto('/');
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
+  expect(new Set(payloads).size).toBeLessThanOrEqual(1);
+  await expect(page.locator('.lecture')).toHaveCount(0);
+});

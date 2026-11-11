@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {deflateRawSync} from 'node:zlib';
@@ -7,7 +8,7 @@ test.use({serviceWorkers: 'block'});
 const lectureId='internal-medicine-ii-dermatology-introduction';
 
 async function openDermatology(page) {
-  await page.goto('/', {waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil:'domcontentloaded'});
   await expect(page.locator('#courseSelector')).toBeVisible();
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');

@@ -5,28 +5,25 @@ test.use({serviceWorkers: 'block'});
 const urologyLecture = 'urology-bladder-cancer';
 const lectureUrl = '/#/lecture/'+urologyLecture+'?course=surgery&subject=urology';
 
-test('home and library are distinct, keyboard accessible workspace views', async ({page}) => {
+test('home links alias Library and browser navigation stays keyboard accessible', async ({page}) => {
   await page.goto('/#/home', {waitUntil:'domcontentloaded'});
-  const nav = page.getByRole('navigation', {name:'Primary workspace'});
-  await expect(nav.getByRole('link', {name:'Home'})).toHaveAttribute('aria-current', 'page');
-  await expect(page.locator('body')).toHaveAttribute('data-workspace', 'home');
-  await expect(page.locator('.hero')).toBeVisible();
-  await expect(page.locator('#mainLayout')).toBeHidden();
-
-  await nav.getByRole('link', {name:'Library'}).click();
-  await expect(page.locator('body')).toHaveAttribute('data-workspace', 'library');
-  // Course/subject selectors already live above; don't duplicate the full
-  // course-card grid before the lecture list on the Library screen.
+  const nav=page.getByRole('navigation',{name:'Primary workspace'});
+  await expect(nav.getByRole('link',{name:'Home',exact:true})).toHaveCount(0);
+  await expect(nav.getByRole('link',{name:'Library',exact:true})).toHaveAttribute('aria-current','page');
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
+  await expect(page.locator('.hero')).toBeHidden();
   await expect(page.locator('#courseLibraryDisclosure')).toBeHidden();
   await expect(page.locator('#mainLayout')).toBeVisible();
   await expect(page.locator('.toolbar')).toBeHidden();
-  await expect(page.locator('#lectureFilter')).toHaveValue('all', {timeout:15000});
+  await expect(page.locator('#lectureFilter')).toHaveValue('all',{timeout:15000});
   await expect(page.locator('.lecture-overview-panel')).toBeVisible({timeout:15000});
-  await expect(nav.getByRole('link', {name:'Library'})).toHaveAttribute('aria-current', 'page');
+  const exams=nav.getByRole('link',{name:'Exams',exact:true});
+  await exams.focus();await exams.press('Enter');
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','exams');
   await page.goBack();
-  await expect(page.locator('body')).toHaveAttribute('data-workspace', 'home');
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
   await page.goForward();
-  await expect(page.locator('body')).toHaveAttribute('data-workspace', 'library');
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','exams');
 });
 
 test('selecting a lecture from the library opens a focused deep-linkable reader', async ({page}) => {
@@ -94,7 +91,7 @@ for (const width of [320,390,768,1440]) {
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     expect(overflow).toBeLessThanOrEqual(1);
     const links=nav.getByRole('link');
-    expect(await links.count()).toBe(5);
+    expect(await links.count()).toBe(4);
     for(let i=0;i<await links.count();i++){
       const box=await links.nth(i).boundingBox();
       expect(box.height).toBeGreaterThanOrEqual(44);
@@ -102,13 +99,14 @@ for (const width of [320,390,768,1440]) {
   });
 }
 
-test('unknown workspace hashes fall back safely to home rather than rendering empty pages', async ({page}) => {
+test('unknown workspace hashes fall back safely to Library rather than rendering empty pages', async ({page}) => {
   await page.goto('/#/non-existent',{waitUntil:'domcontentloaded'});
-  await expect(page.locator('body')).toHaveAttribute('data-workspace','home');
-  await expect(page.locator('.hero')).toBeVisible();
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
+  await expect(page.locator('.hero')).toBeHidden();
+  await expect(page.locator('#workspaceNavigationNotice')).toBeVisible();
 });
 
-test('mobile home and exams do not inherit the long study filter chip row', async ({page}) => {
+test('mobile Library and exams do not inherit the long study filter chip row', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   await page.goto('/#/home',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#activeFilterChips')).toBeHidden();

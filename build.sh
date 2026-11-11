@@ -7,6 +7,7 @@ required_files=(
   src/index.html
   src/app.css
   src/app.js
+  src/study-context.js
   src/library-authoring.js
   src/library-authoring.css
   tools/import_library_draft.py
@@ -111,6 +112,7 @@ python3 -m py_compile \
 python3 tools/materialize_lectures.py
 python3 scripts/validate_lecture_images.py
 
+node --check src/study-context.js
 node --check src/app.js
 node --check src/exam-mode.js
 node --check tests/exam-mode.spec.js
@@ -130,6 +132,7 @@ install -m 0644 \
   src/library-authoring.css \
   src/app.css \
   src/app.js \
+  src/study-context.js \
   src/progress-resilience.js \
   src/lecture-loader.js \
   src/pwa-client.js \

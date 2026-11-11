@@ -4,7 +4,7 @@ import {runInNewContext} from 'node:vm';
 
 test('fresh online HTML loads one coherent version of every CSS and JS asset', async ({page}) => {
   await page.goto('/', {waitUntil:'domcontentloaded'});
-  await expect(page.getByRole('heading', {name:'Your medical study library'})).toBeVisible();
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
 
   const result=await page.evaluate(async()=>{
     const release=(await (await fetch('/version.json',{cache:'no-store'})).json()).version;
@@ -13,7 +13,7 @@ test('fresh online HTML loads one coherent version of every CSS and JS asset', a
       ...document.querySelectorAll('script[src]')
     ].map(el=>new URL(el.href||el.src,location.href));
     const svg=document.querySelector('.pwa-tools-toggle .ui-icon svg');
-    const library=document.querySelector('.course-library');
+    const library=document.querySelector('[aria-label="Primary workspace"]');
     const hero=document.querySelector('.hero');
     return {
       release,urls:urls.map(u=>u.searchParams.get('v')),
@@ -47,7 +47,7 @@ test('cached obsolete CSS cannot corrupt the released page after reload', async 
     ));
   });
   await page.reload({waitUntil:'domcontentloaded'});
-  await expect(page.getByRole('heading',{name:'Your medical study library'})).toBeVisible();
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>
     Math.round(document.querySelector('.pwa-tools-toggle .ui-icon svg').getBoundingClientRect().width)
   )).toBe(18);
@@ -116,7 +116,7 @@ test('reader-first responsive UI keeps the first lecture in reach across phone/t
   ];
   for(const device of targets){
     await page.setViewportSize({width:device.width,height:device.height});
-    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
     await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
     const geometry=await page.evaluate(()=>{
       const title=document.querySelector('.lecture-head');
@@ -147,7 +147,7 @@ test('reader-first responsive UI keeps the first lecture in reach across phone/t
 test('320/390px course and specialty selectors show their full names and Clear all is reachable', async ({page}) => {
   for(const width of [320,390]){
     await page.setViewportSize({width,height:844});
-    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
     await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
     await page.locator('#courseSelector').selectOption('internal-medicine-ii');
     await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
@@ -183,7 +183,7 @@ test('320/390px course and specialty selectors show their full names and Clear a
 test('tablet and desktop course/specialty names are never cropped by the native selectors', async ({page}) => {
   for(const width of [768,1024,1280,1440]){
     await page.setViewportSize({width,height:900});
-    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
     await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
     await page.locator('#courseSelector').selectOption('internal-medicine-ii');
     await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
@@ -271,7 +271,8 @@ test('Access login callback redirects to the real homepage with styling and lect
   await page.goto('/cdn-cgi/access/authorized?nonce=test&state=test', {
     waitUntil: 'domcontentloaded'
   });
-  await expect(page).toHaveURL('http://127.0.0.1:4173/');
+  await expect(page).toHaveURL(/http:\/\/127\.0\.0\.1:4173\/#\/library(?:\?|$)/);
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
   await expect(page.locator('#courseSelector')).toBeVisible();
   await expect(page.locator('#courseSelector option')).toHaveCount(3);
   const heroVisual = await page.locator('.hero').evaluate(el => getComputedStyle(el).backgroundImage);

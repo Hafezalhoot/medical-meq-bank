@@ -2386,3 +2386,7 @@ body[data-workspace="practice"] .rapid-item.practice-current{
 @media print{
   .practice-intro,.practice-empty,.practice-session{display:none!important}
 }
+
+/* Navigation recovery is visible, source-neutral and outside the study text. */
+.workspace-navigation-notice{margin:12px 0;padding:12px 16px;border:1px solid var(--v6-border);border-radius:8px;color:var(--v6-ink);background:var(--v6-surface);line-height:1.5}
+.workspace-navigation-notice[hidden]{display:none}

@@ -47,6 +47,7 @@
   const lectureFilter = document.getElementById('lectureFilter');
 
   const activeCourseId = () => globalThis.MEQCourseRegistry?.activeCourse || '';
+  const isActiveScope = (subjectKey,courseId) => subjectKey === activeSubject && (!courseId || courseId === activeCourseId());
   const subjectScopeKey = (subjectKey, courseId = activeCourseId()) =>
     courseId ? `${courseId}::${subjectKey}` : subjectKey;
   const catalogUrlForSubject = (subjectKey, courseId = activeCourseId()) => {
@@ -259,7 +260,7 @@
     if (!record) return Promise.reject(new Error(`Unknown lecture id: ${lectureId}`));
     const {entry, catalogUrl} = record;
     const affectsActiveView = options.busy !== false &&
-      entry.subjectKey === activeSubject &&
+      isActiveScope(entry.subjectKey, entry.courseId) &&
       lectureFilter?.value === lectureId;
 
     const task = (async () => {
@@ -271,14 +272,14 @@
         if (index >= 0) lectures.splice(index, 1, lecture);
         else lectures.push(lecture);
         loadedLectureIds.add(lecture.id);
-        if (options.refresh !== false && lecture.subjectKey === activeSubject) refreshApplication();
+        if (options.refresh !== false && isActiveScope(lecture.subjectKey, lecture.courseId)) refreshApplication();
         return lecture;
       } catch (error) {
         showLoadError(entry.subjectKey, [{entry, error: String(error)}]);
         throw error;
       } finally {
         lectureLoads.delete(lectureId);
-        if (affectsActiveView && entry.subjectKey === activeSubject) setBusy(false, entry.subjectKey);
+        if (affectsActiveView && isActiveScope(entry.subjectKey, entry.courseId)) setBusy(false, entry.subjectKey);
       }
     })();
 
@@ -287,28 +288,31 @@
   };
 
   const loadSubject = async (subjectKey, courseId = activeCourseId()) => {
-    const affectsActiveView = subjectKey === activeSubject && (!courseId || courseId === activeCourseId());
+    const affectsActiveView = isActiveScope(subjectKey,courseId);
     if (affectsActiveView) setBusy(true, subjectKey);
     try {
       const entries = await ensureSubjectMetadata(subjectKey, courseId);
-      if (subjectKey === activeSubject) refreshApplication();
+      if (isActiveScope(subjectKey,courseId)) refreshApplication();
       if (!entries.length) return {loaded: [], failed: []};
 
-      let selected = lectureFilter?.value || '';
+      const intent = globalThis.MEQStudyContext?.get();
+      if (intent?.view === 'library' && isActiveScope(subjectKey,courseId)) return {loaded: [], failed: []};
+      let selected = intent?.view === 'lecture' && intent.courseId === courseId && intent.subjectId === subjectKey
+        ? intent.lectureId : lectureFilter?.value || '';
       if (!entries.some(entry => entry.id === selected)) selected = entries[0].id;
-      if (lectureFilter && subjectKey === activeSubject) lectureFilter.value = selected;
+      if (lectureFilter && isActiveScope(subjectKey,courseId)) lectureFilter.value = selected;
 
       try {
         await loadLecture(selected, {refresh: false, busy: false});
       } catch (error) {
-        if (subjectKey === activeSubject) refreshApplication();
+        if (isActiveScope(subjectKey,courseId)) refreshApplication();
         return {loaded: [], failed: [selected]};
       }
 
-      if (subjectKey === activeSubject) refreshApplication();
+      if (isActiveScope(subjectKey,courseId)) refreshApplication();
       return {loaded: [selected], failed: []};
     } finally {
-      if (affectsActiveView && subjectKey === activeSubject) setBusy(false, subjectKey);
+      if (affectsActiveView && isActiveScope(subjectKey,courseId)) setBusy(false, subjectKey);
     }
   };
 
