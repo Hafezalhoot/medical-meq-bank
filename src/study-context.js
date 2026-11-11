@@ -211,6 +211,11 @@
     if(document.body.dataset.workspace==='library')refreshLibrary();
     else if(document.body.dataset.workspace==='practice')enterPracticeRoute();
   });
+  document.addEventListener('meq:reader-position-changed',event=>{
+    if(context?.view!=='lecture'||context.lectureId!==event.detail?.lectureId)return;
+    const {topicId=null,sectionId=null}=event.detail;
+    commitContext(Object.freeze({...context,topicId,sectionId}));
+  });
   document.addEventListener('meq:reader-mode-changed',event=>{
     if(context?.view!=='lecture'||context.lectureId!==event.detail?.lectureId)return;
     commitContext(Object.freeze({...context,mode:modeForTab(event.detail.tab)}));
