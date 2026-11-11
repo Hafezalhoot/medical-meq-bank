@@ -51,3 +51,33 @@ test('R02 MCQ practice without authored subtopic links preserves every MCQ',asyn
   await expect(root.locator('.study-guide-mcq')).toHaveCount(30);
   await expect(root.locator('.study-guide-mcq:visible')).toHaveCount(30);
 });
+
+
+test('R02 reviewed topic index groups source sections without index-based guessing',async({page})=>{
+  await page.goto('/#/lecture/'+derm+'?course=internal-medicine-ii&subject=dermatology&tab=explanation&section=e-3');
+  const root=page.locator('#lecture-'+derm);
+  const picker=root.locator('#readerTopicSelect');
+  await expect(picker).toHaveValue('e-3');
+  await expect(picker.locator('option')).toHaveCount(11);
+  await expect(picker.locator('optgroup[label="Epidermis and Its Cells"] option[value="e-3"]')).toHaveCount(1);
+  await expect(picker.locator('optgroup[label="General / unmapped"] option[value="e-2"]')).toHaveCount(1);
+  await expect(root.locator('#readerTopicPosition')).toContainText('Epidermis and Its Cells');
+  const indexed=await page.evaluate(id=>globalThis.MEQReviewedTopicMaps?.[id],derm);
+  expect(indexed?.sections?.length).toBe(11);
+  await expect.poll(async()=>(await page.evaluate(()=>globalThis.MEQStudyPosition?.read()))?.topicId)
+    .toBe('epidermis');
+  await picker.selectOption('e-4');
+  await expect(root.locator('.study-guide-explanation:visible h3')).toContainText('Dermis, Hypodermis');
+  await expect(root.locator('#readerTopicPosition')).toContainText('Dermis and Hypodermis');
+});
+
+test('R02 reviewed topic labels are also embedded in the standalone offline reader',async({page})=>{
+  const {resolve}=await import('node:path');
+  const {pathToFileURL}=await import('node:url');
+  await page.goto(pathToFileURL(resolve('dist/offline/Medical_MEQ_Review_Bank_Offline.html')).href+
+    '#/lecture/'+derm+'?course=internal-medicine-ii&subject=dermatology&tab=explanation&section=e-3');
+  const picker=page.locator('#lecture-'+derm+' #readerTopicSelect');
+  await expect(picker).toHaveValue('e-3');
+  await expect(picker.locator('optgroup[label="Epidermis and Its Cells"] option[value="e-3"]')).toHaveCount(1);
+  await expect(page.locator('#lecture-'+derm+' .study-guide-explanation:visible')).toHaveCount(1);
+});
