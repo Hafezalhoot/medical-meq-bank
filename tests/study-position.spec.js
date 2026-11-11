@@ -71,3 +71,55 @@ test('R03 standalone HTML retains its reading checkpoint across a page reload',a
   await page.reload();
   await expect(select).toHaveValue('e-7');
 });
+
+test('R03 Practice restores the exact authored question after leaving and reloading Library',async({page})=>{
+  await page.goto('/#/practice');
+  await expect(page.locator('#practiceSession')).toBeVisible({timeout:20000});
+  await page.locator('#practiceNext').click();
+  await page.locator('#practiceNext').click();
+  const lastId=await page.locator('.practice-current').getAttribute('id');
+  expect(lastId).toMatch(/^[a-z0-9-]+$/);
+  await expect.poll(async()=>page.evaluate(async()=>(await globalThis.MEQStudyPosition.read())?.questionId))
+    .toBe(lastId);
+  await page.goto('/#/library');
+  await page.reload();
+  const continueButton=page.locator('#continueLastStudy');
+  await expect(continueButton).toBeVisible();
+  await continueButton.click();
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','practice');
+  await expect(page.locator('.practice-current')).toHaveAttribute('id',lastId);
+  await expect(page.locator('#practiceQuestionCounter')).toContainText('Question 3 of');
+  expect(await page.evaluate(()=>new URLSearchParams(location.hash.split('?')[1]).get('question')))
+    .toBe(lastId);
+});
+
+test('R03 explicit Practice question link wins over a previously saved checkpoint',async({page})=>{
+  await page.goto('/#/practice');
+  await expect(page.locator('#practiceSession')).toBeVisible({timeout:20000});
+  await page.locator('#practiceNext').click();
+  const saved=await page.locator('.practice-current').getAttribute('id');
+  await expect.poll(async()=>page.evaluate(async()=>(await globalThis.MEQStudyPosition.read())?.questionId))
+    .toBe(saved);
+  const first='urology-bladder-cancer-case-bc-c01';
+  await page.goto('/#/practice?course=surgery&subject=urology&lecture=urology-bladder-cancer&question='+first);
+  await expect(page.locator('.practice-current')).toHaveAttribute('id',first,{timeout:20000});
+  await expect(page.locator('#practiceQuestionCounter')).toContainText('Question 1 of');
+});
+
+test('R03 an unavailable Practice question falls back safely; saved grades are unchanged',async({page})=>{
+  await page.goto('/#/practice?course=surgery&subject=urology&lecture=urology-bladder-cancer&question=missing-question');
+  await expect(page.locator('#practiceSession')).toBeVisible({timeout:20000});
+  await expect(page.locator('.practice-current')).toBeVisible();
+  expect(await page.locator('.practice-current').getAttribute('id')).not.toBe('missing-question');
+  await expect.poll(async()=>page.evaluate(()=>new URLSearchParams(location.hash.split('?')[1]).get('question')))
+    .not.toBe('missing-question');
+  await expect(page.locator('#practicePrevious')).toBeDisabled();
+});
+
+test('R03 each Rapid Recall card has a stable source-scoped question link',async({page})=>{
+  const rapidId='urology-bladder-cancer-rapid-1';
+  await page.goto('/#/practice?course=surgery&subject=urology&lecture=urology-bladder-cancer&question='+rapidId);
+  await expect(page.locator('.practice-current')).toHaveAttribute('id',rapidId,{timeout:20000});
+  await expect.poll(async()=>page.evaluate(async()=>(await globalThis.MEQStudyPosition.read())?.questionId))
+    .toBe(rapidId);
+});
