@@ -1576,7 +1576,7 @@ function configureReaderWorkspace(lecture){
     const mapped=mappedTopics.get(activeMode.key)||[];
     topicBar.hidden=!explanation&&!mapped.length;
     if(topicBar.hidden)return;
-    topicLabel.textContent=explanation?'Explanation section':'Question subtopic';
+    topicLabel.textContent=explanation?'Lecture topic':'Question subtopic';
     previous.hidden=!explanation;
     next.hidden=!explanation;
     all.hidden=!explanation;
@@ -1632,7 +1632,7 @@ function configureReaderWorkspace(lecture){
       topicSelect.value=explanation?'e-'+(topicIndex+1):'q-'+questionTopic;
       previous.disabled=readAll||topicIndex===0;
       next.disabled=readAll||topicIndex===explanationArticles.length-1;
-      all.textContent=readAll?'Show one section':'Read all sections';
+      all.textContent=readAll?'Show one topic':'Read all topics';
       all.setAttribute('aria-pressed',String(readAll));
       if(explanation)topicPosition.textContent=readAll
         ?'All '+explanationArticles.length+' sections'
