@@ -1,0 +1,77 @@
+{
+  "$schema": "../navigation.schema.json",
+  "schemaVersion": 1,
+  "lectureId": "internal-medicine-ii-dermatology-introduction",
+  "sourceSha256": "973963b1f0028b71156d13b4cee8a58548baeba8ded1fab92534a96bd42dcd45",
+  "sections": [
+    {
+      "id": "e-1",
+      "sourceIndex": 0,
+      "heading": "1. Dermatology and systemic disease — مدخل لطب الجلدية",
+      "topicId": "clinical-links"
+    },
+    {
+      "id": "e-2",
+      "sourceIndex": 1,
+      "heading": "2. The three main skin layers — طبقات الجلد",
+      "topicId": "general"
+    },
+    {
+      "id": "e-3",
+      "sourceIndex": 2,
+      "heading": "3. Epidermal cells and the order of keratinocyte layers",
+      "topicId": "epidermis"
+    },
+    {
+      "id": "e-4",
+      "sourceIndex": 3,
+      "heading": "4. Dermis, Hypodermis and skin appendages",
+      "topicId": "dermis-hypodermis",
+      "relatedTopicIds": [
+        "appendages"
+      ]
+    },
+    {
+      "id": "e-5",
+      "sourceIndex": 4,
+      "heading": "5. Eight listed functions of skin",
+      "topicId": "functions"
+    },
+    {
+      "id": "e-6",
+      "sourceIndex": 5,
+      "heading": "6. Primary lesions: Macule, Patch, Papule and Plaque",
+      "topicId": "flat-solid-lesions"
+    },
+    {
+      "id": "e-7",
+      "sourceIndex": 6,
+      "heading": "7. Primary lesions: Nodule and clear-fluid blisters",
+      "topicId": "nodule-blisters"
+    },
+    {
+      "id": "e-8",
+      "sourceIndex": 7,
+      "heading": "8. More primary lesions: Pustule, Wheal, Comedo and Burrow",
+      "topicId": "other-primary"
+    },
+    {
+      "id": "e-9",
+      "sourceIndex": 8,
+      "heading": "9. Secondary lesions: causes, pustule, crust, scale, excoriation",
+      "topicId": "secondary-surface"
+    },
+    {
+      "id": "e-10",
+      "sourceIndex": 9,
+      "heading": "10. Fissure vs Erosion vs Ulcer",
+      "topicId": "secondary-depth"
+    },
+    {
+      "id": "e-11",
+      "sourceIndex": 10,
+      "heading": "11. Atrophy and lichenification",
+      "topicId": "secondary-depth"
+    }
+  ]
+}

@@ -1,10 +1,11 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 test.use({serviceWorkers:'block'});
 const dermatology='internal-medicine-ii-dermatology-introduction';
 
 async function openDermatology(page){
-  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#courseSelector')).toBeVisible();
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
@@ -98,7 +99,7 @@ test('MCQ bank can search source questions across both Psychiatry lectures on de
     const url=new URL(request.url());
     if(url.pathname.startsWith('/lectures/data/'))fetched.add(url.pathname);
   });
-  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await page.locator('#subjectSelector').selectOption('psychiatry');
   await expect(page.locator('#lectureFilter option[value="all"]')).toHaveCount(1);
@@ -121,7 +122,7 @@ test('MCQ bank can search source questions across both Psychiatry lectures on de
 });
 
 test('legacy lecture without authored MCQ has a truthful empty state and keeps Cases',async ({page})=>{
-  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
   await page.locator('#lectureFilter').selectOption('urology-bladder-cancer');
   await expect(page.locator('#lecture-urology-bladder-cancer')).toBeVisible({timeout:20000});
   await expect(page.locator('#mcqCount')).toHaveText('0');
@@ -145,7 +146,7 @@ test('phone MCQ review uses existing filter sheet with no horizontal overflow',a
 
 
 test('specialty-wide source index finds MCQs and opens the exact authored question',async ({page})=>{
-  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await page.locator('#subjectSelector').selectOption('psychiatry');
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
@@ -161,7 +162,7 @@ test('specialty-wide source index finds MCQs and opens the exact authored questi
 });
 
 test('catalog MCQ metadata is exact and does not change original grading keys',async ({page})=>{
-  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
   const response=await page.request.get('./lectures/catalog.json');
   expect(response.ok()).toBe(true);
   const catalog=await response.json();

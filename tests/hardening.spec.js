@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {test, expect} from '@playwright/test';
@@ -7,7 +8,7 @@ import {test, expect} from '@playwright/test';
 test.use({serviceWorkers: 'block'});
 
 async function openBank(page) {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.locator('#reviewFilter')).toBeAttached();
   await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
   await expect(page.locator('.study-item').first()).toBeAttached();
@@ -66,7 +67,7 @@ test('standalone build embeds all verified Bladder Cancer, Urolithiasis and Rena
   const offlineFile = pathToFileURL(
     resolve('dist/offline/Medical_MEQ_Review_Bank_Offline.html')
   ).href;
-  await page.goto(offlineFile, {waitUntil: 'domcontentloaded'});
+  await page.goto(offlineFile+'#legacy', {waitUntil: 'domcontentloaded'});
 
   const checked = [];
   for (const [lectureId, imageCount] of [

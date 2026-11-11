@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 
@@ -13,7 +14,7 @@ const SOURCE_LECTURES = [
 ];
 
 async function openPsychiatry(page) {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.locator('#courseSelector')).toBeVisible();
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector option[value="psychiatry"]')).toHaveText('Psychiatry');
@@ -108,7 +109,7 @@ test('release cache identity changed along with Psychiatry catalog and embedded 
   expect(year * 10000 + month * 100 + day).toBeGreaterThanOrEqual(20261025);
   expect(sw).toContain("const APP_VERSION = '" + sourceVersion + "'");
   expect(pwa).toContain("const APP_VERSION = '" + sourceVersion + "'");
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   const evidence = await page.evaluate(async () => {
     const [version, runtime, catalog] = await Promise.all([
       fetch('/version.json', {cache: 'no-store'}).then(r => r.json()),

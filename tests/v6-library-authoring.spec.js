@@ -129,7 +129,7 @@ test('Study tools opens authoring and skip navigation retains the dedicated scre
   const skip=page.getByRole('link',{name:'Skip to library manager'});
   await skip.focus();await skip.press('Enter');
   await expect(page.getByRole('heading',{name:'Manage library',exact:true})).toBeFocused();
-  await expect(page).toHaveURL(/#\/manage$/);
+  await expect(page).toHaveURL(/#\/manage(?:\?|$)/);
   await expect(page.getByRole('button',{name:'Study tools',exact:true})).toHaveAttribute('aria-expanded','false');
 });
 

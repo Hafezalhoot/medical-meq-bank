@@ -1,9 +1,10 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 test.use({serviceWorkers: 'block'});
 
 async function openBank(page) {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.locator('#reviewFilter')).toBeAttached();
   await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
   await expect(page.locator('.study-item').first()).toBeAttached();

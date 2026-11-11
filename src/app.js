@@ -900,7 +900,7 @@ function render(){
   l.coreShorts.forEach((q,i)=>sec.querySelector('.core-grid').appendChild(shortCard(l,q,i,'core','High-Yield Short')));
   l.imageQuestions.forEach((q,i)=>sec.querySelector('.image-grid').appendChild(imageCard(l,q,i)));
   l.detailedShorts.forEach((q,i)=>sec.querySelector('.extra-grid').appendChild(shortCard(l,q,i,'extra','Detailed Question')));
-  const rg=sec.querySelector('.rapid-grid');l.rapid.forEach(([q,a],i)=>{const d=document.createElement('button');d.type='button';d.className='rapid-item';d.setAttribute('aria-expanded','false');d.innerHTML=`<strong>${i+1}. ${esc(q)}</strong><span class="rapid-answer">${esc(a)}</span>`;d.onclick=()=>{const open=d.classList.toggle('open');d.setAttribute('aria-expanded',open?'true':'false')};rg.appendChild(d)});
+  const rg=sec.querySelector('.rapid-grid');l.rapid.forEach(([q,a],i)=>{const d=document.createElement('button');d.type='button';d.className='rapid-item';d.id=l.id+'-rapid-'+(i+1);d.setAttribute('aria-expanded','false');d.innerHTML=`<strong>${i+1}. ${esc(q)}</strong><span class="rapid-answer">${esc(a)}</span>`;d.onclick=()=>{const open=d.classList.toggle('open');d.setAttribute('aria-expanded',open?'true':'false')};rg.appendChild(d)});
   bind();renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();
   if(document.body.dataset.workspace==='lecture')configureReaderWorkspace(l);
   if(document.body.dataset.workspace==='practice')syncPracticeWorkspace();
@@ -1447,158 +1447,6 @@ syncThemeButton();
 })();
 
 
-/* V6 UX-01 — progressive workspace routes. No progress or lecture schema writes.
-   Plain / remains the legacy study screen until every existing user flow is migrated. */
-(() => {
-  const allowed=new Set(['home','library','practice','review','exams','manage']);
-  const nav=document.querySelector('[aria-label="Primary workspace"]');
-  const status=document.getElementById('workspaceRouteStatus');
-  const entry=document.getElementById('workspaceExamEntry');
-  const courseLibrary=document.getElementById('courseLibraryDisclosure');
-  const savedReview=document.getElementById('myReviewDisclosure');
-  const practiceIntro=document.getElementById('practiceIntro');
-  const practiceEmpty=document.getElementById('practiceEmpty');
-  let routeSequence=0;
-
-  function parseRoute(hash) {
-    if(!hash.startsWith('#/'))return null;
-    const [path,search='']=hash.slice(2).split('?',2);
-    if(allowed.has(path))return {view:path};
-    if(/^lecture\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path))
-      return {view:'lecture',id:path.slice(8),params:new URLSearchParams(search)};
-    return {view:'home'};
-  }
-  function openLecture(id) {
-    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id))return;
-    const course=globalThis.MEQCourseRegistry?.activeCourse||'';
-    const subject=document.getElementById('subjectSelector')?.value||'';
-    const query=new URLSearchParams({course,subject});
-    location.hash='#/lecture/'+id+'?'+query;
-  }
-  async function restoreLecture(route,sequence) {
-    const registry=globalThis.MEQCourseRegistry;
-    const loader=globalThis.MEQLectureLoader;
-    const courseSelect=document.getElementById('courseSelector');
-    const subjectSelect=document.getElementById('subjectSelector');
-    const lectureSelect=document.getElementById('lectureFilter');
-    if(!registry||!subjectSelect||!lectureSelect)return;
-
-    const requestedCourse=route.params.get('course')||registry.activeCourse||courseSelect?.value;
-    if(requestedCourse&&!registry.packs.has(requestedCourse)){location.hash='#/library';return;}
-    if(requestedCourse!==registry.activeCourse)
-      registry.activateCourse(requestedCourse,{preserveSubject:false});
-
-    const requestedSubject=route.params.get('subject')||subjectSelect.value;
-    if(![...subjectSelect.options].some(option=>option.value===requestedSubject)){
-      location.hash='#/library';return;
-    }
-    if(subjectSelect.value!==requestedSubject){
-      subjectSelect.value=requestedSubject;
-      subjectSelect.dispatchEvent(new Event('change',{bubbles:true}));
-    }
-    // The offline standalone embeds lecture payloads; it deliberately has no
-    // MEQLectureLoader. Use the same selection logic without a network fetch.
-    if(loader?.loadSubject){
-      try {
-        await loader.loadSubject(requestedSubject,requestedCourse);
-      }catch(error){
-        if(sequence===routeSequence&&status)
-          status.textContent='Unable to load the selected subject. Choose it from Library.';
-        return;
-      }
-    }
-    if(sequence!==routeSequence)return;
-    if(![...lectureSelect.options].some(option=>option.value===route.id)){
-      if(status)status.textContent='This lecture is not available in the selected subject.';
-      location.hash='#/library';
-      return;
-    }
-    if(lectureSelect.value!==route.id)
-      selectLecture(route.id,false);
-    else if(!document.getElementById('lecture-'+route.id))
-      selectLecture(route.id,false);
-    const existing=lectures.find(item=>item.id===route.id);
-    if(existing&&document.getElementById('lecture-'+route.id))configureReaderWorkspace(existing);
-  }
-
-  function applyRoute() {
-    const sequence=++routeSequence;
-    const route=parseRoute(location.hash);
-    if(!route){
-      delete document.body.dataset.workspace;
-      entry.hidden=true;
-      if(practiceIntro)practiceIntro.hidden=true;
-      if(practiceEmpty)practiceEmpty.hidden=true;
-      nav?.querySelectorAll('a').forEach(link=>link.removeAttribute('aria-current'));
-      return;
-    }
-    const view=route.view;
-    const previousView=document.body.dataset.workspace;
-    document.body.dataset.workspace=view;
-    entry.hidden=view!=='exams';
-    if(practiceIntro)practiceIntro.hidden=view!=='practice';
-    if(view!=='practice'&&practiceEmpty)practiceEmpty.hidden=true;
-    const randomButton=document.getElementById('randomBtn');
-    const revealButton=document.getElementById('revealBtn');
-    if(randomButton)randomButton.textContent=view==='practice'?'Random question':'Random item';
-    if(revealButton){
-      revealButton.disabled=false;
-      revealButton.textContent=view==='practice'?'Reveal current answer':revealAll?'Hide all':'Reveal all';
-    }
-    if(previousView==='practice'&&view==='lecture')render();
-    nav?.querySelectorAll('a').forEach(link=>{
-      if(link.dataset.workspaceLink===(view==='lecture'?'library':view))
-        link.setAttribute('aria-current','page');
-      else link.removeAttribute('aria-current');
-    });
-    if(status)status.textContent=view==='lecture'?'Lecture reader':view.charAt(0).toUpperCase()+view.slice(1)+' workspace';
-    if(document.querySelector('.app.study-focus'))setFocusMode(false);
-    if(view==='library'){
-      const typeFilter=document.getElementById('typeFilter');
-      if(typeFilter)typeFilter.value='all';
-      populateLectureFilter();
-      selectLecture('all',false);
-    }
-    if(view==='review')savedReview.open=true;
-    if(view==='practice')enterPracticeRoute();
-    if(view==='lecture')restoreLecture(route,sequence).catch(()=>{
-      if(sequence===routeSequence&&status)
-        status.textContent='The lecture could not be opened. Return to Library.';
-    });
-    window.scrollTo({top:0,behavior:'instant'});
-  }
-
-  globalThis.MEQWorkspace=Object.freeze({openLecture,parseRoute});
-  document.getElementById('workspaceExamStart')?.addEventListener('click',()=>{
-    document.getElementById('examModeBtn')?.click();
-  });
-  document.getElementById('resumeStudyBtn')?.addEventListener('click',()=>{
-    if(document.body.dataset.workspace==='home')location.hash='#/practice';
-  });
-  document.getElementById('browseLibraryLink')?.addEventListener('click',event=>{
-    if(document.body.dataset.workspace&&document.body.dataset.workspace!=='legacy'){
-      event.preventDefault();
-      location.hash='#/library';
-    }
-  },true);
-  const refreshLibraryIndex=()=>{
-    if(document.body.dataset.workspace!=='library')return;
-    populateLectureFilter();
-    selectLecture('all',false);
-  };
-  document.getElementById('subjectSelector')?.addEventListener('change',refreshLibraryIndex);
-  document.addEventListener('meq:course-changed',refreshLibraryIndex);
-  document.addEventListener('meq:lectures-loaded',refreshLibraryIndex);
-  document.addEventListener('meq:lectures-loaded',()=>{
-    if(document.body.dataset.workspace==='practice')enterPracticeRoute();
-  });
-  window.addEventListener('hashchange',applyRoute);
-  if(document.readyState==='loading')
-    document.addEventListener('DOMContentLoaded',applyRoute,{once:true});
-  else applyRoute();
-})();
-
-
 /* V6 UX-03: one authored mode and one explanation topic at a time.
    The existing source DOM, answer controls, figure provenance and progress keys
    remain authoritative. Never manufacture a section that the lecture lacks. */
@@ -1707,39 +1555,146 @@ function configureReaderWorkspace(lecture){
     mode.tab=tab;
   });
 
+  // R02: index only authored explanation sections and explicitly mapped question
+  // subtopics. MCQs have no authored subtopic relation and must stay unfiltered.
   const explanationArticles=[...root.querySelectorAll('.study-guide-explanation')];
   const topicHeadings=explanationArticles.map((article,index)=>
-    article.querySelector('h3')?.textContent?.trim()||('Topic '+(index+1)));
-  topicSelect.replaceChildren(...topicHeadings.map((heading,index)=>{
-    const option=document.createElement('option');
-    option.value=String(index);option.textContent=heading;return option;
+    article.querySelector('h3')?.textContent?.trim()||('Section '+(index+1)));
+  const questionModes=new Set(['cases','shorts','images','detailed']);
+  const sourceTopics=Array.isArray(lecture.subtopics)?lecture.subtopics:[];
+  const topicLabels=new Map(sourceTopics.map(topic=>[topic.id,topic.label]));
+  const sourceIndex=globalThis.MEQReviewedTopicMaps?.[lecture.id];
+  const indexedSections=Array.isArray(sourceIndex?.sections)&&
+    sourceIndex.sections.length===explanationArticles.length&&
+    sourceIndex.sections.every((item,index)=>item.sourceIndex===index&&
+      item.id==='e-'+(index+1)&&item.heading===topicHeadings[index])
+    ?sourceIndex.sections:null;
+  const mappedTopics=new Map(modes.filter(mode=>questionModes.has(mode.key)).map(mode=>{
+    const items=[...mode.node.querySelectorAll('.study-item[data-subtopics]')];
+    return [mode.key,sourceTopics.map(topic=>({
+      id:topic.id,label:topic.label,
+      count:items.filter(item=>(item.dataset.subtopics||'').split(' ').includes(topic.id)).length
+    })).filter(topic=>topic.count>0)];
   }));
-  let topicIndex=0,readAll=false;
+  let topicIndex=0,readAll=false,questionTopic='all',activeMode=modes[0];
 
-  const updateTopics=()=>{
+  const rebuildTopicSelect=()=>{
+    const explanation=activeMode.key==='explanation'&&explanationArticles.length>0;
+    const mapped=mappedTopics.get(activeMode.key)||[];
+    topicBar.hidden=!explanation&&!mapped.length;
+    if(topicBar.hidden)return;
+    topicLabel.textContent=explanation?'Lecture topic':'Question subtopic';
+    previous.hidden=!explanation;
+    next.hidden=!explanation;
+    all.hidden=!explanation;
+    if(explanation){
+      if(indexedSections){
+        // Preserve the original page order; one primary owner per source
+        // section, with General for material that cannot be safely assigned.
+        const groups=[];
+        let group=null,previousTopic=null;
+        indexedSections.forEach((section,index)=>{
+          if(section.topicId!==previousTopic){
+            group=document.createElement('optgroup');
+            group.label=section.topicId==='general'?'General / unmapped':
+              topicLabels.get(section.topicId)||'General / unmapped';
+            groups.push(group);
+            previousTopic=section.topicId;
+          }
+          const option=document.createElement('option');
+          option.value=section.id;option.textContent=topicHeadings[index];
+          group.append(option);
+        });
+        topicSelect.replaceChildren(...groups);
+      }else{
+        // Unreviewed or stale map: expose ALL source sections ungrouped.
+        topicSelect.replaceChildren(...topicHeadings.map((heading,index)=>{
+          const option=document.createElement('option');
+          option.value='e-'+(index+1);
+          option.textContent=heading;
+          return option;
+        }));
+      }
+    }else{
+      if(questionTopic!=='all'&&!mapped.some(topic=>topic.id===questionTopic))questionTopic='all';
+      const options=[{value:'q-all',label:'All question subtopics'}].concat(
+        mapped.map(topic=>({value:'q-'+topic.id,label:topic.label+' ('+topic.count+')'}))
+      );
+      topicSelect.replaceChildren(...options.map(item=>{
+        const option=document.createElement('option');
+        option.value=item.value;option.textContent=item.label;return option;
+      }));
+    }
+  };
+  const syncPosition=(writeTab=false)=>{
+    const sectionId=activeMode.key==='explanation'&&!readAll?'e-'+(topicIndex+1):null;
+    const selectedSourceTopic=sectionId?indexedSections?.[topicIndex]?.topicId:null;
+    const topicId=questionModes.has(activeMode.key)&&questionTopic!=='all'?questionTopic:
+      selectedSourceTopic&&selectedSourceTopic!=='general'?selectedSourceTopic:null;
+    if(location.hash.startsWith('#/lecture/')){
+      const [path,search='']=location.hash.split('?',2);
+      const params=new URLSearchParams(search);
+      if(writeTab)params.set('tab',activeMode.key);
+      if(sectionId)params.set('section',sectionId);else params.delete('section');
+      if(topicId)params.set('topic',topicId);else params.delete('topic');
+      const nextHash=path+(params.size?'?'+params.toString():'');
+      if(location.hash!==nextHash)
+        history.replaceState(history.state,'',location.pathname+location.search+nextHash);
+    }
+    document.dispatchEvent(new CustomEvent('meq:reader-position-changed',{
+      detail:{lectureId:lecture.id,sectionId,topicId,tab:activeMode.key}
+    }));
+  };
+  const updateTopics=(writeTab=false)=>{
     explanationArticles.forEach((article,index)=>{
       article.hidden=!readAll&&index!==topicIndex;
     });
-    topicSelect.value=String(topicIndex);
-    previous.disabled=readAll||topicIndex===0;
-    next.disabled=readAll||topicIndex===explanationArticles.length-1;
-    all.textContent=readAll?'Show one topic':'Read all topics';
-    all.setAttribute('aria-pressed',String(readAll));
-    topicPosition.textContent=readAll
-      ?'All '+explanationArticles.length+' topics'
-      :'Topic '+(topicIndex+1)+' of '+explanationArticles.length;
+    // This is view-only: source questions, scoring, grades and mappings stay intact.
+    modes.filter(mode=>questionModes.has(mode.key)).forEach(mode=>{
+      mode.node.querySelectorAll('.study-item').forEach(item=>{
+        const filtered=mode===activeMode&&questionTopic!=='all'&&
+          !(item.dataset.subtopics||'').split(' ').includes(questionTopic);
+        item.classList.toggle('reader-topic-filtered',filtered);
+      });
+    });
+    if(!topicBar.hidden){
+      const explanation=activeMode.key==='explanation';
+      topicSelect.value=explanation?'e-'+(topicIndex+1):'q-'+questionTopic;
+      previous.disabled=readAll||topicIndex===0;
+      next.disabled=readAll||topicIndex===explanationArticles.length-1;
+      all.textContent=readAll?'Show one topic':'Read all topics';
+      all.setAttribute('aria-pressed',String(readAll));
+      if(explanation){
+        const topicId=indexedSections?.[topicIndex]?.topicId;
+        const label=topicId?(topicId==='general'?'General / unmapped':topicLabels.get(topicId)):null;
+        topicPosition.textContent=readAll
+          ?'All '+explanationArticles.length+' sections'
+          :'Section '+(topicIndex+1)+' of '+explanationArticles.length+
+            (label?' · '+label:'');
+      }
+      else{
+        const items=[...activeMode.node.querySelectorAll('.study-item')];
+        const visible=items.filter(item=>!item.classList.contains('reader-topic-filtered')).length;
+        topicPosition.textContent='Showing '+visible+' of '+items.length+' questions';
+      }
+    }
+    syncPosition(writeTab);
   };
   topicSelect.addEventListener('change',()=>{
-    topicIndex=Number(topicSelect.value)||0;readAll=false;updateTopics();
+    if(activeMode.key==='explanation'){
+      topicIndex=Math.max(0,Math.min(explanationArticles.length-1,Number(topicSelect.value.slice(2))-1||0));
+      readAll=false;
+    }else questionTopic=topicSelect.value.slice(2);
+    updateTopics(true);
   });
   previous.addEventListener('click',()=>{
-    topicIndex=Math.max(0,topicIndex-1);readAll=false;updateTopics();
+    topicIndex=Math.max(0,topicIndex-1);readAll=false;updateTopics(true);
   });
   next.addEventListener('click',()=>{
     topicIndex=Math.min(explanationArticles.length-1,topicIndex+1);
-    readAll=false;updateTopics();
+    readAll=false;updateTopics(true);
   });
-  all.addEventListener('click',()=>{readAll=!readAll;updateTopics();});
+  all.addEventListener('click',()=>{readAll=!readAll;updateTopics(true);});
 
   const queryMode=()=>{
     const query=location.hash.split('?')[1]||'';
@@ -1749,6 +1704,20 @@ function configureReaderWorkspace(lecture){
   };
   const applyMode=(requested,writeHash)=>{
     const selected=modes.find(mode=>mode.key===requested)||modes[0];
+    activeMode=selected;
+    if(!writeHash){
+      const params=new URLSearchParams(location.hash.split('?')[1]||'');
+      const section=/^e-([1-9][0-9]*)$/.exec(params.get('section')||'');
+      if(selected.key==='explanation'){
+        topicIndex=section&&Number(section[1])<=explanationArticles.length?Number(section[1])-1:0;
+        readAll=false;
+      }
+      if(questionModes.has(selected.key)){
+        const requestedTopic=params.get('topic')||'all';
+        questionTopic=(mappedTopics.get(selected.key)||[]).some(topic=>topic.id===requestedTopic)
+          ?requestedTopic:'all';
+      }
+    }
     modes.forEach(mode=>{
       const active=mode===selected;
       mode.pane.hidden=!active;
@@ -1757,17 +1726,14 @@ function configureReaderWorkspace(lecture){
       if(active&&mode.node.tagName==='DETAILS')mode.node.open=true;
     });
     if(guide)guide.hidden=!selected.guide;
-    topicBar.hidden=selected.key!=='explanation'||!explanationArticles.length;
-    if(!topicBar.hidden)updateTopics();
+    rebuildTopicSelect();
+    updateTopics(writeHash);
     root.classList.remove('hidden');
     document.getElementById('empty')?.classList.remove('show');
     root.dataset.readerMode=selected.key;
-    if(writeHash&&location.hash.startsWith('#/lecture/')){
-      const [path,query='']=location.hash.split('?',2);
-      const params=new URLSearchParams(query);
-      params.set('tab',selected.key);
-      history.replaceState(history.state,'',location.pathname+location.search+path+'?'+params.toString());
-    }
+    document.dispatchEvent(new CustomEvent('meq:reader-mode-changed',{
+      detail:{lectureId:lecture.id,tab:selected.key}
+    }));
   };
   modes.forEach(mode=>{
     mode.tab.addEventListener('click',()=>applyMode(mode.key,true));
@@ -1845,6 +1811,15 @@ function syncPracticeWorkspace(){
     session.querySelector('#practiceNext').addEventListener('click',()=>move(1));
   }
   const candidates=practiceEligibleQuestions(root);
+  // Restore only an explicit, source-scoped question link. Never assume a
+  // numeric position is stable when a lecture is edited or filtered.
+  const route=location.hash;
+  if(route.startsWith('#/practice')&&session.__routeApplied!==route){
+    const params=new URLSearchParams(route.split('?')[1]||'');
+    const requested=params.get('question');
+    if(requested&&(!params.get('lecture')||params.get('lecture')===root.dataset.lecture))
+      session.__selected=candidates.find(item=>item.id===requested)||null;
+  }
   root.querySelectorAll('.practice-current').forEach(item=>item.classList.remove('practice-current'));
   root.querySelectorAll('.practice-active').forEach(node=>node.classList.remove('practice-active'));
   if(!candidates.length){
@@ -1860,6 +1835,32 @@ function syncPracticeWorkspace(){
   const index=Math.max(0,candidates.indexOf(session.__selected));
   const item=candidates[index];
   session.__selected=item;
+  // Keep a copyable link in sync with the selected authored question, without
+  // adding a browser-history step for every Next/Previous action.
+  if(location.hash.startsWith('#/practice')&&item.id){
+    const params=new URLSearchParams(location.hash.split('?')[1]||'');
+    params.set('course',activeCourseId());params.set('subject',activeSubject);
+    params.set('lecture',root.dataset.lecture);params.set('question',item.id);
+    const hash='#/practice?'+params.toString();
+    if(location.hash!==hash){
+      const url=new URL(location.href);url.hash=hash;
+      history.replaceState(history.state,'',url.href);
+    }
+    session.__routeApplied=location.hash;
+    if(session.__lastSavedQuestion!==item.id){
+      session.__lastSavedQuestion=item.id;
+      const scope={view:'practice',courseId:activeCourseId(),
+        subjectId:activeSubject,lectureId:root.dataset.lecture};
+      globalThis.MEQStudyPosition?.savePractice(scope,item.id).then(result=>{
+        if(result.saved)return;
+        const notice=document.getElementById('workspaceNavigationNotice');
+        if(notice){notice.textContent='Could not save your question position on this device. Your grades are unchanged.';notice.hidden=false;}
+      });
+      document.dispatchEvent(new CustomEvent('meq:practice-position-changed',{
+        detail:{lectureId:root.dataset.lecture,questionId:item.id}
+      }));
+    }
+  }
   const reveal=document.getElementById('revealBtn');
   if(reveal){
     reveal.disabled=false;

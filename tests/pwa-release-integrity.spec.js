@@ -4,7 +4,7 @@ import {runInNewContext} from 'node:vm';
 
 test('fresh online HTML loads one coherent version of every CSS and JS asset', async ({page}) => {
   await page.goto('/', {waitUntil:'domcontentloaded'});
-  await expect(page.getByRole('heading', {name:'Your medical study library'})).toBeVisible();
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
 
   const result=await page.evaluate(async()=>{
     const release=(await (await fetch('/version.json',{cache:'no-store'})).json()).version;
@@ -13,12 +13,13 @@ test('fresh online HTML loads one coherent version of every CSS and JS asset', a
       ...document.querySelectorAll('script[src]')
     ].map(el=>new URL(el.href||el.src,location.href));
     const svg=document.querySelector('.pwa-tools-toggle .ui-icon svg');
-    const library=document.querySelector('.course-library');
+    const library=document.querySelector('[aria-label="Primary workspace"]');
     const hero=document.querySelector('.hero');
     return {
       release,urls:urls.map(u=>u.searchParams.get('v')),
       allSameOrigin:urls.every(u=>u.origin===location.origin),
       cssHero:getComputedStyle(hero).backgroundImage,
+      heroColor:getComputedStyle(hero).backgroundColor,
       iconWidth:svg?.getBoundingClientRect().width,
       libraryHeight:library?.getBoundingClientRect().height,
       skip:getComputedStyle(document.querySelector('.skip-link')).transform,
@@ -28,7 +29,9 @@ test('fresh online HTML loads one coherent version of every CSS and JS asset', a
   expect(result.urls.length).toBeGreaterThanOrEqual(14);
   expect(result.urls.every(v=>v===result.release)).toBe(true);
   expect(result.allSameOrigin).toBe(true);
-  expect(result.cssHero).toContain('linear-gradient');
+  // Canonical Library uses a compact white subject selector instead of the legacy gradient.
+  expect(result.cssHero).toBe('none');
+  expect(result.heroColor).toBe('rgb(255, 255, 255)');
   expect(result.iconWidth).toBeLessThanOrEqual(24);
   expect(result.libraryHeight).toBeGreaterThan(38);
   expect(result.libraryHeight).toBeLessThan(125);
@@ -47,15 +50,14 @@ test('cached obsolete CSS cannot corrupt the released page after reload', async 
     ));
   });
   await page.reload({waitUntil:'domcontentloaded'});
-  await expect(page.getByRole('heading',{name:'Your medical study library'})).toBeVisible();
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>
     Math.round(document.querySelector('.pwa-tools-toggle .ui-icon svg').getBoundingClientRect().width)
   )).toBe(18);
-  // The shipped V5 hero uses a real CSS gradient; an old cached red override
-  // must never replace the current bundled stylesheet on service-worker reload.
+  // Obsolete cached red hero CSS must not corrupt the new Library selector surface.
   await expect.poll(()=>page.evaluate(()=>
-    getComputedStyle(document.querySelector('.hero')).backgroundImage))
-    .toContain('linear-gradient');
+    getComputedStyle(document.querySelector('.hero')).backgroundColor))
+    .toBe('rgb(255, 255, 255)');
 });
 
 test('SW upgrade migrates students downloaded lessons but never obsolete app CSS', async () => {
@@ -106,7 +108,7 @@ test('SW upgrade migrates students downloaded lessons but never obsolete app CSS
 });
 
 
-test('reader-first responsive UI keeps the first lecture in reach across phone/tablet/desktop', async ({page}) => {
+test('legacy compatibility reader stays reachable across phone/tablet/desktop', async ({page}) => {
   const targets=[
     {width:320,height:700,maxLectureTop:830},
     {width:390,height:844,maxLectureTop:765},
@@ -116,7 +118,7 @@ test('reader-first responsive UI keeps the first lecture in reach across phone/t
   ];
   for(const device of targets){
     await page.setViewportSize({width:device.width,height:device.height});
-    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
     await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
     const geometry=await page.evaluate(()=>{
       const title=document.querySelector('.lecture-head');
@@ -130,7 +132,10 @@ test('reader-first responsive UI keeps the first lecture in reach across phone/t
       };
     });
     expect(geometry.firstLectureTop).toBeGreaterThanOrEqual(0);
-    expect(geometry.firstLectureTop).toBeLessThan(device.maxLectureTop);
+    // #legacy is unadvertised: preserve scroll reachability, not its former fold position.
+    const firstLecture=page.locator('.lecture-head').first();
+    await firstLecture.scrollIntoViewIfNeeded();
+    await expect(firstLecture).toBeInViewport({ratio:.5});
     expect(geometry.iconWidth).toBeLessThanOrEqual(24);
     expect(geometry.overflow).toBeLessThanOrEqual(1);
     if(device.width===390){
@@ -147,7 +152,7 @@ test('reader-first responsive UI keeps the first lecture in reach across phone/t
 test('320/390px course and specialty selectors show their full names and Clear all is reachable', async ({page}) => {
   for(const width of [320,390]){
     await page.setViewportSize({width,height:844});
-    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
     await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
     await page.locator('#courseSelector').selectOption('internal-medicine-ii');
     await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
@@ -183,7 +188,7 @@ test('320/390px course and specialty selectors show their full names and Clear a
 test('tablet and desktop course/specialty names are never cropped by the native selectors', async ({page}) => {
   for(const width of [768,1024,1280,1440]){
     await page.setViewportSize({width,height:900});
-    await page.goto('/',{waitUntil:'domcontentloaded'});
+    await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
     await expect(page.locator('main')).toHaveAttribute('aria-busy','false',{timeout:15_000});
     await page.locator('#courseSelector').selectOption('internal-medicine-ii');
     await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
@@ -271,11 +276,13 @@ test('Access login callback redirects to the real homepage with styling and lect
   await page.goto('/cdn-cgi/access/authorized?nonce=test&state=test', {
     waitUntil: 'domcontentloaded'
   });
-  await expect(page).toHaveURL('http://127.0.0.1:4173/');
+  await expect(page).toHaveURL(/http:\/\/127\.0\.0\.1:4173\/#\/library(?:\?|$)/);
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
   await expect(page.locator('#courseSelector')).toBeVisible();
   await expect(page.locator('#courseSelector option')).toHaveCount(3);
-  const heroVisual = await page.locator('.hero').evaluate(el => getComputedStyle(el).backgroundImage);
-  expect(heroVisual).toContain('linear-gradient');
+  const heroColor = await page.locator('.hero').evaluate(el => getComputedStyle(el).backgroundColor);
+  expect(heroColor).toBe('rgb(255, 255, 255)');
+  await expect(page.locator('.hero-copy')).toBeHidden();
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector option[value="psychiatry"]')).toHaveCount(1);
 });

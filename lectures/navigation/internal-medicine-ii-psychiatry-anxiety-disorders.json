@@ -1,0 +1,266 @@
+{
+  "$schema": "../navigation.schema.json",
+  "schemaVersion": 1,
+  "lectureId": "internal-medicine-ii-psychiatry-anxiety-disorders",
+  "sourceSha256": "3a657b4c3ad23651dc918d04afc3023425674e8361d4ff45707b4767038ea32d",
+  "sections": [
+    {
+      "id": "e-1",
+      "sourceIndex": 0,
+      "heading": "Fear versus anxiety",
+      "topicId": "concepts"
+    },
+    {
+      "id": "e-2",
+      "sourceIndex": 1,
+      "heading": "Symptom domains",
+      "topicId": "concepts"
+    },
+    {
+      "id": "e-3",
+      "sourceIndex": 2,
+      "heading": "Anxiety physical-symptom image: complete body-map reading",
+      "topicId": "concepts"
+    },
+    {
+      "id": "e-4",
+      "sourceIndex": 3,
+      "heading": "Anxiety disorders listed in the lecture",
+      "topicId": "concepts"
+    },
+    {
+      "id": "e-5",
+      "sourceIndex": 4,
+      "heading": "Image-only DSM-5 anxiety list: scope of the lecture",
+      "topicId": "concepts"
+    },
+    {
+      "id": "e-6",
+      "sourceIndex": 5,
+      "heading": "Case 1 — sudden attacks",
+      "topicId": "panic"
+    },
+    {
+      "id": "e-7",
+      "sourceIndex": 6,
+      "heading": "Panic attack symptom groups",
+      "topicId": "panic"
+    },
+    {
+      "id": "e-8",
+      "sourceIndex": 7,
+      "heading": "Panic disorder: concern and duration",
+      "topicId": "panic"
+    },
+    {
+      "id": "e-9",
+      "sourceIndex": 8,
+      "heading": "Panic criteria and exclusions",
+      "topicId": "panic"
+    },
+    {
+      "id": "e-10",
+      "sourceIndex": 9,
+      "heading": "Panic attack versus Panic Disorder on the source DSM-5 slide",
+      "topicId": "panic"
+    },
+    {
+      "id": "e-11",
+      "sourceIndex": 10,
+      "heading": "Panic DSM-5 source table: attack vs disorder and separate agoraphobia",
+      "topicId": "panic"
+    },
+    {
+      "id": "e-12",
+      "sourceIndex": 11,
+      "heading": "Case 2 — generalized worry",
+      "topicId": "gad"
+    },
+    {
+      "id": "e-13",
+      "sourceIndex": 12,
+      "heading": "GAD DSM-5 criteria",
+      "topicId": "gad"
+    },
+    {
+      "id": "e-14",
+      "sourceIndex": 13,
+      "heading": "GAD: distinguish lecture case from formal diagnosis",
+      "topicId": "gad"
+    },
+    {
+      "id": "e-15",
+      "sourceIndex": 14,
+      "heading": "Case 3 — fear of being away from home",
+      "topicId": "agoraphobia"
+    },
+    {
+      "id": "e-16",
+      "sourceIndex": 15,
+      "heading": "Case 3 — additional symptoms and impact",
+      "topicId": "agoraphobia"
+    },
+    {
+      "id": "e-17",
+      "sourceIndex": 16,
+      "heading": "Agoraphobia visual — five feared situations",
+      "topicId": "agoraphobia"
+    },
+    {
+      "id": "e-18",
+      "sourceIndex": 17,
+      "heading": "Agoraphobia DSM-5 criteria",
+      "topicId": "agoraphobia"
+    },
+    {
+      "id": "e-19",
+      "sourceIndex": 18,
+      "heading": "Agoraphobia table: fear of escape or unavailable help",
+      "topicId": "agoraphobia"
+    },
+    {
+      "id": "e-20",
+      "sourceIndex": 19,
+      "heading": "Case 4 — situational phobia",
+      "topicId": "specific-phobia"
+    },
+    {
+      "id": "e-21",
+      "sourceIndex": 20,
+      "heading": "Specific-phobia teaching case: criteria still require independent confirmation",
+      "topicId": "specific-phobia"
+    },
+    {
+      "id": "e-22",
+      "sourceIndex": 21,
+      "heading": "Specific phobia diagnostic features",
+      "topicId": "specific-phobia"
+    },
+    {
+      "id": "e-23",
+      "sourceIndex": 22,
+      "heading": "Specific-phobia figure and case interpretation",
+      "topicId": "specific-phobia"
+    },
+    {
+      "id": "e-24",
+      "sourceIndex": 23,
+      "heading": "Specific phobia: image-only five source conditions",
+      "topicId": "specific-phobia"
+    },
+    {
+      "id": "e-25",
+      "sourceIndex": 24,
+      "heading": "Specific phobia specifiers",
+      "topicId": "specific-phobia"
+    },
+    {
+      "id": "e-26",
+      "sourceIndex": 25,
+      "heading": "Case 5 — fear of scrutiny",
+      "topicId": "social-anxiety"
+    },
+    {
+      "id": "e-27",
+      "sourceIndex": 26,
+      "heading": "Social anxiety criteria",
+      "topicId": "social-anxiety"
+    },
+    {
+      "id": "e-28",
+      "sourceIndex": 27,
+      "heading": "Case 5 and duration evidence",
+      "topicId": "social-anxiety"
+    },
+    {
+      "id": "e-29",
+      "sourceIndex": 28,
+      "heading": "Differential diagnosis",
+      "topicId": "differential"
+    },
+    {
+      "id": "e-30",
+      "sourceIndex": 29,
+      "heading": "Epidemiology: lecture figures",
+      "topicId": "epidemiology"
+    },
+    {
+      "id": "e-31",
+      "sourceIndex": 30,
+      "heading": "Epidemiology slide: full lecture context",
+      "topicId": "epidemiology"
+    },
+    {
+      "id": "e-32",
+      "sourceIndex": 31,
+      "heading": "Etiology diagram",
+      "topicId": "epidemiology"
+    },
+    {
+      "id": "e-33",
+      "sourceIndex": 32,
+      "heading": "Etiology figure: learning, cognition and neurobiology",
+      "topicId": "epidemiology"
+    },
+    {
+      "id": "e-34",
+      "sourceIndex": 33,
+      "heading": "Biological etiology: precise claims from the printed figure",
+      "topicId": "epidemiology"
+    },
+    {
+      "id": "e-35",
+      "sourceIndex": 34,
+      "heading": "Behavioral, cognitive, psychodynamic, evolutionary and sociocultural image content",
+      "topicId": "epidemiology"
+    },
+    {
+      "id": "e-36",
+      "sourceIndex": 35,
+      "heading": "Comorbid conditions",
+      "topicId": "epidemiology"
+    },
+    {
+      "id": "e-37",
+      "sourceIndex": 36,
+      "heading": "Course and prognosis: panic and agoraphobia",
+      "topicId": "prognosis"
+    },
+    {
+      "id": "e-38",
+      "sourceIndex": 37,
+      "heading": "General prognosis and risk",
+      "topicId": "prognosis"
+    },
+    {
+      "id": "e-39",
+      "sourceIndex": 38,
+      "heading": "Treatment setting and medications",
+      "topicId": "treatment"
+    },
+    {
+      "id": "e-40",
+      "sourceIndex": 39,
+      "heading": "Other pharmacologic options",
+      "topicId": "treatment"
+    },
+    {
+      "id": "e-41",
+      "sourceIndex": 40,
+      "heading": "Psychotherapy",
+      "topicId": "treatment"
+    },
+    {
+      "id": "e-42",
+      "sourceIndex": 41,
+      "heading": "Psychotherapy table: source technique comparisons",
+      "topicId": "treatment"
+    },
+    {
+      "id": "e-43",
+      "sourceIndex": 42,
+      "heading": "Virtual and supportive approaches",
+      "topicId": "treatment"
+    }
+  ]
+}

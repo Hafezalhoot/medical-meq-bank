@@ -242,6 +242,20 @@ def build(output: Path) -> None:
     exam_js = (ROOT / "src" / "exam-mode.js").read_text(encoding="utf-8")
     authoring_css = (ROOT / 'src' / 'library-authoring.css').read_text(encoding='utf-8')
     authoring_js = (ROOT / 'src' / 'library-authoring.js').read_text(encoding='utf-8')
+    context_js = (ROOT / 'src' / 'study-context.js').read_text(encoding='utf-8')
+    position_js = (ROOT / 'src' / 'study-position.js').read_text(encoding='utf-8')
+    # These UI-only maps were fingerprint-checked against each published source.
+    # Generate one small, offline-compatible runtime from reviewed JSON files;
+    # never alter the clinical lecture payload or create inferred MCQ links.
+    maps = {
+        source.stem: {'sections': json.loads(source.read_text(encoding='utf-8'))['sections']}
+        for source in sorted((ROOT / 'lectures' / 'navigation').glob('*.json'))
+    }
+    if set(maps) != {entry['id'] for entry in catalog_entries}:
+        raise SystemExit('Navigation index does not cover the published catalog')
+    navigation_js = ('globalThis.MEQReviewedTopicMaps=Object.freeze(' +
+                     json.dumps(maps, ensure_ascii=True, separators=(',', ':')) + ');\n')
+    (output / 'navigation-index.js').write_text(navigation_js, encoding='utf-8')
     lecture_batch_js = build_lecture_extensions(ROOT)
 
     extension_styles = (
@@ -253,6 +267,9 @@ def build(output: Path) -> None:
         ("back-to-top-styles", "./back-to-top.css", back_to_top_css),
     )
     extension_scripts = (
+        ('reviewed-navigation-extension', './navigation-index.js', navigation_js),
+        ('study-position-extension', './study-position.js', position_js),
+        ('study-context-extension', './study-context.js', context_js),
         ('library-authoring-extension', './library-authoring.js', authoring_js),
         ("responsive-sidebar-extension", "./responsive-sidebars.js", responsive_sidebar_js),
         ("review-filter-extension", "./review-filter.js", review_js),

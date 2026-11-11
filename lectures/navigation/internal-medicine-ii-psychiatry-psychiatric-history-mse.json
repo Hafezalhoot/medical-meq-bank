@@ -1,0 +1,308 @@
+{
+  "$schema": "../navigation.schema.json",
+  "schemaVersion": 1,
+  "lectureId": "internal-medicine-ii-psychiatry-psychiatric-history-mse",
+  "sourceSha256": "f0a9a4ebfa8574242dcd1f64d508d1ef1434c32c1be581ea30e1fb5c00dc6516",
+  "sections": [
+    {
+      "id": "e-1",
+      "sourceIndex": 0,
+      "heading": "Purpose of the interview",
+      "topicId": "interview"
+    },
+    {
+      "id": "e-2",
+      "sourceIndex": 1,
+      "heading": "Interview principles",
+      "topicId": "interview"
+    },
+    {
+      "id": "e-3",
+      "sourceIndex": 2,
+      "heading": "Practical interviewing rules",
+      "topicId": "interview"
+    },
+    {
+      "id": "e-4",
+      "sourceIndex": 3,
+      "heading": "Complete psychiatric history framework",
+      "topicId": "interview"
+    },
+    {
+      "id": "e-5",
+      "sourceIndex": 4,
+      "heading": "Identification and informant",
+      "topicId": "interview"
+    },
+    {
+      "id": "e-6",
+      "sourceIndex": 5,
+      "heading": "Chief complaint",
+      "topicId": "chief-hpi"
+    },
+    {
+      "id": "e-7",
+      "sourceIndex": 6,
+      "heading": "Onset, course and progress",
+      "topicId": "chief-hpi"
+    },
+    {
+      "id": "e-8",
+      "sourceIndex": 7,
+      "heading": "History of Present Illness",
+      "topicId": "chief-hpi"
+    },
+    {
+      "id": "e-9",
+      "sourceIndex": 8,
+      "heading": "Biological function and negative history",
+      "topicId": "chief-hpi"
+    },
+    {
+      "id": "e-10",
+      "sourceIndex": 9,
+      "heading": "Mood-screening image: depression and SIGECAPS",
+      "topicId": "chief-hpi"
+    },
+    {
+      "id": "e-11",
+      "sourceIndex": 10,
+      "heading": "Mood-screening image: mania and other mood symptoms",
+      "topicId": "chief-hpi"
+    },
+    {
+      "id": "e-12",
+      "sourceIndex": 11,
+      "heading": "Anxiety-screening image: detailed interview prompts",
+      "topicId": "chief-hpi"
+    },
+    {
+      "id": "e-13",
+      "sourceIndex": 12,
+      "heading": "Psychosis and other screening domains in the original image",
+      "topicId": "chief-hpi"
+    },
+    {
+      "id": "e-14",
+      "sourceIndex": 13,
+      "heading": "Past psychiatric and medical illness",
+      "topicId": "past-treatment"
+    },
+    {
+      "id": "e-15",
+      "sourceIndex": 14,
+      "heading": "Treatment and substance history",
+      "topicId": "past-treatment"
+    },
+    {
+      "id": "e-16",
+      "sourceIndex": 15,
+      "heading": "Family and social context",
+      "topicId": "family-personal"
+    },
+    {
+      "id": "e-17",
+      "sourceIndex": 16,
+      "heading": "Personal and developmental history",
+      "topicId": "family-personal"
+    },
+    {
+      "id": "e-18",
+      "sourceIndex": 17,
+      "heading": "Premorbid personality",
+      "topicId": "premorbid"
+    },
+    {
+      "id": "e-19",
+      "sourceIndex": 18,
+      "heading": "Premorbid temperament: all nine dimensions",
+      "topicId": "premorbid"
+    },
+    {
+      "id": "e-20",
+      "sourceIndex": 19,
+      "heading": "Components of Mental Status Examination",
+      "topicId": "mse-overview"
+    },
+    {
+      "id": "e-21",
+      "sourceIndex": 20,
+      "heading": "Speech evaluation",
+      "topicId": "speech-affect"
+    },
+    {
+      "id": "e-22",
+      "sourceIndex": 21,
+      "heading": "Mood versus affect",
+      "topicId": "speech-affect"
+    },
+    {
+      "id": "e-23",
+      "sourceIndex": 22,
+      "heading": "Thought process/form",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-24",
+      "sourceIndex": 23,
+      "heading": "Formal thought disorders: circumstantiality and tangentiality",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-25",
+      "sourceIndex": 24,
+      "heading": "Clang, derailment, flight of ideas and thought blocking",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-26",
+      "sourceIndex": 25,
+      "heading": "Neologism, perseveration and disorganized speech",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-27",
+      "sourceIndex": 26,
+      "heading": "Speech and thought process examples in the source table",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-28",
+      "sourceIndex": 27,
+      "heading": "SAPS formal-thought table: full distinctions and examples",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-29",
+      "sourceIndex": 28,
+      "heading": "Tangentiality, circumstantiality and loose associations — the source schematic",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-30",
+      "sourceIndex": 29,
+      "heading": "Flight of ideas and grandiosity examples",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-31",
+      "sourceIndex": 30,
+      "heading": "Thought content",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-32",
+      "sourceIndex": 31,
+      "heading": "Bizarre versus non-bizarre delusions in the source definition",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-33",
+      "sourceIndex": 32,
+      "heading": "Types of delusions",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-34",
+      "sourceIndex": 33,
+      "heading": "Delusions: control, passivity, thought insertion and reference",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-35",
+      "sourceIndex": 34,
+      "heading": "Delusions: grandiose, religious, guilt, nihilistic, somatic and jealousy",
+      "topicId": "thought"
+    },
+    {
+      "id": "e-36",
+      "sourceIndex": 35,
+      "heading": "Perception",
+      "topicId": "perception"
+    },
+    {
+      "id": "e-37",
+      "sourceIndex": 36,
+      "heading": "Cognitive examination",
+      "topicId": "cognition"
+    },
+    {
+      "id": "e-38",
+      "sourceIndex": 37,
+      "heading": "Intelligence, abstract thinking, judgment and insight",
+      "topicId": "cognition"
+    },
+    {
+      "id": "e-39",
+      "sourceIndex": 38,
+      "heading": "Questions during psychiatric interview — applied table",
+      "topicId": "general"
+    },
+    {
+      "id": "e-40",
+      "sourceIndex": 39,
+      "heading": "Psychiatric interview example table: source and clinical hints",
+      "topicId": "general"
+    },
+    {
+      "id": "e-41",
+      "sourceIndex": 40,
+      "heading": "MSE questions: speech, mood, affect and mental safety",
+      "topicId": "speech-affect"
+    },
+    {
+      "id": "e-42",
+      "sourceIndex": 41,
+      "heading": "MSE observational checks and question examples",
+      "topicId": "mse-overview"
+    },
+    {
+      "id": "e-43",
+      "sourceIndex": 42,
+      "heading": "Perception and cognition: sample interview prompts",
+      "topicId": "perception",
+      "relatedTopicIds": [
+        "cognition"
+      ]
+    },
+    {
+      "id": "e-44",
+      "sourceIndex": 43,
+      "heading": "Perceptual and thought questions plus memory stations",
+      "topicId": "perception",
+      "relatedTopicIds": [
+        "thought"
+      ]
+    },
+    {
+      "id": "e-45",
+      "sourceIndex": 44,
+      "heading": "Clinical table: memory probing and cautions",
+      "topicId": "cognition"
+    },
+    {
+      "id": "e-46",
+      "sourceIndex": 45,
+      "heading": "Serial sevens, judgment and insight applied",
+      "topicId": "cognition"
+    },
+    {
+      "id": "e-47",
+      "sourceIndex": 46,
+      "heading": "Source image: concentration, intelligence, judgment and insight probes",
+      "topicId": "cognition"
+    },
+    {
+      "id": "e-48",
+      "sourceIndex": 47,
+      "heading": "Cognitive assessment: source-page station checklist",
+      "topicId": "cognition"
+    },
+    {
+      "id": "e-49",
+      "sourceIndex": 48,
+      "heading": "Cognitive-assessment figure: exact source prompts",
+      "topicId": "cognition"
+    }
+  ]
+}

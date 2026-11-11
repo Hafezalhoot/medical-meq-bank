@@ -1,10 +1,11 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 test.use({serviceWorkers: 'block'});
 
 async function ready(page, width = 1440) {
   await page.setViewportSize({width, height: 820});
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy', 'false', {timeout: 20_000});
   await expect.poll(() => page.evaluate(() => globalThis.MEQProgressStore?.ready))
     .toMatchObject({available: true});

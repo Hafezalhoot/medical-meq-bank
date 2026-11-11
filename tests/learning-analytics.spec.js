@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test,expect} from '@playwright/test';
 test.use({serviceWorkers:'block'});
 test('Study progress gives honest per-lecture mastery among rated questions',async({page})=>{
@@ -11,7 +12,7 @@ test('Study progress gives honest per-lecture mastery among rated questions',asy
       }
     }));
   });
-  await page.goto('/');
+  await page.goto('/#legacy');
   await expect(page.locator('#learningAnalyticsRows tr')).toHaveCount(1,{timeout:15000});
   await page.locator('#studyInsights summary').click();
   const row=page.locator('#learningAnalyticsRows tr').first();
@@ -28,13 +29,13 @@ test('Automatic accuracy and written self-ratings have distinct labels',async({p
         auto:4,correct:3,self:2,selfKnown:1,wrong:2}
     ]));
   });
-  await page.goto('/');
+  await page.goto('/#legacy');
   await page.locator('#studyInsights summary').click();
   await expect(page.locator('#learningExamHistory')).toContainText('75% auto-scored MCQ accuracy (4 checked)');
   await expect(page.locator('#learningExamHistory')).toContainText('1 / 2 written self-rated correct');
 });
 test('Empty analytics never invents a percentage',async({page})=>{
-  await page.goto('/');
+  await page.goto('/#legacy');
   await page.locator('#studyInsights summary').click();
   await expect(page.locator('#learningAnalyticsEmpty')).toBeVisible();
   await expect(page.locator('#learningAnalyticsTable')).toBeHidden();
