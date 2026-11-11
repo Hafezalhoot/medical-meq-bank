@@ -1562,6 +1562,13 @@ function configureReaderWorkspace(lecture){
     article.querySelector('h3')?.textContent?.trim()||('Section '+(index+1)));
   const questionModes=new Set(['cases','shorts','images','detailed']);
   const sourceTopics=Array.isArray(lecture.subtopics)?lecture.subtopics:[];
+  const topicLabels=new Map(sourceTopics.map(topic=>[topic.id,topic.label]));
+  const sourceIndex=globalThis.MEQReviewedTopicMaps?.[lecture.id];
+  const indexedSections=Array.isArray(sourceIndex?.sections)&&
+    sourceIndex.sections.length===explanationArticles.length&&
+    sourceIndex.sections.every((item,index)=>item.sourceIndex===index&&
+      item.id==='e-'+(index+1)&&item.heading===topicHeadings[index])
+    ?sourceIndex.sections:null;
   const mappedTopics=new Map(modes.filter(mode=>questionModes.has(mode.key)).map(mode=>{
     const items=[...mode.node.querySelectorAll('.study-item[data-subtopics]')];
     return [mode.key,sourceTopics.map(topic=>({
@@ -1581,12 +1588,33 @@ function configureReaderWorkspace(lecture){
     next.hidden=!explanation;
     all.hidden=!explanation;
     if(explanation){
-      topicSelect.replaceChildren(...topicHeadings.map((heading,index)=>{
-        const option=document.createElement('option');
-        option.value='e-'+(index+1);
-        option.textContent=heading;
-        return option;
-      }));
+      if(indexedSections){
+        // Preserve the original page order; one primary owner per source
+        // section, with General for material that cannot be safely assigned.
+        const groups=[];
+        let group=null,previousTopic=null;
+        indexedSections.forEach((section,index)=>{
+          if(section.topicId!==previousTopic){
+            group=document.createElement('optgroup');
+            group.label=section.topicId==='general'?'General / unmapped':
+              topicLabels.get(section.topicId)||'General / unmapped';
+            groups.push(group);
+            previousTopic=section.topicId;
+          }
+          const option=document.createElement('option');
+          option.value=section.id;option.textContent=topicHeadings[index];
+          group.append(option);
+        });
+        topicSelect.replaceChildren(...groups);
+      }else{
+        // Unreviewed or stale map: expose ALL source sections ungrouped.
+        topicSelect.replaceChildren(...topicHeadings.map((heading,index)=>{
+          const option=document.createElement('option');
+          option.value='e-'+(index+1);
+          option.textContent=heading;
+          return option;
+        }));
+      }
     }else{
       if(questionTopic!=='all'&&!mapped.some(topic=>topic.id===questionTopic))questionTopic='all';
       const options=[{value:'q-all',label:'All question subtopics'}].concat(
@@ -1600,7 +1628,9 @@ function configureReaderWorkspace(lecture){
   };
   const syncPosition=(writeTab=false)=>{
     const sectionId=activeMode.key==='explanation'&&!readAll?'e-'+(topicIndex+1):null;
-    const topicId=questionModes.has(activeMode.key)&&questionTopic!=='all'?questionTopic:null;
+    const selectedSourceTopic=sectionId?indexedSections?.[topicIndex]?.topicId:null;
+    const topicId=questionModes.has(activeMode.key)&&questionTopic!=='all'?questionTopic:
+      selectedSourceTopic&&selectedSourceTopic!=='general'?selectedSourceTopic:null;
     if(location.hash.startsWith('#/lecture/')){
       const [path,search='']=location.hash.split('?',2);
       const params=new URLSearchParams(search);
@@ -1634,9 +1664,14 @@ function configureReaderWorkspace(lecture){
       next.disabled=readAll||topicIndex===explanationArticles.length-1;
       all.textContent=readAll?'Show one topic':'Read all topics';
       all.setAttribute('aria-pressed',String(readAll));
-      if(explanation)topicPosition.textContent=readAll
-        ?'All '+explanationArticles.length+' sections'
-        :'Section '+(topicIndex+1)+' of '+explanationArticles.length;
+      if(explanation){
+        const topicId=indexedSections?.[topicIndex]?.topicId;
+        const label=topicId?(topicId==='general'?'General / unmapped':topicLabels.get(topicId)):null;
+        topicPosition.textContent=readAll
+          ?'All '+explanationArticles.length+' sections'
+          :'Section '+(topicIndex+1)+' of '+explanationArticles.length+
+            (label?' · '+label:'');
+      }
       else{
         const items=[...activeMode.node.querySelectorAll('.study-item')];
         const visible=items.filter(item=>!item.classList.contains('reader-topic-filtered')).length;
