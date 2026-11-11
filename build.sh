@@ -45,6 +45,7 @@ required_files=(
   courses/packs/surgery-baseline.json
   lectures/catalog.json
   lectures/catalog.schema.json
+  lectures/navigation.schema.json
   lectures/lecture.schema.json
   lectures/materialization.json
   tools/add_lecture.py
@@ -63,6 +64,8 @@ required_files=(
   tools/materialize_lectures.py
   scripts/audit_repository.py
   scripts/validate_build.py
+  scripts/validate_navigation_maps.py
+  tests/test_navigation_maps.py
   scripts/validate_mobile_filters.py
   scripts/validate_runtime_extensions.py
   scripts/validate_progress_resilience.py
@@ -112,6 +115,7 @@ python3 -m py_compile \
 
 python3 tools/materialize_lectures.py
 python3 scripts/validate_lecture_images.py
+python3 scripts/validate_navigation_maps.py
 
 node --check src/study-context.js
 node --check src/study-position.js
@@ -155,7 +159,8 @@ install -m 0644 \
 install -m 0644 src/print-manager.css "$OUTPUT/print-manager.css"
 install -m 0644 src/print-manager.js "$OUTPUT/print-manager.js"
 install -m 0644 404.html _headers service-worker.js "$OUTPUT/"
-install -m 0644 lectures/catalog.json "$OUTPUT/lectures/"
+install -m 0644 lectures/catalog.json lectures/navigation.schema.json "$OUTPUT/lectures/"
+cp -R lectures/navigation "$OUTPUT/lectures/navigation"
 python3 tools/publish_lectures.py "$OUTPUT/lectures/data"
 python3 tools/build_search_index.py "$OUTPUT/lectures/search"
 cp -R icons "$OUTPUT/icons"
