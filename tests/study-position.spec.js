@@ -13,8 +13,16 @@ test('R03 resume the exact source section across Library navigation and reload',
   await expect.poll(async()=>Boolean(await page.evaluate(()=>globalThis.MEQStudyPosition?.read())))
     .toBe(true);
   await page.goto('/#/library');
+  const diagnostic=await page.evaluate(async()=>{
+    const record=await globalThis.MEQStudyPosition?.read();
+    const catalog=await globalThis.MEQLectureLoader?.loadCatalog();
+    return {workspace:document.body.dataset.workspace,record,
+      result:globalThis.MEQStudyPosition?.validate(record,catalog),
+      card:document.getElementById('continueLastStudyCard')?.outerHTML.slice(0,700)};
+  });
+  expect(diagnostic.result,{diagnostic}).toMatchObject({ok:true});
   const continueButton=page.getByRole('button',{name:/Continue Introduction to Dermatology/i});
-  await expect(continueButton).toBeVisible();
+  await expect(continueButton,{diagnostic}).toBeVisible();
   await page.reload();
   await expect(continueButton).toBeVisible();
   await continueButton.click();
