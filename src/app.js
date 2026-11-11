@@ -900,7 +900,7 @@ function render(){
   l.coreShorts.forEach((q,i)=>sec.querySelector('.core-grid').appendChild(shortCard(l,q,i,'core','High-Yield Short')));
   l.imageQuestions.forEach((q,i)=>sec.querySelector('.image-grid').appendChild(imageCard(l,q,i)));
   l.detailedShorts.forEach((q,i)=>sec.querySelector('.extra-grid').appendChild(shortCard(l,q,i,'extra','Detailed Question')));
-  const rg=sec.querySelector('.rapid-grid');l.rapid.forEach(([q,a],i)=>{const d=document.createElement('button');d.type='button';d.className='rapid-item';d.setAttribute('aria-expanded','false');d.innerHTML=`<strong>${i+1}. ${esc(q)}</strong><span class="rapid-answer">${esc(a)}</span>`;d.onclick=()=>{const open=d.classList.toggle('open');d.setAttribute('aria-expanded',open?'true':'false')};rg.appendChild(d)});
+  const rg=sec.querySelector('.rapid-grid');l.rapid.forEach(([q,a],i)=>{const d=document.createElement('button');d.type='button';d.className='rapid-item';d.id=l.id+'-rapid-'+(i+1);d.setAttribute('aria-expanded','false');d.innerHTML=`<strong>${i+1}. ${esc(q)}</strong><span class="rapid-answer">${esc(a)}</span>`;d.onclick=()=>{const open=d.classList.toggle('open');d.setAttribute('aria-expanded',open?'true':'false')};rg.appendChild(d)});
   bind();renderLectureNav();renderSubtopicNav();updateStatus();applyFilters();
   if(document.body.dataset.workspace==='lecture')configureReaderWorkspace(l);
   if(document.body.dataset.workspace==='practice')syncPracticeWorkspace();
@@ -1811,6 +1811,15 @@ function syncPracticeWorkspace(){
     session.querySelector('#practiceNext').addEventListener('click',()=>move(1));
   }
   const candidates=practiceEligibleQuestions(root);
+  // Restore only an explicit, source-scoped question link. Never assume a
+  // numeric position is stable when a lecture is edited or filtered.
+  const route=location.hash;
+  if(route.startsWith('#/practice')&&session.__routeApplied!==route){
+    const params=new URLSearchParams(route.split('?')[1]||'');
+    const requested=params.get('question');
+    if(requested&&(!params.get('lecture')||params.get('lecture')===root.dataset.lecture))
+      session.__selected=candidates.find(item=>item.id===requested)||null;
+  }
   root.querySelectorAll('.practice-current').forEach(item=>item.classList.remove('practice-current'));
   root.querySelectorAll('.practice-active').forEach(node=>node.classList.remove('practice-active'));
   if(!candidates.length){
@@ -1826,6 +1835,32 @@ function syncPracticeWorkspace(){
   const index=Math.max(0,candidates.indexOf(session.__selected));
   const item=candidates[index];
   session.__selected=item;
+  // Keep a copyable link in sync with the selected authored question, without
+  // adding a browser-history step for every Next/Previous action.
+  if(location.hash.startsWith('#/practice')&&item.id){
+    const params=new URLSearchParams(location.hash.split('?')[1]||'');
+    params.set('course',activeCourseId());params.set('subject',activeSubject);
+    params.set('lecture',root.dataset.lecture);params.set('question',item.id);
+    const hash='#/practice?'+params.toString();
+    if(location.hash!==hash){
+      const url=new URL(location.href);url.hash=hash;
+      history.replaceState(history.state,'',url.href);
+    }
+    session.__routeApplied=location.hash;
+    if(session.__lastSavedQuestion!==item.id){
+      session.__lastSavedQuestion=item.id;
+      const scope={view:'practice',courseId:activeCourseId(),
+        subjectId:activeSubject,lectureId:root.dataset.lecture};
+      globalThis.MEQStudyPosition?.savePractice(scope,item.id).then(result=>{
+        if(result.saved)return;
+        const notice=document.getElementById('workspaceNavigationNotice');
+        if(notice){notice.textContent='Could not save your question position on this device. Your grades are unchanged.';notice.hidden=false;}
+      });
+      document.dispatchEvent(new CustomEvent('meq:practice-position-changed',{
+        detail:{lectureId:root.dataset.lecture,questionId:item.id}
+      }));
+    }
+  }
   const reveal=document.getElementById('revealBtn');
   if(reveal){
     reveal.disabled=false;
