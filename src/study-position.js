@@ -8,6 +8,9 @@
   let databasePromise=null,writeQueue=Promise.resolve(),card=null,button=null,label=null;
 
   const validId=value=>typeof value==='string'&&value.length<=200&&IDS.test(value);
+  // Authored question IDs may contain underscores; catalog/course IDs do not.
+  const validQuestionId=value=>typeof value==='string'&&value.length<=200&&
+    /^[a-zA-Z0-9]+(?:[-_][a-zA-Z0-9]+)*$/.test(value);
   function openDatabase(){
     if(!('indexedDB' in globalThis))return Promise.reject(new Error('Device storage is unavailable.'));
     if(databasePromise)return databasePromise;
@@ -69,7 +72,7 @@
       return {ok:false,reason:'The saved lecture scope has changed.'};
     if(record.sectionId&&!SECTION.test(record.sectionId))
       return {ok:false,reason:'The saved section reference is invalid.'};
-    if(record.view==='practice'&&(!validId(record.questionId)||
+    if(record.view==='practice'&&(!validQuestionId(record.questionId)||
        query.get('lecture')!==record.lectureId||query.get('question')!==record.questionId||
        query.getAll('lecture').length!==1||query.getAll('question').length!==1))
       return {ok:false,reason:'The saved question reference is invalid.'};
@@ -125,7 +128,7 @@
   function savePractice(context,questionId){
     if(context?.view!=='practice'||!validId(context.courseId)||
        !validId(context.subjectId)||!validId(context.lectureId)||
-       !validId(questionId)||!questionId.startsWith(context.lectureId+'-'))
+       !validQuestionId(questionId)||!questionId.startsWith(context.lectureId+'-'))
       return Promise.resolve({saved:false,error:'Invalid Practice question context.'});
     const params=new URLSearchParams({course:context.courseId,subject:context.subjectId,
       lecture:context.lectureId,question:questionId});
