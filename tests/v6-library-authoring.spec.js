@@ -132,3 +132,20 @@ test('Study tools opens authoring and skip navigation retains the dedicated scre
   await expect(page).toHaveURL(/#\/manage$/);
   await expect(page.getByRole('button',{name:'Study tools',exact:true})).toHaveAttribute('aria-expanded','false');
 });
+
+test('unfinished intake survives a same-tab reload without changing saved study progress',async({page})=>{
+  await start(page);
+  await lectureStep(page);
+  await page.getByLabel('Lecture title',{exact:true}).fill('Recovered Arabic lecture');
+  await page.getByLabel('Source PDF filename',{exact:true}).fill('original-recovered.pdf');
+  await page.getByRole('button',{name:'Next',exact:true}).click();
+  await page.getByLabel('Topic headings').fill('Definition\\nالتشخيص');
+  await page.reload();
+  await expect(page.getByLabel('Topic headings')).toHaveValue('Definition\\nالتشخيص');
+  await page.getByRole('button',{name:'Back',exact:true}).click();
+  await expect(page.getByLabel('Lecture title',{exact:true})).toHaveValue('Recovered Arabic lecture');
+  await expect(page.getByLabel('Source PDF filename',{exact:true})).toHaveValue('original-recovered.pdf');
+  await expect(page.getByLabel('Stable lecture ID',{exact:true})).toHaveValue('surgery-urology-recovered-arabic-lecture');
+  await expect(page.getByText(/draft recovered/i)).toBeVisible();
+  expect(await page.evaluate(()=>localStorage.getItem('medicalLibraryIntakeDraftV1'))).toBeNull();
+});
