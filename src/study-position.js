@@ -53,14 +53,14 @@
     target.textContent=message;target.hidden=!message;
   };
   function validate(record,catalog){
-    if(!record||record.schemaVersion!==1||record.view!=='lecture'||
+    if(!record||record.schemaVersion!==1||!['lecture','practice'].includes(record.view)||
        !validId(record.courseId)||!validId(record.subjectId)||!validId(record.lectureId))
       return {ok:false,reason:'The saved place is invalid.'};
     const entry=(Array.isArray(catalog)?catalog:catalog?.lectures||[])
       .find(item=>item.id===record.lectureId);
     if(!entry||entry.courseId!==record.courseId||entry.subjectKey!==record.subjectId)
       return {ok:false,reason:'That lecture is no longer available in this library.'};
-    const path='#/lecture/'+record.lectureId;
+    const path=record.view==='practice'?'#/practice':'#/lecture/'+record.lectureId;
     if(typeof record.route!=='string'||!record.route.startsWith(path+'?'))
       return {ok:false,reason:'The saved lecture link is invalid.'};
     const query=new URLSearchParams(record.route.slice(record.route.indexOf('?')+1));
@@ -69,6 +69,10 @@
       return {ok:false,reason:'The saved lecture scope has changed.'};
     if(record.sectionId&&!SECTION.test(record.sectionId))
       return {ok:false,reason:'The saved section reference is invalid.'};
+    if(record.view==='practice'&&(!validId(record.questionId)||
+       query.get('lecture')!==record.lectureId||query.get('question')!==record.questionId||
+       query.getAll('lecture').length!==1||query.getAll('question').length!==1))
+      return {ok:false,reason:'The saved question reference is invalid.'};
     return {ok:true,entry};
   }
   async function read(scope=null){
@@ -78,6 +82,14 @@
     if(!validId(scope.courseId)||!validId(scope.subjectId)||!validId(scope.lectureId))
       return null;
     return getRecord('lecture:'+scope.courseId+'::'+scope.subjectId+'::'+scope.lectureId);
+  }
+  function queueRecord(record){
+    const task=writeQueue.catch(()=>{}).then(async()=>{
+      try{await putRecord(record);return {saved:true};}
+      catch(error){return {saved:false,error:error?.message||'Device storage failed.'};}
+    });
+    writeQueue=task;
+    return task;
   }
   function save(context,anchor={}){
     if(context?.view!=='lecture'||!validId(context.courseId)||
@@ -108,12 +120,20 @@
       tab,sectionId,topicId,sectionHeading:heading,route,
       updatedAt:new Date().toISOString()
     };
-    const task=writeQueue.catch(()=>{}).then(async()=>{
-      try{await putRecord(record);return {saved:true};}
-      catch(error){return {saved:false,error:error?.message||'Device storage failed.'};}
-    });
-    writeQueue=task;
-    return task;
+    return queueRecord(record);
+  }
+  function savePractice(context,questionId){
+    if(context?.view!=='practice'||!validId(context.courseId)||
+       !validId(context.subjectId)||!validId(context.lectureId)||
+       !validId(questionId)||!questionId.startsWith(context.lectureId+'-'))
+      return Promise.resolve({saved:false,error:'Invalid Practice question context.'});
+    const params=new URLSearchParams({course:context.courseId,subject:context.subjectId,
+      lecture:context.lectureId,question:questionId});
+    const record={schemaVersion:1,view:'practice',courseId:context.courseId,
+      subjectId:context.subjectId,lectureId:context.lectureId,tab:'questions',
+      sectionId:null,topicId:null,questionId,
+      route:'#/practice?'+params.toString(),updatedAt:new Date().toISOString()};
+    return queueRecord(record);
   }
   async function catalogForValidation(){
     if(globalThis.MEQLectureLoader?.loadCatalog)
@@ -130,7 +150,9 @@
       if(!result.ok||document.body.dataset.workspace!=='library')return;
       card.hidden=false;
       button.textContent='Continue '+result.entry.title;
-      label.textContent='Return to your last reading position on this device.';
+      label.textContent=record.view==='practice'
+        ?'Return to your last question on this device.'
+        :'Return to your last reading position on this device.';
     }catch(error){
       // Read-only Library stays usable when IndexedDB is denied.
     }
@@ -197,5 +219,5 @@
   if(document.readyState==='loading')
     document.addEventListener('DOMContentLoaded',mountCard,{once:true});
   else mountCard();
-  globalThis.MEQStudyPosition=Object.freeze({read,save,validate});
+  globalThis.MEQStudyPosition=Object.freeze({read,save,savePractice,validate});
 })();
