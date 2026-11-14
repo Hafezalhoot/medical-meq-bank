@@ -52,3 +52,15 @@ Read-only baseline export and a pinned branch-only source synchronization were u
 2. Review source diff for protected content, storage/scoring and migration regressions.
 3. Keep PR draft until evidence and review support completion. Do not merge or promote as a side effect of a status update.
 4. Next implementation slice: R02, one source-reviewed topic/section index that keeps all original sections reachable. Then R03 durable reading/question checkpoints.
+
+## 2026-11-14 release readiness / new backup work
+
+- The published site is still protected Cloudflare Worker `medical-meq-bank`, with no verified promotion newer than `f697846aa2edbbd3aaa70eee1f063ab2392b78f3`.
+- Owner asked to deploy the latest version and continue development. Explicit production authorization does not waive the repository's exact-head static/Chromium/WebKit gates or the separate protected promotion.
+- Draft PR #93 now contains R01 canonical Library, R02 author-reviewed section grouping, R03 lecture and per-question checkpoints, and a schema-v2-compatible optional `studyPosition` field in Backup Progress; original lecture JSON, figures, and grading keys remain untouched.
+- 2026-11-14 test-first proof: source inspection confirmed the backup omitted study position before implementation. New browser tests cover download payload, preview and confirmation, cancel, rejected foreign question, and backwards compatible older schema-v2 files.
+- On [run 43606607620](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/43606607620), static and WebKit checks passed. Chromium reported **256 passed / 1 failed**: the new export test tried to click a button in the collapsed `Study tools` menu. The test was corrected by opening the real menu; production implementation was not changed to mask the test mistake.
+- The test-only correction commit is `bff6c5693092a5e2918162905524bce24bccb598`. **Do not merge until its exact-head validation completes.** Do not count an earlier workflow as evidence for this commit.
+- The `Promote approved MEQ Worker` workflow requires `main` SHA and explicit owner confirmation. The connected tooling cannot dispatch that protected action; Cloudflare API credentials are not available locally. Once merged and validated, the owner can run the existing GitHub workflow with the current main SHA and blank Worker Version ID.
+- Latest production smoke was blocked by HTTP 302 to Cloudflare Access; it lacked `MEQ_CF_ACCESS_CLIENT_ID` and `MEQ_CF_ACCESS_CLIENT_SECRET`. Preserve Access protection; do not interpret that smoke failure as proof the app itself is broken.
+- Remaining Phase A work: compact phone-first reader, exam scope visibility, deeper accessibility/UX inspection, and authenticated production smoke. Continue on a separate branch after release, do not silently mutate production.
