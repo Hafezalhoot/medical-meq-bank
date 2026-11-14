@@ -30,6 +30,7 @@ test('B2 choosing a PDF fills metadata but never uploads or extracts source cont
 
 test('B2 previously downloaded review-only intake can be reloaded without overwriting published lectures',async({page})=>{
   await page.goto('/#/manage');
+  await expect(page.locator('#intakeNext')).toBeEnabled();
   await page.locator('#intakeImportFile').setInputFiles({
     name:'saved-intake.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(intake))
   });
