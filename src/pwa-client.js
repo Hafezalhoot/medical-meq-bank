@@ -1,5 +1,5 @@
 (() => {
-const APP_VERSION = '2026.11.11.4';
+const APP_VERSION = '2026.11.14.1';
   const STORAGE_PREFIX = 'medicalBank';
   const STATUS_KEY = 'medicalBankStatusV2';
   const BACKUP_SCHEMA = 'medical-meq-progress';
@@ -266,9 +266,15 @@ const APP_VERSION = '2026.11.11.4';
     if (data.schemaVersion !== BACKUP_SCHEMA_VERSION) {
       throw new Error('Unsupported backup schema version');
     }
+    const position=data.studyPosition;
+    if(position!=null&&(typeof position!=='object'||Array.isArray(position)||
+       JSON.stringify(position).length>8192)){
+      throw new Error('Backup study position is invalid');
+    }
     return {
       preferences: validatePreferences(data.preferences || {}),
-      progress: validateProgressObject(data.progress || {})
+      progress: validateProgressObject(data.progress || {}),
+      studyPosition:position||undefined
     };
   };
 
@@ -291,10 +297,20 @@ const APP_VERSION = '2026.11.11.4';
 
     const previousPreferences = safeStorageKeys();
     const previousProgress = await progressStore.exportAll();
+    const positionStore=globalThis.MEQStudyPosition;
+    let catalog=null;
+    if(incoming.studyPosition){
+      catalog=await globalThis.MEQLectureLoader?.loadCatalog?.();
+      const assessment=positionStore?.validate?.(incoming.studyPosition,catalog);
+      if(!assessment?.ok)throw new Error(assessment?.reason||'Study position is unavailable');
+    }
     try {
       writePreferences(incoming.preferences);
       await progressStore.replaceAll(incoming.progress);
       await progressStore.snapshotNow();
+      // This write runs last. IndexedDB commits atomically, so a rejected
+      // checkpoint cannot partly overwrite an existing location.
+      if(incoming.studyPosition)await positionStore.importRecord(incoming.studyPosition,catalog);
     } catch (error) {
       try {
         writePreferences(previousPreferences);
@@ -318,13 +334,15 @@ const APP_VERSION = '2026.11.11.4';
     if (!progressStore) throw new Error('Progress backup is unavailable');
     const status = await progressStore.ready;
     if (status?.available === false) throw new Error('Progress storage is unavailable');
+    const studyPosition=globalThis.MEQStudyPosition?await globalThis.MEQStudyPosition.read():null;
     downloadJson(`medical-meq-progress-${new Date().toISOString().slice(0, 10)}.json`, {
       schema: BACKUP_SCHEMA,
       schemaVersion: BACKUP_SCHEMA_VERSION,
       appVersion: APP_VERSION,
       exportedAt: new Date().toISOString(),
       preferences: safeStorageKeys(),
-      progress: await progressStore.exportAll()
+      progress: await progressStore.exportAll(),
+      studyPosition
     });
   };
 
@@ -431,6 +449,11 @@ const APP_VERSION = '2026.11.11.4';
         if (file.size > MAX_BACKUP_BYTES) throw new Error('Backup file is too large');
         const raw = await file.text();
         const incoming = validateBackup(JSON.parse(raw), file.size);
+        if(incoming.studyPosition){
+          const catalog=await globalThis.MEQLectureLoader?.loadCatalog?.();
+          const validation=globalThis.MEQStudyPosition?.validate?.(incoming.studyPosition,catalog);
+          if(!validation?.ok)throw new Error(validation?.reason||'Backup study position is invalid');
+        }
         const progressStore = globalThis.MEQProgressStore;
         if (!progressStore) throw new Error('Progress store is unavailable');
         const status = await progressStore.ready;
@@ -455,9 +478,12 @@ const APP_VERSION = '2026.11.11.4';
         $p('restoreIncomingCount').textContent = String(importedKeys.length);
         $p('restoreRemovedCount').textContent = String(lost);
         $p('restoreChangedCount').textContent = String(changed);
-        $p('restorePreviewNotice').textContent = !importedKeys.length && currentKeys.length
+        const placeNote=incoming.studyPosition
+          ? ' The last study position will also be restored.'
+          : ' Your existing saved study position will be kept.';
+        $p('restorePreviewNotice').textContent = (!importedKeys.length && currentKeys.length
           ? 'This backup has no rated questions. Restoring it will erase every current rating and replace your saved preferences on this device.'
-          : 'Restoring will replace this device’s current ratings and saved preferences, including any active exam session. Your original lecture images are not replaced.';
+          : 'Restoring will replace this device’s current ratings and saved preferences, including any active exam session. Your original lecture images are not replaced.')+placeNote;
         pendingRestore = incoming;
         restoreDialog.showModal();
       } catch (error) {

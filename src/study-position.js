@@ -73,6 +73,7 @@
     if(record.sectionId&&!SECTION.test(record.sectionId))
       return {ok:false,reason:'The saved section reference is invalid.'};
     if(record.view==='practice'&&(!validQuestionId(record.questionId)||
+       !record.questionId.startsWith(record.lectureId+'-')||
        query.get('lecture')!==record.lectureId||query.get('question')!==record.questionId||
        query.getAll('lecture').length!==1||query.getAll('question').length!==1))
       return {ok:false,reason:'The saved question reference is invalid.'};
@@ -137,6 +138,23 @@
       sectionId:null,topicId:null,questionId,
       route:'#/practice?'+params.toString(),updatedAt:new Date().toISOString()};
     return queueRecord(record);
+  }
+  // Restore only a catalog-verified location. No grade, exam or preference writes.
+  async function importRecord(record,catalog){
+    const verdict=validate(record,catalog);
+    if(!verdict.ok)throw new Error(verdict.reason);
+    const safe={
+      schemaVersion:1,view:record.view,
+      courseId:record.courseId,subjectId:record.subjectId,
+      lectureId:record.lectureId,tab:record.tab,
+      sectionId:record.sectionId||null,topicId:record.topicId||null,
+      questionId:record.view==='practice'?record.questionId:null,
+      sectionHeading:typeof record.sectionHeading==='string'?record.sectionHeading.slice(0,300):null,
+      route:record.route,updatedAt:new Date().toISOString()
+    };
+    const result=await queueRecord(safe);
+    if(!result.saved)throw new Error(result.error||'Could not restore study position.');
+    return true;
   }
   async function catalogForValidation(){
     if(globalThis.MEQLectureLoader?.loadCatalog)
@@ -222,5 +240,5 @@
   if(document.readyState==='loading')
     document.addEventListener('DOMContentLoaded',mountCard,{once:true});
   else mountCard();
-  globalThis.MEQStudyPosition=Object.freeze({read,save,savePractice,validate});
+  globalThis.MEQStudyPosition=Object.freeze({read,save,savePractice,validate,importRecord});
 })();
