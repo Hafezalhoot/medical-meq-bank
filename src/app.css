@@ -2487,3 +2487,23 @@ body[data-workspace="lecture"] .reader-pane .study-guide-explanation{max-width:7
   body[data-workspace="lecture"] .study-guide-explanation{padding:13px 12px 18px}
   body[data-workspace="lecture"] .study-guide-explanation h3{margin:0 0 9px;line-height:1.4}
 }
+
+/* C2 — expose existing source-reviewed lecture intake without more workspace chrome. */
+body[data-workspace="library"] .library-add-lecture-link{
+ display:inline-flex;align-items:center;justify-content:center;
+ flex:0 0 auto;min-height:46px;padding:9px 14px;
+ border:1px solid var(--v6-line);border-radius:10px;
+ background:var(--v6-selected);color:var(--v6-primary);
+ font:inherit;font-size:.86rem;font-weight:750;text-decoration:none;
+ white-space:nowrap;
+}
+body[data-workspace="library"] .library-add-lecture-link:hover{
+ background:var(--v6-surface);border-color:var(--v6-primary)
+}
+body[data-workspace="library"] .library-add-lecture-link:focus-visible{
+ outline:3px solid var(--v6-primary);outline-offset:2px
+}
+@media(max-width:540px){
+ body[data-workspace="library"] .library-add-lecture-link{flex:1 1 auto}
+}
+@media print{.library-add-lecture-link{display:none!important}}
