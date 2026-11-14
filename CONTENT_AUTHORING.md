@@ -2,6 +2,40 @@
 
 This is the contributor workflow for adding new Medical MEQ Bank content without creating lecture-specific build code.
 
+## Create a Material, specialty or Chapter request (C1 draft milestone)
+
+Open **Study tools → Manage library → Add a Material, specialty or Chapter**. Choose
+**New Material** (with its first specialty), **New specialty** within an
+existing material, or **New Chapter** within an existing specialty. The form checks existing labels/IDs and downloads an
+**unpublished metadata draft**. No medical questions, grades, source PDFs or
+published registries are changed by this download.
+
+In a checked-out repository, validate the downloaded file first:
+
+```bash
+python3 tools/import_library_structure.py /private/request.structure.json
+```
+
+After reviewing the location, identity, name, and expected changes, explicitly
+apply the metadata:
+
+```bash
+python3 tools/import_library_structure.py /private/request.structure.json --write
+```
+
+This importer rechecks the current catalog, course pack, scope, unique IDs and
+labels, then assigns the next available order. For a new Material, it stages both
+the new pack and course registry with rollback support; for a specialty or
+Chapter, it changes only the existing course pack. It never changes clinical
+lecture JSON or saved study progress. Review the resulting Git diff,
+run `npm run quality:static`, then publish through the existing protected PR
+and deployment process. **Downloading the file is not publication.** Existing
+lectures are never reassigned or deleted by this operation.
+
+The existing `tools/add_course.py` command remains available for direct reviewed
+course creation. All new Materials, specialties, and Chapters become selectable
+in the lecture intake wizard only after their reviewed structure has been published.
+
 ## Guided library intake (V6 UX-05A candidate)
 
 Open **Study tools → Manage library**, or `#/manage`. The four separate steps select a registered Material/course, specialty and optional Chapter, collect lecture identity/source filename, outline topics, and preview a **Needs source review** draft. Arabic/English topic wording is preserved. This is metadata preparation, not a PDF reader or clinical-content generator.

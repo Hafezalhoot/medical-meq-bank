@@ -90,3 +90,16 @@ body[data-workspace="manage"] :is(.hero,.study-launch-row,#studyBreadcrumb,.tool
 @media(max-width:700px){
   .intake-import-row{padding:12px;gap:8px}
 }
+
+/* Source-neutral structure requests, subordinate to the lecture intake flow. */
+.structure-draft{background:var(--v6-surface);border:1px solid var(--v6-line);border-radius:14px;margin:0 0 22px;padding:10px 20px}
+.structure-draft>summary{cursor:pointer;min-height:44px;align-content:center;color:var(--v6-primary);font-size:1.02rem;font-weight:750}
+.structure-draft>p{max-width:72ch;color:var(--v6-muted);font-size:.91rem}
+#structureDraftForm{padding:12px 0 4px}
+#structureDraftForm label{display:block;font-weight:650;min-width:0}
+#structureDraftForm :is(input,select){display:block;width:100%;min-width:0;min-height:46px;margin-top:7px;padding:10px 12px;border:1px solid var(--v6-line);border-radius:8px;background:var(--v6-canvas);color:var(--v6-ink);font:inherit}
+#structureDraftForm :is(button,input,select):focus-visible,.structure-draft>summary:focus-visible{outline:3px solid var(--v6-primary);outline-offset:3px}
+#structureDraftForm>p{font-size:.89rem;color:var(--v6-muted);margin:12px 0 0}
+#structureDraftForm #structureError{color:var(--v6-ink)}
+#structureDraftForm .intake-actions{margin-top:18px;padding-top:16px}
+@media(max-width:700px){.structure-draft{padding:8px 14px}}

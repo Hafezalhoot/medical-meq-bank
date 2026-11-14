@@ -13,6 +13,106 @@
     let registry,entries=[],step=0,started=false,ready=false,loading=false,suggestedId='',recovered=false;
     const draftKey='medicalLibraryIntakeDraftV1';
     const draftFields=[course,subject,chapter,title,source,id,order,topics];
+    let structureInitialized=false;
+    function initializeStructureDraft(){
+      if(structureInitialized)return;
+      const form=document.getElementById('structureDraftForm');
+      if(!form)return;
+      structureInitialized=true;
+      const kind=document.getElementById('structureKind');
+      const material=document.getElementById('structureCourse');
+      const materialLabel=document.getElementById('structureCourseLabel');
+      const specialty=document.getElementById('structureSubject');
+      const firstName=document.getElementById('structureFirstName');
+      const firstId=document.getElementById('structureFirstId');
+      const firstNameLabel=document.getElementById('structureFirstNameLabel');
+      const firstIdLabel=document.getElementById('structureFirstIdLabel');
+      const specialtyLabel=document.getElementById('structureSubjectLabel');
+      const name=document.getElementById('structureName');
+      const itemId=document.getElementById('structureId');
+      const message=document.getElementById('structureError');
+      let suggested='',suggestedFirst='';
+      const norm=value=>value.trim().replace(/\s+/g,' ').toLowerCase();
+      const optionsFor=(element,items)=>{
+        element.replaceChildren(...items.map(item=>new Option(item.label,item.id)));
+      };
+      function refreshSpecialties(){
+        const pack=registry.packs.get(material.value);
+        optionsFor(specialty,pack?.subjects||[]);
+      }
+      function updateKind(){
+        const materialMode=kind.value==='material';
+        materialLabel.hidden=materialMode;
+        specialtyLabel.hidden=kind.value!=='chapter';
+        firstNameLabel.hidden=!materialMode;
+        firstIdLabel.hidden=!materialMode;
+        message.hidden=true;
+        refreshSpecialties();
+      }
+      function suggestId(){
+        const slug=name.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+        if(!itemId.value||itemId.value===suggested)itemId.value=slug;
+        suggested=slug;
+      }
+      function suggestFirstId(){
+        const slug=firstName.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+        if(!firstId.value||firstId.value===suggestedFirst)firstId.value=slug;
+        suggestedFirst=slug;
+      }
+      function invalid(control,reason){
+        message.hidden=false;
+        message.textContent=reason;
+        control?.focus();
+      }
+      optionsFor(material,registry.courses);
+      material.value=registry.activeCourse||registry.courses[0]?.id||'';
+      kind.addEventListener('change',updateKind);
+      material.addEventListener('change',refreshSpecialties);
+      name.addEventListener('input',suggestId);
+      firstName.addEventListener('input',suggestFirstId);
+      for(const field of [kind,material,specialty,name,itemId,firstName,firstId]){
+        field.addEventListener('input',()=>{message.hidden=true;});
+      }
+      updateKind();
+      form.addEventListener('submit',event=>{
+        event.preventDefault();
+        message.hidden=true;
+        const materialMode=kind.value==='material';
+        const pack=registry.packs.get(material.value);
+        if(!materialMode&&!pack)return invalid(material,'Choose a registered material.');
+        const selected=pack?.subjects.find(item=>item.id===specialty.value);
+        if(kind.value==='chapter'&&!selected)
+          return invalid(specialty,'Choose an existing specialty.');
+        const title=name.value.trim().replace(/\s+/g,' ');
+        if(!title||title.length>160)
+          return invalid(name,'Enter a name of at most 160 characters.');
+        if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(itemId.value)||itemId.value.length>120)
+          return invalid(itemId,'Use a valid stable ID with lowercase English letters, numbers and single hyphens.');
+        const items=materialMode?registry.courses:
+          kind.value==='chapter'?(selected.chapters||[]):pack.subjects;
+        if(items.some(item=>item.id===itemId.value||norm(item.label)===norm(title)))
+          return invalid(itemId,'A Chapter or specialty with this ID or name already exists.');
+        const data={format:'medical-library-structure-intake',version:1,status:'needs-review',
+          kind:kind.value};
+        if(!materialMode)data.course=material.value;
+        if(kind.value==='chapter')data.subject=specialty.value;
+        data.item={id:itemId.value,label:title};
+        if(materialMode){
+          const initial=firstName.value.trim().replace(/\s+/g,' ');
+          if(!initial||initial.length>160)
+            return invalid(firstName,'Enter a first specialty name of at most 160 characters.');
+          if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(firstId.value)||firstId.value.length>120)
+            return invalid(firstId,'Enter a valid stable first specialty ID.');
+          data.firstSubject={id:firstId.value,label:initial};
+        }
+        const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'}));
+        const link=document.createElement('a');
+        link.href=url;link.download=(materialMode?'new-material':material.value)+'-'+itemId.value+'.structure.json';
+        document.body.append(link);link.click();link.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
+      });
+    }
+
     function saveDraft(){
       if(!ready)return;
       try{sessionStorage.setItem(draftKey,JSON.stringify({step,values:draftFields.map(control=>control.value)}));}
@@ -150,6 +250,7 @@
       try{
         registry=globalThis.MEQCourseRegistry;
         if(!registry)throw new Error('Registry unavailable');
+        initializeStructureDraft();
         // Catalog metadata checks every ID without loading the clinical payloads.
         entries=globalThis.MEQLectureLoader?(await globalThis.MEQLectureLoader.loadCatalog()).lectures:lectures;
         if(!started){

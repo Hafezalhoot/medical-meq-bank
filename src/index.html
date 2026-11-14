@@ -63,6 +63,28 @@
       aria-describedby="intakeImportHint">
     <p id="intakeImportHint">Import the metadata-only file previously downloaded from this wizard. Original PDFs, medical answers, and your study progress are never imported here.</p>
   </div>
+  <details id="structureDraftDisclosure" class="structure-draft" aria-label="Manage library structure">
+    <summary>Add a Material, specialty or Chapter</summary>
+    <p>Create a reviewed metadata request before you add lectures. The downloaded request does not alter the published library.</p>
+    <form id="structureDraftForm" novalidate>
+      <div class="intake-fields">
+        <label for="structureKind">What would you like to add?
+          <select id="structureKind"><option value="chapter">New Chapter</option><option value="specialty">New specialty</option><option value="material">New Material</option></select>
+        </label>
+        <label for="structureCourse" id="structureCourseLabel">Choose material<select id="structureCourse"></select></label>
+        <label for="structureSubject" id="structureSubjectLabel">Choose specialty<select id="structureSubject"></select></label>
+        <label for="structureName">New name<input id="structureName" type="text" maxlength="160" required dir="auto" autocomplete="off"></label>
+        <label for="structureId">Stable structure ID<input id="structureId" type="text" maxlength="120" spellcheck="false" autocomplete="off" required aria-describedby="structureIdHint"></label>
+        <label for="structureFirstName" id="structureFirstNameLabel" hidden>First specialty name<input id="structureFirstName" type="text" maxlength="160" autocomplete="off" dir="auto"></label>
+        <label for="structureFirstId" id="structureFirstIdLabel" hidden>First specialty ID<input id="structureFirstId" type="text" maxlength="120" spellcheck="false" autocomplete="off"></label>
+      </div>
+      <p id="structureIdHint">Use lowercase English letters, numbers and single hyphens. IDs cannot be renamed after publication without migration.</p>
+      <p id="structureError" class="intake-error" role="alert" hidden></p>
+      <div class="intake-actions"><button type="submit" class="btn btn-primary">Download structure draft</button></div>
+    </form>
+    <p class="structure-draft-note">The file must be checked against the current course configuration and applied through the reviewed importer. This screen does not publish or change your study history.</p>
+  </details>
+
   <ol class="intake-steps" aria-label="Lecture draft steps">
     <li aria-current="step">Location</li><li>Lecture</li><li>Topics</li><li>Review</li>
   </ol>

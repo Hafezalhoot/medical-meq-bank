@@ -12,6 +12,8 @@ required_files=(
   src/library-authoring.js
   src/library-authoring.css
   tools/import_library_draft.py
+  tools/import_library_structure.py
+  tests/test_library_structure.py
   src/exam-mode.js
   src/exam-mode.css
   src/course-packs.template.js
@@ -92,6 +94,8 @@ fi
 python3 -m py_compile \
   tools/add_lecture.py \
   tools/add_course.py \
+  tools/import_library_structure.py \
+  tests/test_library_structure.py \
   tools/new_lecture.py \
   tools/prepare_original_figure_pack.py \
   tools/check_original_figure_pack.py \
@@ -112,6 +116,8 @@ python3 -m py_compile \
   scripts/validate_lecture_images.py \
   scripts/validate_performance_budget.py \
   scripts/validate_repository_hygiene.py
+
+python3 -m unittest discover -s tests -p test_library_structure.py
 
 python3 tools/materialize_lectures.py
 python3 scripts/validate_lecture_images.py
