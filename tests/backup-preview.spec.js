@@ -202,6 +202,8 @@ test('R03 downloadable progress backup carries the current source-scoped Practic
     view:'practice',courseId:'surgery',subjectId:'urology',lectureId:'urology-bladder-cancer'
   },id),source);
   expect(saved).toMatchObject({saved:true});
+  await page.locator('#pwaToolsToggle').click();
+  await expect(page.locator('#exportProgressBtn')).toBeVisible();
   const event=page.waitForEvent('download');
   await page.locator('#exportProgressBtn').click();
   const downloaded=await event;
