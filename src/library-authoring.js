@@ -9,6 +9,7 @@
     const course=field('Course'),subject=field('Subject'),chapter=field('Chapter');
     const title=field('Title'),source=field('Source'),id=field('Id'),order=field('Order'),topics=field('Topics');
     const error=field('Error'),status=field('Status'),next=field('Next'),back=field('Back'),download=field('Download');
+    const pdfPicker=field('Pdf'),importFile=field('ImportFile');
     let registry,entries=[],step=0,started=false,ready=false,loading=false,suggestedId='',recovered=false;
     const draftKey='medicalLibraryIntakeDraftV1';
     const draftFields=[course,subject,chapter,title,source,id,order,topics];
@@ -166,6 +167,98 @@
         field('Retry').hidden=false;
       }finally{loading=false;}
     }
+    // Local source selection is intentionally filename-only. Never read or
+    // upload PDF bytes, and never claim a lecture is ready for study.
+    pdfPicker.addEventListener('change',()=>{
+      const file=pdfPicker.files?.[0];
+      if(!file)return;
+      if(file.name.length>180||!/^([^/\\\x00-\x1f\x7f]+)\.pdf$/i.test(file.name)){
+        invalid(pdfPicker,'Choose an original PDF filename without folders or control characters.');
+        return;
+      }
+      clearError();
+      source.value=file.name;
+      if(!title.value.trim()){
+        title.value=file.name.replace(/\.pdf$/i,'').trim();
+        suggestIdentity();
+      }
+      saveDraft();
+    });
+
+    // Re-import only the metadata-only schema emitted by this wizard. Existing
+    // clinical payloads and grade stores are never in the accepted format.
+    function validateImportedIntake(data){
+      const top=['format','lecture','status','version'];
+      if(!data||typeof data!=='object'||Array.isArray(data)||
+         Object.keys(data).sort().join(',')!==top.sort().join(',')||
+         data.format!=='medical-library-intake'||data.version!==1||
+         data.status!=='needs-source-review')
+        throw new Error('unsupported metadata-only format');
+      const item=data.lecture;
+      const expected=['course','subject','title','id','order','source','topics'];
+      if(!item||typeof item!=='object'||Array.isArray(item)||
+         expected.some(k=>!(k in item))||
+         Object.keys(item).some(k=>!expected.includes(k)&&k!=='chapterId'))
+        throw new Error('unsupported or medical-content fields');
+      if(!registry?.packs.has(item.course))throw new Error('material is not registered');
+      const pack=registry.packs.get(item.course);
+      const chosen=pack.subjects.find(s=>s.id===item.subject);
+      if(!chosen)throw new Error('specialty does not belong to this material');
+      if(item.chapterId!==undefined&&
+         (typeof item.chapterId!=='string'||!(chosen.chapters||[])
+           .some(chapter=>chapter.id===item.chapterId)))
+        throw new Error('chapter is not registered in this specialty');
+      if(typeof item.title!=='string'||!item.title.trim()||item.title.length>200||
+         entries.some(e=>e.courseId===item.course&&e.subjectKey===item.subject&&
+           normalize(e.title)===normalize(item.title)))
+        throw new Error('missing or duplicate lecture title');
+      if(typeof item.id!=='string'||item.id.length>200||
+         !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.id)||
+         entries.some(e=>e.id===item.id))
+        throw new Error('invalid or published lecture ID');
+      if(!Number.isSafeInteger(item.order)||item.order<1||item.order>99999||
+         entries.some(e=>e.courseId===item.course&&e.subjectKey===item.subject&&
+           Number(e.order)===item.order))
+        throw new Error('invalid or occupied lecture order');
+      if(typeof item.source!=='string'||item.source.length>180||
+         !/^[^/\\\x00-\x1f\x7f]+\.pdf$/i.test(item.source))
+        throw new Error('invalid PDF filename');
+      if(!Array.isArray(item.topics)||item.topics.length<1||item.topics.length>60)
+        throw new Error('missing or excessive topic headings');
+      const normalized=new Set();
+      item.topics.forEach((topic,index)=>{
+        if(!topic||typeof topic!=='object'||Array.isArray(topic)||
+           Object.keys(topic).sort().join(',')!=='id,label'||
+           topic.id!=='topic-'+(index+1)||
+           typeof topic.label!=='string'||!topic.label.trim()||topic.label.length>160||
+           normalized.has(normalize(topic.label)))
+          throw new Error('invalid or duplicate topic headings');
+        normalized.add(normalize(topic.label));
+      });
+      return item;
+    }
+    importFile.addEventListener('change',async()=>{
+      const file=importFile.files?.[0];
+      if(!file)return;
+      try{
+        if(!ready)throw new Error('library metadata is still loading');
+        if(file.size>128*1024||!file.name.toLowerCase().endsWith('.json'))
+          throw new Error('select a metadata JSON file under 128 KB');
+        const item=validateImportedIntake(JSON.parse(await file.text()));
+        clearError();
+        course.value=item.course;refreshSubjects();
+        subject.value=item.subject;refreshScope();
+        if(item.chapterId)chapter.value=item.chapterId;
+        title.value=item.title;source.value=item.source;id.value=item.id;
+        order.value=String(item.order);
+        topics.value=item.topics.map(topic=>topic.label).join('\n');
+        suggestedId=item.id;step=3;recovered=true;
+        saveDraft();showStep(false);
+      }catch(cause){
+        invalid(null,'Invalid intake file: '+String(cause.message||cause));
+      }finally{importFile.value='';}
+    });
+
     function route(){
       const active=location.hash.split('?')[0]==='#/manage';root.hidden=!active;
       const skip=document.querySelector('.skip-link');

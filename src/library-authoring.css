@@ -57,3 +57,36 @@ body[data-workspace="manage"] :is(.hero,.study-launch-row,#studyBreadcrumb,.tool
  .intake-actions button{flex:1}
 }
 @media print{.library-manager{display:none!important}}
+
+
+/* B2 — honest metadata-only source intake; never a fake PDF upload. */
+.intake-import-row{
+  display:grid;gap:7px;grid-template-columns:minmax(0,1fr);
+  padding:13px 16px;margin:0 0 20px;
+  border:1px solid var(--v6-line);background:var(--v6-surface);
+  border-radius:12px
+}
+.intake-import-row label{font-size:.87rem;font-weight:730;color:var(--v6-ink)}
+.intake-import-row input{
+  display:block;max-width:100%;width:100%;min-height:44px;
+  border:1px solid var(--v6-line);border-radius:9px;
+  padding:7px;color:var(--v6-ink);background:var(--v6-canvas);
+  font:inherit;font-size:.84rem
+}
+.intake-import-row input::file-selector-button,
+#intakePdf::file-selector-button{
+  min-height:36px;margin-inline-end:12px;padding:6px 12px;
+  border-radius:8px;border:1px solid var(--v6-line);
+  background:var(--v6-selected);color:var(--v6-primary);
+  font:inherit;font-weight:700;cursor:pointer
+}
+.intake-import-row p{
+  margin:0;max-width:76ch;font-size:.8rem;line-height:1.55;color:var(--v6-muted)
+}
+.library-manager #intakeImportFile:focus-visible{
+  outline:3px solid var(--v6-primary);outline-offset:3px
+}
+#intakePdfHelp{max-width:75ch;font-size:.83rem!important}
+@media(max-width:700px){
+  .intake-import-row{padding:12px;gap:8px}
+}
