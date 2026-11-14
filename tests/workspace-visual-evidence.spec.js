@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 // Screenshots are browser-generated release evidence, not visual regression
@@ -6,7 +7,7 @@ test.use({serviceWorkers: 'block'});
 
 async function openWorkspace(page, width, height) {
   await page.setViewportSize({width, height});
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {name: 'Your medical study library'})).toBeVisible();
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
 }

@@ -1,7 +1,8 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 async function waitForBank(page) {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
     name: 'Your medical study library'
   })).toBeVisible();
@@ -82,7 +83,7 @@ test('Safari desktop and iPhone study the new Dermatology lecture with source-li
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
 
-  await page.goto('/', {waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil:'domcontentloaded'});
   await expect(page.locator('#courseSelector')).toBeVisible();
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');

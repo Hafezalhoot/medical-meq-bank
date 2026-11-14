@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test,expect} from '@playwright/test';
 test.use({serviceWorkers:'block'});
 const derm='internal-medicine-ii-dermatology-introduction';
@@ -7,7 +8,7 @@ async function openNotebook(page){
   await page.locator('#mistakeNotebookBtn').click();
 }
 async function startMcq(page){
-  await page.goto('/');
+  await page.goto('/#legacy');
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#lectureFilter option[value="'+derm+'"]')).toHaveCount(1);
   await page.locator('#examModeBtn').click();
@@ -37,7 +38,7 @@ test('Daily Weak 15 uses saved weak questions, and notebook records auto-scored 
   await expect(page.locator('#examPosition')).toHaveText('Question 1 / 1');
 });
 test('Daily review empty state never starts an exam or fabricates weak questions',async({page})=>{
-  await page.goto('/');
+  await page.goto('/#legacy');
   await page.locator('#myReviewDisclosure summary').click();
   await page.locator('#dailyWeakBtn').click();
   await expect(page.locator('#dailyReviewStatus')).toContainText('No saved Weak / Review questions yet');

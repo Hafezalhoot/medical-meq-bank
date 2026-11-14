@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {test, expect} from '@playwright/test';
@@ -5,7 +6,7 @@ import {test, expect} from '@playwright/test';
 const headingName = 'Your medical study library';
 
 async function openBank(page) {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page).toHaveTitle(/My Medical Library/);
   await expect(page.getByRole('heading', {name: headingName})).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();
@@ -308,7 +309,7 @@ test('standalone offline HTML opens directly without a server', async ({page}) =
   const offlineFile = pathToFileURL(
     resolve('dist/offline/Medical_MEQ_Review_Bank_Offline.html')
   ).href;
-  await page.goto(offlineFile, {waitUntil: 'domcontentloaded'});
+  await page.goto(offlineFile+'#legacy', {waitUntil: 'domcontentloaded'});
 
   await expect(page.getByRole('heading', {name: headingName})).toBeVisible();
   await expect(page.locator('#reviewFilter')).toBeAttached();

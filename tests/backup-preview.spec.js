@@ -1,10 +1,11 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 test.use({serviceWorkers: 'block'});
 
 async function ready(page, width = 1440) {
   await page.setViewportSize({width, height: 820});
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy', 'false', {timeout: 20_000});
   await expect.poll(() => page.evaluate(() => globalThis.MEQProgressStore?.ready))
     .toMatchObject({available: true});
@@ -191,4 +192,91 @@ test('unreadable saved notebook is never displayed as zero records', async ({pag
   await expect(page.locator('#restorePreviewDialog')).toBeHidden();
   expect(await page.evaluate(() => localStorage.getItem('medicalBankReviewLogV1')))
     .toBe('{malformed');
+});
+
+
+test('R03 downloadable progress backup carries the current source-scoped Practice checkpoint',async({page})=>{
+  await ready(page);
+  const source='urology-bladder-cancer-case-bc-c01';
+  const saved=await page.evaluate(async id=>globalThis.MEQStudyPosition.savePractice({
+    view:'practice',courseId:'surgery',subjectId:'urology',lectureId:'urology-bladder-cancer'
+  },id),source);
+  expect(saved).toMatchObject({saved:true});
+  await page.locator('#pwaToolsToggle').click();
+  await expect(page.locator('#exportProgressBtn')).toBeVisible();
+  const event=page.waitForEvent('download');
+  await page.locator('#exportProgressBtn').click();
+  const downloaded=await event;
+  const {readFile}=await import('node:fs/promises');
+  const payload=JSON.parse(await readFile(await downloaded.path(),'utf8'));
+  expect(payload.schemaVersion).toBe(2);
+  expect(payload.studyPosition).toMatchObject({
+    schemaVersion:1,view:'practice',lectureId:'urology-bladder-cancer',questionId:source
+  });
+  expect(payload.progress).toEqual({});
+});
+
+test('R03 imported backup restores the exact study position only after user confirmation',async({page})=>{
+  await ready(page);
+  const importedQuestion='urology-bladder-cancer-case-bc-c01';
+  const record={
+    schemaVersion:1,view:'practice',courseId:'surgery',subjectId:'urology',
+    lectureId:'urology-bladder-cancer',questionId:importedQuestion,tab:'questions',
+    topicId:null,sectionId:null,
+    route:'#/practice?course=surgery&subject=urology&lecture=urology-bladder-cancer&question='+importedQuestion,
+    updatedAt:new Date().toISOString()
+  };
+  const file=backup({}, {'medicalBankDarkV4':'1'});
+  file.buffer=Buffer.from(JSON.stringify({
+    schema:'medical-meq-progress',schemaVersion:2,preferences:{},progress:{},
+    studyPosition:record
+  }));
+  await page.locator('#importProgressFile').setInputFiles(file);
+  const dialog=page.locator('#restorePreviewDialog');
+  await expect(dialog).toBeVisible();
+  await expect(page.locator('#restorePreviewNotice')).toContainText('last study position');
+  expect(await page.evaluate(async()=>globalThis.MEQStudyPosition.read())).toBeNull();
+  await page.locator('#restorePreviewCancel').click();
+  expect(await page.evaluate(async()=>globalThis.MEQStudyPosition.read())).toBeNull();
+  await page.locator('#importProgressFile').setInputFiles(file);
+  await expect(dialog).toBeVisible();
+  await page.locator('#restorePreviewConfirm').click();
+  await expect(page.locator('#appToast')).toContainText('Progress restored');
+  await expect.poll(async()=>page.evaluate(async()=>(await globalThis.MEQStudyPosition.read())?.questionId))
+    .toBe(importedQuestion);
+});
+
+test('R03 malformed imported checkpoint cannot silently replace saved grades',async({page})=>{
+  await ready(page);
+  await page.evaluate(async()=>globalThis.MEQProgressStore.replaceAll({
+    'urology-bladder-cancer::core::saved-grade':'weak'
+  }));
+  const file=backup({},{});
+  file.buffer=Buffer.from(JSON.stringify({
+    schema:'medical-meq-progress',schemaVersion:2,preferences:{},progress:{},
+    studyPosition:{
+      schemaVersion:1,view:'practice',courseId:'surgery',subjectId:'urology',
+      lectureId:'urology-bladder-cancer',questionId:'not-from-this-lecture',
+      route:'#/practice?course=surgery&subject=urology&lecture=urology-bladder-cancer&question=not-from-this-lecture'
+    }
+  }));
+  await page.locator('#importProgressFile').setInputFiles(file);
+  await expect(page.locator('#restorePreviewDialog')).toBeHidden();
+  await expect(page.locator('#appToast')).toContainText('current progress was kept');
+  expect(await page.evaluate(async()=>globalThis.MEQProgressStore.exportAll()))
+    .toEqual({'urology-bladder-cancer::core::saved-grade':'weak'});
+});
+
+test('R03 older schema-v2 backup without a position preserves the latest local checkpoint',async({page})=>{
+  await ready(page);
+  const source='urology-bladder-cancer-case-bc-c01';
+  expect(await page.evaluate(async id=>globalThis.MEQStudyPosition.savePractice({
+    view:'practice',courseId:'surgery',subjectId:'urology',lectureId:'urology-bladder-cancer'
+  },id),source)).toMatchObject({saved:true});
+  await page.locator('#importProgressFile').setInputFiles(backup({},{}));
+  await expect(page.locator('#restorePreviewDialog')).toBeVisible();
+  await page.locator('#restorePreviewConfirm').click();
+  await expect(page.locator('#appToast')).toContainText('Progress restored');
+  await expect.poll(async()=>page.evaluate(async()=>(await globalThis.MEQStudyPosition.read())?.questionId))
+    .toBe(source);
 });

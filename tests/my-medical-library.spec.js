@@ -6,7 +6,8 @@ test('My Medical Library identity is consistent in the page and installed-app ma
   await page.goto('/', {waitUntil: 'domcontentloaded'});
   await expect(page).toHaveTitle(/My Medical Library/);
   await expect(page.locator('.studio-wordmark strong')).toHaveText('My Medical Library');
-  await expect(page.getByRole('heading', {name: 'Your medical study library'})).toBeVisible();
+  await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
+  await expect(page.locator('.lecture-overview-panel')).toBeVisible();
   const href = await page.locator('link[rel="manifest"]').getAttribute('href');
   const manifestResponse = await page.request.get(new URL(href, page.url()).href);
   expect(manifestResponse.ok()).toBe(true);
@@ -15,9 +16,10 @@ test('My Medical Library identity is consistent in the page and installed-app ma
   expect(manifest.short_name).toBe('My Medical Library');
 });
 
+// Legacy disclosure/filters below remain available during staged migration.
 test('Browse my library opens the existing course catalog without replacing study state', async ({page}) => {
   await page.setViewportSize({width: 1440, height: 900});
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy', 'false', {timeout: 20000});
   const openLibrary = page.getByRole('link', {name: 'Browse my library'});
   await expect(openLibrary).toBeVisible();
@@ -31,7 +33,7 @@ test('Browse my library opens the existing course catalog without replacing stud
 
 test('mobile library and review remain available without horizontal overflow', async ({page}) => {
   await page.setViewportSize({width: 320, height: 700});
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.getByText('My Library', {exact: true}).first()).toBeVisible();
   await page.locator('#courseLibraryDisclosure summary').click();
   await expect(page.locator('#courseLibraryDisclosure')).toHaveAttribute('open', '');
@@ -44,7 +46,7 @@ test('mobile library and review remain available without horizontal overflow', a
 
 test('lecture navigation is a compact, accessible section row outside the lecture header', async ({page}) => {
   await page.setViewportSize({width: 390, height: 844});
-  await page.goto('/', {waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil:'domcontentloaded'});
   // On phones the lecture select belongs to the closed native filter sheet.
   await expect(page.locator('#mobileFiltersToggle')).toBeVisible();
   await page.locator('#mobileFiltersToggle').click();
@@ -67,7 +69,7 @@ test('lecture navigation is a compact, accessible section row outside the lectur
 });
 
 test('unreviewed marking schemes do not render empty answer boxes', async ({page}) => {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await page.locator('#lectureFilter').selectOption('urology-bladder-cancer');
   const card = page.locator('#urology-bladder-cancer-case-bc-c01');
   await expect(card).toBeVisible({timeout: 20000});

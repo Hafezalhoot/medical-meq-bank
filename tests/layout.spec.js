@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 test.use({serviceWorkers: 'block'});
@@ -12,7 +13,7 @@ const viewports = [
 
 async function openBank(page, viewport) {
   await page.setViewportSize({width: viewport.width, height: viewport.height});
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
     name: 'Your medical study library'
   })).toBeVisible();

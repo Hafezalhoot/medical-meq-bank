@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 // Course and lecture behavior is tested without PWA lifecycle reloads. The
@@ -5,7 +6,7 @@ import {test, expect} from '@playwright/test';
 test.use({serviceWorkers: 'block'});
 
 async function openBank(page) {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page).toHaveTitle(/My Medical Library/);
   await expect(page.locator('#courseSelector')).toBeVisible();
   await expect(page.locator('main')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});

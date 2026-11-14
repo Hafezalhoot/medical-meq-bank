@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 test.use({serviceWorkers: 'block'});
@@ -33,7 +34,7 @@ async function openWithOptionalGuide(page) {
     data.studyGuide=payload;
     await route.fulfill({response:result,json:data});
   });
-  await page.goto('/', {waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil:'domcontentloaded'});
   await expect(page.locator('#lectureFilter')).toBeAttached();
   await page.locator('#lectureFilter').selectOption('urology-congenital-anomalies');
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:15000});
@@ -68,7 +69,7 @@ test('optional source-linked study guide exposes all three modes without alterin
 });
 
 test('legacy lectures show no empty study guide section and preserve original content', async ({page}) => {
-  await page.goto('/', {waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil:'domcontentloaded'});
   await page.locator('#lectureFilter').selectOption('urology-congenital-anomalies');
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:15000});
   await expect(page.locator('.learning-companion')).toHaveCount(0);

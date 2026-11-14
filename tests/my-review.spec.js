@@ -1,9 +1,10 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 test.use({serviceWorkers: 'block'});
 
 async function openBank(page) {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.locator('#courseSelector')).toBeVisible();
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy', 'false', {timeout: 15_000});
 }
@@ -86,7 +87,7 @@ test('My Review actions fit narrow phones and remain keyboard-visible in dark mo
 
 test('standalone offline HTML opens My Review using embedded lecture metadata', async ({page}) => {
   test.setTimeout(90_000);
-  await page.goto('/offline/Medical_MEQ_Review_Bank_Offline.html', {waitUntil:'domcontentloaded'});
+  await page.goto('/offline/Medical_MEQ_Review_Bank_Offline.html#legacy', {waitUntil:'domcontentloaded'});
   await expect(page.locator('#myReviewDisclosure')).toBeAttached();
   // Offline export deliberately has no MEQLectureLoader network runtime.
   // Its 12 full source-based lectures are already embedded in the document.

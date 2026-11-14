@@ -32,13 +32,13 @@ test('Explanation topic picker shows one authored section at a time and can read
   expect(await select.locator('option').count()).toBe(11);
   await expect(page.locator('.study-guide-explanation:visible')).toHaveCount(1);
   await page.getByRole('button',{name:'Next topic'}).click();
-  await expect(select).toHaveValue('1');
+  await expect(select).toHaveValue('e-2');
   await expect(page.locator('.study-guide-explanation:visible')).toHaveCount(1);
   await page.getByRole('button',{name:'Read all topics'}).click();
   await expect(page.locator('.study-guide-explanation:visible')).toHaveCount(11);
   await page.getByRole('button',{name:'Show one topic'}).click();
   await expect(page.locator('.study-guide-explanation:visible')).toHaveCount(1);
-  await expect(select).toHaveValue('1');
+  await expect(select).toHaveValue('e-2');
 });
 
 test('switching to MCQs hides Explanation and survives a direct link reload',async({page})=>{

@@ -1,10 +1,11 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test,expect} from '@playwright/test';
 
 test.use({serviceWorkers:'block'});
 
 async function openPsychiatryOverview(page,width=1440,height=900){
   await page.setViewportSize({width,height});
-  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await page.locator('#subjectSelector').selectOption('psychiatry');

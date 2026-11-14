@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medical-meq-bank.local/lectures/navigation.schema.json",
+  "title": "Source-fingerprinted navigation map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "lectureId", "sourceSha256", "sections"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schemaVersion": {"const": 1},
+    "lectureId": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "sourceSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "sourceIndex", "heading", "topicId"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^e-[1-9][0-9]*$"},
+          "sourceIndex": {"type": "integer", "minimum": 0},
+          "heading": {"type": "string", "minLength": 1},
+          "topicId": {"type": "string"},
+          "relatedTopicIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

@@ -1,3 +1,4 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 
 test.use({serviceWorkers: 'block'});
@@ -6,7 +7,7 @@ const derm = 'internal-medicine-ii-dermatology-introduction';
 
 async function openDermatology(page, mobile=false) {
   if (mobile) await page.setViewportSize({width:390,height:844});
-  await page.goto('/', {waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil:'domcontentloaded'});
   await expect(page.locator('#courseSelector')).toBeVisible();
   await page.locator('#courseSelector').selectOption('internal-medicine-ii');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
@@ -50,7 +51,7 @@ test('one-lecture specialty has only authored reader destinations and fits narro
 });
 
 test('legacy lecture omits unsupported explanation/MCQ shortcuts and returns to its overview', async ({page}) => {
-  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
   await page.locator('#lectureFilter').selectOption('urology-bladder-cancer');
   await expect(page.locator('#lecture-urology-bladder-cancer')).toBeVisible({timeout:20000});
@@ -72,7 +73,7 @@ test('core lecture navigation and random-item action emit no JavaScript exceptio
   const errors=[];
   page.on('pageerror',error=>errors.push(error.message));
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await page.goto('/#legacy',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#mainContent')).toHaveAttribute('aria-busy','false',{timeout:20000});
   await expect(page.locator('.study-item:not(.hidden)').first()).toBeAttached();
   await page.getByRole('button',{name:'Random item'}).click();

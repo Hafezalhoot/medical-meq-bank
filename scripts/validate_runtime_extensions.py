@@ -127,6 +127,13 @@ def main() -> None:
     if offline.count('id="lecture-extensions"') != 1 or "const incomingLectures" not in offline:
         fail("standalone offline HTML does not contain the complete lecture bank")
 
+    for page_name, source in (('online', html), ('offline', offline)):
+        if source.count('id="reviewed-navigation-extension"') != 1:
+            fail(f'{page_name} is missing its source-reviewed navigation index')
+    if 'MEQReviewedTopicMaps' not in read(ROOT / "dist" / "navigation-index.js"):
+        fail("the generated navigation index has no source mapping data")
+    if "MEQReviewedTopicMaps" not in offline:
+        fail("standalone reader cannot use source topic mappings")
     print("Validated lazy loader and runtime extension ordering")
 
 

@@ -1,10 +1,11 @@
+// Retained legacy controls; the real default entry is covered in study-context.spec.js.
 import {test, expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.use({serviceWorkers: 'block'});
 
 async function openBank(page) {
-  await page.goto('/', {waitUntil: 'domcontentloaded'});
+  await page.goto('/#legacy', {waitUntil: 'domcontentloaded'});
   await expect(page.getByRole('heading', {
     name: 'Your medical study library'
   })).toBeVisible();

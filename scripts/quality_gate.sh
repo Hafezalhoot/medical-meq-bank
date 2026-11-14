@@ -14,6 +14,7 @@ required_generated=(
   dist/print-manager.js
   dist/courses/catalog.json
   dist/lectures/catalog.json
+  dist/lectures/navigation.schema.json
   dist/404.html
   dist/_headers
   dist/offline/Medical_MEQ_Review_Bank_Offline.html
@@ -33,6 +34,7 @@ done
 python3 -m unittest discover -s tests -p 'test_*.py'
 
 python3 scripts/validate_build.py
+python3 scripts/validate_navigation_maps.py
 python3 scripts/validate_mobile_filters.py
 python3 scripts/validate_runtime_extensions.py
 python3 scripts/validate_progress_resilience.py
