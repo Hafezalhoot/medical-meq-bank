@@ -45,7 +45,7 @@ test('B1: exam setup selects Material, specialty, and lecture without relying on
   await page.goto('/#/exams',{waitUntil:'domcontentloaded'});
   await page.locator('#workspaceExamStart').click();
   await expect(page.locator('#examDialog')).toBeVisible();
-  await expect(page.locator('#examDialog').getByLabel('Material / course',{exact:true})).toBeVisible();
+  await expect(page.locator('#examDialog').getByLabel('Exam material',{exact:true})).toBeVisible();
   await page.locator('#examCourse').selectOption('internal-medicine-ii');
   await page.locator('#examSpecialty').selectOption('psychiatry');
   await page.locator('#examLecture').selectOption('internal-medicine-ii-psychiatry-anxiety-disorders');
