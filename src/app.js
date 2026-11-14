@@ -1524,10 +1524,19 @@ function configureReaderWorkspace(lecture){
   topicBar.append(topicLabel,topicSelect,previous,next,all,topicPosition);
   header.append(topicBar);
 
+  // Keep original lecture context and offline action behind one accessible
+  // disclosure. Only presentation changes; source notes stay in the DOM.
+  const sourceDetails=root.querySelector('.source-boundary');
+  const lectureSummary=root.querySelector('.lecture-summary');
+  if(sourceDetails&&lectureSummary){
+    sourceDetails.querySelector('summary').textContent='About this lecture & source';
+    sourceDetails.querySelector('div')?.prepend(lectureSummary);
+  }
   const utilities=document.createElement('div');
   utilities.className='reader-utilities';
   const offline=root.querySelector('.offline-lecture-btn');
-  if(offline)utilities.append(offline);
+  if(offline&&sourceDetails)sourceDetails.querySelector('div')?.append(offline);
+  else if(offline)utilities.append(offline);
   if(utilities.childElementCount)header.append(utilities);
 
   const oldNav=root.querySelector('.lecture-section-nav');
