@@ -45,7 +45,7 @@ test('B1: exam setup selects Material, specialty, and lecture without relying on
   await page.goto('/#/exams',{waitUntil:'domcontentloaded'});
   await page.locator('#workspaceExamStart').click();
   await expect(page.locator('#examDialog')).toBeVisible();
-  await expect(page.getByLabel('Material / course',{exact:true})).toBeVisible();
+  await expect(page.locator('#examDialog').getByLabel('Material / course',{exact:true})).toBeVisible();
   await page.locator('#examCourse').selectOption('internal-medicine-ii');
   await page.locator('#examSpecialty').selectOption('psychiatry');
   await page.locator('#examLecture').selectOption('internal-medicine-ii-psychiatry-anxiety-disorders');
@@ -58,7 +58,7 @@ test('B1: exam setup selects Material, specialty, and lecture without relying on
   await page.locator('#examBegin').click();
   await expect(page.locator('#examPlay')).toBeVisible({timeout:20000});
   await expect(page.locator('#examQuestion')).toContainText('Anxiety Disorders');
-  await expect(page.locator('#examCounts')).toContainText('0 / 10');
+  await expect(page.locator('#examCounts')).toContainText('0 answered · 10 remaining');
 });
 
 test('B1: changing exam selectors does not silently change Library scope or ongoing ratings',async({page})=>{
