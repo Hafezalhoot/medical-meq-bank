@@ -171,7 +171,7 @@
     el('examAvailableCount').textContent=format==='mcq'
       ?mcqs+' source MCQs available'
       :format==='written'?written+' authored written questions available'
-      :available+' authored questions ('+mcqs+' MCQs + '+written+' written)'+
+      :available+' authored questions ('+mcqs+' source MCQs + '+written+' written)'+
         (el('examWeakOnly').checked?' · Before Weak/Review filtering':'');
   };
   const refreshExamLectures=(preferred='')=>{
