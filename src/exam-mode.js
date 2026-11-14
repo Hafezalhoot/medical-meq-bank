@@ -82,11 +82,16 @@
     '<section id="examSetup" class="exam-setup" aria-label="Set up exam">',
     '<p class="exam-intro">Choose a lecture or specialty. MCQs are checked immediately; descriptive questions are graded only after you compare your answer with the source model answer.</p>',
     '<div class="exam-settings">',
+    '<label>Exam material<select id="examCourse" aria-label="Exam material"></select></label>',
+    '<label>Exam specialty<select id="examSpecialty" aria-label="Exam specialty"></select></label>',
+    '<label>Exam lecture (for a lecture-only exam)<select id="examLecture" aria-label="Exam lecture"></select></label>',
     '<label>Question source<select id="examScope"><option value="lecture">Selected lecture</option><option value="subject">Entire specialty</option></select></label>',
     '<label>Question format<select id="examFormat"><option value="mixed">Smart mix · MCQ + written</option><option value="mcq">MCQs · auto graded</option><option value="written">MEQ / shorts · self graded</option></select></label>',
     '<label>Number of questions<select id="examCount"><option value="10">10 questions</option><option value="20" selected>20 questions</option><option value="30">30 questions</option><option value="50">50 questions</option></select></label>',
     '<label>Time limit<select id="examDuration"><option value="0">No timer</option><option value="10">10 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label>',
-    '</div><label class="exam-check"><input id="examWeakOnly" type="checkbox"><span>Focus on saved Weak / Review questions only</span></label>',
+    '</div><p id="examScopeSummary" class="exam-scope-summary" role="status" aria-live="polite">Preparing course and specialty…</p>',
+    '<p id="examAvailableCount" class="exam-available-count" role="status" aria-live="polite"></p>',
+    '<label class="exam-check"><input id="examWeakOnly" type="checkbox"><span>Focus on saved Weak / Review questions only</span></label>',
     '<p class="exam-disclaimer">Automatic scoring is available only for MCQs whose correct answers are present in the uploaded lecture. No distractors or clinical answers are generated.</p>',
     '<div class="exam-setup-actions"><button id="examBegin" type="button" class="exam-primary">Start exam</button>',
     '<button id="examResume" type="button" class="exam-secondary" hidden>Resume saved exam</button></div>',
@@ -134,14 +139,81 @@
        !Number.isInteger(item.answerIndex)||item.answerIndex<0||item.answerIndex>=item.options.length))return null;
     return {lecture,item};
   };
-  const selectedLectureId=()=>el('lectureFilter')?.value||'';
+  let examCatalog=[],scopeRequest=0;
+  const selectedLectureId=()=>el('examLecture').value||'';
+  const examScopeRows=()=>examCatalog.filter(item=>
+    item.courseId===el('examCourse').value&&item.subjectKey===el('examSpecialty').value);
+  const fillOptions=(control,values)=>control.replaceChildren(
+    ...values.map(item=>new Option(item.label,item.id)));
   const previewScope=()=>{
-    const current=selectedLectureId();
-    const currentOption=el('examScope').querySelector('option[value="lecture"]');
-    const allowed=current&&current!=='all';
-    currentOption.disabled=!allowed;
-    currentOption.textContent=allowed?'Selected lecture · '+(lectures.find(l=>l.id===current)?.title||current):'Select a lecture first';
-    if(!allowed)el('examScope').value='subject';
+    const rows=examScopeRows();
+    const selected=selectedLectureId();
+    const chosenLecture=rows.find(item=>item.id===selected);
+    const lectureOption=el('examScope').querySelector('option[value="lecture"]');
+    lectureOption.disabled=!chosenLecture;
+    lectureOption.textContent=chosenLecture?'Selected lecture':'Select a lecture first';
+    if(!chosenLecture&&el('examScope').value==='lecture')el('examScope').value='subject';
+    const registry=globalThis.MEQCourseRegistry;
+    const course=registry?.courses.find(item=>item.id===el('examCourse').value)?.label
+      ||el('examCourse').value||'Material not selected';
+    const specialty=registry?.packs.get(el('examCourse').value)?.subjects
+      .find(item=>item.id===el('examSpecialty').value)?.label
+      ||el('examSpecialty').value||'Specialty not selected';
+    const chosen=el('examScope').value==='lecture'?(chosenLecture?[chosenLecture]:[]):rows;
+    const mcqs=chosen.reduce((sum,item)=>sum+(Number(item.mcqCount)||0),0);
+    const written=chosen.reduce((sum,item)=>sum+
+      ['cases','coreShorts','imageQuestions','detailedShorts']
+        .reduce((total,key)=>total+(Number(item.expectedCounts?.[key])||0),0),0);
+    const format=el('examFormat').value;
+    const available=format==='mcq'?mcqs:format==='written'?written:mcqs+written;
+    el('examScopeSummary').textContent=course+' / '+specialty+
+      (el('examScope').value==='lecture'?' / '+(chosenLecture?.title||'Choose a lecture'):' / Entire specialty');
+    el('examAvailableCount').textContent=format==='mcq'
+      ?mcqs+' source MCQs available'
+      :format==='written'?written+' authored written questions available'
+      :available+' authored questions ('+mcqs+' source MCQs + '+written+' written)'+
+        (el('examWeakOnly').checked?' · Before Weak/Review filtering':'');
+  };
+  const refreshExamLectures=(preferred='')=>{
+    const rows=examScopeRows().slice().sort((a,b)=>(a.order||0)-(b.order||0));
+    fillOptions(el('examLecture'),rows.map(item=>({id:item.id,label:item.title})));
+    if(rows.some(item=>item.id===preferred))el('examLecture').value=preferred;
+    previewScope();
+  };
+  const refreshExamSpecialties=(preferred='')=>{
+    const registry=globalThis.MEQCourseRegistry;
+    const pack=registry?.packs.get(el('examCourse').value);
+    const subjects=[...(pack?.subjects||[])].sort((a,b)=>(a.order||0)-(b.order||0));
+    fillOptions(el('examSpecialty'),subjects);
+    if(subjects.some(item=>item.id===preferred))el('examSpecialty').value=preferred;
+    refreshExamLectures();
+  };
+  const initializeExamSelectors=async()=>{
+    const ticket=++scopeRequest,button=el('examBegin');
+    button.disabled=true;
+    el('examScopeSummary').textContent='Loading published materials and specialties…';
+    try{
+      const registry=globalThis.MEQCourseRegistry;
+      if(!registry)throw new Error('Library materials are not available.');
+      const loader=globalThis.MEQLectureLoader;
+      const catalog=loader?await loader.loadCatalog():{lectures};
+      if(ticket!==scopeRequest)return;
+      examCatalog=(Array.isArray(catalog)?catalog:catalog?.lectures||[])
+        .filter(item=>item.id&&item.courseId&&item.subjectKey);
+      const preferredCourse=activeCourseId(),preferredSubject=activeSubject;
+      const preferredLecture=el('lectureFilter')?.value||'';
+      fillOptions(el('examCourse'),registry.courses);
+      if(registry.courses.some(item=>item.id===preferredCourse))el('examCourse').value=preferredCourse;
+      refreshExamSpecialties(preferredSubject);
+      refreshExamLectures(preferredLecture);
+      el('examScope').value=examScopeRows().some(item=>item.id===preferredLecture)?'lecture':'subject';
+      previewScope();
+    }catch(error){
+      el('examScopeSummary').textContent='Could not load materials. Close and reopen the exam to retry.';
+      alertUser(String(error.message||error));
+    }finally{
+      if(ticket===scopeRequest)button.disabled=false;
+    }
   };
   const shuffle=items=>{
     const list=items.slice();
@@ -461,7 +533,8 @@
   };
   const showSetup=()=>{
     showPanel('examSetup');
-    previewScope();
+    if(!examCatalog.length)void initializeExamSelectors();
+    else previewScope();
     el('examResume').hidden=!session||session.finished;
     const recent=history()[0];
     el('examHistory').textContent=recent
@@ -492,11 +565,12 @@
     try{
       await Promise.resolve(globalThis.MEQProgressStore?.ready);
       const loader=globalThis.MEQLectureLoader;
-      const course=activeCourseId(),subject=activeSubject;
+      const course=el('examCourse').value,subject=el('examSpecialty').value;
+      if(!course||!subject)throw new Error('Choose a material and specialty for this exam.');
       if(loader)await loader.loadSubjectMetadata(subject,course);
       const scope=el('examScope').value;
       const selected=selectedLectureId();
-      const rows=visibleLectures().filter(l=>scope==='subject'||l.id===selected);
+      const rows=examScopeRows().filter(l=>scope==='subject'||l.id===selected);
       if(!rows.length)throw new Error('Choose a published lecture with questions first.');
       if(loader)await Promise.all(rows.map(l=>loader.loadLecture(l.id,{refresh:false,busy:false})));
       let pool=rows.flatMap(l=>cardPool(lectures.find(x=>x.id===l.id)||l));
@@ -725,6 +799,12 @@
     });
   });
   el('examClose').addEventListener('click',()=>dialog.close());
+  el('examCourse').addEventListener('change',()=>refreshExamSpecialties());
+  el('examSpecialty').addEventListener('change',()=>refreshExamLectures());
+  el('examLecture').addEventListener('change',previewScope);
+  el('examScope').addEventListener('change',previewScope);
+  el('examFormat').addEventListener('change',previewScope);
+  el('examWeakOnly').addEventListener('change',previewScope);
   el('examBegin').addEventListener('click',()=>void begin());
   el('examResume').addEventListener('click',()=>void resume());
   el('examPrevious').addEventListener('click',()=>{

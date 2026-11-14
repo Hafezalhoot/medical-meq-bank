@@ -145,3 +145,22 @@
 @media(max-width:700px){.my-review-body .daily-review-bar{align-items:stretch}.daily-review-actions{width:100%}.daily-review-actions button{flex:1;min-width:0}.exam-notebook{padding:18px 17px 24px}}
 @media(max-width:360px){.daily-review-actions button{font-size:.77rem;padding:8px 6px}}
 @media print{.daily-review-bar{display:none!important}}
+
+
+/* B1: source scope belongs to the exam, not the hidden Library filters. */
+.exam-settings label{align-content:start}
+.exam-settings select{max-width:100%}
+.exam-scope-summary{
+  margin:16px 0 4px;padding:12px 14px;background:var(--surface-soft);
+  color:var(--text);border:1px solid var(--line);border-radius:10px;
+  font-size:.9rem;font-weight:750;line-height:1.55;overflow-wrap:anywhere
+}
+.exam-available-count{
+  margin:2px 0 12px;color:var(--muted);
+  font-size:.83rem;line-height:1.5;font-variant-numeric:tabular-nums
+}
+@media(max-width:700px){
+  .exam-settings{gap:9px}
+  .exam-settings select{min-height:44px;padding:8px 30px 8px 10px}
+  .exam-scope-summary{margin:11px 0 3px;padding:10px 12px}
+}
