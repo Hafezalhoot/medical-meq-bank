@@ -2507,3 +2507,62 @@ body[data-workspace="library"] .library-add-lecture-link:focus-visible{
  body[data-workspace="library"] .library-add-lecture-link{flex:1 1 auto}
 }
 @media print{.library-add-lecture-link{display:none!important}}
+
+/* D1 — comfortable adjustable reading without changing the authored source. */
+body[data-workspace="lecture"] .reader-top-row{
+  display:flex;align-items:center;gap:8px;min-width:0;
+}
+body[data-workspace="lecture"] .reader-top-row .reader-mode-tabs{
+  flex:1 1 auto;min-width:0;
+}
+body[data-workspace="lecture"] .reader-text-size{
+  display:inline-flex;align-items:center;flex:0 0 auto;gap:3px;
+  padding:2px;border:1px solid var(--v6-line);
+  background:var(--v6-surface);border-radius:10px;
+}
+body[data-workspace="lecture"] .reader-text-size-button{
+  min-width:44px;min-height:44px;padding:5px 7px;
+  border:0;border-radius:8px;background:transparent;
+  color:var(--v6-ink);font:inherit;font-weight:750;font-size:.8rem;
+  cursor:pointer;
+}
+body[data-workspace="lecture"] .reader-text-size-button:hover:not(:disabled){
+  background:var(--v6-selected);
+}
+body[data-workspace="lecture"] .reader-text-size-button:focus-visible{
+  outline:3px solid var(--v6-primary);outline-offset:1px;
+}
+body[data-workspace="lecture"] .reader-text-size-button:disabled{
+  opacity:.45;cursor:not-allowed;
+}
+body[data-workspace="lecture"] .lecture .study-guide-explanation p{
+  font-size:calc(1rem * var(--reader-text-scale, 1));
+  overflow-wrap:anywhere;
+}
+body[data-workspace="lecture"] .lecture .study-guide-explanation h3,
+body[data-workspace="lecture"] .lecture .study-guide-mcq h3,
+body[data-workspace="lecture"] .lecture .short-q,
+body[data-workspace="lecture"] .lecture .case-title{
+  font-size:calc(1.08rem * var(--reader-text-scale, 1));
+  overflow-wrap:anywhere;
+}
+body[data-workspace="lecture"] .lecture .study-guide-choices span,
+body[data-workspace="lecture"] .lecture .study-guide-answer,
+body[data-workspace="lecture"] .lecture .short-answer,
+body[data-workspace="lecture"] .lecture .scenario,
+body[data-workspace="lecture"] .lecture .q-list li,
+body[data-workspace="lecture"] .lecture .answer-card li{
+  font-size:calc(1rem * var(--reader-text-scale, 1));
+  overflow-wrap:anywhere;
+}
+@media(max-width:400px){
+  body[data-workspace="lecture"] .reader-top-row{gap:4px}
+  body[data-workspace="lecture"] .reader-text-size{gap:0;padding:1px}
+  body[data-workspace="lecture"] .reader-text-size-button{
+    min-width:44px;padding-inline:3px;font-size:.72rem;
+  }
+}
+@media print{
+  .reader-text-size{display:none!important}
+  body[data-workspace="lecture"] .lecture{--reader-text-scale:1!important}
+}
