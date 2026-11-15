@@ -1499,7 +1499,48 @@ function configureReaderWorkspace(lecture){
   tabs.className='reader-mode-tabs';
   tabs.setAttribute('role','tablist');
   tabs.setAttribute('aria-label','Lecture reading modes');
-  header.append(tabs);
+  // Reading comfort is a device-only display preference, never a grade or backup field.
+  const sizeSteps=[100,112,125,138];
+  const sizeStorageKey='medicalBankReaderTextSizeV1';
+  const savedSize=Number(storage.get(sizeStorageKey));
+  let sizeIndex=Math.max(0,sizeSteps.indexOf(savedSize));
+  const topRow=document.createElement('div');
+  topRow.className='reader-top-row';
+  const sizeGroup=document.createElement('div');
+  sizeGroup.className='reader-text-size';
+  sizeGroup.setAttribute('role','group');
+  sizeGroup.setAttribute('aria-label','Reading text size');
+  const makeSizeButton=(name,label)=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='reader-text-size-button';
+    button.setAttribute('aria-label',name);
+    button.textContent=label;
+    return button;
+  };
+  const decreaseSize=makeSizeButton('Decrease text size','A−');
+  const resetSize=makeSizeButton('Reset text size','100%');
+  const increaseSize=makeSizeButton('Increase text size','A+');
+  const syncSize=()=>{
+    const percent=sizeSteps[sizeIndex];
+    root.style.setProperty('--reader-text-scale',String(percent/100));
+    resetSize.textContent=percent+'%';
+    decreaseSize.disabled=sizeIndex===0;
+    increaseSize.disabled=sizeIndex===sizeSteps.length-1;
+  };
+  const changeSize=next=>{
+    if(next===sizeIndex)return;
+    sizeIndex=next;
+    storage.set(sizeStorageKey,String(sizeSteps[sizeIndex]));
+    syncSize();
+  };
+  decreaseSize.addEventListener('click',()=>changeSize(Math.max(0,sizeIndex-1)));
+  increaseSize.addEventListener('click',()=>changeSize(Math.min(sizeSteps.length-1,sizeIndex+1)));
+  resetSize.addEventListener('click',()=>changeSize(0));
+  sizeGroup.append(decreaseSize,resetSize,increaseSize);
+  topRow.append(tabs,sizeGroup);
+  header.append(topRow);
+  syncSize();
 
   const topicBar=document.createElement('div');
   topicBar.id='readerTopicBar';
