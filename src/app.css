@@ -2564,4 +2564,5 @@ body[data-workspace="lecture"] .lecture .answer-card li{
 }
 @media print{
   .reader-text-size{display:none!important}
+  body[data-workspace="lecture"] .lecture{--reader-text-scale:1!important}
 }
