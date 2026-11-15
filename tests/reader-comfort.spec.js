@@ -40,3 +40,19 @@ for(const width of [320,768,1440]){
     await expect(tab).toBeFocused();
   });
 }
+
+test('D1 print typography ignores the device reading-size preference',async({page})=>{
+  await page.goto(derm,{waitUntil:'domcontentloaded'});
+  const paragraph=page.locator('.study-guide-explanation:visible p').first();
+  await expect(paragraph).toBeVisible({timeout:20000});
+  const size=page.getByRole('group',{name:'Reading text size'});
+  await size.getByRole('button',{name:'Increase text size'}).click();
+  await size.getByRole('button',{name:'Increase text size'}).click();
+  await page.emulateMedia({media:'print'});
+  const enlargedPreferencePrint=await paragraph.evaluate(node=>getComputedStyle(node).fontSize);
+  await page.emulateMedia({media:'screen'});
+  await size.getByRole('button',{name:'Reset text size'}).click();
+  await page.emulateMedia({media:'print'});
+  const defaultPreferencePrint=await paragraph.evaluate(node=>getComputedStyle(node).fontSize);
+  expect(enlargedPreferencePrint).toBe(defaultPreferencePrint);
+});
