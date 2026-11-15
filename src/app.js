@@ -46,14 +46,16 @@ function lectureCount(lecture, keyName){
 function lectureIsLoaded(lecture){return Boolean(lecture&&!lecture.__metadataOnly)}
 function lectureMcqCount(lecture){return lecture?.__metadataOnly?(Number.isInteger(lecture.mcqCount)?lecture.mcqCount:0):(lecture?.studyGuide?.mcqs?.length||0)}
 function lectureProgressPercent(lecture){
+  // Library shows rated study items, not timed-exam accuracy. Include
+  // reviewed source MCQs in both the available count and rated count.
   const total=['cases','coreShorts','imageQuestions','detailedShorts']
-    .reduce((sum,keyName)=>sum+lectureCount(lecture,keyName),0);
+    .reduce((sum,keyName)=>sum+lectureCount(lecture,keyName),lectureMcqCount(lecture));
   if(!total)return 0;
   let done=0;
   Object.entries(state).forEach(([statusKey,value])=>{
     if(!value)return;
     const parsed=progressKeyParts(statusKey);
-    if(parsed.lectureId!==lecture.id||!['case','core','image','extra'].includes(parsed.type))return;
+    if(parsed.lectureId!==lecture.id||!['case','core','image','extra','mcq'].includes(parsed.type))return;
     if(parsed.version===2&&(
       parsed.courseId!==(lecture.courseId||activeCourseId())||
       parsed.subjectKey!==lecture.subjectKey
