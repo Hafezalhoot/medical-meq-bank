@@ -2579,7 +2579,7 @@ body[data-workspace="library"] .lecture-overview-availability{
 body[data-workspace="library"] .lecture-content-pill{
   display:inline-flex;align-items:center;max-width:100%;
   min-width:0;padding:3px 8px;border:1px solid var(--v6-line);
-  border-radius:999px;line-height:1.45;font-size:.73rem;
+  border-radius:999px;line-height:1.45;font-size:.76rem;
   font-weight:690;overflow-wrap:anywhere;text-align:start;
 }
 body[data-workspace="library"] .lecture-content-pill--ready{
@@ -2593,6 +2593,6 @@ body[data-workspace="library"] .lecture-overview-content .lecture-overview-meta{
 }
 @media(max-width:390px){
   body[data-workspace="library"] .lecture-content-pill{
-    font-size:.69rem;padding:3px 7px;
+    font-size:.75rem;padding:3px 7px;
   }
 }
