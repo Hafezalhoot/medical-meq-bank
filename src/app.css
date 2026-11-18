@@ -2627,4 +2627,7 @@ body[data-workspace="lecture"] .lecture .answer-card li{
   body[data-workspace="library"] .lecture-overview-total{
     flex:0 0 auto;font-size:.75rem;white-space:nowrap
   }
+  body[data-workspace="library"] .lecture-overview-progress{
+    min-width:0;max-width:100%;grid-template-columns:auto minmax(0,1fr)
+  }
 }
