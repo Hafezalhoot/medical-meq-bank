@@ -59,6 +59,9 @@ test('C1 compact content badges stay readable at narrow width and without horizo
   await page.goto('/#/library',{waitUntil:'domcontentloaded'});
   const card=page.getByRole('button',{name:'Open lecture: Bladder Cancer'});
   await expect(card.locator('.lecture-overview-availability')).toBeVisible({timeout:20000});
+  const badgeSize=await card.locator('.lecture-content-pill').first()
+    .evaluate(node=>parseFloat(getComputedStyle(node).fontSize));
+  expect(badgeSize,'Small-screen content status must remain readable').toBeGreaterThanOrEqual(12);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
   await page.evaluate(()=>{document.documentElement.style.zoom='200%'});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
