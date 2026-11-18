@@ -77,6 +77,10 @@
        query.get('lecture')!==record.lectureId||query.get('question')!==record.questionId||
        query.getAll('lecture').length!==1||query.getAll('question').length!==1))
       return {ok:false,reason:'The saved question reference is invalid.'};
+    if(record.view==='lecture'&&(record.questionId||query.has('question'))&&
+       (record.tab!=='mcqs'||!validQuestionId(record.questionId)||
+        query.get('question')!==record.questionId||query.getAll('question').length!==1))
+      return {ok:false,reason:'The saved source MCQ reference is invalid.'};
     return {ok:true,entry};
   }
   async function read(scope=null){
@@ -104,16 +108,22 @@
       return Promise.resolve({saved:false,error:'Invalid study mode.'});
     const sectionId=anchor.sectionId||null;
     const topicId=anchor.topicId||null;
-    if(sectionId&&!SECTION.test(sectionId) || topicId&&!validId(topicId))
+    const questionId=tab==='mcqs'?(anchor.questionId||null):null;
+    if(sectionId&&!SECTION.test(sectionId) || topicId&&!validId(topicId) ||
+       questionId&&!validQuestionId(questionId))
       return Promise.resolve({saved:false,error:'Invalid reading position.'});
+    const source=document.getElementById('lecture-'+context.lectureId);
+    if(questionId&&![...(source?.querySelectorAll('.study-guide-mcq')||[])]
+      .some(item=>item.id===context.lectureId+'-mcq-'+questionId))
+      return Promise.resolve({saved:false,error:'This source MCQ is no longer available.'});
     const params=new URLSearchParams({
       course:context.courseId,subject:context.subjectId,tab
     });
     if(sectionId)params.set('section',sectionId);
     if(topicId)params.set('topic',topicId);
+    if(questionId)params.set('question',questionId);
     const route='#/lecture/'+context.lectureId+'?'+params.toString();
     const index=sectionId?Number(sectionId.slice(2))-1:-1;
-    const source=document.getElementById('lecture-'+context.lectureId);
     const heading=source?.querySelectorAll('.study-guide-explanation')[index]
       ?.querySelector('h3')?.textContent?.trim()||null;
     if(sectionId&&!heading)
@@ -124,6 +134,7 @@
       tab,sectionId,topicId,sectionHeading:heading,route,
       updatedAt:new Date().toISOString()
     };
+    if(questionId)record.questionId=questionId;
     return queueRecord(record);
   }
   function savePractice(context,questionId){
@@ -148,7 +159,7 @@
       courseId:record.courseId,subjectId:record.subjectId,
       lectureId:record.lectureId,tab:record.tab,
       sectionId:record.sectionId||null,topicId:record.topicId||null,
-      questionId:record.view==='practice'?record.questionId:null,
+      questionId:(record.view==='practice'||record.tab==='mcqs')?record.questionId||null:null,
       sectionHeading:typeof record.sectionHeading==='string'?record.sectionHeading.slice(0,300):null,
       route:record.route,updatedAt:new Date().toISOString()
     };

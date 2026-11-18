@@ -45,6 +45,11 @@ function lectureCount(lecture, keyName){
 }
 function lectureIsLoaded(lecture){return Boolean(lecture&&!lecture.__metadataOnly)}
 function lectureMcqCount(lecture){return lecture?.__metadataOnly?(Number.isInteger(lecture.mcqCount)?lecture.mcqCount:0):(lecture?.studyGuide?.mcqs?.length||0)}
+function lectureExplanationCount(lecture){
+  return lecture?.__metadataOnly
+    ?(Number.isInteger(lecture.explanationCount)?lecture.explanationCount:0)
+    :(lecture?.studyGuide?.explanation?.length||0);
+}
 function lectureProgressPercent(lecture){
   // Library shows rated study items, not timed-exam accuracy. Include
   // reviewed source MCQs in both the available count and rated count.
@@ -387,7 +392,7 @@ function renderLectureOverview(container,list){
   const section=document.createElement('section');
   section.className='lecture-overview-panel';
   const subjectName=subjects.find(subject=>subject.id===activeSubject)?.label||'Selected specialty';
-  section.innerHTML=`<div class="section-head"><div><h2>${esc(subjectName)} lectures</h2><p>Choose a lecture to open its available explanations, practice questions and original source figures.</p></div><span class="lecture-overview-total">${list.length} ${list.length===1?'lecture':'lectures'}</span></div><div class="lecture-overview-grid"></div>`;
+  section.innerHTML=`<div class="section-head"><div><h2>${esc(subjectName)} lectures</h2><p>Only published, source-reviewed lectures appear here. Unpublished intake drafts remain private until review.</p></div><span class="lecture-overview-total">${list.length} ${list.length===1?'lecture':'lectures'}</span></div><div class="lecture-overview-grid"></div>`;
   const grid=section.querySelector('.lecture-overview-grid');
   const isLibrary=document.body.dataset.workspace==='library';
   const shown=filterLibraryLectures(list);
@@ -436,9 +441,27 @@ function renderLectureOverview(container,list){
     const progress=lectureProgressPercent(lecture);
     const cases=lectureCount(lecture,'cases');
     const mcqs=lectureMcqCount(lecture);
+    const explanations=lectureExplanationCount(lecture);
     const shorts=lectureCount(lecture,'coreShorts');
     const images=lectureCount(lecture,'imageQuestions');
-    button.innerHTML=`<span class="lecture-overview-top"><span class="lecture-overview-index" aria-hidden="true">${String(lecture.order).padStart(2,'0')}</span><strong class="lecture-overview-name">${esc(lecture.title)}</strong></span><span class="lecture-overview-meta">${mcqs} source MCQs · ${cases} MEQ cases · ${shorts} core shorts · ${images} image questions</span><span class="lecture-overview-bottom"><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Open lecture'} <span aria-hidden="true">→</span></span></span>`;
+    const details=lectureCount(lecture,'detailedShorts');
+    const rapid=lectureCount(lecture,'rapid');
+    const descriptionId='lecture-contents-'+lecture.id;
+    button.setAttribute('aria-describedby',descriptionId);
+    const explanationLabel=explanations
+      ?explanations+' explanation '+(explanations===1?'section':'sections')
+      :'No published explanation';
+    const mcqLabel=mcqs?mcqs+' reviewed MCQs':'No reviewed MCQs';
+    const practiceCounts=[
+      cases?cases+' MEQ cases':null,
+      shorts?shorts+' short questions':null,
+      images?images+' image questions':null,
+      details?details+' detailed questions':null,
+      rapid?rapid+' Rapid Recall':null
+    ].filter(Boolean).join(' · ');
+    const pill=(label,available)=>'<span class="lecture-content-pill '+(
+      available?'lecture-content-pill--ready':'lecture-content-pill--missing')+'">'+label+'</span>';
+    button.innerHTML=`<span class="lecture-overview-top"><span class="lecture-overview-index" aria-hidden="true">${String(lecture.order).padStart(2,'0')}</span><strong class="lecture-overview-name">${esc(lecture.title)}</strong></span><span class="lecture-overview-content" id="${descriptionId}"><span class="lecture-overview-availability">${pill(explanationLabel,explanations>0)}${pill(mcqLabel,mcqs>0)}</span><span class="lecture-overview-meta">${practiceCounts}</span></span><span class="lecture-overview-bottom"><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Open lecture'} <span aria-hidden="true">→</span></span></span>`;
     button.onclick=()=>{
       const focused=document.body.dataset.workspace==='library';
       selectLecture(lecture.id,!focused);
@@ -1610,6 +1633,8 @@ function configureReaderWorkspace(lecture){
   // R02: index only authored explanation sections and explicitly mapped question
   // subtopics. MCQs have no authored subtopic relation and must stay unfiltered.
   const explanationArticles=[...root.querySelectorAll('.study-guide-explanation')];
+  const mcqArticles=[...root.querySelectorAll('#readerPane-mcqs .study-guide-mcq')];
+  const mcqIds=(lecture.studyGuide?.mcqs||[]).map(item=>item.id);
   const topicHeadings=explanationArticles.map((article,index)=>
     article.querySelector('h3')?.textContent?.trim()||('Section '+(index+1)));
   const questionModes=new Set(['cases','shorts','images','detailed']);
@@ -1628,18 +1653,28 @@ function configureReaderWorkspace(lecture){
       count:items.filter(item=>(item.dataset.subtopics||'').split(' ').includes(topic.id)).length
     })).filter(topic=>topic.count>0)];
   }));
-  let topicIndex=0,readAll=false,questionTopic='all',activeMode=modes[0];
+  let topicIndex=0,readAll=false,questionTopic='all',mcqIndex=0,mcqReadAll=false,activeMode=modes[0];
 
   const rebuildTopicSelect=()=>{
     const explanation=activeMode.key==='explanation'&&explanationArticles.length>0;
+    const mcq=activeMode.key==='mcqs'&&mcqArticles.length>0;
     const mapped=mappedTopics.get(activeMode.key)||[];
-    topicBar.hidden=!explanation&&!mapped.length;
+    topicBar.hidden=!explanation&&!mcq&&!mapped.length;
     if(topicBar.hidden)return;
-    topicLabel.textContent=explanation?'Lecture topic':'Question subtopic';
-    previous.hidden=!explanation;
-    next.hidden=!explanation;
-    all.hidden=!explanation;
-    if(explanation){
+    topicLabel.textContent=mcq?'MCQ question':explanation?'Lecture topic':'Question subtopic';
+    previous.hidden=!explanation&&!mcq;
+    next.hidden=!explanation&&!mcq;
+    all.hidden=!explanation&&!mcq;
+    previous.textContent=mcq?'Previous question':'Previous topic';
+    next.textContent=mcq?'Next question':'Next topic';
+    if(mcq){
+      topicSelect.replaceChildren(...mcqIds.map((_,index)=>{
+        const option=document.createElement('option');
+        option.value='m-'+(index+1);
+        option.textContent='Question '+(index+1)+' of '+mcqIds.length;
+        return option;
+      }));
+    }else if(explanation){
       if(indexedSections){
         // Preserve the original page order; one primary owner per source
         // section, with General for material that cannot be safely assigned.
@@ -1680,6 +1715,7 @@ function configureReaderWorkspace(lecture){
   };
   const syncPosition=(writeTab=false)=>{
     const sectionId=activeMode.key==='explanation'&&!readAll?'e-'+(topicIndex+1):null;
+    const questionId=activeMode.key==='mcqs'?mcqIds[mcqIndex]||null:null;
     const selectedSourceTopic=sectionId?indexedSections?.[topicIndex]?.topicId:null;
     const topicId=questionModes.has(activeMode.key)&&questionTopic!=='all'?questionTopic:
       selectedSourceTopic&&selectedSourceTopic!=='general'?selectedSourceTopic:null;
@@ -1689,17 +1725,22 @@ function configureReaderWorkspace(lecture){
       if(writeTab)params.set('tab',activeMode.key);
       if(sectionId)params.set('section',sectionId);else params.delete('section');
       if(topicId)params.set('topic',topicId);else params.delete('topic');
+      if(questionId)params.set('question',questionId);else params.delete('question');
       const nextHash=path+(params.size?'?'+params.toString():'');
       if(location.hash!==nextHash)
         history.replaceState(history.state,'',location.pathname+location.search+nextHash);
     }
     document.dispatchEvent(new CustomEvent('meq:reader-position-changed',{
-      detail:{lectureId:lecture.id,sectionId,topicId,tab:activeMode.key}
+      detail:{lectureId:lecture.id,sectionId,topicId,tab:activeMode.key,questionId}
     }));
   };
   const updateTopics=(writeTab=false)=>{
     explanationArticles.forEach((article,index)=>{
       article.hidden=!readAll&&index!==topicIndex;
+    });
+    // Scope the focus class to lecture presentation, never the shared Practice DOM.
+    mcqArticles.forEach((article,index)=>{
+      article.classList.toggle('reader-mcq-condensed',!mcqReadAll&&index!==mcqIndex);
     });
     // This is view-only: source questions, scoring, grades and mappings stay intact.
     modes.filter(mode=>questionModes.has(mode.key)).forEach(mode=>{
@@ -1711,12 +1752,19 @@ function configureReaderWorkspace(lecture){
     });
     if(!topicBar.hidden){
       const explanation=activeMode.key==='explanation';
-      topicSelect.value=explanation?'e-'+(topicIndex+1):'q-'+questionTopic;
-      previous.disabled=readAll||topicIndex===0;
-      next.disabled=readAll||topicIndex===explanationArticles.length-1;
-      all.textContent=readAll?'Show one topic':'Read all topics';
-      all.setAttribute('aria-pressed',String(readAll));
-      if(explanation){
+      const mcq=activeMode.key==='mcqs';
+      topicSelect.value=mcq?'m-'+(mcqIndex+1):explanation?'e-'+(topicIndex+1):'q-'+questionTopic;
+      previous.disabled=mcq?(mcqReadAll||mcqIndex===0):(readAll||topicIndex===0);
+      next.disabled=mcq?(mcqReadAll||mcqIndex===mcqArticles.length-1):
+        (readAll||topicIndex===explanationArticles.length-1);
+      all.textContent=mcq?(mcqReadAll?'Show one MCQ':'Browse all MCQs'):
+        (readAll?'Show one topic':'Read all topics');
+      all.setAttribute('aria-pressed',String(mcq?mcqReadAll:readAll));
+      if(mcq){
+        topicPosition.textContent=mcqReadAll
+          ?'All '+mcqArticles.length+' source MCQs'
+          :'Question '+(mcqIndex+1)+' of '+mcqArticles.length;
+      }else if(explanation){
         const topicId=indexedSections?.[topicIndex]?.topicId;
         const label=topicId?(topicId==='general'?'General / unmapped':topicLabels.get(topicId)):null;
         topicPosition.textContent=readAll
@@ -1736,17 +1784,29 @@ function configureReaderWorkspace(lecture){
     if(activeMode.key==='explanation'){
       topicIndex=Math.max(0,Math.min(explanationArticles.length-1,Number(topicSelect.value.slice(2))-1||0));
       readAll=false;
+    }else if(activeMode.key==='mcqs'){
+      mcqIndex=Math.max(0,Math.min(mcqArticles.length-1,Number(topicSelect.value.slice(2))-1||0));
+      mcqReadAll=false;
     }else questionTopic=topicSelect.value.slice(2);
     updateTopics(true);
   });
   previous.addEventListener('click',()=>{
-    topicIndex=Math.max(0,topicIndex-1);readAll=false;updateTopics(true);
+    if(activeMode.key==='mcqs'){
+      mcqIndex=Math.max(0,mcqIndex-1);mcqReadAll=false;
+    }else{topicIndex=Math.max(0,topicIndex-1);readAll=false;}
+    updateTopics(true);
   });
   next.addEventListener('click',()=>{
-    topicIndex=Math.min(explanationArticles.length-1,topicIndex+1);
-    readAll=false;updateTopics(true);
+    if(activeMode.key==='mcqs'){
+      mcqIndex=Math.min(mcqArticles.length-1,mcqIndex+1);mcqReadAll=false;
+    }else{topicIndex=Math.min(explanationArticles.length-1,topicIndex+1);readAll=false;}
+    updateTopics(true);
   });
-  all.addEventListener('click',()=>{readAll=!readAll;updateTopics(true);});
+  all.addEventListener('click',()=>{
+    if(activeMode.key==='mcqs')mcqReadAll=!mcqReadAll;
+    else readAll=!readAll;
+    updateTopics(true);
+  });
 
   const queryMode=()=>{
     const query=location.hash.split('?')[1]||'';
@@ -1763,6 +1823,12 @@ function configureReaderWorkspace(lecture){
       if(selected.key==='explanation'){
         topicIndex=section&&Number(section[1])<=explanationArticles.length?Number(section[1])-1:0;
         readAll=false;
+      }
+      if(selected.key==='mcqs'){
+        // Source-authored IDs, not array positions, are the durable question anchor.
+        const sourceIndex=mcqIds.indexOf(params.get('question'));
+        mcqIndex=sourceIndex<0?0:sourceIndex;
+        mcqReadAll=false;
       }
       if(questionModes.has(selected.key)){
         const requestedTopic=params.get('topic')||'all';

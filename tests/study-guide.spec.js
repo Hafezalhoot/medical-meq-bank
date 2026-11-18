@@ -28,6 +28,17 @@ const payload = {
 };
 
 async function openWithOptionalGuide(page) {
+  // The optional guide is a test-only authored payload; its catalog metadata
+  // must also match the new source-exact explanation/MCQ contract.
+  await page.route('**/lectures/catalog.json',async route=>{
+    const result=await route.fetch();
+    const catalog=await result.json();
+    const entry=catalog.lectures.find(lecture=>lecture.id==='urology-congenital-anomalies');
+    if(!entry)throw new Error('Test source lecture missing from catalog');
+    entry.explanationCount=payload.explanation.length;
+    entry.mcqCount=payload.mcqs.length;
+    await route.fulfill({response:result,json:catalog});
+  });
   await page.route('**/lectures/data/urology-congenital-anomalies.json', async route => {
     const result=await route.fetch();
     const data=await result.json();

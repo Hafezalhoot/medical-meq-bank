@@ -247,6 +247,7 @@ def main() -> None:
     )
     validate_image_sources(medical_source)
     mcq_count = len((medical_source.get("studyGuide") or {}).get("mcqs", []))
+    explanation_count = len((medical_source.get("studyGuide") or {}).get("explanation", []))
     for key in LECTURE_LIST_KEYS:
         if key == "rapid":
             continue
@@ -284,6 +285,7 @@ def main() -> None:
         "file": relative_file,
         "expectedCounts": counts,
         "mcqCount": mcq_count,
+        "explanationCount": explanation_count,
         "courseId": args.course,
         "schemaVersion": 1,
     }

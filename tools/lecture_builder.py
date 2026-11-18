@@ -344,6 +344,14 @@ def load_json_lectures(root: Path | str = Path(".")) -> list[dict]:
                     f"Lecture {lecture_id} has invalid MCQ count: catalog {declared_mcqs!r}, "
                     f"source {actual_mcqs}"
                 )
+        actual_explanation = len((validated.get("studyGuide") or {}).get("explanation", []))
+        declared_explanation = entry.get("explanationCount")
+        if (type(declared_explanation) is not int or declared_explanation < 0
+                or declared_explanation != actual_explanation):
+            raise SystemExit(
+                f"Lecture {lecture_id} has invalid explanation count: catalog "
+                f"{declared_explanation!r}, source {actual_explanation}"
+            )
         published = dict(validated)
         published["schemaVersion"] = payload_schema_version
         published["courseId"] = course_id
