@@ -2566,3 +2566,15 @@ body[data-workspace="lecture"] .lecture .answer-card li{
   .reader-text-size{display:none!important}
   body[data-workspace="lecture"] .lecture{--reader-text-scale:1!important}
 }
+
+
+/* U2: Focused MCQ reading is presentational only. Practice and print retain
+   every authored question and the original score/rating handlers. */
+body[data-workspace="lecture"] #readerPane-mcqs .study-guide-mcq.reader-mcq-condensed{
+  display:none!important;
+}
+@media print{
+  body[data-workspace="lecture"] #readerPane-mcqs .study-guide-mcq.reader-mcq-condensed{
+    display:block!important;
+  }
+}
