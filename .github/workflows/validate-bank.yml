@@ -37,6 +37,24 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  pdf-source-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python for private source-intake fixture tests
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install pinned optional PDF inspection engine
+        run: python3 -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
+
+      - name: Validate private PDF source intake with synthetic nonmedical pages
+        run: python3 -m unittest discover -s tests -p test_pdf_source_inventory.py -v
+
   chromium-quality:
     needs: validate
     runs-on: ubuntu-latest
