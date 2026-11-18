@@ -3,6 +3,7 @@ from hashlib import sha256
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import json
+import subprocess
 import sys
 import unittest
 
@@ -81,6 +82,21 @@ class OneStepIntakeTests(unittest.TestCase):
         self.intake.write_text(' '*(128*1024+1),encoding='utf-8')
         with self.assertRaisesRegex(SourceInventoryError,'128 KB'):
             create_private_bundle(self.pdf,self.root/'oversized',intake_path=self.intake)
+
+
+    def test_real_cli_accepts_wizard_download_and_refuses_overwrite(self):
+        command=[sys.executable,str(Path(__file__).resolve().parents[1]/'tools'/'pdf_source_inventory.py'),
+                 str(self.pdf),'--intake',str(self.intake),'--output-dir',str(self.root/'from-cli')]
+        run=subprocess.run(command,check=False,text=True,capture_output=True)
+        self.assertEqual(run.returncode,0,run.stdout+'\\n'+run.stderr)
+        output=self.root/'from-cli'
+        self.assertTrue((output/'source-topic-map.md').is_file())
+        self.assertTrue((output/'lecture-draft.json').is_file())
+        original_hash=sha256((output/'source-inventory.json').read_bytes()).hexdigest()
+        repeat=subprocess.run(command,check=False,text=True,capture_output=True)
+        self.assertNotEqual(repeat.returncode,0)
+        self.assertIn('already exists',repeat.stderr)
+        self.assertEqual(sha256((output/'source-inventory.json').read_bytes()).hexdigest(),original_hash)
 
     def test_requires_either_draft_or_intake_never_both(self):
         with self.assertRaisesRegex(SourceInventoryError,'one'):
