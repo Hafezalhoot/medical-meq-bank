@@ -291,6 +291,7 @@ def create_private_bundle(
             'PRIVATE ORIGINAL PDF SOURCE INVENTORY\n'
             'Native text is a draft transcription, NOT full source coverage.\n'
             'Start with source-index.md and inspect every original page.\n'
+            'When supplied, source-topic-map.md lists topics with unassigned PDF pages.\n'
             'Review image text, diagrams, legends, tables and source page references.\n'
             'Source original is NOT included; keep the original PDF available privately.\n'
             'All review checkboxes remain unchecked. No facts, answers or exam keys were generated.\n'
