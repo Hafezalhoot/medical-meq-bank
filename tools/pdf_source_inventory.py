@@ -147,6 +147,46 @@ def load_matching_draft(path: Path, pdf_name: str) -> tuple[dict, bytes]:
     return draft, raw
 
 
+
+def load_matching_intake(path: Path, pdf_name: str) -> tuple[dict, bytes, bytes]:
+    """Reuse the reviewed wizard importer; never trust a source filename alone."""
+    try:
+        if path.stat().st_size > 128 * 1024:
+            raise SourceInventoryError('Manage Library intake exceeds 128 KB')
+        raw = path.read_bytes()
+        document = json.loads(raw.decode('utf-8'))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SourceInventoryError('Cannot read valid private Manage Library intake JSON') from error
+    if (not isinstance(document, dict)
+            or not isinstance(document.get('lecture'), dict)
+            or document['lecture'].get('source') != pdf_name):
+        raise SourceInventoryError('Manage Library intake references a different source PDF filename')
+    from import_library_draft import prepare_intake
+    try:
+        draft = prepare_intake(document)
+    except SystemExit as error:
+        raise SourceInventoryError(f'Unreviewed or unsafe Manage Library intake: {error}') from error
+    encoded = (json.dumps(draft, ensure_ascii=False, indent=2) + '\n').encode('utf-8')
+    return draft, encoded, raw
+
+
+def source_topic_map_markdown(draft: dict) -> str:
+    """Never infer topic PDF pages from textual similarity: leave links pending."""
+    lines = [
+        '# Topic-to-source page review — PRIVATE', '',
+        '**NEEDS SOURCE REVIEW. Page links are NOT automatically guessed.**', '',
+        '| Topic ID | Original lecture topic | PDF page(s) to verify | Source figures/tables | Reviewed |',
+        '| --- | --- | --- | --- | --- |',
+    ]
+    for topic in draft.get('subtopics', []):
+        label = ' '.join(str(topic.get('label', '')).split()).replace('|', r'\|')
+        identifier = str(topic.get('id', '')).replace('|', r'\|')
+        lines.append(f'| {identifier} | {label} | Not assigned | Not checked | [ ] |')
+    lines += ['', 'Each topic must be manually linked to its actual source PDF pages.',
+              'A text match never proves that printed figures, legends or tables are covered.',
+              'Never publish MCQs or explanations before editorial source review.', '']
+    return '\n'.join(lines)
+
 def check_private_output(destination: Path) -> Path:
     dest = Path(destination).resolve()
     if dest.exists():
@@ -187,11 +227,14 @@ def source_index_markdown(data: dict) -> str:
 def create_private_bundle(
     pdf: Path, destination: Path,
     *, draft_path: Path | None = None,
+    intake_path: Path | None = None,
     render_pages: bool = False,
     extract_images: bool = False,
     dpi: int = 120,
 ) -> dict:
     """Write an all-or-nothing private package with optional source-only visuals."""
+    if draft_path is not None and intake_path is not None:
+        raise SourceInventoryError('Choose only one of --draft or --intake')
     pdf = Path(pdf)
     data = inventory_pdf(pdf)
     dest = check_private_output(Path(destination))
@@ -199,9 +242,12 @@ def create_private_bundle(
         raise SourceInventoryError('Preview DPI must be between 72 and 180')
     if render_pages and data['pageCount'] > MAX_VISUAL_PAGES:
         raise SourceInventoryError('Preview rendering limited to 120 pages; inspect large PDFs in batches')
-    draft = raw_draft = None
+    draft = raw_draft = raw_intake = None
     if draft_path is not None:
         draft, raw_draft = load_matching_draft(Path(draft_path), pdf.name)
+    if intake_path is not None:
+        draft, raw_draft, raw_intake = load_matching_intake(Path(intake_path), pdf.name)
+        data['intakeSha256'] = sha256(raw_intake).hexdigest()
     dest.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix='.medical-source-', dir=dest.parent))
     try:
@@ -214,6 +260,9 @@ def create_private_bundle(
         if draft is not None:
             from lecture_review_report import build_report
             (stage/'lecture-draft.json').write_bytes(raw_draft)
+            (stage/'source-topic-map.md').write_text(source_topic_map_markdown(draft),encoding='utf-8')
+            if raw_intake is not None:
+                (stage/'intake-request.json').write_bytes(raw_intake)
             report=build_report(draft,pdf.name,data['sourceSha256'],data['pageCount'],sha256(raw_draft).hexdigest())
             (stage/'review.md').write_text(report,encoding='utf-8')
         if render_pages or extract_images:
@@ -260,7 +309,9 @@ def create_private_bundle(
 def main() -> None:
     parser=ArgumentParser(description=__doc__)
     parser.add_argument('pdf',type=Path,help='Original private source PDF file')
-    parser.add_argument('--draft',type=Path,help='Optional unpublished draft JSON from import_library_draft.py')
+    draft_options=parser.add_mutually_exclusive_group()
+    draft_options.add_argument('--draft',type=Path,help='Optional unpublished draft JSON from import_library_draft.py')
+    draft_options.add_argument('--intake',type=Path,help='Wizard .intake.json with exact matching original PDF')
     parser.add_argument('--output-dir',type=Path,help='Private output directory; never overwrite')
     parser.add_argument('--render-pages',action='store_true',help='Privately render source page thumbnails')
     parser.add_argument('--extract-images',action='store_true',help='Privately extract exact PDF embedded-image bytes')
@@ -269,7 +320,7 @@ def main() -> None:
     try:
         checked=check_pdf(args.pdf)
         directory=args.output_dir or (ROOT/'tmp'/'pdf-source-inventory'/checked.stem)
-        info=create_private_bundle(args.pdf,directory,draft_path=args.draft,
+        info=create_private_bundle(args.pdf,directory,draft_path=args.draft,intake_path=args.intake,
                                    render_pages=args.render_pages,extract_images=args.extract_images,dpi=args.dpi)
     except (SourceInventoryError,OSError) as error:
         parser.exit(2,f'PDF SOURCE INVENTORY FAILED: {error}\n')
