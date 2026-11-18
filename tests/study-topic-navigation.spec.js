@@ -43,13 +43,19 @@ test('R02 authored question subtopics filter only their mapped source items; nev
   await expect(root.locator('#readerTopicPosition')).toContainText('questions');
 });
 
-test('R02 MCQ practice without authored subtopic links preserves every MCQ',async({page})=>{
+test('R02 MCQ practice preserves every source MCQ without inventing subtopic filters',async({page})=>{
   await page.goto('/#/lecture/'+derm);
   const root=page.locator('#lecture-'+derm);
   await root.getByRole('tab',{name:'MCQ practice',exact:true}).click();
-  await expect(root.locator('#readerTopicBar')).toBeHidden();
+  await expect(root.locator('#readerTopicBar')).toBeVisible();
   await expect(root.locator('.study-guide-mcq')).toHaveCount(30);
+  await expect(root.locator('#readerTopicSelect option')).toHaveCount(30);
+  await expect(root.locator('#readerTopicSelect option[value^="q-"]')).toHaveCount(0);
+  await expect(root.locator('.study-guide-mcq:visible')).toHaveCount(1);
+  await root.getByRole('button',{name:'Browse all MCQs'}).click();
   await expect(root.locator('.study-guide-mcq:visible')).toHaveCount(30);
+  await root.getByRole('button',{name:'Show one MCQ'}).click();
+  await expect(root.locator('.study-guide-mcq:visible')).toHaveCount(1);
 });
 
 
