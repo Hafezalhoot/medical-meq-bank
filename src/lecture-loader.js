@@ -105,6 +105,9 @@
           if (entry.schemaVersion !== 1) {
             throw new Error(`Unsupported lecture schema version for ${entry.id}: ${entry.schemaVersion}`);
           }
+          if (!Number.isInteger(entry.explanationCount) || entry.explanationCount < 0) {
+            throw new Error(`Catalog entry ${entry.id} must declare valid explanationCount`);
+          }
           if (ids.has(entry.id)) throw new Error(`Duplicate catalog id ${entry.id}`);
           ids.add(entry.id);
         });
@@ -138,6 +141,9 @@
       throw new Error(`Lecture identity metadata differs from catalog for ${entry.id}`);
     }
     const expected = entry.expectedCounts || {};
+    if ((lecture.studyGuide?.explanation?.length || 0) !== entry.explanationCount) {
+      throw new Error(`Lecture ${entry.id} has invalid authored explanation count`);
+    }
     if (Number.isInteger(entry.mcqCount) && (lecture.studyGuide?.mcqs?.length || 0) !== entry.mcqCount) {
       throw new Error(`Lecture ${entry.id} has invalid source MCQ count`);
     }
@@ -174,6 +180,7 @@
     schemaVersion: entry.schemaVersion,
     expectedCounts: {...(entry.expectedCounts || {})},
     mcqCount: Number.isInteger(entry.mcqCount) ? entry.mcqCount : 0,
+    explanationCount: entry.explanationCount,
     __metadataOnly: true
   });
 
@@ -197,6 +204,7 @@
         lectures.push(metadataLecture(entry));
       } else {
         existing.expectedCounts = {...(entry.expectedCounts || {})};
+        existing.explanationCount = entry.explanationCount;
       }
     });
     lectures.sort((a, b) =>
