@@ -17,7 +17,8 @@
       },
       "courseId": "internal-medicine-ii",
       "schemaVersion": 1,
-      "mcqCount": 30
+      "mcqCount": 30,
+      "explanationCount": 11
     },
     {
       "id": "internal-medicine-ii-psychiatry-psychiatric-history-mse",
@@ -34,7 +35,8 @@
       },
       "courseId": "internal-medicine-ii",
       "schemaVersion": 1,
-      "mcqCount": 52
+      "mcqCount": 52,
+      "explanationCount": 49
     },
     {
       "id": "internal-medicine-ii-psychiatry-anxiety-disorders",
@@ -51,7 +53,8 @@
       },
       "courseId": "internal-medicine-ii",
       "schemaVersion": 1,
-      "mcqCount": 56
+      "mcqCount": 56,
+      "explanationCount": 43
     },
     {
       "id": "neurosurgery-traumatic-brain-injury",
@@ -67,7 +70,8 @@
         "rapid": 40
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     },
     {
       "id": "urology-congenital-anomalies",
@@ -83,7 +87,8 @@
         "rapid": 26
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     },
     {
       "id": "urology-bph-prostate-carcinoma",
@@ -99,7 +104,8 @@
         "rapid": 26
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     },
     {
       "id": "urology-urological-emergencies",
@@ -115,7 +121,8 @@
         "rapid": 33
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     },
     {
       "id": "urology-scrotal-swelling",
@@ -131,7 +138,8 @@
         "rapid": 40
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     },
     {
       "id": "urology-urinary-tract-infection",
@@ -147,7 +155,8 @@
         "rapid": 40
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     },
     {
       "id": "urology-bladder-cancer",
@@ -163,7 +172,8 @@
         "rapid": 34
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     },
     {
       "id": "urology-urolithiasis",
@@ -179,7 +189,8 @@
         "rapid": 35
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     },
     {
       "id": "urology-renal-tumors",
@@ -195,7 +206,8 @@
         "rapid": 30
       },
       "courseId": "surgery",
-      "schemaVersion": 1
+      "schemaVersion": 1,
+      "explanationCount": 0
     }
   ],
   "schemaVersion": 2
