@@ -51,3 +51,13 @@ test('U1 course and specialty changes retain real lecture deep links and browser
   await expect(page.locator('body')).toHaveAttribute('data-workspace','library');
   await expect(page.locator('#subjectSelector')).toHaveValue('dermatology');
 });
+
+test('U1 Library rating bar reflows without horizontal document scroll at 200% text zoom',async({page})=>{
+  await page.setViewportSize({width:320,height:700});
+  await page.goto('/#/library',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('.lecture-overview-card').first()).toBeVisible({timeout:20000});
+  await page.evaluate(()=>{document.documentElement.style.zoom='200%'});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+  await expect(page.locator('#courseSelector')).toBeVisible();
+  await expect(page.locator('#subjectSelector')).toBeVisible();
+});
