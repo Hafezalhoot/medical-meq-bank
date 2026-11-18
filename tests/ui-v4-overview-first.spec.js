@@ -24,7 +24,7 @@ test('overview is a readable lecture choice and Start studying enters a real que
   const first=page.locator('.lecture-overview-card').first();
   await expect(first).toContainText('Psychiatric History Taking');
   await expect(first).toContainText('5 MEQ cases');
-  await expect(first).toContainText('46 core shorts');
+  await expect(first).toContainText('46 short questions');
   await expect(first).toContainText('6 image questions');
   for(const kind of ['lectures','subtopics']){
     const toggle=page.locator(kind==='lectures'?'#toggleLectures':'#toggleSubtopics');
