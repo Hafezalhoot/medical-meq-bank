@@ -45,6 +45,11 @@ function lectureCount(lecture, keyName){
 }
 function lectureIsLoaded(lecture){return Boolean(lecture&&!lecture.__metadataOnly)}
 function lectureMcqCount(lecture){return lecture?.__metadataOnly?(Number.isInteger(lecture.mcqCount)?lecture.mcqCount:0):(lecture?.studyGuide?.mcqs?.length||0)}
+function lectureExplanationCount(lecture){
+  return lecture?.__metadataOnly
+    ?(Number.isInteger(lecture.explanationCount)?lecture.explanationCount:0)
+    :(lecture?.studyGuide?.explanation?.length||0);
+}
 function lectureProgressPercent(lecture){
   // Library shows rated study items, not timed-exam accuracy. Include
   // reviewed source MCQs in both the available count and rated count.
@@ -387,7 +392,7 @@ function renderLectureOverview(container,list){
   const section=document.createElement('section');
   section.className='lecture-overview-panel';
   const subjectName=subjects.find(subject=>subject.id===activeSubject)?.label||'Selected specialty';
-  section.innerHTML=`<div class="section-head"><div><h2>${esc(subjectName)} lectures</h2><p>Choose a lecture to open its available explanations, practice questions and original source figures.</p></div><span class="lecture-overview-total">${list.length} ${list.length===1?'lecture':'lectures'}</span></div><div class="lecture-overview-grid"></div>`;
+  section.innerHTML=`<div class="section-head"><div><h2>${esc(subjectName)} lectures</h2><p>Only published, source-reviewed lectures appear here. Unpublished intake drafts remain private until review.</p></div><span class="lecture-overview-total">${list.length} ${list.length===1?'lecture':'lectures'}</span></div><div class="lecture-overview-grid"></div>`;
   const grid=section.querySelector('.lecture-overview-grid');
   const isLibrary=document.body.dataset.workspace==='library';
   const shown=filterLibraryLectures(list);
@@ -436,9 +441,27 @@ function renderLectureOverview(container,list){
     const progress=lectureProgressPercent(lecture);
     const cases=lectureCount(lecture,'cases');
     const mcqs=lectureMcqCount(lecture);
+    const explanations=lectureExplanationCount(lecture);
     const shorts=lectureCount(lecture,'coreShorts');
     const images=lectureCount(lecture,'imageQuestions');
-    button.innerHTML=`<span class="lecture-overview-top"><span class="lecture-overview-index" aria-hidden="true">${String(lecture.order).padStart(2,'0')}</span><strong class="lecture-overview-name">${esc(lecture.title)}</strong></span><span class="lecture-overview-meta">${mcqs} source MCQs · ${cases} MEQ cases · ${shorts} core shorts · ${images} image questions</span><span class="lecture-overview-bottom"><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Open lecture'} <span aria-hidden="true">→</span></span></span>`;
+    const details=lectureCount(lecture,'detailedShorts');
+    const rapid=lectureCount(lecture,'rapid');
+    const descriptionId='lecture-contents-'+lecture.id;
+    button.setAttribute('aria-describedby',descriptionId);
+    const explanationLabel=explanations
+      ?explanations+' explanation '+(explanations===1?'section':'sections')
+      :'No published explanation';
+    const mcqLabel=mcqs?mcqs+' reviewed MCQs':'No reviewed MCQs';
+    const practiceCounts=[
+      cases?cases+' MEQ cases':null,
+      shorts?shorts+' short questions':null,
+      images?images+' image questions':null,
+      details?details+' detailed questions':null,
+      rapid?rapid+' Rapid Recall':null
+    ].filter(Boolean).join(' · ');
+    const pill=(label,available)=>'<span class="lecture-content-pill '+(
+      available?'lecture-content-pill--ready':'lecture-content-pill--missing')+'">'+label+'</span>';
+    button.innerHTML=`<span class="lecture-overview-top"><span class="lecture-overview-index" aria-hidden="true">${String(lecture.order).padStart(2,'0')}</span><strong class="lecture-overview-name">${esc(lecture.title)}</strong></span><span class="lecture-overview-content" id="${descriptionId}"><span class="lecture-overview-availability">${pill(explanationLabel,explanations>0)}${pill(mcqLabel,mcqs>0)}</span><span class="lecture-overview-meta">${practiceCounts}</span></span><span class="lecture-overview-bottom"><span class="lecture-overview-progress"><span><b>${progress}%</b> rated</span><span class="mini-progress" aria-hidden="true"><i style="width:${progress}%"></i></span></span><span class="lecture-overview-action">${progress?'Continue lecture':'Open lecture'} <span aria-hidden="true">→</span></span></span>`;
     button.onclick=()=>{
       const focused=document.body.dataset.workspace==='library';
       selectLecture(lecture.id,!focused);
