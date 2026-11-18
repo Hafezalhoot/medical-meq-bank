@@ -60,6 +60,63 @@ Continue the source-review workflow below using the original PDF. All clinical a
 
 Creating or renaming Materials, specialties or Chapters still uses reviewed course configuration and the existing course tools. This first wizard does not write those registries, upload PDFs, approve clinical facts or publish directly from the browser.
 
+## A1 — Private original-PDF source inventory (2026-11-18)
+
+The Manage Library wizard still creates a **private lecture-intake metadata request**, never an exam or a PDF parser. The next safe step is a local, original-source inventory. Its Python tool reads the PDF on **your own device** and writes output only under ignored `tmp/` or a separate private directory. It does not upload a copyrighted source, modify the published library, infer medical answers, perform OCR, or award source-review approval.
+
+**One-time setup** for local source review (this is not a dependency of the public Cloudflare Worker or offline PWA):
+
+```bash
+python3 -m pip install -r tools/requirements-original-figures.txt
+```
+
+**Recommended: one local command after downloading Manage Library's `.intake.json` file:**
+
+```bash
+python3 tools/pdf_source_inventory.py "/private/Original Lecture.pdf" \
+  --intake "/private/my-lecture.intake.json" \
+  --render-pages --extract-images
+```
+
+This reuses the **existing strict `import_library_draft.py` validator** and checks the original PDF filename against the intake. It creates an **unpublished** private draft. Approval claims, duplicate topic labels, wrong material or IDs and oversized intake files are rejected. The exact intake request and SHA-256 stay in private evidence. Topic-to-page links remain **Not assigned** until human review.
+
+If you have already created a private draft, the original two-command route is still supported:
+
+```bash
+python3 tools/import_library_draft.py "/private/my-lecture.intake.json" --write
+python3 tools/pdf_source_inventory.py "/private/Original Lecture.pdf" \
+  --draft "tmp/lecture-drafts/<stable-lecture-id>.json" \
+  --render-pages --extract-images
+```
+
+The source file name must match the PDF filename recorded in the draft. The tool rejects malformed, non-PDF, encrypted, too-large (over 150 MiB) or empty files; maximum 500 pages and maximum 120 pages for one optional preview batch. It **never overwrites** an existing output folder. Change `--output-dir` to a different, private location for a repeat inventory.
+
+The resulting `tmp/pdf-source-inventory/<source filename without extension>/` contains:
+
+| Private file or folder | Exact purpose |
+| --- | --- |
+| `source-inventory.json` | Source PDF SHA-256, byte size, independent page count and, for **every page**, native PDF text, embedded-image byte SHA-256, vector drawing paths and review-required flags |
+| `source-index.md` | Reviewer checklist for every page, including visual figures/tables/legends, all unchecked |
+| `source-topic-map.md` | When a private draft is supplied: each original topic with **no guessed PDF page**, a blank page mapping and an unchecked review mark |
+| `intake-request.json` | When `--intake` is supplied: exact copy of the private request, bound to its SHA-256 in the inventory |
+| `source-pages/page-0001.txt`, etc. | Raw text physically extractable from each corresponding original page; **not complete medical coverage** |
+| `page-previews/page-0001.png`, etc. | Opt-in private pixel renders of **original** pages for human comparison, not generated medical illustrations |
+| `original-images/xref-*.png` or `*.jpeg` | Opt-in exact embedded image extraction payloads with hashes; vector diagrams and scanned captions may need manual handling |
+| `lecture-draft.json` + `review.md` | When `--draft` or `--intake` is supplied: validated private draft plus the existing PDF/draft-hash-tied, **unchecked** source-review worksheet |
+
+**Important:** The initial `review.md` corresponds to the as-imported empty draft. **If you edit the draft to author medical explanations, source MCQs or image questions, its content hash changes and that initial worksheet becomes stale.** After preparing the complete content from the original PDF and inspecting *every* page and image, regenerate a new full source-review report using the existing tool, with the page count measured by the inventory:
+
+```bash
+python3 tools/lecture_review_report.py "/private/completed-lecture.json" \
+  --pdf "/private/Original Lecture.pdf" \
+  --page-count <actual-page-count-from-source-inventory.json> \
+  --output "/private/completed-lecture-review.md"
+```
+
+Verify each source passage, printed diagram/table/caption, exact original image and MCQ answer index; only a human reviewer should tick the boxes. The established `add_lecture.py` reviewed `--source-pdf`, `--page-count`, `--review-report` and `--reviewed` gates remain in force; use a **dry-run** first, then a PR with independent review. Do **not** publish the original PDF, extracted text, private figure bytes, or unreviewed medical content in this public repository.
+
+For a PDF that is entirely scanned, native extraction may return empty text and image objects. This is expected and is marked for visual review; **do not** treat empty text as a blank medical slide, and do not invent facts to fill it. A full PDF-to-graded-MCQ authoring experience with source-by-source review is a separate next milestone, not implied by this inventory step.
+
 ## Medical visual provenance policy — owner request (2026-10-17)
 
 **Only figures and clinical photographs actually present in the learner-provided PDF may appear as medical lecture images.** The repository must not manufacture new clinical visuals, depict invented lesions, borrow photographs from external sources, or replace original source photographs with AI-generated diagrams.

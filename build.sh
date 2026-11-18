@@ -53,6 +53,9 @@ required_files=(
   tools/add_lecture.py
   tools/add_course.py
   tools/new_lecture.py
+  tools/pdf_source_inventory.py
+  tests/test_pdf_source_inventory.py
+  tests/test_pdf_intake_one_step.py
   tools/prepare_original_figure_pack.py
   tools/check_original_figure_pack.py
   tests/test_original_figure_pack.py
@@ -97,6 +100,9 @@ python3 -m py_compile \
   tools/import_library_structure.py \
   tests/test_library_structure.py \
   tools/new_lecture.py \
+  tools/pdf_source_inventory.py \
+  tests/test_pdf_source_inventory.py \
+  tests/test_pdf_intake_one_step.py \
   tools/prepare_original_figure_pack.py \
   tools/check_original_figure_pack.py \
   tests/test_original_figure_pack.py \
