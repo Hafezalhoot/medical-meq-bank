@@ -13,19 +13,19 @@ for(const width of [320,390]){
     const questions=page.locator('#readerPane-mcqs .study-guide-mcq');
     await expect(questions).toHaveCount(30);
     await expect(page.locator('#readerTab-mcqs')).toHaveAttribute('aria-selected','true',{timeout:20000});
-    await expect(questions.filter({visible:true})).toHaveCount(1);
+    await expect(page.locator('#readerPane-mcqs .study-guide-mcq:visible')).toHaveCount(1);
     await expect(page.locator('#readerTopicPosition')).toContainText('Question 1 of 30');
     await expect(page.getByRole('button',{name:'Previous question'})).toBeDisabled();
     await page.getByRole('button',{name:'Next question'}).click();
-    await expect(questions.filter({visible:true})).toHaveCount(1);
+    await expect(page.locator('#readerPane-mcqs .study-guide-mcq:visible')).toHaveCount(1);
     await expect(questions.nth(1)).toBeVisible();
     await expect(questions.first()).toBeHidden();
     await expect(page).toHaveURL(/question=derm-mcq-002/);
     await expect(page.locator('#readerTopicPosition')).toContainText('Question 2 of 30');
     await page.getByRole('button',{name:'Browse all MCQs'}).click();
-    await expect(questions.filter({visible:true})).toHaveCount(30);
+    await expect(page.locator('#readerPane-mcqs .study-guide-mcq:visible')).toHaveCount(30);
     await page.getByRole('button',{name:'Show one MCQ'}).click();
-    await expect(questions.filter({visible:true})).toHaveCount(1);
+    await expect(page.locator('#readerPane-mcqs .study-guide-mcq:visible')).toHaveCount(1);
     await page.locator('#readerTopicSelect').selectOption({label:'Question 30 of 30'});
     await expect(questions.nth(29)).toBeVisible();
     await expect(page.getByRole('button',{name:'Next question'})).toBeDisabled();
@@ -69,9 +69,9 @@ test('U2 reveal feedback uses authored answer and does not auto-rate the questio
 test('U2 print includes every authored MCQ despite focused on-screen view',async({page})=>{
   await page.goto(derm,{waitUntil:'domcontentloaded'});
   const questions=page.locator('#readerPane-mcqs .study-guide-mcq');
-  await expect(questions.filter({visible:true})).toHaveCount(1,{timeout:20000});
+  await expect(page.locator('#readerPane-mcqs .study-guide-mcq:visible')).toHaveCount(1,{timeout:20000});
   await page.emulateMedia({media:'print'});
-  await expect(questions.filter({visible:true})).toHaveCount(30);
+  await expect(page.locator('#readerPane-mcqs .study-guide-mcq:visible')).toHaveCount(30);
 });
 
 test('U2 unavailable MCQ modes are never invented for Urology source-only cases',async({page})=>{
