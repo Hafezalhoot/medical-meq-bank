@@ -51,7 +51,7 @@ The remaining live-smoke prerequisite is Cloudflare Access: HTTP 302 and absent 
 **My Medical Library · Lectures · Questions · Exams** is the personal lecture-first medical study application; MEQ is one supported question type, not the overall brand. Lecture-First Policy still controls every exam fact, and explanatory additions must be labeled as aids, not new exam facts.
 
 ## Repository and release baseline
-- Repository: `Hafezalhoot/medical-meq-bank`; production branch `main` remains at `2f0d6e8d0e7daec4000cb41607d09b15e6d28d25` (V5.2).
+- Repository: `Hafezalhoot/medical-meq-bank`; production source branch `main` is at `cb0d193c447623b5b52784ab6d5e73d4275f400e` (V5.9 code merged, not proof of active production Worker).
 - Source inventory: 3 courses, 12 published lectures; 138 reviewed auto-gradable MCQs in 3 lectures; historical MEQ, short, image/spot, Rapid Recall and exam workflows remain intact.
 - Existing device-local progress, IndexedDB exam history, safe backup/restore, original figures with SHA provenance, offline cache and print must be preserved.
 
@@ -86,3 +86,13 @@ The remaining live-smoke prerequisite is Cloudflare Access: HTTP 302 and absent 
 - **Source-preservation boundary:** source lecture JSON and answer keys, original PDF figure bytes/hashes, IndexedDB progress and exam history, PWA/Worker configuration, and `main` are not edited by this implementation. Private PDFs are only hashed on the author's local device, never uploaded.
 - **CI evidence:** exact head `4005d5290f64f47ce7738ef4b009687db2788755` passed GitHub Static, Chromium and WebKit in [run #42003586921](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42003586921). Additional registrar gating/test/docs changes require a **new final exact-head run**; previous green cannot be used as final-head proof.
 - **Release HOLD:** do not merge/deploy until Cloudflare Workers Builds default deploy command has been confirmed build/upload-only, protected manual promotion (PR #81) is reviewed, and authenticated production smoke #35 / activation sequencing #50 are resolved. Build and browser suites do not constitute scientific editorial approval.
+
+
+## 2026-11-05 — Proposed V6 information architecture / design audit
+
+- User requested structural redesign of **the entire library navigation**, the stacked Lecture/Topic workflow and future Course/Subject/Chapter/Lecture authoring, not a shallow re-color.
+- Source reviewed: main \`cb0d193c447623b5b52784ab6d5e73d4275f400e\`; CI rendered evidence: 22 screenshots in [Chromium run #42007867391](https://github.com/Hafezalhoot/medical-meq-bank/actions/runs/42007867391). Independent authenticated production browsing was not available; browser call to preview blocked externally.
+- Source diagnoses: one stacked view hierarchy, course/subject/lecture/topic but no chapters, CLI-based medical intake; app CSS ~132 KB with ~93 media blocks, app JS ~85 KB. These are audit observations, not claims that all functions failed.
+- **Proposed only:** \`docs/superpowers/specs/2026-11-05-my-medical-library-v6-information-architecture-design.md\`; \`design-system/my-medical-library/MASTER.md\`; \`docs/superpowers/plans/2026-11-05-my-medical-library-v6-execution.md\`; \`docs/project-autopilot/ROADMAP.md\`.
+- Status: no V6 UI source code changed, no Chapter schema changed, no new runtime design library or ChatGPT web skill installed, no new production Worker activated by this planning branch.
+- Next: owner reviews direction; UX-01 router/screens pilot; verify responsive/keyboard and source/progress invariants before moving to Library/Chapter and then Reader/Authoring slices.
