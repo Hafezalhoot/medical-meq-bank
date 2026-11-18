@@ -2578,3 +2578,16 @@ body[data-workspace="lecture"] #readerPane-mcqs .study-guide-mcq.reader-mcq-cond
     display:block!important;
   }
 }
+
+
+/* The compact phone grid has a two-column caption/actions row. Override the
+   older full-span rule so a live question counter never covers the action. */
+@media(max-width:700px){
+  body[data-workspace="lecture"] .reader-topic-bar .reader-topic-position{
+    grid-column:1;grid-row:2;min-width:0;
+  }
+  body[data-workspace="lecture"] .reader-topic-bar #readerAllTopics{
+    grid-column:2/4;grid-row:2;min-height:44px;
+    padding:5px;font-size:.76rem;line-height:1.2;white-space:normal;
+  }
+}
